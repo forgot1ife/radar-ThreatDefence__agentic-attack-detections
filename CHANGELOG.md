@@ -1,8 +1,11 @@
 # Changelog
 
-## 2.11.1, unreleased
+## 2.11.1, November 25, 2026
+
+Analytics rules deployed from the Microsoft Sentinel templates can now be enabled, and two console rules are added.
 
 - Sentinel templates: analytics rules no longer carry `templateVersion`. Microsoft Sentinel accepts it only together with `alertRuleTemplateName`, so a deployed rule could not be enabled or edited in the portal ("'templateVersion' can only be used if 'alertRuleTemplateName' is not empty"). Redeploy a template to fix rules already in a workspace; `tools/build_sentinel.py --check` now fails on the combination. Reported in #23.
+- Two Suricata rules for exposed consoles: 3800081 matches an ARTEX console by the end of its page title, which stays when the console is renamed, and 3806013 matches the Hermes Agent sign-in page seen in `exposure/consoles.csv`. Each has a case and a near miss in `tests/suricata/run_tests.py`. Contributed by @shiwng in #29.
 
 ## 2.11.0, November 24, 2026
 
