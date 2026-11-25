@@ -117,6 +117,12 @@ The other twelve console-level folders (CyberStrike, Vulnerator AI, Decepticon, 
 
 Each folder has a README, the hunts and rules, and a `source-code-signals.md` that explains what the framework leaves behind and where in its code each signal comes from.
 
+## Exposure tracking as of 25 Nov 2026
+
+This project now tracks exposure as well as detection: which of these frameworks have consoles reachable on the internet, how many there are, and how the numbers move over time.
+
+![Active offensive agents by framework on 25 November 2026](docs/images/exposure-status-2026-11-25.png)
+
 ## Exposed consoles
 
 Hosts on the internet that serve the web console of each framework, found in internet-wide scan data with the fingerprints the rules here use: favicons, page titles, page text that survives a rename, and certificates.
