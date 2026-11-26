@@ -2,7 +2,7 @@ id: 8c6d799b-6820-582b-847e-357c9c56b749
 name: Service principal assigned a role by itself
 description: |
   A service principal added a directory role or app role assignment to itself, as compromised applications did in the Storm-0940 ARTEX campaign.
-  Agentic attack detections by ThreatDefence (ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+  Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 severity: High
 requiredDataConnectors:
   - connectorId: AzureActiveDirectory

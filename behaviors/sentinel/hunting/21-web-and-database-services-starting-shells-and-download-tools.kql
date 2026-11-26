@@ -1,5 +1,5 @@
 // Web and database services starting shells and download tools
-// Agentic attack detections by ThreatDefence (ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 // ATT&CK: T1505.003 (Server Software Component: Web Shell), T1190 (Exploit Public-Facing Application), T1059 (Command and Scripting Interpreter)
 // Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.
 // A web shell, a command injection flaw and a database that can run operating system commands all look the same in process data: the service starts a shell.
@@ -11,7 +11,7 @@ let ServiceProcesses = dynamic(["w3wp.exe", "httpd.exe", "httpd", "nginx.exe", "
 let Tools = dynamic(["cmd.exe", "powershell.exe", "pwsh.exe", "sh", "bash", "dash", "curl.exe", "curl", "wget",
     "nc", "ncat", "nc.exe", "whoami.exe", "whoami", "tasklist.exe", "net.exe", "nltest.exe", "certutil.exe", "python3"]);
 DeviceProcessEvents
-| where Timestamp >= datetime(2026-08-01)
+| where Timestamp > ago(30d)
 | where InitiatingProcessFileName in~ (ServiceProcesses) and FileName in~ (Tools)
 // java and node also run Jenkins, npm and AI agent CLIs: count them only under a service account
 | where InitiatingProcessFileName !in~ ("java", "java.exe", "node", "node.exe")

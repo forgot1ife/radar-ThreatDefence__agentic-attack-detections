@@ -1,5 +1,5 @@
 // One application requesting tokens for many resources in minutes
-// Agentic attack detections by ThreatDefence (ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 // ATT&CK: T1526 (Cloud Service Discovery), T1078.004 (Valid Accounts: Cloud Accounts)
 // Example hunt for Microsoft Sentinel. Test and baseline before alerting.
 // An agent that has an application's credentials tries every API it can reach: Microsoft Graph, Azure Resource

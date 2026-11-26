@@ -168,6 +168,29 @@ def analytics_rule(path, framework):
     }
 
 
+# Hunts that moved keep the id they were first deployed with, so a redeploy updates the saved search in place instead
+# of adding a second copy. New path -> the path its id was made from. Add a line here when a hunt file moves.
+_A, _B = "frameworks/artex/sentinel/hunting/", "behaviors/sentinel/hunting/"
+MOVED_HUNTS = {_B + new: _A + old for new, old in [
+    ("10-password-spray-at-a-fixed-rhythm.kql", "02-password-spray-at-a-fixed-rhythm.kql"),
+    ("11-a-spray-that-ends-in-a-successful-sign-in.kql", "03-a-spray-that-ends-in-a-successful-sign-in.kql"),
+    ("12-service-principal-secret-failures-then-success.kql", "18-service-principal-secret-failures-then-success.kql"),
+    ("13-applications-changing-their-own-access.kql", "05-applications-changing-their-own-access.kql"),
+    ("14-one-application-hitting-many-resources.kql", "19-one-application-hitting-many-resources.kql"),
+    ("15-bulk-key-vault-secret-reads.kql", "07-bulk-key-vault-secret-reads.kql"),
+    ("16-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql", "15-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql"),
+    ("17-aws-permission-testing-and-the-foothold-that-follows.kql", "14-aws-permission-testing-and-the-foothold-that-follows.kql"),
+    ("18-cloudwatch-log-searches-with-a-stolen-aws-key.kql", "08-cloudwatch-log-searches-with-a-stolen-aws-key.kql"),
+    ("19-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql", "09-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql"),
+    ("20-user-agent-family-burst-from-one-source.kql", "17-user-agent-family-burst-from-one-source.kql"),
+    ("21-web-and-database-services-starting-shells-and-download-tools.kql", "11-web-and-database-services-starting-shells-and-download-tools.kql"),
+    ("22-scripts-written-into-web-directories.kql", "13-scripts-written-into-web-directories.kql"),
+    ("23-servers-calling-webhook-and-tunnel-services.kql", "12-servers-calling-webhook-and-tunnel-services-or-downloading-f.kql"),
+    ("24-kerberoasting-dcsync-and-winrm-fan-out.kql", "16-kerberoasting-dcsync-and-winrm-fan-out.kql"),
+    ("25-scripted-microsoft-graph-bursts-by-an-application.kql", "06-scripted-microsoft-graph-bursts-by-an-application.kql"),
+]}
+
+
 EXAMPLE = re.compile(r"^// Example: *(.+)$")
 
 
@@ -215,7 +238,8 @@ def hunting_queries(path, framework):
     tactics, techniques = hunt_attack(text, rel)
     out = []
     for n, (example, query) in enumerate(parts, 1):
-        key = rel if len(parts) == 1 else f"{rel}#{n}"
+        id_rel = MOVED_HUNTS.get(rel, rel)
+        key = id_rel if len(parts) == 1 else f"{id_rel}#{n}"
         name = title if example is None else f"{title}, part {n}: {example}"
         out.append({
             "type": "Microsoft.OperationalInsights/workspaces/savedSearches",

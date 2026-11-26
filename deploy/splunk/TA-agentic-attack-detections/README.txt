@@ -5,7 +5,7 @@ https://github.com/ThreatDefence/agentic-attack-detections
 363 saved searches, all disabled, and the Agentic Attack Activity dashboard.
 
 Searches per framework:
-  ARTEX: 46
+  ARTEX: 31
   CyberStrikeAI: 7
   PentAGI: 3
   Cairn: 3
@@ -74,7 +74,7 @@ Searches per framework:
   Deadend CLI: 5
   Ares: 9
   Offensive prompt packs: 4
-  Shared behaviors: 6
+  Shared behaviors: 21
   Indicator searches: 4 (addresses, domains, file hashes, user agents)
 
 Lookups: aad_indicators.csv has all 1838 rows of iocs/indicators.csv. aad_ioc_ip, aad_ioc_domain,

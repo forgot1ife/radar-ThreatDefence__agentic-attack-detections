@@ -9,6 +9,8 @@ ARTEX attacks move fast but leave a lot behind. Work in this order, because each
 5. **Check servers.** Run the web service child process, artifact name and callback searches. A web or database service starting a shell is the point where an attack became an intrusion.
 6. **Check inside the network.** Run the Kerberoasting, DCSync, WinRM fan-out and remote tasklist hunts, then the Zeek and Suricata content on internal sensors.
 
+The spray, service principal, cloud, server and network hunts named in steps 2 to 6 now sit in [`behaviors/`](../../behaviors/sentinel/hunting) because they work for every framework ([where each one went](README.md#moved-to-shared-behaviors)). Run them in the same order.
+
 Hunts 23 to 30 come from the ARTEX source code rather than from reported intrusions ([what the code shows](source-code-signals.md)). Run 23, 24 and 26 with step 3, 28 and 29 with step 6, and 25 when an operator may have turned on a noise profile to stay quiet.
 
 Start the time range at August 1, 2026, the earliest malicious use the FBI and Google report.

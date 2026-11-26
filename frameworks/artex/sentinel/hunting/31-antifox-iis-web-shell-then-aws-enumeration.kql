@@ -11,7 +11,7 @@
 //  - With AWS keys, one source cycled through several identities and sent hundreds of List, Get and Describe calls across
 //    dozens of services in about half an hour (Boto3/Botocore 1.43.125). Most were denied; a GetSecretValue on a
 //    production secret and S3 GetObject, CopyObject and DeleteObject calls succeeded.
-// AntiFox is ARTEX's code renamed, so the other ARTEX hunts apply too. Do not dismiss a burst because most calls failed.
+// AntiFox is ARTEX's code renamed, so the other ARTEX hunts and the shared behaviors apply too. Do not dismiss a burst because most calls failed.
 
 let Window = 14d;
 let WebShellChildren = dynamic(["cmd.exe", "powershell.exe", "pwsh.exe", "where.exe", "whoami.exe", "icacls.exe", "7z.exe", "rar.exe", "tar.exe", "certutil.exe"]);

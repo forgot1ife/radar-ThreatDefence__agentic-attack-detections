@@ -1,13 +1,13 @@
 // The ARTEX container toolchain seen from one source
 // Agentic attack detections by ThreatDefence (ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 // ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning)
-// Example hunt for Microsoft Sentinel. Test and baseline before alerting. Refines hunt 17.
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting. Refines shared behavior hunt 20.
 // From the ARTEX source code. The image is always built from the repository Dockerfile, on Debian bookworm, with pinned
 // tools: sqlmap 1.9.9, ffuf v2.3.0, nuclei v3.11.1, httpx v1.12.0, katana v1.8.0, dalfox v3.2.4, bbot 3.0.2, nmap from
 // apt and Playwright 1.64.1 with headless Chromium (Dockerfile:71-220). Next to the scanners sit ARTEX's own clients:
 // WebFetch ("norma/0.4"), the enrichment probe ("Go-http-client/1.1"), the api-recon skill scripts
 // ("Mozilla/5.0 (spa-api-recon)" and "Mozilla/5.0 (spa-api-recon spider)", skills/api-recon/scripts/harvest_static.py:23,
-// spider_mpa.py:22) and bookworm's curl 7.88.1 and Wget 1.21.3. Hunt 17 counts any user agent families. This one scores
+// spider_mpa.py:22) and bookworm's curl 7.88.1 and Wget 1.21.3. Shared behavior hunt 20 counts any user agent families. This one scores
 // the specific clients the ARTEX image carries, so three or more of them from one address in an hour is a much narrower
 // lead. Each scanner user agent can be changed with a flag, the bookworm versions change with the base image, and
 // "norma/0.4" and "spa-api-recon" need a code change.

@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "metadata": {
     "title": "Agentic attack detections for Microsoft Sentinel: behaviors",
-    "description": "2 analytics rules, 9 hunting queries and the AGENTIC_IOCs watchlist. Built by tools/build_sentinel.py from https://github.com/ThreatDefence/agentic-attack-detections"
+    "description": "6 analytics rules, 31 hunting queries and the AGENTIC_IOCs watchlist. Built by tools/build_sentinel.py from https://github.com/ThreatDefence/agentic-attack-detections"
   },
   "parameters": {
     "workspace": {
@@ -21,6 +21,47 @@
     }
   },
   "resources": [
+    {
+      "type": "Microsoft.SecurityInsights/alertRules",
+      "apiVersion": "2024-03-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspace'))]",
+      "name": "786b38a9-a817-5f5b-993c-8b6a3d320de0",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "CloudWatch logs searched for secrets",
+        "description": "FilterLogEvents with a filter pattern for passwords or access keys, as Datadog observed with a stolen key in ARTEX activity.\nAgentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting",
+        "severity": "Medium",
+        "enabled": "[parameters('enableRules')]",
+        "query": "AWSCloudTrail\n| where EventSource == \"logs.amazonaws.com\" and EventName == \"FilterLogEvents\"\n| extend Pattern = tostring(parse_json(RequestParameters).filterPattern), Limit = toint(parse_json(RequestParameters).limit)\n| where Pattern has_any (\"password\", \"AKIA\", \"secret\", \"token\") or Limit == 1000\n| summarize Calls=count(), LogGroups=dcount(tostring(parse_json(RequestParameters).logGroupName)), Patterns=make_set(Pattern, 10), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by UserIdentityArn, SourceIpAddress, UserAgent",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionEnabled": false,
+        "suppressionDuration": "PT5H",
+        "tactics": [
+          "CredentialAccess"
+        ],
+        "techniques": [
+          "T1552"
+        ],
+        "eventGroupingSettings": {
+          "aggregationKind": "SingleAlert"
+        },
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
     {
       "type": "Microsoft.SecurityInsights/alertRules",
       "apiVersion": "2024-03-01",
@@ -91,6 +132,130 @@
         "techniques": [
           "T1213",
           "T1552"
+        ],
+        "eventGroupingSettings": {
+          "aggregationKind": "SingleAlert"
+        },
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.SecurityInsights/alertRules",
+      "apiVersion": "2024-03-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspace'))]",
+      "name": "df5b6ef7-3f87-5a5b-b617-f9262eed71b5",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Burst of EC2 DryRun permission tests",
+        "description": "Ten or more EC2 calls with the DryRun flag from one identity in five minutes, the capability check ARTEX agents run with a stolen AWS key.\nAgentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting",
+        "severity": "Medium",
+        "enabled": "[parameters('enableRules')]",
+        "query": "AWSCloudTrail\n| where EventSource == \"ec2.amazonaws.com\" and ErrorCode == \"Client.DryRunOperation\"\n| summarize DryRuns=count(), Actions=dcount(EventName), ActionList=make_set(EventName, 30), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by UserIdentityArn, SourceIpAddress, UserAgent, bin(TimeGenerated, 5m)\n| where DryRuns >= 10",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionEnabled": false,
+        "suppressionDuration": "PT5H",
+        "tactics": [
+          "Discovery"
+        ],
+        "techniques": [
+          "T1580"
+        ],
+        "eventGroupingSettings": {
+          "aggregationKind": "SingleAlert"
+        },
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.SecurityInsights/alertRules",
+      "apiVersion": "2024-03-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspace'))]",
+      "name": "c7a5507a-9966-53a5-836f-5c339352fb65",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Password spray at a fixed one-second rhythm",
+        "description": "One source failed sign-ins for many users with a median gap of two seconds or less, the rhythm Microsoft observed in Storm-0940 ARTEX sprays.\nAgentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting",
+        "severity": "High",
+        "enabled": "[parameters('enableRules')]",
+        "query": "union isfuzzy=true SigninLogs, AADNonInteractiveUserSignInLogs\n| where ResultType != \"0\"\n| project TimeGenerated, IPAddress, UserAgent, UserPrincipalName, ResultType\n| sort by IPAddress asc, UserAgent asc, TimeGenerated asc\n| extend GapSec = iff(IPAddress == prev(IPAddress) and UserAgent == prev(UserAgent), datetime_diff('second', TimeGenerated, prev(TimeGenerated)), long(null))\n| summarize Attempts=count(), Users=dcount(UserPrincipalName), MedianGapSec=percentile(GapSec, 50), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by IPAddress, UserAgent\n| where Attempts >= 200 and Users >= 20 and MedianGapSec <= 2",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT2H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionEnabled": false,
+        "suppressionDuration": "PT5H",
+        "tactics": [
+          "CredentialAccess"
+        ],
+        "techniques": [
+          "T1110"
+        ],
+        "eventGroupingSettings": {
+          "aggregationKind": "SingleAlert"
+        },
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.SecurityInsights/alertRules",
+      "apiVersion": "2024-03-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspace'))]",
+      "name": "8c6d799b-6820-582b-847e-357c9c56b749",
+      "kind": "Scheduled",
+      "properties": {
+        "displayName": "Service principal assigned a role by itself",
+        "description": "A service principal added a directory role or app role assignment to itself, as compromised applications did in the Storm-0940 ARTEX campaign.\nAgentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting",
+        "severity": "High",
+        "enabled": "[parameters('enableRules')]",
+        "query": "AuditLogs\n| where OperationName in (\"Add member to role\", \"Add app role assignment to service principal\", \"Add app role assignment grant to user\")\n| extend InitiatorId = tostring(InitiatedBy.app.servicePrincipalId), InitiatorName = tostring(InitiatedBy.app.displayName)\n| where isnotempty(InitiatorId)\n| mv-expand Target = TargetResources\n| extend TargetId = tostring(Target.id), TargetName = tostring(Target.displayName)\n| where TargetId == InitiatorId\n| project TimeGenerated, OperationName, InitiatorName, InitiatorId, TargetName, Result, CorrelationId",
+        "queryFrequency": "PT1H",
+        "queryPeriod": "PT1H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionEnabled": false,
+        "suppressionDuration": "PT5H",
+        "tactics": [
+          "PrivilegeEscalation",
+          "Persistence"
+        ],
+        "techniques": [
+          "T1098"
         ],
         "eventGroupingSettings": {
           "aggregationKind": "SingleAlert"
@@ -371,6 +536,644 @@
       }
     },
     {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/6395fc13-7b3f-5aff-8f37-28f408b3aba5')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Password spray at a fixed rhythm (behaviors)",
+        "query": "// Password spray at a fixed rhythm\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1110.003 (Brute Force: Password Spraying)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Find sources that fail sign-ins for many users with a steady gap of a second or two.\n// In Okta, run the same check on the System Log: failed `user.session.start` events and `user.account.lock` events from one address across many users, at about one attempt a second.\n\n// Example: failed sign-ins from one source and user agent, many users, median gap of two seconds or less\nunion isfuzzy=true SigninLogs, AADNonInteractiveUserSignInLogs\n| where TimeGenerated > ago(30d)\n| where ResultType != \"0\"\n| project TimeGenerated, IPAddress, UserAgent, UserPrincipalName, ResultType\n| sort by IPAddress asc, UserAgent asc, TimeGenerated asc\n| extend GapSec = iff(IPAddress == prev(IPAddress) and UserAgent == prev(UserAgent),\n    datetime_diff('second', TimeGenerated, prev(TimeGenerated)), long(null))\n| summarize Attempts=count(), Users=dcount(UserPrincipalName), MedianGapSec=percentile(GapSec, 50),\n    Lockouts=countif(ResultType == \"50053\"), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated)\n    by IPAddress, UserAgent, bin(TimeGenerated, 1h)\n| where Attempts >= 200 and Users >= 20 and MedianGapSec <= 2\n| order by Attempts desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Find sources that fail sign-ins for many users with a steady gap of a second or two. In Okta, run the same check on the System Log: failed…"
+          },
+          {
+            "name": "tactics",
+            "value": "CredentialAccess"
+          },
+          {
+            "name": "techniques",
+            "value": "T1110"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/10-password-spray-at-a-fixed-rhythm.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/e4e2c555-5690-578c-9828-5f0d968665e4')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "A spray that ends in a successful sign-in (behaviors)",
+        "query": "// A spray that ends in a successful sign-in\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1110.003 (Brute Force: Password Spraying), T1078.004 (Valid Accounts: Cloud Accounts)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n\n// Example: a successful sign-in from an address that failed against many users\nlet Sprayers = union isfuzzy=true SigninLogs, AADNonInteractiveUserSignInLogs\n    | where TimeGenerated > ago(30d) and ResultType != \"0\"\n    | summarize Failures=count(), TargetedUsers=dcount(UserPrincipalName) by IPAddress\n    | where Failures >= 100 and TargetedUsers >= 20;\nunion isfuzzy=true SigninLogs, AADNonInteractiveUserSignInLogs\n| where TimeGenerated > ago(30d) and ResultType == \"0\"\n| join kind=inner Sprayers on IPAddress\n| project TimeGenerated, UserPrincipalName, IPAddress, UserAgent, AppDisplayName, Failures, TargetedUsers\n| order by TimeGenerated asc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting."
+          },
+          {
+            "name": "tactics",
+            "value": "CredentialAccess,DefenseEvasion,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1110"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/11-a-spray-that-ends-in-a-successful-sign-in.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/4ea69ea7-da9b-5309-b67a-e1359d309d1c')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Service principal secret guessing followed by a success (behaviors)",
+        "query": "// Service principal secret guessing followed by a success\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1110.001 (Brute Force: Password Guessing), T1078.004 (Valid Accounts: Cloud Accounts)\n// Example hunt for Microsoft Sentinel. Test and baseline before alerting.\n// Storm-0940's agents signed in as compromised applications. A source that fails with invalid client secrets\n// (AADSTS7000215) or expired secrets (AADSTS7000222) and then succeeds, or that signs in as three or more\n// service principals, is worth a look.\n\nAADServicePrincipalSignInLogs\n| where TimeGenerated > ago(14d)\n| summarize Failures=countif(ResultType in (\"7000215\", \"7000222\")), Successes=countif(ResultType == \"0\"),\n    ServicePrincipals=dcount(ServicePrincipalId), Apps=make_set(ServicePrincipalName, 20),\n    Resources=make_set(ResourceDisplayName, 20), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated)\n    by IPAddress\n| where (Failures > 0 and Successes > 0) or ServicePrincipals >= 3\n| order by ServicePrincipals desc, Failures desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel. Test and baseline before alerting. Storm-0940's agents signed in as compromised applications. A source that fails with invalid client secrets (AADSTS7000215) or expired secrets (AADSTS7000222) and then succeeds…"
+          },
+          {
+            "name": "tactics",
+            "value": "CredentialAccess,DefenseEvasion,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1110"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/12-service-principal-secret-failures-then-success.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/7427962c-0334-5761-896c-5a79743a992a')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Applications changing their own access (behaviors)",
+        "query": "// Applications changing their own access\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1098.001 (Account Manipulation: Additional Cloud Credentials), T1098.003 (Account Manipulation: Additional Cloud Roles)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Storm-0940's agents added credentials to applications and one application assigned itself Global Administrator.\n// Check every row against a change record. Automation accounts will appear here, so build a list of the ones you expect.\n\n// Example: credential additions and role or permission grants made by an application, not a person\nAuditLogs\n| where TimeGenerated > ago(30d)\n| where OperationName in (\"Add service principal credentials\", \"Add member to role\", \"Add app role assignment to service principal\")\n    or OperationName has \"Certificates and secrets management\"\n| extend ActorApp = tostring(InitiatedBy.app.displayName), ActorSpId = tostring(InitiatedBy.app.servicePrincipalId)\n| where isnotempty(ActorSpId)\n| extend Target = tostring(TargetResources[0].displayName), TargetId = tostring(TargetResources[0].id)\n| extend SelfChange = ActorSpId == TargetId\n| project TimeGenerated, OperationName, ActorApp, ActorSpId, Target, TargetId, SelfChange, Result\n| order by TimeGenerated asc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Storm-0940's agents added credentials to applications and one application assigned itself Global Administrator. Check every row against a…"
+          },
+          {
+            "name": "tactics",
+            "value": "Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1098"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/13-applications-changing-their-own-access.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/a8b40812-8fb7-5bb9-8be5-722b8aad115f')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "One application requesting tokens for many resources in minutes (behaviors)",
+        "query": "// One application requesting tokens for many resources in minutes\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1526 (Cloud Service Discovery), T1078.004 (Valid Accounts: Cloud Accounts)\n// Example hunt for Microsoft Sentinel. Test and baseline before alerting.\n// An agent that has an application's credentials tries every API it can reach: Microsoft Graph, Azure Resource\n// Manager, Key Vault, Storage and more, inside a few minutes. Most applications use one or two resources.\n\nAADServicePrincipalSignInLogs\n| where TimeGenerated > ago(14d)\n| where ResultType == \"0\"\n| summarize Resources=dcount(ResourceDisplayName), ResourceList=make_set(ResourceDisplayName, 20),\n    Sources=make_set(IPAddress, 10) by ServicePrincipalName, ServicePrincipalId, bin(TimeGenerated, 15m)\n| where Resources >= 3\n| join kind=leftanti (\n    AADServicePrincipalSignInLogs\n    | where TimeGenerated between (ago(44d) .. ago(14d)) and ResultType == \"0\"\n    | summarize HistoricResources=dcount(ResourceDisplayName) by ServicePrincipalId, bin(TimeGenerated, 15m)\n    | where HistoricResources >= 3\n    | distinct ServicePrincipalId\n) on ServicePrincipalId\n| order by Resources desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel. Test and baseline before alerting. An agent that has an application's credentials tries every API it can reach: Microsoft Graph, Azure Resource Manager, Key Vault, Storage and more, inside a few minutes. Most…"
+          },
+          {
+            "name": "tactics",
+            "value": "DefenseEvasion,Discovery,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1526"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/14-one-application-hitting-many-resources.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/dd65f873-2bc9-5642-aa25-a90eb477e7b9')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Bulk Key Vault secret reads (behaviors)",
+        "query": "// Bulk Key Vault secret reads\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1555.006 (Credentials from Password Stores: Cloud Secrets Management Stores)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n\n// Example: one identity reading many secrets across several vaults in 15 minutes\nAzureDiagnostics\n| where TimeGenerated > ago(30d)\n| where ResourceProvider == \"MICROSOFT.KEYVAULT\" and OperationName == \"SecretGet\"\n| summarize SecretGets=count(), Vaults=dcount(Resource), IPs=make_set(CallerIPAddress, 10)\n    by identity_claim_appid_g, bin(TimeGenerated, 15m)\n| where SecretGets >= 20 and Vaults >= 3\n| order by SecretGets desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting."
+          },
+          {
+            "name": "tactics",
+            "value": "CredentialAccess"
+          },
+          {
+            "name": "techniques",
+            "value": "T1555"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/15-bulk-key-vault-secret-reads.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/0cc5152c-9351-55b2-9e79-57978b32a5c0')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Azure capability checks, validate sweeps and Kudu sign-ins, part 1: Sentinel StorageBlobLogs, a blob written and deleted by the same caller within two seconds (behaviors)",
+        "query": "// Azure capability checks, validate sweeps and Kudu sign-ins\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1526 (Cloud Service Discovery), T1580 (Cloud Infrastructure Discovery), T1078.004 (Valid Accounts: Cloud Accounts)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Normal backup and deployment tools also write and delete test blobs, so start with callers you cannot name.\n\n// Example: Sentinel StorageBlobLogs, a blob written and deleted by the same caller within two seconds\nlet Writes = StorageBlobLogs\n    | where TimeGenerated > ago(30d)\n    | where OperationName in (\"PutBlob\", \"PutBlockList\") and StatusCode in (200, 201)\n    | project WriteTime=TimeGenerated, AccountName, ObjectKey, CallerIpAddress, WriteAgent=UserAgentHeader;\nStorageBlobLogs\n| where TimeGenerated > ago(30d)\n| where OperationName == \"DeleteBlob\" and StatusCode in (200, 202)\n| project DeleteTime=TimeGenerated, AccountName, ObjectKey, CallerIpAddress\n| join kind=inner Writes on AccountName, ObjectKey, CallerIpAddress\n| where DeleteTime between (WriteTime .. WriteTime + 2s)\n| summarize Tests=count(), Accounts=dcount(AccountName), FirstSeen=min(WriteTime), Agents=make_set(WriteAgent, 5)\n    by CallerIpAddress\n| order by Tests desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Normal backup and deployment tools also write and delete test blobs, so start with callers you cannot name."
+          },
+          {
+            "name": "tactics",
+            "value": "DefenseEvasion,Discovery,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1526,T1580"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/16-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/6f7b4579-1c03-5c2a-b1ac-1211380ce0bf')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Azure capability checks, validate sweeps and Kudu sign-ins, part 2: Sentinel AzureActivity, deployment validation dry runs across several resource types in one minute (behaviors)",
+        "query": "// Azure capability checks, validate sweeps and Kudu sign-ins\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1526 (Cloud Service Discovery), T1580 (Cloud Infrastructure Discovery), T1078.004 (Valid Accounts: Cloud Accounts)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Normal backup and deployment tools also write and delete test blobs, so start with callers you cannot name.\n\n// Example: Sentinel AzureActivity, deployment validation dry runs across several resource types in one minute\nAzureActivity\n| where TimeGenerated > ago(30d)\n| where OperationNameValue =~ \"Microsoft.Resources/deployments/validate/action\"\n| summarize Validations=count(), ResourceGroups=dcount(ResourceGroup), FirstSeen=min(TimeGenerated)\n    by Caller, CallerIpAddress, bin(TimeGenerated, 1m)\n| where Validations >= 5\n| order by Validations desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Normal backup and deployment tools also write and delete test blobs, so start with callers you cannot name."
+          },
+          {
+            "name": "tactics",
+            "value": "DefenseEvasion,Discovery,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1526,T1580"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/16-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/5a58e9ca-2bc1-5e10-8836-79449f035ba5')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Azure capability checks, validate sweeps and Kudu sign-ins, part 3: Sentinel AppServiceAuditLogs, publishing sign-ins through Kudu or FTP from addresses not used before (behaviors)",
+        "query": "// Azure capability checks, validate sweeps and Kudu sign-ins\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1526 (Cloud Service Discovery), T1580 (Cloud Infrastructure Discovery), T1078.004 (Valid Accounts: Cloud Accounts)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Normal backup and deployment tools also write and delete test blobs, so start with callers you cannot name.\n\n// Example: Sentinel AppServiceAuditLogs, publishing sign-ins through Kudu or FTP from addresses not used before\nlet Known = AppServiceAuditLogs\n    | where TimeGenerated between (ago(90d) .. ago(7d))\n    | distinct _ResourceId, UserAddress;\nAppServiceAuditLogs\n| where TimeGenerated > ago(7d)\n| join kind=leftanti Known on _ResourceId, UserAddress\n| project TimeGenerated, _ResourceId, User, UserDisplayName, UserAddress, Protocol\n| order by TimeGenerated asc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Normal backup and deployment tools also write and delete test blobs, so start with callers you cannot name."
+          },
+          {
+            "name": "tactics",
+            "value": "DefenseEvasion,Discovery,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1526,T1580"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/16-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/8edce73d-6113-5daa-8be0-55cde159d4bc')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "AWS permission testing and the foothold that follows, part 1: Sentinel AWSCloudTrail, bursts of DryRun calls from one identity (behaviors)",
+        "query": "// AWS permission testing and the foothold that follows\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1078.004 (Valid Accounts: Cloud Accounts), T1580 (Cloud Infrastructure Discovery), T1098.001 (Account Manipulation: Additional Cloud Credentials)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Check `GetCallerIdentity` from the same identity just before either result. It is the first call most stolen keys make.\n\n// Example: Sentinel AWSCloudTrail, bursts of DryRun calls from one identity\nAWSCloudTrail\n| where TimeGenerated > ago(30d)\n| where ErrorCode in (\"Client.DryRunOperation\", \"Client.UnauthorizedOperation\")\n| summarize Calls=count(), Actions=dcount(EventName), Allowed=countif(ErrorCode == \"Client.DryRunOperation\"),\n            Sample=make_set(EventName, 25), Agents=make_set(UserAgent, 5)\n    by UserIdentityArn, SourceIpAddress, bin(TimeGenerated, 5m)\n| where Calls >= 10 and Actions >= 5\n| order by Calls desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Check `GetCallerIdentity` from the same identity just before either result. It is the first call most stolen keys make."
+          },
+          {
+            "name": "tactics",
+            "value": "DefenseEvasion,Discovery,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1098,T1580"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/17-aws-permission-testing-and-the-foothold-that-follows.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/1c2c1602-d2df-5b7b-81bf-9510ee1f4772')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "AWS permission testing and the foothold that follows, part 2: Sentinel AWSCloudTrail, one identity creating a key pair, an Elastic IP, instances or large volumes in an hour (behaviors)",
+        "query": "// AWS permission testing and the foothold that follows\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1078.004 (Valid Accounts: Cloud Accounts), T1580 (Cloud Infrastructure Discovery), T1098.001 (Account Manipulation: Additional Cloud Credentials)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Check `GetCallerIdentity` from the same identity just before either result. It is the first call most stolen keys make.\n\n// Example: Sentinel AWSCloudTrail, one identity creating a key pair, an Elastic IP, instances or large volumes in an hour\nAWSCloudTrail\n| where TimeGenerated > ago(30d)\n| where isempty(ErrorCode)\n| where EventName in (\"CreateKeyPair\", \"ImportKeyPair\", \"AllocateAddress\", \"AssociateAddress\", \"RunInstances\",\n                      \"CreateVolume\", \"ModifyVolume\", \"CreateSecurityGroup\", \"ModifyInstanceAttribute\")\n| extend Params = parse_json(RequestParameters)\n| extend InstanceType = tostring(Params.instanceType), VolumeSize = toint(Params.size)\n| summarize Events=make_set(EventName), Kinds=dcount(EventName), Types=make_set(InstanceType, 5),\n            LargestVolumeGB=max(VolumeSize), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated)\n    by UserIdentityArn, SourceIpAddress, bin(TimeGenerated, 1h)\n| where Kinds >= 3\n| order by FirstSeen asc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Check `GetCallerIdentity` from the same identity just before either result. It is the first call most stolen keys make."
+          },
+          {
+            "name": "tactics",
+            "value": "DefenseEvasion,Discovery,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1098,T1580"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/17-aws-permission-testing-and-the-foothold-that-follows.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/b4407608-26a5-5d04-9d27-889fdf220cce')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "CloudWatch log searches with a stolen AWS key (behaviors)",
+        "query": "// CloudWatch log searches with a stolen AWS key\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1078.004 (Valid Accounts: Cloud Accounts), T1213 (Data from Information Repositories)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Read the search patterns in the result. Company names combined with words like Fund, Invoice, Billing and LLC match what Datadog saw.\n\n// Example: FilterLogEvents with the fixed limit of 1000 or secret-hunting search terms\nAWSCloudTrail\n| where TimeGenerated > ago(30d)\n| where EventName == \"FilterLogEvents\"\n| extend Params = parse_json(RequestParameters)\n| extend Limit = toint(Params.limit), Pattern = tostring(Params.filterPattern), LogGroup = tostring(Params.logGroupName)\n| where Limit == 1000 or Pattern has_any (\"AKIA\", \"password\", \"presigned\", \"mongo\") or Pattern has \"s3://\"\n| summarize Calls=count(), LogGroups=dcount(LogGroup), Patterns=make_set(Pattern, 50)\n    by UserIdentityArn, UserIdentityAccessKeyId, SourceIpAddress, bin(TimeGenerated, 1h)\n| where Calls >= 20\n| order by Calls desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Read the search patterns in the result. Company names combined with words like Fund, Invoice, Billing and LLC match what Datadog saw."
+          },
+          {
+            "name": "tactics",
+            "value": "Collection,DefenseEvasion,InitialAccess,Persistence,PrivilegeEscalation"
+          },
+          {
+            "name": "techniques",
+            "value": "T1078,T1213"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/18-cloudwatch-log-searches-with-a-stolen-aws-key.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/27019ebf-ae62-5205-9da4-0733d439617f')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Cognito sign-up abuse and the discovery sweep after it, part 1: bursts of Cognito sign-up and recovery calls from one source (behaviors)",
+        "query": "// Cognito sign-up abuse and the discovery sweep after it\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1136.003 (Create Account: Cloud Account), T1530 (Data from Cloud Storage), T1580 (Cloud Infrastructure Discovery)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Every ARTEX session Datadog reviewed opened with unauthenticated S3 reads. In CloudTrail data events these have a `userIdentity.type` of `AWSAccount` and an `accountId` of `anonymous`. Check S3 data events or server access logs for anonymous `GetObject` and `ListObjects` calls.\n\n// Example: bursts of Cognito sign-up and recovery calls from one source\nAWSCloudTrail\n| where TimeGenerated > ago(30d)\n| where EventSource == \"cognito-idp.amazonaws.com\"\n| where EventName in (\"SignUp\", \"InitiateAuth\", \"ForgotPassword\", \"ResendConfirmationCode\", \"RespondToAuthChallenge\")\n| summarize Calls=count(), Errors=countif(isnotempty(ErrorCode)), Events=make_set(EventName),\n    Agents=make_set(UserAgent, 10)\n    by SourceIpAddress, bin(TimeGenerated, 1h)\n| where Calls >= 30\n| order by Calls desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Every ARTEX session Datadog reviewed opened with unauthenticated S3 reads. In CloudTrail data events these have a `userIdentity.type` of…"
+          },
+          {
+            "name": "tactics",
+            "value": "Collection,Discovery,Persistence"
+          },
+          {
+            "name": "techniques",
+            "value": "T1136,T1530,T1580"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/19-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/160b286e-6b1e-5b79-afa7-13c4c9a5572e')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Cognito sign-up abuse and the discovery sweep after it, part 2: a Cognito-issued identity trying many discovery calls that are denied (behaviors)",
+        "query": "// Cognito sign-up abuse and the discovery sweep after it\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1136.003 (Create Account: Cloud Account), T1530 (Data from Cloud Storage), T1580 (Cloud Infrastructure Discovery)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Every ARTEX session Datadog reviewed opened with unauthenticated S3 reads. In CloudTrail data events these have a `userIdentity.type` of `AWSAccount` and an `accountId` of `anonymous`. Check S3 data events or server access logs for anonymous `GetObject` and `ListObjects` calls.\n\n// Example: a Cognito-issued identity trying many discovery calls that are denied\nAWSCloudTrail\n| where TimeGenerated > ago(30d)\n| where UserIdentityArn has \"CognitoIdentityCredentials\"\n| where ErrorCode has \"AccessDenied\" or ErrorCode has \"Unauthorized\"\n| summarize Denied=count(), Actions=dcount(EventName), Sample=make_set(EventName, 25)\n    by UserIdentityArn, SourceIpAddress, bin(TimeGenerated, 1h)\n| where Actions >= 8\n| order by Denied desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Every ARTEX session Datadog reviewed opened with unauthenticated S3 reads. In CloudTrail data events these have a `userIdentity.type` of…"
+          },
+          {
+            "name": "tactics",
+            "value": "Collection,Discovery,Persistence"
+          },
+          {
+            "name": "techniques",
+            "value": "T1136,T1530,T1580"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/19-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/97b23bf9-b493-5f80-9e14-9216cb95847d')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "User agent family burst from one source (behaviors)",
+        "query": "// User agent family burst from one source\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning)\n// Example hunt for Microsoft Sentinel. Test and baseline before alerting.\n// ARTEX runs several workers per task (scanners such as nuclei, httpx, katana, ffuf and sqlmap, plus Python, curl and\n// AWS SDK clients) from the same host, so one source address shows several unrelated user agent families inside a minute.\n// Logic after Elastic Security Labs (November 13, 2026): three or more families and twenty or more requests per minute.\n// Point it at the web, WAF or proxy table you collect. CommonSecurityLog and W3CIISLog are shown.\n\nlet Families = (ua:string) { case(\n    ua startswith \"Boto3\" or ua startswith \"aws-cli\" or ua startswith \"aws-sdk\", \"aws\",\n    ua has \"python-requests\" or ua has \"Python-urllib\" or ua has \"aiohttp\" or ua has \"httpx\", \"python\",\n    ua startswith \"curl/\", \"curl\",\n    ua startswith \"norma\", \"norma\",\n    ua startswith \"Go-http-client\", \"go\",\n    ua has_any (\"nuclei\", \"sqlmap\", \"ffuf\", \"katana\", \"gobuster\", \"nikto\"), \"scanner\",\n    ua startswith \"Mozilla/5.0\", \"browser\",\n    \"other\") };\nunion isfuzzy=true\n    (CommonSecurityLog | where isnotempty(RequestClientApplication)\n        | project TimeGenerated, Src=SourceIP, UA=RequestClientApplication),\n    (W3CIISLog | project TimeGenerated, Src=cIP, UA=csUserAgent)\n| where TimeGenerated > ago(14d)\n| where not(ipv4_is_private(Src)) and not(ipv4_is_in_range(Src, \"100.64.0.0/10\")) and Src != \"127.0.0.1\"\n| extend Family = Families(UA)\n| summarize Requests=count(), Families=dcount(Family), FamilyList=make_set(Family), SampleUAs=make_set(UA, 10)\n    by Src, bin(TimeGenerated, 1m)\n| where Families >= 3 and Requests >= 20\n| summarize Minutes=count(), TotalRequests=sum(Requests), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated),\n    FamilyList=make_set(FamilyList), SampleUAs=make_set(SampleUAs, 20) by Src\n| order by Minutes desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel. Test and baseline before alerting. ARTEX runs several workers per task (scanners such as nuclei, httpx, katana, ffuf and sqlmap, plus Python, curl and AWS SDK clients) from the same host, so one source address…"
+          },
+          {
+            "name": "tactics",
+            "value": "Reconnaissance"
+          },
+          {
+            "name": "techniques",
+            "value": "T1595"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/20-user-agent-family-burst-from-one-source.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/e090eb27-63bc-5573-b230-0f627e222882')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Web and database services starting shells and download tools (behaviors)",
+        "query": "// Web and database services starting shells and download tools\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1505.003 (Server Software Component: Web Shell), T1190 (Exploit Public-Facing Application), T1059 (Command and Scripting Interpreter)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// A web shell, a command injection flaw and a database that can run operating system commands all look the same in process data: the service starts a shell.\n// The threshold of five different commands in ten minutes picks out the agent's trial and error. Lower it to find a single careful command.\n\n// Example: Defender for Endpoint, shells, discovery commands and download tools started by web or database services\nlet ServiceProcesses = dynamic([\"w3wp.exe\", \"httpd.exe\", \"httpd\", \"nginx.exe\", \"nginx\", \"php-cgi.exe\", \"php-fpm\",\n    \"php\", \"tomcat.exe\", \"tomcat9.exe\", \"java.exe\", \"java\", \"node.exe\", \"node\", \"sqlservr.exe\", \"mysqld.exe\", \"mysqld\"]);\nlet Tools = dynamic([\"cmd.exe\", \"powershell.exe\", \"pwsh.exe\", \"sh\", \"bash\", \"dash\", \"curl.exe\", \"curl\", \"wget\",\n    \"nc\", \"ncat\", \"nc.exe\", \"whoami.exe\", \"whoami\", \"tasklist.exe\", \"net.exe\", \"nltest.exe\", \"certutil.exe\", \"python3\"]);\nDeviceProcessEvents\n| where Timestamp > ago(30d)\n| where InitiatingProcessFileName in~ (ServiceProcesses) and FileName in~ (Tools)\n// java and node also run Jenkins, npm and AI agent CLIs: count them only under a service account\n| where InitiatingProcessFileName !in~ (\"java\", \"java.exe\", \"node\", \"node.exe\")\n    or AccountName in~ (\"www-data\", \"apache\", \"nginx\", \"http\", \"tomcat\", \"tomcat9\", \"jetty\", \"jboss\", \"wildfly\", \"node\", \"nodejs\", \"nobody\", \"daemon\",\n        \"network service\", \"local service\", \"iusr\")\n    or AccountDomain =~ \"iis apppool\"\n| summarize Commands=count(), Distinct=dcount(ProcessCommandLine), Sample=make_set(ProcessCommandLine, 15),\n            FirstSeen=min(Timestamp), LastSeen=max(Timestamp)\n    by DeviceName, InitiatingProcessFileName, AccountName, bin(Timestamp, 10m)\n| where Distinct >= 5\n| order by Distinct desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. A web shell, a command injection flaw and a database that can run operating system commands all look the same in process data: the service…"
+          },
+          {
+            "name": "tactics",
+            "value": "Execution,InitialAccess,Persistence"
+          },
+          {
+            "name": "techniques",
+            "value": "T1059,T1190,T1505"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/21-web-and-database-services-starting-shells-and-download-tools.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/277ca953-f27f-5e27-91ff-7ebaac78c775')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Scripts written into web directories (behaviors)",
+        "query": "// Scripts written into web directories\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1505.003 (Server Software Component: Web Shell)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// A script file created by `mysqld`, `sqlservr.exe`, `java` or `w3wp.exe` itself deserves attention first. In MySQL, also check whether `general_log_file` or `slow_query_log_file` points into a web directory.\n\n// Example: Defender for Endpoint, server-side script files created in web roots by something other than a deployment tool\nlet Deployers = dynamic([\"msdeploy.exe\", \"git.exe\", \"git\", \"rsync\", \"dpkg\", \"rpm\", \"apt\", \"yum\", \"dotnet.exe\", \"octopus.tentacle.exe\"]);\nDeviceFileEvents\n| where Timestamp > ago(30d)\n| where ActionType in (\"FileCreated\", \"FileModified\")\n| where FileName endswith \".jsp\" or FileName endswith \".jspx\" or FileName endswith \".php\" or FileName endswith \".aspx\" or FileName endswith \".ashx\"\n| where FolderPath has_any (@\"\\inetpub\\\", @\"\\webapps\\\", @\"\\htdocs\\\", \"/var/www/\", \"/webapps/\", \"/usr/share/nginx/\")\n| where InitiatingProcessFileName !in~ (Deployers)\n| project Timestamp, DeviceName, FolderPath, InitiatingProcessFileName, InitiatingProcessAccountName,\n          InitiatingProcessCommandLine, SHA256\n| order by Timestamp asc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. A script file created by `mysqld`, `sqlservr.exe`, `java` or `w3wp.exe` itself deserves attention first. In MySQL, also check whether…"
+          },
+          {
+            "name": "tactics",
+            "value": "Persistence"
+          },
+          {
+            "name": "techniques",
+            "value": "T1505"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/22-scripts-written-into-web-directories.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/45828506-ca58-5a46-823c-3715644fc5dc')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Servers calling webhook and tunnel services, or downloading from a bare address (behaviors)",
+        "query": "// Servers calling webhook and tunnel services, or downloading from a bare address\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1105 (Ingress Tool Transfer), T1567.004 (Exfiltration Over Web Service: Exfiltration Over Webhook), T1572 (Protocol Tunneling)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Microsoft's own hunt for Storm-3358 follows the same idea: list the addresses curl downloaded from in the last day that it did not use in the week before.\n\n// Example: Defender for Endpoint, curl, wget and netcat talking to collection services or raw IP addresses\nDeviceProcessEvents\n| where Timestamp > ago(30d)\n| where FileName in~ (\"curl.exe\", \"curl\", \"wget\", \"nc\", \"ncat\", \"nc.exe\")\n| extend Target = extract(@\"(https?://[^\\s\"\"']+)\", 1, ProcessCommandLine)\n| extend RawIP = extract(@\"https?://(\\d{1,3}(?:\\.\\d{1,3}){3})\", 1, ProcessCommandLine)\n| where ProcessCommandLine has_any (\"webhook.site\", \"oast.\", \"interact.sh\", \"ngrok\", \"trycloudflare.com\")\n    or (isnotempty(RawIP) and not(ipv4_is_private(RawIP)))\n    or (FileName in~ (\"nc\", \"ncat\", \"nc.exe\") and ProcessCommandLine has_any (\" -e \", \" -c \"))\n| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName, FileName, Target, ProcessCommandLine\n| order by Timestamp asc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Microsoft's own hunt for Storm-3358 follows the same idea: list the addresses curl downloaded from in the last day that it did not use in the…"
+          },
+          {
+            "name": "tactics",
+            "value": "CommandAndControl,Exfiltration"
+          },
+          {
+            "name": "techniques",
+            "value": "T1105,T1567,T1572"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/23-servers-calling-webhook-and-tunnel-services.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/64358ed0-b6ea-5ef9-8e9b-777b1b41f784')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Kerberoasting, DCSync and WinRM fan-out, part 1: Sentinel SecurityEvent, one account requesting RC4 service tickets for many services (behaviors)",
+        "query": "// Kerberoasting, DCSync and WinRM fan-out\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1558.003 (Steal or Forge Kerberos Tickets: Kerberoasting), T1003.006 (OS Credential Dumping: DCSync), T1021.006 (Remote Services: Windows Remote Management)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Event 4662 is only written where directory service access auditing is turned on. Add your directory synchronization accounts to the exclusion in the second query.\n\n// Example: Sentinel SecurityEvent, one account requesting RC4 service tickets for many services\nSecurityEvent\n| where TimeGenerated > ago(30d)\n| where EventID == 4769\n// TicketEncryptionType is not a SecurityEvent column: read it from the event XML\n| extend TicketEncryptionType = extract(@'TicketEncryptionType\">([^<]+)<', 1, EventData)\n| where TicketEncryptionType =~ \"0x17\" and ServiceName !endswith \"$\" and TargetUserName !has \"$@\"\n| summarize Tickets=count(), Services=dcount(ServiceName), Sample=make_set(ServiceName, 15)\n    by TargetUserName, IpAddress, bin(TimeGenerated, 10m)\n| where Services >= 10\n| order by Services desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Event 4662 is only written where directory service access auditing is turned on. Add your directory synchronization accounts to the exclusion…"
+          },
+          {
+            "name": "tactics",
+            "value": "CredentialAccess,LateralMovement"
+          },
+          {
+            "name": "techniques",
+            "value": "T1003,T1021,T1558"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/24-kerberoasting-dcsync-and-winrm-fan-out.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/94c61578-71ef-5227-84d2-239f4dbb66c9')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Kerberoasting, DCSync and WinRM fan-out, part 2: Sentinel SecurityEvent, directory replication rights used by an account that is not a domain controller (behaviors)",
+        "query": "// Kerberoasting, DCSync and WinRM fan-out\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1558.003 (Steal or Forge Kerberos Tickets: Kerberoasting), T1003.006 (OS Credential Dumping: DCSync), T1021.006 (Remote Services: Windows Remote Management)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Event 4662 is only written where directory service access auditing is turned on. Add your directory synchronization accounts to the exclusion in the second query.\n\n// Example: Sentinel SecurityEvent, directory replication rights used by an account that is not a domain controller\nSecurityEvent\n| where TimeGenerated > ago(30d)\n| where EventID == 4662\n| where Properties has_any (\"1131f6aa-9c07-11d1-f79f-00c04fc2dcd2\", \"1131f6ad-9c07-11d1-f79f-00c04fc2dcd2\",\n                            \"89e95b76-444d-4c62-991a-0facbeda640c\")\n| where SubjectUserName !endswith \"$\" and SubjectUserName !startswith \"MSOL_\"\n| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by SubjectUserName, Computer\n| order by FirstSeen asc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Event 4662 is only written where directory service access auditing is turned on. Add your directory synchronization accounts to the exclusion…"
+          },
+          {
+            "name": "tactics",
+            "value": "CredentialAccess,LateralMovement"
+          },
+          {
+            "name": "techniques",
+            "value": "T1003,T1021,T1558"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/24-kerberoasting-dcsync-and-winrm-fan-out.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/8e1c3211-7c3a-598f-ac0c-0256aca4fb3b')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Kerberoasting, DCSync and WinRM fan-out, part 3: Defender for Endpoint, one host opening WinRM to many machines in ten minutes (behaviors)",
+        "query": "// Kerberoasting, DCSync and WinRM fan-out\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1558.003 (Steal or Forge Kerberos Tickets: Kerberoasting), T1003.006 (OS Credential Dumping: DCSync), T1021.006 (Remote Services: Windows Remote Management)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// Event 4662 is only written where directory service access auditing is turned on. Add your directory synchronization accounts to the exclusion in the second query.\n\n// Example: Defender for Endpoint, one host opening WinRM to many machines in ten minutes\nDeviceNetworkEvents\n| where Timestamp > ago(30d)\n| where RemotePort in (5985, 5986) and ActionType == \"ConnectionSuccess\"\n| summarize Targets=dcount(RemoteIP), Sample=make_set(RemoteIP, 20), Processes=make_set(InitiatingProcessFileName, 5)\n    by DeviceName, bin(Timestamp, 10m)\n| where Targets >= 10\n| order by Targets desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. Event 4662 is only written where directory service access auditing is turned on. Add your directory synchronization accounts to the exclusion…"
+          },
+          {
+            "name": "tactics",
+            "value": "CredentialAccess,LateralMovement"
+          },
+          {
+            "name": "techniques",
+            "value": "T1003,T1021,T1558"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/24-kerberoasting-dcsync-and-winrm-fan-out.kql"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "[concat(parameters('workspace'), '/baeefcb4-b854-56d7-87f7-8225be4636bb')]",
+      "properties": {
+        "category": "Hunting Queries",
+        "displayName": "Scripted Microsoft Graph bursts by an application (behaviors)",
+        "query": "// Scripted Microsoft Graph bursts by an application\n// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting\n// ATT&CK: T1087.004 (Account Discovery: Cloud Account), T1069.003 (Permission Groups Discovery: Cloud Groups)\n// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.\n// This needs Microsoft Graph activity logs sent to your workspace. Graph reads are not in the Entra audit log.\n\n// Example: service principals calling Graph with scripted clients, at volume or with many denials\nMicrosoftGraphActivityLogs\n| where TimeGenerated > ago(30d)\n| where isnotempty(ServicePrincipalId)\n| where UserAgent has \"urllib\" or UserAgent has \"python-requests\" or UserAgent startswith \"curl/\"\n    or UserAgent startswith \"azure-toolkit/\" or UserAgent has \"artex\"\n| summarize Requests=count(), Denied=countif(ResponseStatusCode in (401, 403)),\n    Endpoints=dcount(tostring(split(RequestUri, \"?\")[0])), IPs=make_set(IPAddress, 10)\n    by AppId, ServicePrincipalId, UserAgent, bin(TimeGenerated, 1h)\n| where Requests >= 100 or Denied >= 20\n| order by Requests desc",
+        "version": 2,
+        "tags": [
+          {
+            "name": "description",
+            "value": "Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting. This needs Microsoft Graph activity logs sent to your workspace. Graph reads are not in the Entra audit log."
+          },
+          {
+            "name": "tactics",
+            "value": "Discovery"
+          },
+          {
+            "name": "techniques",
+            "value": "T1069,T1087"
+          },
+          {
+            "name": "source",
+            "value": "https://github.com/ThreatDefence/agentic-attack-detections/blob/main/behaviors/sentinel/hunting/25-scripted-microsoft-graph-bursts-by-an-application.kql"
+          }
+        ]
+      }
+    },
+    {
       "type": "Microsoft.SecurityInsights/watchlists",
       "apiVersion": "2024-03-01",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', parameters('workspace'))]",
@@ -390,11 +1193,11 @@
   "outputs": {
     "analyticsRules": {
       "type": "int",
-      "value": 2
+      "value": 6
     },
     "huntingQueries": {
       "type": "int",
-      "value": 9
+      "value": 31
     },
     "watchlistAlias": {
       "type": "string",

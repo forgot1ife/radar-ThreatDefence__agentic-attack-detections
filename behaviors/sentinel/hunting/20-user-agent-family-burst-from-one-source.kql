@@ -1,5 +1,5 @@
 // User agent family burst from one source
-// Agentic attack detections by ThreatDefence (ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 // ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning)
 // Example hunt for Microsoft Sentinel. Test and baseline before alerting.
 // ARTEX runs several workers per task (scanners such as nuclei, httpx, katana, ffuf and sqlmap, plus Python, curl and

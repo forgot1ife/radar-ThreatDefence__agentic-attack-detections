@@ -1,12 +1,12 @@
 // Scripted Microsoft Graph bursts by an application
-// Agentic attack detections by ThreatDefence (ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 // ATT&CK: T1087.004 (Account Discovery: Cloud Account), T1069.003 (Permission Groups Discovery: Cloud Groups)
 // Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.
 // This needs Microsoft Graph activity logs sent to your workspace. Graph reads are not in the Entra audit log.
 
 // Example: service principals calling Graph with scripted clients, at volume or with many denials
 MicrosoftGraphActivityLogs
-| where TimeGenerated >= datetime(2026-08-01)
+| where TimeGenerated > ago(30d)
 | where isnotempty(ServicePrincipalId)
 | where UserAgent has "urllib" or UserAgent has "python-requests" or UserAgent startswith "curl/"
     or UserAgent startswith "azure-toolkit/" or UserAgent has "artex"

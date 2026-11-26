@@ -1,12 +1,12 @@
 // AWS permission testing and the foothold that follows
-// Agentic attack detections by ThreatDefence (ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 // ATT&CK: T1078.004 (Valid Accounts: Cloud Accounts), T1580 (Cloud Infrastructure Discovery), T1098.001 (Account Manipulation: Additional Cloud Credentials)
 // Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.
 // Check `GetCallerIdentity` from the same identity just before either result. It is the first call most stolen keys make.
 
 // Example: Sentinel AWSCloudTrail, bursts of DryRun calls from one identity
 AWSCloudTrail
-| where TimeGenerated >= datetime(2026-08-01)
+| where TimeGenerated > ago(30d)
 | where ErrorCode in ("Client.DryRunOperation", "Client.UnauthorizedOperation")
 | summarize Calls=count(), Actions=dcount(EventName), Allowed=countif(ErrorCode == "Client.DryRunOperation"),
             Sample=make_set(EventName, 25), Agents=make_set(UserAgent, 5)
@@ -16,7 +16,7 @@ AWSCloudTrail
 
 // Example: Sentinel AWSCloudTrail, one identity creating a key pair, an Elastic IP, instances or large volumes in an hour
 AWSCloudTrail
-| where TimeGenerated >= datetime(2026-08-01)
+| where TimeGenerated > ago(30d)
 | where isempty(ErrorCode)
 | where EventName in ("CreateKeyPair", "ImportKeyPair", "AllocateAddress", "AssociateAddress", "RunInstances",
                       "CreateVolume", "ModifyVolume", "CreateSecurityGroup", "ModifyInstanceAttribute")

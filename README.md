@@ -66,7 +66,7 @@ The capture is test traffic written from the framework source code and published
 
 | | KQL hunts | Sentinel analytics | Sigma | Suricata | YARA | Zeek | Indicators |
 |---|---|---|---|---|---|---|---|
-| [ARTEX](frameworks/artex) | 31 | 7 | 36 | 46 | 4 | script, intel | 247 |
+| [ARTEX](frameworks/artex) | 15 | 3 | 16 | 46 | 4 | script, intel | 247 |
 | [Cairn](frameworks/cairn) | 6 | 2 | 3 | 26 | 6 | intel | 73 |
 | [PentAGI](frameworks/pentagi) | 5 | 2 | 3 | 10 | 3 | intel | 39 |
 | [HexStrike](frameworks/hexstrike) | 4 | 2 | 3 | 7 | 3 | script, intel | 22 |
@@ -137,7 +137,7 @@ The capture is test traffic written from the framework source code and published
 | [Offensive prompt packs](frameworks/prompt-packs) |  |  | 4 |  | 8 | intel | 25 |
 | [AutoCVE](frameworks/autocve) | | | | 2 | | script | |
 | [LuaN1aoAgent](frameworks/luan1aoagent) | | | | 4 | | script | |
-| [Shared behaviors](behaviors) | 9 | 2 | 6 | 18 | | package | |
+| [Shared behaviors](behaviors) | 25 | 6 | 26 | 18 | | package | |
 
 Every rule names its MITRE ATT&CK techniques. [docs/attack-coverage.md](docs/attack-coverage.md) lists them per framework with links to the rules, and [`generated/attack/`](generated/attack) has an ATT&CK Navigator layer per framework and one for everything.
 
@@ -302,8 +302,18 @@ The addresses, with the port and the fingerprint that found each one, are in [`e
 | A server calling back to the address that was probing it | KQL hunt, Suricata (PentAGI worker ports), Zeek |
 | AWS credentials used at machine speed from one outside address | KQL hunt |
 | Servers looking up out-of-band testing domains (interactsh, Burp Collaborator, dnslog.cn), which means a blind payload ran on them | KQL hunt, Sigma, Suricata, Zeek |
+| Password spray at a fixed rhythm, and a spray that ends in a successful sign-in | KQL hunt, Sentinel analytics rule, Sigma |
+| Applications that guess secrets, change their own access, ask for tokens to many resources in minutes or call Microsoft Graph in scripted bursts | KQL hunt, Sentinel analytics rule, Sigma |
+| Bulk Key Vault secret reads, Azure validate sweeps and Kudu sign-ins | KQL hunt, Sigma |
+| AWS permission testing: DryRun bursts, denied sweeps, CloudWatch searches for secrets and Cognito sign-up abuse | KQL hunt, Sentinel analytics rule, Sigma |
+| Several unrelated user agent families from one address inside a minute | KQL hunt |
+| Web or database services starting shells or download tools, and scripts written into web folders | KQL hunt, Sigma |
+| Servers calling webhook, callback and tunnel services, or downloading from a bare address | KQL hunt, Sigma |
+| Kerberoasting, DCSync, WinRM fan-out and remote tasklist fan-out | KQL hunt, Sigma |
+| Windows system binary names such as svchost.exe running from the wrong folder | Sigma |
+| Unsigned (alg none) tokens sent to a web application | Sigma |
 
-The ARTEX folder also carries behavior hunts that apply to every framework: user agent family bursts (hunt 17), web and database services starting shells (hunt 11), servers calling webhook and tunnel services (hunt 12), scripts written into web folders (hunt 13), and Kerberoasting, DCSync and WinRM fan-out (hunt 16).
+The rows from the password spray down were first written for ARTEX. Nothing in them depends on ARTEX, so they now sit here and run for every framework. [`frameworks/artex/README.md`](frameworks/artex/README.md#moved-to-shared-behaviors) lists where each one went.
 
 ## Indicators and feeds
 
