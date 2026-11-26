@@ -1,0 +1,32 @@
+title: Claude Code Keychain Credential Read by a Python Process
+id: f828b29f-c6c1-5953-8937-0f86e7af9512
+status: experimental
+description: |
+    Detects a Python process running "security find-generic-password -s Claude Code-credentials -w" on macOS, which
+    prints the Claude Code subscription OAuth token from the login keychain. Clearwing (Lazarus-AI-OSS/clearwing) does
+    this to reuse a Claude subscription for its pentest agent when its provider is anthropic_oauth, and then sends model
+    requests with a Claude Code user agent. Claude Code itself reads the same item from its own Node process, not from
+    Python.
+references:
+    - https://github.com/Lazarus-AI-OSS/clearwing
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.credential-access
+    - attack.t1555.001
+logsource:
+    category: process_creation
+    product: macos
+detection:
+    selection_security:
+        Image|endswith: '/security'
+        CommandLine|contains|all:
+            - 'find-generic-password'
+            - 'Claude Code-credentials'
+    selection_parent:
+        ParentImage|contains: 'python'
+    condition: all of selection_*
+falsepositives:
+    - Other Python tools that reuse a Claude Code login on purpose
+level: medium

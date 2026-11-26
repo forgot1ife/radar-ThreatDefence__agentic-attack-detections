@@ -1,0 +1,27 @@
+title: Clearwing Probe User Agents in Web Server Logs
+id: 8a3cdc8d-b2f4-5906-a2e7-c72f2295ffd6
+status: experimental
+description: |
+    Detects requests from Clearwing (Lazarus-AI-OSS/clearwing) reaching a web server: its Playwright browser
+    ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Clearwing/1.0"), its JavaScript bundle analyzer
+    ("Mozilla/5.0 Clearwing/1.0") and its attack-surface liveness probe ("clearwing-asm/0.5
+    (+https://github.com/Lazarus-AI/clearwing)"). All three are hard-coded.
+references:
+    - https://github.com/Lazarus-AI-OSS/clearwing
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection_browser:
+        cs-user-agent|contains: 'Clearwing/1.0'
+    selection_asm:
+        cs-user-agent|startswith: 'clearwing-asm/'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Clearwing
+level: high

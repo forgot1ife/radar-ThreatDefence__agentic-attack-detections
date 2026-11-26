@@ -1,0 +1,79 @@
+{
+ "description": "27 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 13,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "nebula",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Suricata: 3818502 TD Nebula Kali container public address check",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1016"
+  },
+  {
+   "comment": "KQL hunt: Nebula running on a host you monitor; Sentinel analytics: Nebula agent commands or core on a host; Sigma: Nebula Agent Command in Its Kali Container",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: Nebula in web and proxy logs: its user agents, paired clients, tool callbacks and an exposed core; Sigma: Nebula User Agents or Core API in Proxy Logs; Suricata: 3818501 TD Nebula terminal client user agent (nebula-chat to a remote core); Suricata: 3818503 TD Nebula knowledge source fetcher or renderer user agent; Suricata: 3818504 TD Nebula paired-device CSRF header in a request; Suricata: 3818505 TD Nebula paired-device cookie in a request; Suricata: 3818507 TD Nebula background tool result posted to its core; Suricata: 3818510 TD Nebula browser workspace page; Suricata: 3818511 TD Nebula core placeholder page (container, headless or no workspace build); Suricata: 3818512 TD Nebula workspace web manifest; Suricata: 3818513 TD Nebula core API refusing a request without a token; Suricata: 3818514 TD Nebula core operator-only API refusal; Suricata: 3818516 TD Nebula core paired-device origin or CSRF refusal",
+   "enabled": true,
+   "score": 13,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Nebula in web and proxy logs: its user agents, paired clients, tool callbacks and an exposed core; Sigma: Nebula Core Pairing, Tool Results or Terminal Client in Web Logs; Suricata: 3818506 TD Nebula device pairing redeemed on a core; Suricata: 3818515 TD Nebula core refusing a remote device pairing; Suricata: 3818517 TD Nebula core refusing device pairing over plain HTTP",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1133"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Nebula running on a host you monitor; Sigma: Nebula Core, Desktop Sidecar or Browser Sidecar Process; Sigma: Nebula Data Folder, Runtime or Container Files Written; YARA: Nebula_Browser_Workspace; YARA: Nebula_Core_Source; YARA: Nebula_Runtime_And_Container_Files",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Nebula running on a host you monitor; Sigma: Nebula Agent Command in Its Kali Container",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1610"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

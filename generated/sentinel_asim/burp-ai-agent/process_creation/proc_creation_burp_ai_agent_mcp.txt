@@ -1,0 +1,4 @@
+# Custom AI Agent (burp-ai-agent) MCP Server Certificate or MCP Bridge
+# Sigma id f39908c5-5234-5ef1-9ec1-f8ca7d491be7, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "-genkeypair" and TargetProcessCommandLine contains "CN=burp-mcp") or (TargetProcessCommandLine contains "supergateway" and TargetProcessCommandLine contains ":9876/sse")

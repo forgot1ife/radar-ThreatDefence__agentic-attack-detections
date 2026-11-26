@@ -1,0 +1,43 @@
+title: ARIA-X Agent User Agent or Console API Use in Proxy Logs
+id: 11e72447-cb7d-50ee-95f1-6d45b8caab08
+status: experimental
+description: |
+    Detects ARIA-X (01NGVI-QINGYI/ARIA-X at 015e197) through a forward proxy: its user agent ARIA-X/<version>
+    (authorized security research) on target requests and on the web_search tool's DuckDuckGo queries
+    (https://html.duckduckgo.com/html/?q=..., visible with TLS inspection), and a browser or script driving an ARIA-X
+    console: POST /api/projects/p_<12 hex>/runs (start a run) and /hints, POST /api/runs/run_<12 hex>/stop, and the
+    report and export downloads /api/report/run_<12 hex> and /api/export/p_<12 hex>. The console listens on port 8787 and
+    has no authentication unless ARIA_X_AUTH_TOKEN is set.
+references:
+    - https://github.com/01NGVI-QINGYI/ARIA-X
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_ua:
+        c-useragent|startswith: 'ARIA-X/'
+        c-useragent|contains: '(authorized security research)'
+    selection_project:
+        c-uri|contains: '/api/projects/p_'
+        c-uri|endswith:
+            - '/runs'
+            - '/hints'
+    selection_run:
+        c-uri|contains: '/api/runs/run_'
+        c-uri|endswith: '/stop'
+    selection_report:
+        c-uri|contains:
+            - '/api/report/run_'
+            - '/api/export/p_'
+    condition: 1 of selection_*
+falsepositives:
+    - Agreed ARIA-X assessments run from your network
+    - Other applications with project ids that start p_ and a /runs endpoint
+level: medium

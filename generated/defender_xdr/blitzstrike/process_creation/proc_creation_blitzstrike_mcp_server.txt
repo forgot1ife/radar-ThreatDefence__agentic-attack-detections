@@ -1,0 +1,4 @@
+# Blitz Strike MCP Server or CLI on a Host
+# Sigma id 6f207162-61d5-5894-8af9-d8c01e73dc77, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "blitzstrike serve" or ProcessCommandLine contains "/src/index.ts serve --mcp" or ProcessCommandLine contains "blitzstrike/dist/index.js serve") or (ProcessCommandLine contains "blitzstrike install" or ProcessCommandLine contains "blitzstrike install-tools" or ProcessCommandLine contains "blitzstrike sync-data" or ProcessCommandLine contains "blitzstrike doctor" or ProcessCommandLine contains "npx -y blitzstrike" or ProcessCommandLine contains "bunx blitzstrike" or ProcessCommandLine contains "npm i -g blitzstrike" or ProcessCommandLine contains "npm install -g blitzstrike" or ProcessCommandLine contains "bun add -g blitzstrike" or ProcessCommandLine contains "github.com/shinthink/blitzstrike")

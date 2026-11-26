@@ -1,0 +1,4 @@
+# Sage (Mythic) Proof Marker or Proof File in a Command Line
+# Sigma id 2ae9dac8-6526-5252-b96a-097fbfd8004f, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "SAGE_REMOTE_EXEC_PROOF_" or TargetProcessCommandLine contains "SAGE_EP_ADJUST_PROOF" or TargetProcessCommandLine contains "SAGE_CA_EXPORT_PROOF" or TargetProcessCommandLine contains "SAGE_CERT_ENROLL_PROOF" or TargetProcessCommandLine contains "SAGE_CERT_AUTH_PROOF" or TargetProcessCommandLine contains "SagePfx-v1-") or (TargetProcessCommandLine contains "\\sage_remote_exec" or TargetProcessCommandLine contains "\\sage_ep_adjust" or TargetProcessCommandLine contains "\\sage_ca_export_" or TargetProcessCommandLine contains "\\sage_ca_dpapi_" or TargetProcessCommandLine contains "\\sage_forged_cert_" or TargetProcessCommandLine contains "\\sage_ca_signing_" or TargetProcessCommandLine contains "\\sage_cert_enroll_" or TargetProcessCommandLine contains "\\sage_gpo_")

@@ -1,0 +1,28 @@
+title: Mitsu Page Fetch User Agent in Web Logs
+id: 551b42bc-e87a-5189-ad7e-6dc4e9d6be2d
+status: experimental
+description: |
+    Detects Mitsu, an AI pentest agent, reading a page on your web server with its web_search tool. The tool sends
+    "Mitsu/0.1 (terminal assistant; public search)" with Accept "text/html,text/plain,application/json,
+    application/xml,*/*;q=0.5", follows redirects to HTTP and HTTPS only, and reads at most 1,000,000 bytes. Mitsu's
+    system prompt tells the model to open every URL the operator supplies with this tool before using curl or wget,
+    so it is often the first request of an engagement. Scans run through Armory tools (nmap, nuclei, ffuf and others)
+    carry those tools' own user agents, not this one.
+references:
+    - https://github.com/ARCANGEL0/Mitsu
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1594
+logsource:
+    category: webserver
+detection:
+    selection:
+        # search/engines.py:77,114-125 and tools/agent_host.py:343-351 at a4844932
+        cs-user-agent: 'Mitsu/0.1 (terminal assistant; public search)'
+    condition: selection
+falsepositives:
+    - Authorized tests, CTF and lab work with Mitsu
+level: medium

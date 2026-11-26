@@ -1,0 +1,5 @@
+{"name": "device pairing redeemed", "expected": true, "event": {"cs-method": "POST", "cs-uri-stem": "/api/v1/auth/pairings/redeem", "cs-user-agent": "nebula-chat"}}
+{"name": "background tool result posted", "expected": true, "event": {"cs-method": "POST", "cs-uri-stem": "/api/v1/automation-processes/0b6f4a52-1c3d-4e5f-8a9b-0c1d2e3f4a5b/results", "cs-user-agent": "curl/8.11.1"}}
+{"name": "terminal client reading devices", "expected": true, "event": {"cs-method": "GET", "cs-uri-stem": "/api/v1/auth/devices", "cs-user-agent": "nebula-chat"}}
+{"name": "near miss: another API's results path", "expected": false, "event": {"cs-method": "POST", "cs-uri-stem": "/api/v1/jobs/42/results", "cs-user-agent": "python-requests/2.32.3"}}
+{"name": "near miss: another pairing endpoint", "expected": false, "event": {"cs-method": "POST", "cs-uri-stem": "/api/v1/pairings/redeem", "cs-user-agent": "okhttp/4.12.0"}}

@@ -1,0 +1,3 @@
+# ARIA-X Engine, Console or Sandbox Command
+# Sigma id 7f6d76af-d992-54e8-9470-fa4afe2f2753, pipeline ecs
+process.command_line:*\ \-m\ aria_x\ * OR (process.command_line:(*\/aria\-x\ serve* OR *\/aria\-x\ run\ * OR *\/aria\-x\ demo*)) OR (process.command_line:(aria\-x\ serve* OR aria\-x\ run\ * OR aria\-x\ demo*)) OR (process.command_line:*\ run\ \-\-rm\ \-i\ * AND process.command_line:*\-\-name\ aria\-x\-* AND process.command_line:*\:\/work\ \-w\ \/work* AND process.command_line:*bash\ \-lc*) OR ((process.parent.command_line:(*\ \-m\ aria_x\ * OR *\/aria\-x\ run\ * OR *\/aria\-x\ serve*)) AND (process.command_line:(bash\ \-lc\ * OR \/bin\/bash\ \-lc\ *)))

@@ -1,0 +1,51 @@
+// 0security CLI, web console, remote engine or live-target tests on a host you monitor
+// Agentic attack detections by ThreatDefence (0security). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1595.002 (Active Scanning: Vulnerability Scanning), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// 0security (0sec-labs/0security, reviewed at eec0d4c7) is an agent harness that reviews code, fixes findings and can
+// test live targets. It is sold to security teams, so a hit is first a question of who runs it and against what:
+//  - Binaries: ~/.0/bin/0security (and the alias 0), 0security-<platform>, the older 0-<platform>; Docker: node /app/dist/0.js.
+//  - Console: `0security web` or bare `0security` on 127.0.0.1:48123; the Docker image runs --host 0.0.0.0 --server-mode.
+//  - Live targets: `0 probe <url>` (adversarial prompts to a model endpoint; --i-own-this for a public host) and
+//    `0 scan --scanner nuclei --target-url <url>` (Nuclei with -jle <tmp>/0-nuclei-<random>/results.jsonl).
+//  - Remote engine over SSH: /tmp/zero-engine, --engine-token-env ZERO_WORKER_TOKEN, an ssh -N -L <port>:127.0.0.1:<port> tunnel.
+//  - Files: ~/.0/0.db, ~/.0/access-token, ~/.0/analytics-id, ~/.0/analytics-sent.log, ~/.0/runs/; verifier containers 0-verify-<hex>.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let ZeroImages = dynamic(["0security", "0security-linux-x64", "0security-linux-arm64", "0security-darwin-arm64", "0security-windows-x64.exe",
+    "0-linux-x64", "0-linux-arm64", "0-darwin-arm64", "0-windows-x64.exe"]);
+let ZeroProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where FileName in~ (ZeroImages) or FolderPath endswith "/.0/bin/0security"
+        or ProcessCommandLine contains "/app/dist/0.js"
+        or ProcessCommandLine contains "--engine-token-env ZERO_WORKER_TOKEN"
+        or ProcessCommandLine contains "/tmp/zero-engine"
+        or (ProcessCommandLine contains "0-nuclei-" and ProcessCommandLine contains "-etags intrusive,dos,fuzz")
+        or (ProcessCommandLine contains "--name 0-verify-" and ProcessCommandLine contains "0.verify=1")
+    | extend Activity = case(
+        ProcessCommandLine contains " probe http" or ProcessCommandLine contains "--i-own-this", "probe of a live model endpoint",
+        ProcessCommandLine contains "--target-url" or ProcessCommandLine contains "0-nuclei-", "Nuclei scan of a live target",
+        ProcessCommandLine contains "--server-mode", "console in server mode (network)",
+        ProcessCommandLine contains "ZERO_WORKER_TOKEN" or ProcessCommandLine contains "/tmp/zero-engine", "engine deployed to a remote computer",
+        ProcessCommandLine contains "0-verify-", "verification container",
+        "0security CLI or console");
+union isfuzzy=true
+    (ZeroProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 300), 10), Timestamp=min(Timestamp) by DeviceName, AccountName, Activity
+        | project Timestamp, DeviceName, Signal=strcat("0security: ", Activity), Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath endswith "/.0/0.db" or FolderPath endswith "/.0/access-token" or FolderPath endswith "/.0/analytics-sent.log"
+            or FolderPath endswith "/.0/analytics-id" or FolderPath has "/.0/runs/" or FolderPath startswith "/tmp/zero-engine/"
+            or FolderPath endswith @"\.0\0.db" or FolderPath endswith @"\.0\access-token"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="0security state, access token or remote engine files", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort == 48123
+        | where InitiatingProcessFileName in~ (ZeroImages) or InitiatingProcessCommandLine contains "0.js"
+        | summarize Addresses=make_set(LocalIP, 5), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, Signal="0security console listening on 48123 (0.0.0.0 means server mode)",
+            Detail=strcat(InitiatingProcessFileName, " ", tostring(Addresses)))
+| order by Timestamp desc

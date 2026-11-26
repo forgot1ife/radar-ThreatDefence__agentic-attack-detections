@@ -1,0 +1,45 @@
+// MCP Kali Server running on a host you monitor
+// Agentic attack detections by ThreatDefence (MCP Kali Server). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell), T1046 (Network Service Discovery)
+// Example hunt for Defender XDR advanced hunting and Microsoft Sentinel. Test before alerting.
+// From the MCP Kali Server source (Wh0am123/MCP-Kali-Server at 00154c05) and the Kali package mcp-kali-server (15136e98):
+//  - API server: python3 server.py [--ip <ip>] [--port 5000], Flask, no authentication. Packaged as /usr/bin/kali-server-mcp, which
+//    runs python3 server.py in /usr/share/mcp-kali-server/ as user _mcp-kali (kali-server-mcp.service). MCP client: client.py
+//    --server http://<ip>:5000, packaged as /usr/bin/mcp-server (mcp-server.service).
+//  - Every /health call runs which nmap, which gobuster, which dirb, which nikto. The Metasploit route runs
+//    msfconsole -q -r /tmp/mks_msf_resource.rc. Upstream /api/command runs /bin/sh -c <command> under the server.
+//  - Server log lines on stdout (journal and Syslog under systemd): "Starting Kali Linux Tools API Server on",
+//    "Executing command: <command>". Client: "Starting MCP Kali server".
+// The file name server.py and port 5000 are common; the package paths, the user and the resource file name need a code change.
+
+let Window = 30d;
+let ToolLookups = dynamic(["which nmap", "which gobuster", "which dirb", "which nikto"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any ("kali-server-mcp", "mcp-kali-server", "mks_msf_resource.rc")
+            or AccountName == "_mcp-kali"
+            or (ProcessCommandLine has "client.py" and ProcessCommandLine contains "--server http" and ProcessCommandLine contains ":5000")
+            or (InitiatingProcessCommandLine has "server.py" and ProcessCommandLine in (ToolLookups))
+            or (InitiatingProcessCommandLine has "server.py" and InitiatingProcessFileName startswith "python"
+                and ProcessCommandLine startswith "/bin/sh -c ")
+        | project Timestamp, DeviceName, Signal="MKS process, package, user or child of its API server", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName == "mks_msf_resource.rc" or FolderPath startswith "/usr/share/mcp-kali-server/"
+            or FolderPath endswith "/kali-server-mcp.service" or FolderPath == "/etc/default/kali-server-mcp"
+        | project Timestamp, DeviceName, Signal="MKS files", Detail=FolderPath, Parent=substring(InitiatingProcessCommandLine, 0, 150)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and InitiatingProcessCommandLine has "server.py"
+            and (LocalPort == 5000 or InitiatingProcessCommandLine contains "--port")
+            and InitiatingProcessFolderPath has "python"
+        | project Timestamp, DeviceName, Signal="Python server.py listening (check for MKS: GET /health)", Detail=strcat(LocalIP, ":", LocalPort),
+            Parent=substring(InitiatingProcessCommandLine, 0, 150)),
+    (Syslog
+        | where TimeGenerated > ago(Window)
+        | where SyslogMessage has_any ("Kali Linux Tools API Server", "Starting MCP Kali server", "Initialized Kali Tools Client connecting to")
+            or (ProcessName in ("kali-server-mcp", "python3") and SyslogMessage has "Executing command:")
+        | project Timestamp=TimeGenerated, DeviceName=Computer, Signal="MKS log line", Detail=substring(SyslogMessage, 0, 300), Parent=ProcessName)
+| order by Timestamp desc

@@ -1,0 +1,37 @@
+title: Agentic Bug Hunter Configuration, Memory or Spray Log Written
+id: a1c24960-ea1a-5ea5-a9b5-63885b4046c0
+status: experimental
+description: |
+    Detects files Agentic Bug Hunter (awarexone/Agentic-Bug-Hunter at 82f4512e) writes on the host that runs it: its
+    home folder ~/.bughunter/ (config.json, google_oauth.json, workspace/), the scope cache ~/.cache/bbhunt/scope/, the
+    hunt memory logs, the per-target spray audit log recon/<target>/spray/attempts-<time>.jsonl, the autonomous agent
+    session file, and the skills and agents its installer copies into a coding assistant's folder.
+references:
+    - https://github.com/awarexone/Agentic-Bug-Hunter
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        TargetFilename|contains:
+            - '/.bughunter/'
+            - '/.cache/bbhunt/scope/'
+            - '/hunt-memory/audit.jsonl'
+            - '/hunt-memory/journal.jsonl'
+            - '/skills/johnwick/SKILL.md'
+            - '/skills/omni-killchain/SKILL.md'
+            - '/agents/credential-hunter.md'
+    selection_spray:
+        TargetFilename|contains: '/spray/attempts-'
+        TargetFilename|endswith: '.jsonl'
+    selection_session:
+        TargetFilename|endswith: '/autonomous_session.json'
+    condition: 1 of selection_*
+falsepositives:
+    - Security staff who use Agentic Bug Hunter
+level: low

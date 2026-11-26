@@ -1,0 +1,3 @@
+# 0security Probe or Nuclei Target Scan Against a Live Endpoint
+# Sigma id 69c7dd9d-381a-5a6b-be5c-3d11304259ad, pipeline ecs
+from * metadata _id, _index, _version | where (process.command_line like "* probe http*" or process.command_line like "*--i-own-this *") and (process.command_line like "*0security*" or process.command_line like "*0.js*" or process.command_line like "*0 probe *") or process.command_line like "*--target-url *" and process.command_line like "*--scanner nuclei*" or process.command_line like "*0-nuclei-*" and process.command_line like "*-etags intrusive,dos,fuzz*" and process.command_line like "*-pt http*"

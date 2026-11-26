@@ -1,0 +1,7 @@
+{"name": "the run metadata file", "expected": true, "event": {"TargetFilename": "/home/analyst/raptor/out/agentic_target_20261125_101500_pid4242_0001/.raptor-run.json", "Image": "/usr/bin/python3"}}
+{"name": "the claude code environment file", "expected": true, "event": {"TargetFilename": "/home/analyst/raptor/.claude/raptor.env", "Image": "/usr/bin/python3"}}
+{"name": "a generated exploit", "expected": true, "event": {"TargetFilename": "/home/analyst/raptor/out/agentic_target_20261125_101500_pid4242_0001/autonomous/exploits/semgrep_c_strcpy_42_exploit.cpp", "Image": "/usr/bin/python3"}}
+{"name": "a generated patch", "expected": true, "event": {"TargetFilename": "/home/analyst/raptor/out/agentic_target_20261125_101500_pid4242_0001/autonomous/patches/semgrep_c_strcpy_42_patch.md", "Image": "/usr/bin/python3"}}
+{"name": "a session binding", "expected": true, "event": {"TargetFilename": "/home/analyst/.local/share/raptor/sessions.d/4242", "Image": "/bin/bash"}}
+{"name": "near miss: an exploit file outside a raptor run", "expected": false, "event": {"TargetFilename": "/home/analyst/ctf/exploits/heap_exploit.py", "Image": "/usr/bin/vim"}}
+{"name": "near miss: a patch note in another folder", "expected": false, "event": {"TargetFilename": "/home/analyst/notes/patches/fix_patch.md", "Image": "/usr/bin/vim"}}

@@ -1,0 +1,4 @@
+# Blitz Strike MCP Server or CLI on a Host
+# Sigma id 6f207162-61d5-5894-8af9-d8c01e73dc77, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "blitzstrike serve" or CommandLine contains "/src/index.ts serve --mcp" or CommandLine contains "blitzstrike/dist/index.js serve") or (CommandLine contains "blitzstrike install" or CommandLine contains "blitzstrike install-tools" or CommandLine contains "blitzstrike sync-data" or CommandLine contains "blitzstrike doctor" or CommandLine contains "npx -y blitzstrike" or CommandLine contains "bunx blitzstrike" or CommandLine contains "npm i -g blitzstrike" or CommandLine contains "npm install -g blitzstrike" or CommandLine contains "bun add -g blitzstrike" or CommandLine contains "github.com/shinthink/blitzstrike")

@@ -1,0 +1,4 @@
+# Blitz Strike MCP Server or CLI on a Host
+# Sigma id 6f207162-61d5-5894-8af9-d8c01e73dc77, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "blitzstrike serve" or TargetProcessCommandLine contains "/src/index.ts serve --mcp" or TargetProcessCommandLine contains "blitzstrike/dist/index.js serve") or (TargetProcessCommandLine contains "blitzstrike install" or TargetProcessCommandLine contains "blitzstrike install-tools" or TargetProcessCommandLine contains "blitzstrike sync-data" or TargetProcessCommandLine contains "blitzstrike doctor" or TargetProcessCommandLine contains "npx -y blitzstrike" or TargetProcessCommandLine contains "bunx blitzstrike" or TargetProcessCommandLine contains "npm i -g blitzstrike" or TargetProcessCommandLine contains "npm install -g blitzstrike" or TargetProcessCommandLine contains "bun add -g blitzstrike" or TargetProcessCommandLine contains "github.com/shinthink/blitzstrike")

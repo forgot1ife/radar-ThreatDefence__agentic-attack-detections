@@ -1,0 +1,3 @@
+# Nebula Agent Command in Its Kali Container
+# Sigma id 59cff36b-f9b3-5b08-a685-ca1cd5c2cb84, pipeline splunk_windows
+CommandLine="*os.execv('/bin/bash',['/bin/bash','--noprofile','--norc','-c',sys.argv[2]])*" OR CommandLine="*/tmp/nebula-process-*" OR (Image IN ("*/docker", "*/podman") CommandLine IN ("* nebula-runtime-*", "*--name=nebula-runtime-*", "*--name=nebula-terminal-*", "*--name=nebula-exec-*", "*localhost/nebula-kali-headless*")) OR CommandLine IN ("*/usr/local/bin/nebula-terminal-entrypoint*", "*/usr/local/lib/nebula-public-ip-update*")

@@ -1,0 +1,42 @@
+// Custom AI Agent (burp-ai-agent) on a host you monitor
+// Agentic attack detections by ThreatDefence (Custom AI Agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1587.003 (Develop Capabilities: Digital Certificates)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Custom AI Agent, formerly Burp AI Agent (six2dez/burp-ai-agent, reviewed at b1738c0e), is a Burp Suite extension that
+// gives a model and any MCP client control of Burp and adds AI active and passive scanners. No report of its use in an
+// intrusion was found on November 26, 2026, so this hunt looks for the software itself, from its source code:
+//  - Its JARs: Custom-AI-Agent-full-<version>.jar, Custom-AI-Agent-bapp-<version>.jar, custom-ai-agent-bapp.jar.
+//  - Its folder ~/.burp-ai-agent/ (audit.jsonl, logs/ai-request-log.jsonl, cache/, AGENTS/, certs/mcp-keystore.p12).
+//  - keytool -genkeypair ... -dname CN=burp-mcp, run by Burp's Java the first time its MCP server needs TLS.
+//  - npx supergateway --sse http://127.0.0.1:9876/sse, the MCP bridge its README gives Claude Desktop.
+//  - Burp's Java process listening on 9876 (the MCP server). A non-loopback local address means external access is on.
+//  - The claude, codex, gemini, opencode or copilot CLI started by Burp's Java process (full build CLI backends).
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let JavaNames = dynamic(["java", "java.exe", "javaw.exe", "BurpSuitePro", "BurpSuitePro.exe", "BurpSuiteCommunity", "BurpSuiteCommunity.exe"]);
+let CliNames = dynamic(["claude", "claude.exe", "codex", "codex.exe", "gemini", "gemini.cmd", "opencode", "opencode.exe", "copilot", "copilot.cmd"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "-genkeypair" and ProcessCommandLine contains "CN=burp-mcp")
+            or (ProcessCommandLine has "supergateway" and ProcessCommandLine contains ":9876/sse")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="MCP certificate made by the extension, or the MCP bridge to it", Detail=tostring(Commands)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessFileName in~ (JavaNames) and InitiatingProcessCommandLine contains "burp" and FileName in~ (CliNames)
+        | summarize Runs=count(), Timestamp=min(Timestamp) by DeviceName, FileName
+        | project Timestamp, DeviceName, Signal="Coding agent CLI started by Burp (CLI backend)", Detail=strcat(FileName, " x", Runs)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath contains "/.burp-ai-agent/" or FolderPath contains @"\.burp-ai-agent\"
+            or FileName startswith "Custom-AI-Agent-full-" or FileName startswith "Custom-AI-Agent-bapp-" or FileName =~ "custom-ai-agent-bapp.jar"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Extension JAR or ~/.burp-ai-agent files", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort == 9876 and InitiatingProcessFileName in~ (JavaNames)
+        | summarize Addresses=make_set(LocalIP, 5), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Burp listening on 9876 (MCP server; a non-loopback address means external access)", Detail=tostring(Addresses))
+| order by Timestamp desc

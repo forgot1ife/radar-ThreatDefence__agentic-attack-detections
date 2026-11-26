@@ -1,0 +1,41 @@
+// Commands and files from Sage tasks on Windows hosts
+// Agentic attack detections by ThreatDefence (Sage (Mythic)). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1047 (Windows Management Instrumentation), T1053.005 (Scheduled Task), T1059.001 (PowerShell), T1649 (Steal or Forge Authentication Certificates), T1685 (Disable or Modify Tools)
+// Example hunt for Microsoft Sentinel with Defender XDR tables. Test and baseline before alerting.
+// Sage proposes Mythic tasks that a payload callback (Apollo) runs. Its defaults leave these on the hosts it works on:
+//  - cmd.exe /c echo SAGE_REMOTE_EXEC_PROOF_<host>_<callback> & whoami & hostname & echo ... > C:\Windows\Temp\sage_remote_exec_<host>_<callback>.txt
+//  - schtasks.exe /Create /S <host> /RU SYSTEM /SC ONCE /ST 23:59 /TN "SageExec_<suffix>" ...; event 4698 for SageExec_
+//  - certutil.exe -f -p SagePfx-v1-<...> -backupKey C:\Windows\Temp\sage_ca_export_<slug>_backup; certreq in %TEMP%\sage_cert_enroll_<slug>
+//  - PowerShell with SAGE_*_PROOF markers, New-PSDrive -Name SAGEPROOF/SAGEEP/SAGECA, CERT_AUTH_METHOD=schannel-ldap,
+//    and Set-MpPreference -DisableRealtimeMonitoring with Add-MpPreference -ExclusionPath C:\Windows\Temp
+//  - C:\Users\Public\sage_gpo_<slug>_whoami.txt from a Group Policy immediate task
+// A different marker, path or task name passed by the operator or the model replaces these defaults.
+
+let Window = 30d;
+// Regular expressions rather than has_any: the markers are followed by a host or slug in the same term (SageExec_ECPROOF...).
+let CmdPattern = @"(?i)SAGE_(REMOTE_EXEC|EP_ADJUST|CA_EXPORT|CERT_ENROLL|CERT_AUTH)_PROOF|SagePfx-v1-|SageExec_|\\sage_(remote_exec|ep_adjust|ca_export_|ca_dpapi_|forged_cert_|ca_signing_|cert_enroll_|gpo_)";
+let EncodedPrefix = "JABFAHIAcgBvAHIAQQBjAHQAaQBvAG4AUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAQwBvAG4AdABpAG4AdQBlACcAOwAkAGwAaQBuAGUAcwA9AE4AZQB3AC0ATwBiAGoAZQBjAHQAIABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AFsAcwB0AHIAaQBuAGcAXQA7ACQAbABpAG4AZQBzAC4AQQBkAGQAKAAnAFMAQQBHAEUA";
+let FilePattern = @"(?i)\\Windows\\Temp\\sage_(remote_exec|ep_adjust|ca_export_|ca_dpapi_|forged_cert_|ca_signing_)|\\sage_cert_enroll_|\\sage_gpo_[^\\]*_whoami\.txt$";
+let ScriptPattern = @"SAGE_(REMOTE_EXEC|EP_ADJUST|CA_EXPORT|CERT_ENROLL|CERT_AUTH)_PROOF|New-PSDrive -Name SAGE(PROOF|EP|CA)\b|CERT_AUTH_METHOD=schannel-ldap|CERT_ENROLL_METHOD=native-certreq|DA_ONLY_READ_OP=domain-sacl|EP_REALTIME_BEFORE=";
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine matches regex CmdPattern or ProcessCommandLine contains EncodedPrefix
+        | project TimeGenerated=Timestamp, DeviceName, Signal="Sage marker, proof path or SageExec task in a command line",
+            Detail=strcat(InitiatingProcessFileName, " -> ", substring(ProcessCommandLine, 0, 300))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath matches regex FilePattern
+        | project TimeGenerated=Timestamp, DeviceName, Signal="Sage proof or certificate file", Detail=strcat(InitiatingProcessFileName, " wrote ", FolderPath)),
+    (SecurityEvent
+        | where TimeGenerated > ago(Window)
+        | where EventID == 4698 and EventData contains "SageExec_"
+        | project TimeGenerated, DeviceName=Computer, Signal="Scheduled task SageExec_ created", Detail=substring(EventData, 0, 300)),
+    (Event
+        | where TimeGenerated > ago(Window)
+        | where EventLog == "Microsoft-Windows-PowerShell/Operational" and EventID == 4104
+        | where EventData matches regex ScriptPattern or RenderedDescription matches regex ScriptPattern
+        | project TimeGenerated, DeviceName=Computer, Signal="Sage marker script in PowerShell script block logging",
+            Detail=substring(coalesce(RenderedDescription, EventData), 0, 300))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by DeviceName, Signal
+| order by LastSeen desc

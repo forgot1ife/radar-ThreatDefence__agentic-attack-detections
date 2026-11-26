@@ -1,0 +1,42 @@
+title: Blitz Strike MCP Server or CLI on a Host
+id: 6f207162-61d5-5894-8af9-d8c01e73dc77
+status: experimental
+description: |
+    Detects Blitz Strike running: its MCP server over stdio (blitzstrike serve --mcp, started by an AI coding client
+    through npx -y blitzstrike, bunx blitzstrike, a global npm install or bun run src/index.ts), and its other commands
+    (install, which writes itself into the MCP settings of every AI client it finds, install-tools, sync-data, doctor).
+    The npm package is blitzstrike. The entry point is a Node.js script, so on Linux and macOS the image is node or bun and
+    the script path is on the command line.
+references:
+    - https://github.com/shinthink/blitzstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_serve:
+        CommandLine|contains:
+            - 'blitzstrike serve'
+            - '/src/index.ts serve --mcp'
+            - 'blitzstrike/dist/index.js serve'
+    selection_cli:
+        CommandLine|contains:
+            - 'blitzstrike install'
+            - 'blitzstrike install-tools'
+            - 'blitzstrike sync-data'
+            - 'blitzstrike doctor'
+            - 'npx -y blitzstrike'
+            - 'bunx blitzstrike'
+            - 'npm i -g blitzstrike'
+            - 'npm install -g blitzstrike'
+            - 'bun add -g blitzstrike'
+            - 'github.com/shinthink/blitzstrike'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and bug bounty researchers running Blitz Strike
+    - '/src/index.ts serve --mcp is the generic shape of a Bun MCP server started from source; check the folder name'
+level: medium

@@ -1,0 +1,3 @@
+# 0security Playbook Canary or Bogus Method in Web Logs
+# Sigma id 51599b19-cba6-5663-94bb-e1dd5d0bb695, pipeline ecs
+(url.query:(*osec123xss* OR *ZERO\-INJ\-OK*)) OR cs-method:ZERO

@@ -1,0 +1,5 @@
+{"name": "host header injection domain", "expected": true, "event": {"QueryName": "evil-burp-ai-test.com"}}
+{"name": "cache poisoning domain", "expected": true, "event": {"QueryName": "evil-burp-ai-cache.com"}}
+{"name": "OAuth subdomain bypass domain", "expected": true, "event": {"QueryName": "legitimate.com.evil-burp-ai.com"}}
+{"name": "near miss: the extension's documentation site", "expected": false, "event": {"QueryName": "burp-ai-agent.six2dez.com"}}
+{"name": "near miss: Burp Collaborator polling", "expected": false, "event": {"QueryName": "polling.oastify.com"}}

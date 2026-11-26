@@ -1,0 +1,33 @@
+// Nebula in web and proxy logs: its user agents, paired clients, tool callbacks and an exposed core
+// Agentic attack detections by ThreatDefence (Nebula). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1133 (External Remote Services)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Nebula source code (BerylliumSec/nebula, reviewed at 409bf4f9):
+//  - nebula-chat: its terminal client talking to a remote core; Nebula-Terminal/1: its Kali containers asking
+//    api.ipify.org for their public address every five minutes; Nebula/3 knowledge-source-fetcher and -renderer:
+//    pages an operator adds as project knowledge.
+//  - /api/v1/auth/pairings/redeem: a browser or terminal client pairing with a core. In your own web server logs it
+//    means you serve a Nebula core; through your proxy, someone paired with one.
+//  - /api/v1/automation-processes/<id>/results: background tool results posted back to a core.
+// The code sends no canary or marker to pentest targets: its scans look like the stock Kali tools.
+
+let PairPath = "/api/v1/auth/pairings/redeem";
+let ResultsPath = "/api/v1/automation-processes/";
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA in ("nebula-chat", "Nebula-Terminal/1") or UA startswith "Nebula/3 knowledge-source-"
+            or csUriStem =~ PairPath or (csUriStem startswith ResultsPath and csUriStem endswith "/results")
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem), UA),
+    (CommonSecurityLog
+        | where RequestClientApplication in ("nebula-chat", "Nebula-Terminal/1") or RequestClientApplication startswith "Nebula/3 knowledge-source-"
+            or RequestURL has PairPath or (RequestURL has ResultsPath and RequestURL has "/results")
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| extend Signal=case(UA == "nebula-chat", "Terminal client to a remote core",
+    UA == "Nebula-Terminal/1", "Kali container public address check",
+    UA startswith "Nebula/3 knowledge-source-", "Knowledge source fetch",
+    Detail has PairPath, "Device pairing with a core",
+    "Tool result posted to a core")
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Signal, Source, Src, Target
+| order by FirstSeen asc

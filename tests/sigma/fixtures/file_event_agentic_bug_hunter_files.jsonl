@@ -1,0 +1,6 @@
+{"name": "the provider config", "expected": true, "event": {"TargetFilename": "/home/user/.bughunter/config.json", "Image": "/usr/bin/python3"}}
+{"name": "a spray audit log", "expected": true, "event": {"TargetFilename": "/home/user/Agentic-Bug-Hunter/recon/login.example.test/spray/attempts-20261126T101500.jsonl", "Image": "/bin/bash"}}
+{"name": "the autonomous session file", "expected": true, "event": {"TargetFilename": "/home/user/hunt/targets/app.example.test/autonomous_session.json", "Image": "/usr/bin/python3"}}
+{"name": "a skill copied for a coding assistant", "expected": true, "event": {"TargetFilename": "/home/user/.claude/skills/johnwick/SKILL.md", "Image": "/bin/cp"}}
+{"name": "near miss: a spray folder log that is not jsonl", "expected": false, "event": {"TargetFilename": "/srv/garden/spray/attempts-schedule.txt", "Image": "/usr/bin/vim"}}
+{"name": "near miss: another tool's session file", "expected": false, "event": {"TargetFilename": "/home/user/.tool/session.json", "Image": "/usr/bin/python3"}}

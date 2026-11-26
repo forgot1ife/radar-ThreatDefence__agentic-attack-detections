@@ -1,0 +1,65 @@
+title: Offensive Tool Started Directly by Mitsu
+id: 5032704b-d355-53db-a850-ea5da873acaa
+status: experimental
+description: |
+    Detects one of Mitsu's Red Team Armory tools started directly by the Mitsu Python process. Each Armory MCP tool
+    runs its executable without a shell, with the model's arguments, no standard input and a timeout of 120 seconds
+    by default (600 at most), so the scanner's parent is the mitsu process itself rather than a shell. The list
+    below is the part of Mitsu's 165-tool catalog that sends traffic to a target. Mitsu's vulnerability search also
+    runs searchsploit --json <query> and vulnx search <query> --limit 8 --json --silent the same way.
+references:
+    - https://github.com/ARCANGEL0/Mitsu
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_tool:
+        # armory/catalog.py (executables), tools/armory_mcp.py:326-346, search/vulnerabilities.py:107,146 at a4844932
+        Image|endswith:
+            - '/nmap'
+            - '/masscan'
+            - '/rustscan'
+            - '/naabu'
+            - '/httpx'
+            - '/nuclei'
+            - '/nikto'
+            - '/sqlmap'
+            - '/ffuf'
+            - '/feroxbuster'
+            - '/gobuster'
+            - '/dirsearch'
+            - '/wpscan'
+            - '/whatweb'
+            - '/wafw00f'
+            - '/dalfox'
+            - '/commix'
+            - '/hydra'
+            - '/medusa'
+            - '/ncrack'
+            - '/netexec'
+            - '/nxc'
+            - '/kerbrute'
+            - '/certipy'
+            - '/evil-winrm'
+            - '/msfconsole'
+            - '/searchsploit'
+            - '/vulnx'
+            - '/subfinder'
+            - '/amass'
+            - '/katana'
+            - '/testssl'
+    selection_parent_script:
+        ParentCommandLine|endswith:
+            - '/bin/mitsu'
+            - ' -m mitsu'
+    selection_parent_uv_tool:
+        ParentCommandLine|contains: '/uv/tools/mitsu/'
+    condition: selection_tool and 1 of selection_parent_*
+falsepositives:
+    - Authorized tests, CTF and lab work with Mitsu
+level: medium

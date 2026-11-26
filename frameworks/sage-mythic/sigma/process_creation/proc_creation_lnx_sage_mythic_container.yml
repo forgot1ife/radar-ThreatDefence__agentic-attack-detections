@@ -1,0 +1,31 @@
+title: Sage (Mythic) AI Operator Container Processes
+id: 8e8f8c42-3cd2-58df-8bbc-4a43e5d66576
+status: experimental
+description: |
+    Detects the processes of Sage, the AI operator that installs into a Mythic C2 server as a chat container: its entrypoint
+    "python3 /usr/local/bin/sage-entrypoint" and the BloodHound MCP server it launches over stdio,
+    "uv --directory /opt/bloodhound_mcp run --no-sync main.py".
+references:
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/Dockerfile
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/ai/mcp.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.007
+logsource:
+    product: linux
+    category: process_creation
+detection:
+    selection_entrypoint:
+        CommandLine|contains: '/usr/local/bin/sage-entrypoint'
+    selection_bloodhound_mcp:
+        CommandLine|contains|all:
+            - '--directory /opt/bloodhound_mcp'
+            - 'main.py'
+    condition: 1 of selection_*
+falsepositives:
+    - A Mythic server you run with Sage installed
+    - The BloodHound MCP server installed under /opt/bloodhound_mcp for another client
+level: medium

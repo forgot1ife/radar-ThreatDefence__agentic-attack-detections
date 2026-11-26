@@ -1,0 +1,37 @@
+title: numasec User Agents or Probe Markers in Proxy Logs
+id: 2b9f8316-81dc-5213-9ce5-a86aad9c1720
+status: experimental
+description: |
+    Detects numasec traffic in proxy logs. Target side: its AppSec probe user agent numasec-appsec-probe/, its page
+    fetch fallback user agent numasec, the directory fuzzer's /numasec_404_check_ baseline and the numasec-xss marker.
+    Operator side: numasec-knowledge-broker/ to vulnerability databases, and numasec/<version> to model APIs and
+    models.dev (the second inherited from OpenCode with the name changed). HTTPS needs TLS inspection.
+references:
+    - https://github.com/FrancescoStabile/numasec
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.t1595.003
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection_ua_exact:
+        c-useragent: 'numasec'
+    selection_ua_prefix:
+        c-useragent|startswith:
+            - 'numasec-appsec-probe/'
+            - 'numasec-knowledge-broker/'
+            - 'numasec/'
+    selection_uri:
+        c-uri|contains:
+            - '/numasec_404_check_'
+            - 'numasec-xss'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and testers who use numasec
+level: medium

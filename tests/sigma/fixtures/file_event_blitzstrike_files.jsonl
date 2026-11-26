@@ -1,0 +1,6 @@
+{"name": "the audit log", "expected": true, "event": {"TargetFilename": "/home/user/.blitzstrike/audit.jsonl", "Image": "/usr/bin/node"}}
+{"name": "a saved report", "expected": true, "event": {"TargetFilename": "/home/user/.blitzstrike/reports/app_example_test-2026-11-26T01-02-03.md", "Image": "/usr/bin/node"}}
+{"name": "the orchestrator persona", "expected": true, "event": {"TargetFilename": "/home/user/.config/opencode/agents/Blitz Strike.md", "Image": "/usr/bin/node"}}
+{"name": "the audit log on Windows", "expected": true, "event": {"TargetFilename": "C:\\Users\\user\\.blitzstrike\\audit.jsonl", "Image": "C:\\Program Files\\nodejs\\node.exe"}}
+{"name": "another OpenCode agent", "expected": false, "event": {"TargetFilename": "/home/user/.config/opencode/agents/Reviewer.md", "Image": "/usr/bin/node"}}
+{"name": "a file named after blitz", "expected": false, "event": {"TargetFilename": "/home/user/notes/blitz.md", "Image": "/usr/bin/vim"}}

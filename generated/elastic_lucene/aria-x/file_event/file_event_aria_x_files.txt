@@ -1,0 +1,3 @@
+# ARIA-X Database, Run Evidence or Working Folders
+# Sigma id ee1ec5c0-526b-536c-940d-c9ffc4a9ff50, pipeline ecs
+(TargetFilename:(*\/aria\-x.db OR *\/aria\-x.db\-wal OR *\/aria\-x.db\-shm OR *\/configs\/aria\-x.toml)) OR (TargetFilename:*\/runs\/run_* AND TargetFilename:*\/work\/evidence\/http_*) OR (TargetFilename:*\/runs\/run_* AND (TargetFilename:(*\/report.html OR *\/report.md OR *\/report.json))) OR (TargetFilename:(*\/aria\-x\-work\-* OR *\/aria\-x\-doctor\-* OR *\/aria\-x\-tools\-* OR *\/aria\-x\-demo\-target\-*))

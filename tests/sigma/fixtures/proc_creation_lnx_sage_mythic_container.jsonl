@@ -1,0 +1,4 @@
+{"name": "Sage container entrypoint", "expected": true, "event": {"Image": "/usr/local/bin/python3.14", "CommandLine": "python3 /usr/local/bin/sage-entrypoint python3 main.py"}}
+{"name": "BloodHound MCP launched by Sage", "expected": true, "event": {"Image": "/usr/local/bin/uv", "CommandLine": "uv --directory /opt/bloodhound_mcp run --no-sync main.py"}}
+{"name": "near miss: another uv project", "expected": false, "event": {"Image": "/usr/local/bin/uv", "CommandLine": "uv --directory /opt/inventory run main.py"}}
+{"name": "near miss: python main.py in another Mythic container", "expected": false, "event": {"Image": "/usr/local/bin/python3", "CommandLine": "python3 main.py"}}

@@ -1,0 +1,3 @@
+# Mitsu Local SearXNG Container
+# Sigma id 319cdede-e39a-5f0d-8581-51ffe6ef432b, pipeline ecs
+process.command_line:(*mitsu\-searxng\-config* OR *\-\-name\ mitsu\-searxng\-* OR *start\ mitsu\-searxng\-*)

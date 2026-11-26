@@ -1,0 +1,4 @@
+# Mitsu Session, Configuration or Report Files Written
+# Sigma id d2be8aa4-645e-5d7a-a14d-04ad7d7ce8fb, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/mitsu/sessions/" or ObjectName contains "/.config/mitsu/" or ObjectName contains "/mitsu/armory/" or ObjectName contains "/mitsu-codex-sessions/" or ObjectName contains "/mitsu-claude-sessions/") or ObjectName endswith "/.mitsu-armory-managed" or (ObjectName endswith "/mitsu/credentials.json" or ObjectName endswith "/mitsu/mcp_servers.json" or ObjectName endswith "/mitsu/host.json" or ObjectName endswith "/mitsu/instance.lock")

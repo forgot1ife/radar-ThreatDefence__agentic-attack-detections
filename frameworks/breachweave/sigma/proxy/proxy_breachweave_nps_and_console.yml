@@ -1,0 +1,36 @@
+title: BreachWeave NPS Client Download or Console Event Stream in Proxy Logs
+id: 41e07cb9-d750-50e6-82c8-bc9a77277444
+status: experimental
+description: |
+    Detects two BreachWeave paths in proxy logs: a host fetching the NPS client from an operator bridge under
+    /files/nps/npc_windows_amd64.exe or /files/nps/npc_linux_amd64 (the shipped skills' download path), and a browser
+    opening a BreachWeave console event stream with its JWT in the query string (the pentest branch adds ?token= to
+    every EventSource URL).
+references:
+    - https://github.com/m-sec-org/BreachWeave
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1105
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_npc:
+        c-uri|contains:
+            - '/files/nps/npc_windows_amd64.exe'
+            - '/files/nps/npc_windows_386.exe'
+            - '/files/nps/npc_linux_amd64'
+    selection_stream_token:
+        c-uri|contains: '/stream\?token=eyJ'
+    selection_stream_path:
+        c-uri|contains:
+            - '/api/runtime/'
+            - '/api/challenges/'
+    condition: selection_npc or (selection_stream_token and selection_stream_path)
+falsepositives:
+    - NPS deployments that publish their client under /files/nps/
+    - Other web apps whose event stream path ends in /stream and that pass a JWT as token=
+level: medium

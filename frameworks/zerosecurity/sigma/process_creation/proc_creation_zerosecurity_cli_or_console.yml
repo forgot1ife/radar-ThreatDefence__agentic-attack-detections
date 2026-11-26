@@ -1,0 +1,51 @@
+title: 0security CLI, Web Console or Remote Engine Started
+id: e025c582-5094-58ff-9f05-49b7bc40b457
+status: experimental
+description: |
+    Detects the 0security agent harness (0sec-labs/0security) running on a host: its release binary (0security,
+    0security-<platform>, the older 0-<platform> name, or ~/.0/bin/0security from the installer), the Docker image's
+    entry point (node /app/dist/0.js, by default with --host 0.0.0.0 --server-mode), the headless console a scan
+    starts (--headless --port 0), and the engine it deploys to a remote computer over SSH (/tmp/zero-engine,
+    --engine-token-env ZERO_WORKER_TOKEN). Its agents run shell commands, edit code and can send requests to live
+    targets; the Docker image ships sqlmap, nmap, hydra, Impacket, Certipy, BloodHound CE and AzureHound.
+references:
+    - https://github.com/0sec-labs/0security
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+detection:
+    selection_image:
+        Image|endswith:
+            - '/.0/bin/0security'
+            - '/0security-linux-x64'
+            - '/0security-linux-arm64'
+            - '/0security-darwin-arm64'
+            - '\0security-windows-x64.exe'
+            - '\0-windows-x64.exe'
+            - '/0-linux-x64'
+            - '/0-linux-arm64'
+            - '/0-darwin-arm64'
+    selection_docker:
+        CommandLine|contains:
+            - '/app/dist/0.js --host 0.0.0.0 --server-mode'
+            - 'tini -- node /app/dist/0.js'
+    selection_worker:
+        CommandLine|contains:
+            - '--engine-token-env ZERO_WORKER_TOKEN'
+            - '--engine-workspace /tmp/zero-engine/'
+            - 'cd /tmp/zero-engine'
+    selection_headless:
+        CommandLine|contains:
+            - 'dist/0.js --headless --port 0'
+            - '0security --headless --port 0'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams who use 0security on their own repositories
+level: medium

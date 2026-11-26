@@ -1,0 +1,32 @@
+title: Blitz Strike SSRF Canary Fetched or Blitz Strike User Agent Through a Proxy
+id: f277be6f-0ef6-5aab-8185-bfd34dd06335
+status: experimental
+description: |
+    Detects, in proxy logs, a request to http://httpbin.org/anything/blitzstrike-ssrf-canary, the URL Blitz Strike puts in
+    23 URL-like parameters during run_engagement to find server-side request forgery. When one of your servers requests it,
+    the server fetched a URL an outside tester supplied: the SSRF worked. Also detects Blitz Strike's own user agents
+    leaving a host that runs it. The strings are in the Blitz Strike code at 9d7a6ecb.
+references:
+    - https://github.com/shinthink/blitzstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: proxy
+detection:
+    selection_canary:
+        c-uri|contains: 'blitzstrike-ssrf-canary'
+    selection_ua:
+        c-useragent|contains:
+            - 'blitzstrike'
+            - 'BlitzStrike'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Blitz Strike
+    - The host of a tester who runs Blitz Strike (user agent branch)
+level: high

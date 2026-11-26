@@ -1,0 +1,31 @@
+title: Clearwing Configuration, Session or Disclosure Data Written
+id: f37c6bdc-b43b-5255-9b0e-b4cc44bc1153
+status: experimental
+description: |
+    Detects files Clearwing (Lazarus-AI-OSS/clearwing) writes on the host that runs it: its home folder ~/.clearwing
+    (config.yaml, sessions, audit logs of every command, model OAuth tokens under auth, the disclosure database and
+    sourcehunt memory) and the temporary folders it creates for agent-made tools and hunter sandboxes.
+references:
+    - https://github.com/Lazarus-AI-OSS/clearwing
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        TargetFilename|contains:
+            - '/.clearwing/'
+            - '\.clearwing\'
+    selection_temp:
+        TargetFilename|contains:
+            - '/clearwing_custom_tools_'
+            - '/clearwing-scratch-'
+            - '/clearwing-src-'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and researchers running Clearwing
+level: low

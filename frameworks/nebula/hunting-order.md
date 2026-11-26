@@ -1,0 +1,7 @@
+# Where to start
+
+1. **Check hosts that run it.** On the operator host, its agents' commands go through `docker exec` (or `podman exec`) into containers named `nebula-runtime-*` with a Python wrapper that writes `/tmp/nebula-process-<id>.pid`; the core runs as `nebula-core runtime-service` or `nebula-core serve` (hunt 01, the analytics rule). Its data folder is `~/.local/share/nebula/v3/` or the desktop app's `core/` folder.
+2. **Look for an exposed workspace or core of your own.** Search your external attack surface for the description `Nebula 3 local-first security engagement workspace`, the page `Nebula Core is running. Connect with a paired client.` or the icon hash `1869598234`, and your web and proxy logs for `/api/v1/auth/pairings/redeem` and the `nebula-chat` user agent (hunt 03). An exposed core still needs a token or a paired device, but it should not be on the internet.
+3. **Sweep the indicators** with the watchlist hunt (02). The rows are user agents, strings, file paths and the icon hashes; there is no Nebula infrastructure to block.
+4. **Where TLS is decrypted**, the user agent `Nebula-Terminal/1` to `api.ipify.org` every five minutes marks a Nebula Kali container on that network.
+5. **For attacks on your sites**, rely on the behaviors rules: model API calls from servers, attack tools started by an agent, and out-of-band lookups. The code sends no marker of its own to targets.

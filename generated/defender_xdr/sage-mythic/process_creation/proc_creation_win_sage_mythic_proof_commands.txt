@@ -1,0 +1,4 @@
+# Sage (Mythic) Proof Marker or Proof File in a Command Line
+# Sigma id 2ae9dac8-6526-5252-b96a-097fbfd8004f, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "SAGE_REMOTE_EXEC_PROOF_" or ProcessCommandLine contains "SAGE_EP_ADJUST_PROOF" or ProcessCommandLine contains "SAGE_CA_EXPORT_PROOF" or ProcessCommandLine contains "SAGE_CERT_ENROLL_PROOF" or ProcessCommandLine contains "SAGE_CERT_AUTH_PROOF" or ProcessCommandLine contains "SagePfx-v1-") or (ProcessCommandLine contains "\\sage_remote_exec" or ProcessCommandLine contains "\\sage_ep_adjust" or ProcessCommandLine contains "\\sage_ca_export_" or ProcessCommandLine contains "\\sage_ca_dpapi_" or ProcessCommandLine contains "\\sage_forged_cert_" or ProcessCommandLine contains "\\sage_ca_signing_" or ProcessCommandLine contains "\\sage_cert_enroll_" or ProcessCommandLine contains "\\sage_gpo_")

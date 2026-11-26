@@ -1,0 +1,86 @@
+{
+ "description": "19 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 5,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "mitsu",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Mitsu running on a host you monitor; Sentinel analytics: Mitsu AI pentest agent on a host; Sigma: Codex or Claude Code CLI Started by Mitsu; Sigma: Mitsu Shell Tool Command",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "Sigma: Mitsu Session, Configuration or Report Files Written",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Mitsu running on a host you monitor; Sigma: Mitsu Session, Configuration or Report Files Written; YARA: Mitsu_Session_File",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1552.001"
+  },
+  {
+   "comment": "Suricata: 3818902 TD Mitsu update check (decrypted); YARA: Mitsu_Source",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Sigma: Codex or Claude Code CLI Started by Mitsu; Suricata: 3818903 TD Mitsu system prompt in model request; Suricata: 3818904 TD Mitsu fallback system prompt in model request; Suricata: 3818905 TD Mitsu MCP tool definitions in model request",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "KQL hunt: Mitsu reading your web pages, or running from your network: its user agents in web and proxy logs; Sigma: Mitsu Local SearXNG Container; Sigma: Mitsu User Agent in Proxy Logs; Suricata: 3818901 TD Mitsu web_search user agent (page fetch or search scrape)",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1593.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Mitsu reading your web pages, or running from your network: its user agents in web and proxy logs; Sigma: Mitsu Page Fetch User Agent in Web Logs; Sigma: Mitsu User Agent in Proxy Logs; Suricata: 3818901 TD Mitsu web_search user agent (page fetch or search scrape)",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1594"
+  },
+  {
+   "comment": "KQL hunt: Mitsu running on a host you monitor; Sigma: Offensive Tool Started Directly by Mitsu; YARA: Mitsu_Report_Or_Attack_Surface_Map",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

@@ -1,0 +1,3 @@
+# Custom AI Agent (burp-ai-agent) Extension Files Written
+# Sigma id c7589efb-ab20-5f4a-af6f-c730e0b8bca3, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/.burp-ai-agent/*" or TargetFilename like "*\\.burp-ai-agent\\*" or TargetFilename like "*Custom-AI-Agent-full-*" or TargetFilename like "*Custom-AI-Agent-bapp-*" or TargetFilename like "*custom-ai-agent-bapp.jar*"

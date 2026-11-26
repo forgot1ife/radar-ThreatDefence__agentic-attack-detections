@@ -1,0 +1,4 @@
+# Nebula User Agents or Core API in Proxy Logs
+# Sigma id b00826e7-74ff-5d22-94ea-2ae5a1d56015, pipeline sentinel_asim
+imWebSession
+| where (HttpUserAgent in~ ("nebula-chat", "Nebula-Terminal/1")) or HttpUserAgent startswith "Nebula/3 knowledge-source-" or Url contains "/api/v1/auth/pairings/redeem" or (Url contains "/api/v1/automation-processes/" and Url contains "/results")

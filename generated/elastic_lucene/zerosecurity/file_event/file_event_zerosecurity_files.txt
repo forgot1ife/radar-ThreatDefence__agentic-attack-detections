@@ -1,0 +1,3 @@
+# 0security State, Access Token or Remote Engine Files Written
+# Sigma id 9b5a7273-2f3d-58c3-b0f8-7f9dee0b2ac8, pipeline ecs
+(TargetFilename:(*\/.0\/0.db OR *\/.0\/access\-token OR *\/.0\/analytics\-id OR *\/.0\/analytics\-sent.log OR *\/.0\/engines.json OR *\/.0\/web\-connections.json OR *\/.0\/bin\/0security OR *\\.0\\0.db OR *\\.0\\access\-token OR *\\.0\\analytics\-id OR *\\.0\\analytics\-sent.log)) OR (TargetFilename:(*\/.0\/runs\/* OR *\\.0\\runs\\*)) OR TargetFilename:\/tmp\/zero\-engine\/*

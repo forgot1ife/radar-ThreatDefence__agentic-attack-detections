@@ -1,0 +1,3 @@
+# Mitsu User Agent in Proxy Logs
+# Sigma id 404c6310-7afa-5e1a-8304-068ed48aab1f, pipeline ecs
+from * metadata _id, _index, _version | where user_agent.original in ("Mitsu/0.1 (terminal assistant; public search)", "Mitsu updater")

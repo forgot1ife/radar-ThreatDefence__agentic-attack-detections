@@ -1,0 +1,32 @@
+title: Custom AI Agent (burp-ai-agent) MCP Server Certificate or MCP Bridge
+id: f39908c5-5234-5ef1-9ec1-f8ca7d491be7
+status: experimental
+description: |
+    Detects the Custom AI Agent Burp extension preparing its MCP server for remote use: the keytool command it runs to
+    make the self-signed CN=burp-mcp certificate when TLS is needed (mcp/McpTls.kt at b1738c0e), and the supergateway
+    bridge its README tells MCP clients such as Claude Desktop to run against http://127.0.0.1:9876/sse.
+references:
+    - https://github.com/six2dez/burp-ai-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1587.003
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_keytool:
+        CommandLine|contains|all:
+            - '-genkeypair'
+            - 'CN=burp-mcp'
+    selection_bridge:
+        CommandLine|contains|all:
+            - 'supergateway'
+            - ':9876/sse'
+    condition: 1 of selection_*
+falsepositives:
+    - Penetration testers and security teams who use the extension
+    - Other Burp MCP extensions on the same default port, for the bridge selection
+level: low

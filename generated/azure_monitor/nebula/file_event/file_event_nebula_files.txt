@@ -1,0 +1,4 @@
+# Nebula Data Folder, Runtime or Container Files Written
+# Sigma id a619ae46-1b9f-5f55-9811-c1eba1009840, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.local/share/nebula/v3/" or ObjectName contains "/io.nebula.security/core/") or (ObjectName startswith "/tmp/nebula-process-" and ObjectName endswith ".pid") or (ObjectName in~ ("/run/nebula/public-ip", "/etc/cron.d/nebula-public-ip", "/usr/local/share/nebula/security-tools.json", "/usr/local/bin/nebula-terminal-entrypoint", "/usr/local/lib/nebula-public-ip-update")) or (ObjectName startswith "/tmp/nebula-kali-" and ObjectName endswith "/Dockerfile") or (ObjectName startswith "/run/nebula-memory-runner/" or ObjectName startswith "/var/lib/nebula-memory-runner/")

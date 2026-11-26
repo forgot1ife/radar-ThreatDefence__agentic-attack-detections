@@ -1,0 +1,4 @@
+# Sage (Mythic) State and Trace Databases on a Mythic Server
+# Sigma id 1230384f-fc23-5c73-b219-b8ecf62fbdb0, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/InstalledServices/sage/" and (TargetFileName endswith "/sage.db" or TargetFileName endswith "/.phoenix/phoenix.db")) or TargetFileName contains "/.sage_engagement/" or TargetFileName endswith "/opt/sage_data/sage.db"

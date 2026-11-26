@@ -1,0 +1,4 @@
+# Nebula Core, Desktop Sidecar or Browser Sidecar Process
+# Sigma id fe4a3d7d-5728-5b90-80d1-833e25980251, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "nebula-core runtime-service" and ProcessCommandLine contains "--manifest-sha256") or ProcessCommandLine contains "nebula-core desktop-connect" or (ProcessCommandLine contains "nebula-core serve" or ProcessCommandLine contains "nebula-core headless" or ProcessCommandLine contains "-m nebula.v3.cli" or ProcessCommandLine contains "nebula-browserd")

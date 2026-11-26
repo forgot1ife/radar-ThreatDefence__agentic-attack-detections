@@ -1,0 +1,43 @@
+title: 0security State, Access Token or Remote Engine Files Written
+id: 9b5a7273-2f3d-58c3-b0f8-7f9dee0b2ac8
+status: experimental
+description: |
+    Detects files 0security writes: its state folder ~/.0 (the database 0.db, the server-mode access-token file,
+    the analytics install id and the log of analytics it sent, saved engine and web connections, per-run state
+    under runs/, the installer's bin/0security), and the folder /tmp/zero-engine it creates on a remote computer
+    when it deploys an engine there over SSH.
+references:
+    - https://github.com/0sec-labs/0security
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_state:
+        TargetFilename|endswith:
+            - '/.0/0.db'
+            - '/.0/access-token'
+            - '/.0/analytics-id'
+            - '/.0/analytics-sent.log'
+            - '/.0/engines.json'
+            - '/.0/web-connections.json'
+            - '/.0/bin/0security'
+            - '\.0\0.db'
+            - '\.0\access-token'
+            - '\.0\analytics-id'
+            - '\.0\analytics-sent.log'
+    selection_runs:
+        TargetFilename|contains:
+            - '/.0/runs/'
+            - '\.0\runs\'
+    selection_worker:
+        TargetFilename|startswith: '/tmp/zero-engine/'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams who use 0security
+    - Another program that keeps its state in a folder named .0
+level: low

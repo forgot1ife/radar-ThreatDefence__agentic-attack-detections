@@ -1,0 +1,8 @@
+# Where to start
+
+1. **Look at your Windows hosts.** Run `02-sage-mythic-tasks-on-your-windows-hosts.kql`. A command line or file with `SAGE_REMOTE_EXEC_PROOF_`, `sage_remote_exec_`, `sage_ep_adjust_`, `sage_ca_export_`, `sage_cert_enroll_` or `sage_gpo_`, a scheduled task named `SageExec_...`, or `certutil -p SagePfx-v1-...` means a Mythic callback on your network is taking tasks that Sage wrote. The parent of the command (usually `WmiPrvSE.exe`, `svchost.exe` for a task, or the payload's own process) leads to the callback.
+2. **Check what was changed.** Sage's defaults turn off Defender real-time monitoring and add `C:\Windows\Temp` as an exclusion, export the CA key with `certutil -backupKey`, request certificates with `certreq`, and write Group Policy immediate tasks. Undo them, and treat the exported CA key as stolen.
+3. **Check your own servers.** Hunt 01 finds Sage on a Mythic server you run: the `sage` container, `sage-entrypoint`, the BloodHound MCP under `/opt/bloodhound_mcp`, and `InstalledServices/sage/sage.db`. If it is yours, make sure port 6006 is not reachable: the Phoenix trace store holds every prompt and tool result, which can include credentials.
+4. **Look for exposure and traffic.** Hunt 03 and the Suricata rules find the Phoenix UI on 6006, Phoenix answers that carry `sage.kernel.` spans, Sage's GraphQL operation names to Mythic, its prompts in model requests (with decryption) and the SharpHound download.
+5. **Run the watchlist sweep** (hunt 04) for Sage's strings and paths.
+6. **Then the cross-framework hunts** in `behaviors/`: Mimikatz, Rubeus, SharpHound and DCSync from a Mythic payload look the same whoever drives them.

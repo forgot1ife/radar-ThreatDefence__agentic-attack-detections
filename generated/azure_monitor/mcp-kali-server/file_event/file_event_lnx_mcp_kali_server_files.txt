@@ -1,0 +1,4 @@
+# MCP Kali Server Files Written
+# Sigma id b8a0d660-48cf-505b-bf00-5001068dda48, pipeline azure_monitor
+SecurityEvent
+| where ObjectName endswith "/mks_msf_resource.rc" or ObjectName startswith "/usr/share/mcp-kali-server/" or (ObjectName endswith "/usr/bin/kali-server-mcp" or ObjectName endswith "/etc/default/kali-server-mcp" or ObjectName endswith "/systemd/system/kali-server-mcp.service")

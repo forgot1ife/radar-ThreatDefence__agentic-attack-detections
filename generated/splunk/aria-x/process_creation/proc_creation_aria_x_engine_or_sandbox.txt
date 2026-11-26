@@ -1,0 +1,3 @@
+# ARIA-X Engine, Console or Sandbox Command
+# Sigma id 7f6d76af-d992-54e8-9470-fa4afe2f2753, pipeline splunk_windows
+CommandLine="* -m aria_x *" OR CommandLine IN ("*/aria-x serve*", "*/aria-x run *", "*/aria-x demo*") OR CommandLine IN ("aria-x serve*", "aria-x run *", "aria-x demo*") OR (CommandLine="* run --rm -i *" CommandLine="*--name aria-x-*" CommandLine="*:/work -w /work*" CommandLine="*bash -lc*") OR (ParentCommandLine IN ("* -m aria_x *", "*/aria-x run *", "*/aria-x serve*") CommandLine IN ("bash -lc *", "/bin/bash -lc *"))

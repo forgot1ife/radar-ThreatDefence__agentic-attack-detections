@@ -1,0 +1,41 @@
+title: 0security Probe or Nuclei Target Scan Against a Live Endpoint
+id: 69c7dd9d-381a-5a6b-be5c-3d11304259ad
+status: experimental
+description: |
+    Detects 0security sending traffic to a live target rather than reading code: `0 probe <url>`, which POSTs fixed
+    prompt-injection, jailbreak, secret-request and tool-execution prompts to a model or agent endpoint (a public
+    host needs --i-own-this <host>), and `0 scan --scanner nuclei --target-url <url>`, which runs Nuclei with the
+    flags 0security always passes (-jle into a 0-nuclei-<random> temp folder, -etags intrusive,dos,fuzz, -pt http).
+references:
+    - https://github.com/0sec-labs/0security
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_probe_flag:
+        CommandLine|contains:
+            - ' probe http'
+            - '--i-own-this '
+    selection_probe_cli:
+        CommandLine|contains:
+            - '0security'
+            - '0.js'
+            - '0 probe '
+    selection_target_scan:
+        CommandLine|contains|all:
+            - '--target-url '
+            - '--scanner nuclei'
+    selection_nuclei:
+        CommandLine|contains|all:
+            - '0-nuclei-'
+            - '-etags intrusive,dos,fuzz'
+            - '-pt http'
+    condition: (selection_probe_flag and selection_probe_cli) or selection_target_scan or selection_nuclei
+falsepositives:
+    - Authorized tests of your own model endpoints and web applications with 0security
+level: medium

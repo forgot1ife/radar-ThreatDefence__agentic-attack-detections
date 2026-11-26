@@ -1,0 +1,5 @@
+{"name": "canary page posted", "expected": true, "event": {"cs-uri-stem": "/redis_test.php", "cs-method": "POST"}}
+{"name": "diagnostic page", "expected": true, "event": {"cs-uri-stem": "/redis_diag.php", "cs-method": "GET"}}
+{"name": "command page", "expected": true, "event": {"cs-uri-stem": "/uploads/redis_exec.php", "cs-method": "POST"}}
+{"name": "near miss: redis admin page", "expected": false, "event": {"cs-uri-stem": "/phpredisadmin/index.php", "cs-method": "GET"}}
+{"name": "near miss: similar name", "expected": false, "event": {"cs-uri-stem": "/redis_tests.php", "cs-method": "GET"}}

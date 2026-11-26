@@ -1,0 +1,4 @@
+{"name": "a web_probe request with the 0.3.0 user agent", "expected": true, "event": {"cs-method": "GET", "cs-uri-stem": "/robots.txt", "cs-uri-query": "", "cs-user-agent": "ARIA-X/0.3.0 (authorized security research)"}}
+{"name": "the 0.1 user agent as IIS logs it", "expected": true, "event": {"cs-method": "POST", "cs-uri-stem": "/api/login", "cs-uri-query": "", "cs-user-agent": "ARIA-X/0.1+(authorized+security+research)"}}
+{"name": "near miss: a mobile app named ARIA-X", "expected": false, "event": {"cs-method": "GET", "cs-uri-stem": "/feed", "cs-uri-query": "", "cs-user-agent": "ARIA-X/2.1 (Android 14)"}}
+{"name": "near miss: another scanner declaring authorized research", "expected": false, "event": {"cs-method": "GET", "cs-uri-stem": "/", "cs-uri-query": "", "cs-user-agent": "ResearchBot/1.0 (authorized security research)"}}

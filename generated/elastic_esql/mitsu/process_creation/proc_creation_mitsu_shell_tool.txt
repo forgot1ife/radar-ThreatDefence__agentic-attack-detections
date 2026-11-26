@@ -1,0 +1,3 @@
+# Mitsu Shell Tool Command
+# Sigma id b3879fc7-bb18-5a67-924a-4712b08de033, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*/bin/bash -o pipefail -c *" and (ends_with(process.parent.command_line, "/bin/mitsu") or ends_with(process.parent.command_line, " -m mitsu") or process.parent.command_line like "*/uv/tools/mitsu/*")

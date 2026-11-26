@@ -1,0 +1,31 @@
+title: Mitsu User Agent in Proxy Logs
+id: 404c6310-7afa-5e1a-8304-068ed48aab1f
+status: experimental
+description: |
+    Detects the fixed user agents of Mitsu, an AI pentest agent. "Mitsu/0.1 (terminal assistant; public search)" is
+    sent by its web_search tool when the model opens a URL (the system prompt tells the model to open any URL the
+    operator gives this way, so target web pages get it), by its search-engine scraping (DuckDuckGo, Google, Bing,
+    Brave, Mojeek, Ecosia, Yahoo, Startpage) and by its search API calls. "Mitsu updater" is sent to pypi.org when the
+    operator opens the update panel of a PyPI install. Most of this traffic is HTTPS, so a proxy sees the user agent
+    only with TLS inspection.
+references:
+    - https://github.com/ARCANGEL0/Mitsu
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1594
+    - attack.t1593.002
+logsource:
+    category: proxy
+detection:
+    selection:
+        # search/engines.py:77,123,293,449 and tui/updates.py:186 at a4844932
+        c-useragent:
+            - 'Mitsu/0.1 (terminal assistant; public search)'
+            - 'Mitsu updater'
+    condition: selection
+falsepositives:
+    - Authorized tests, CTF and lab work with Mitsu
+level: medium

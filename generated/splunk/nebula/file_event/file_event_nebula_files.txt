@@ -1,0 +1,3 @@
+# Nebula Data Folder, Runtime or Container Files Written
+# Sigma id a619ae46-1b9f-5f55-9811-c1eba1009840, pipeline splunk_windows
+TargetFilename IN ("*/.local/share/nebula/v3/*", "*/io.nebula.security/core/*") OR (TargetFilename="/tmp/nebula-process-*" TargetFilename="*.pid") OR TargetFilename IN ("/run/nebula/public-ip", "/etc/cron.d/nebula-public-ip", "/usr/local/share/nebula/security-tools.json", "/usr/local/bin/nebula-terminal-entrypoint", "/usr/local/lib/nebula-public-ip-update") OR (TargetFilename="/tmp/nebula-kali-*" TargetFilename="*/Dockerfile") OR TargetFilename IN ("/run/nebula-memory-runner/*", "/var/lib/nebula-memory-runner/*")

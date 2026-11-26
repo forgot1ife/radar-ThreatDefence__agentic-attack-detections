@@ -1,0 +1,2 @@
+Mitsu updater
+Mitsu/0.1 (terminal assistant; public search)

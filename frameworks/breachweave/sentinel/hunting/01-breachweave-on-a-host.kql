@@ -1,0 +1,37 @@
+// BreachWeave (tch-agent) web console, solver containers or image builds on a host you monitor
+// Agentic attack detections by ThreatDefence (BreachWeave). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1610 (Deploy Container), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// BreachWeave (m-sec-org/BreachWeave, reviewed at bc2d9502 on main and 6957a55f on the pentest branch) is a Bun
+// multi-agent pentest platform. No report of its use in a real intrusion was found on November 26, 2026, so this hunt
+// looks for the software itself:
+//  - Console: bun run apps/cli/src/main.ts web [-l host:port] or a compiled tch-agent-<os>-<arch> web; 127.0.0.1:3000.
+//  - Solvers: docker run ... --name tch-solver-<id> ... tch-agent:latest /opt/tch-agent/tch-agent solver rpc --env ...
+//  - Image build: docker buildx build ... -t tch-agent:latest --label ai.tch-agent.dockerfile-sha256=<hash>.
+//  - Files: ~/.tch-agent/config, solvers, archive_solvers, challenge, runtime/self/tch-agent-linux-x64.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Markers = dynamic(["--name tch-solver-", "/opt/tch-agent/tch-agent solver rpc", "ai.tch-agent.dockerfile-sha256=",
+    "apps/cli/src/main.ts web", "/.tch-agent/runtime/self/tch-agent-linux-x64"]);
+let Binaries = dynamic(["tch-agent-linux-x64", "tch-agent-darwin-arm64", "tch-agent-darwin-x64", "tch-agent-windows-x64.exe"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (Markers) or FileName in~ (Binaries)
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 300), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="BreachWeave console, solver container or build", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/.tch-agent/" or FolderPath has @"\.tch-agent\" or FolderPath has "/.tch-networks-output/"
+            or FileName =~ "THIS_IS_DOCKER_CONTAINER_NOT_TARGET_MACHINE.txt"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="BreachWeave home folder, solver state or crawler output", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated"
+        | where InitiatingProcessCommandLine has "apps/cli/src/main.ts web" or InitiatingProcessFileName in~ (Binaries)
+        | summarize Ports=make_set(strcat(LocalIP, ":", LocalPort), 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, Signal="Port opened by the BreachWeave console (127.0.0.1:3000 by default)",
+            Detail=strcat(InitiatingProcessFileName, " ", tostring(Ports)))
+| order by Timestamp desc

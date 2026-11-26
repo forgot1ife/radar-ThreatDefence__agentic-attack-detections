@@ -1,0 +1,72 @@
+{
+ "description": "20 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 9,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "mcp-kali-server",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: MCP Kali Server running on a host you monitor; Sigma: MCP Kali Server Health Check or Tool Run Under Its API Server",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1046"
+  },
+  {
+   "comment": "Sigma: MCP Kali Server Health Check or Tool Run Under Its API Server; Sigma: MCP Kali Server Metasploit Resource File Run; Suricata: 3818605 TD MCP Kali Server Metasploit module request on port 5000",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: MCP Kali Server API calls in firewall, proxy and network logs; KQL hunt: MCP Kali Server running on a host you monitor; Sentinel analytics: MCP Kali Server command API on a host; Sigma: MCP Kali Server API Server or MCP Client Started; Suricata: 3818602 TD MCP Kali Server command result from the API on port 5000; Suricata: 3818603 TD MCP Kali Server raw command API request on port 5000; YARA: MCPKaliServer_API_Server",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: MCP Kali Server API calls in firewall, proxy and network logs; Sigma: MCP Kali Server API Called Across the Network; Suricata: 3818601 TD MCP Kali Server health answer; Suricata: 3818602 TD MCP Kali Server command result from the API on port 5000; Suricata: 3818603 TD MCP Kali Server raw command API request on port 5000; Suricata: 3818604 TD MCP Kali Server tool API request on port 5000; Suricata: 3818605 TD MCP Kali Server Metasploit module request on port 5000; Suricata: 3818607 TD MCP Kali Server tool descriptions in a model request; Suricata: 3818608 TD MCP Kali Server instructions in a model request",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: MCP Kali Server running on a host you monitor; Sigma: MCP Kali Server API Server or MCP Client Started; Sigma: MCP Kali Server Files Written; YARA: MCPKaliServer_API_Server; YARA: MCPKaliServer_Kali_Package_Units; YARA: MCPKaliServer_MCP_Client",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3818606 TD MCP Kali Server stub tool route requested",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

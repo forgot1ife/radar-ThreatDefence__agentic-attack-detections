@@ -1,0 +1,3 @@
+# MCP Kali Server Files Written
+# Sigma id b8a0d660-48cf-505b-bf00-5001068dda48, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(TargetFilename, "/mks_msf_resource.rc") or starts_with(TargetFilename, "/usr/share/mcp-kali-server/") or ends_with(TargetFilename, "/usr/bin/kali-server-mcp") or ends_with(TargetFilename, "/etc/default/kali-server-mcp") or ends_with(TargetFilename, "/systemd/system/kali-server-mcp.service")

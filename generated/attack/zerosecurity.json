@@ -1,0 +1,65 @@
+{
+ "description": "40 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 21,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "zerosecurity",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: 0security CLI, web console, remote engine or live-target tests on a host you monitor; Sigma: 0security CLI, Web Console or Remote Engine Started; Sigma: 0security Verification Container Created",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: 0security client traffic, console calls and playbook canaries in proxy and web logs; Sigma: 0security Client Traffic in Proxy Logs; Sigma: 0security Cloud Host Lookup; Suricata: 3819216 TD 0security console page (Command Center title); Suricata: 3819217 TD 0security console page carries its control token (full API access); Suricata: 3819218 TD 0security server-mode sign-in page; Suricata: 3819219 TD 0security server-mode host allow-list refusal; Suricata: 3819220 TD 0security console health answer (modelTransport counters); Suricata: 3819221 TD 0security local console refused a non-loopback Host; Suricata: 3819222 TD 0security console response header X-0-Request-ID; Suricata: 3819223 TD 0security console API call with X-0-Control-Token; Suricata: 3819224 TD 0security server-mode sign-in attempt to /_access/login; Suricata: 3819225 TD 0security server-mode anonymous API refusal; Suricata: 3819226 TD 0security console API refused without its control token; Suricata: 3819227 TD 0security server-mode session cookie zero_access set",
+   "enabled": true,
+   "score": 15,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: 0security client traffic, console calls and playbook canaries in proxy and web logs; Sigma: 0security Playbook Canary or Bogus Method in Web Logs; Suricata: 3819201 TD 0security probe direct-override prompt; Suricata: 3819202 TD 0security probe delimiter-injection prompt (fake system markup); Suricata: 3819203 TD 0security probe indirect-document prompt (note to the assistant); Suricata: 3819204 TD 0security probe encoded-instruction prompt (fixed Base64 prefix); Suricata: 3819205 TD 0security probe persona-jailbreak prompt (DAN token); Suricata: 3819206 TD 0security probe system-prompt-extraction prompt; Suricata: 3819207 TD 0security probe secret-request prompt; Suricata: 3819208 TD 0security probe tool-execution prompt (echo canary, id); Suricata: 3819209 TD 0security probe markdown-exfiltration prompt (example.invalid image); Suricata: 3819210 TD 0security probe raw-html-output prompt (img onerror canary); Suricata: 3819211 TD 0security prompt-injection canary ZERO-INJ-OK in a request body; Suricata: 3819212 TD 0security prompt-injection canary ZERO-INJ-OK in a URI",
+   "enabled": true,
+   "score": 14,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: 0security CLI, web console, remote engine or live-target tests on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: 0security CLI, Web Console or Remote Engine Started; Sigma: 0security State, Access Token or Remote Engine Files Written; YARA: ZeroSecurity_CLI_Bundle_Or_Binary",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: 0security CLI, web console, remote engine or live-target tests on a host you monitor; KQL hunt: 0security client traffic, console calls and playbook canaries in proxy and web logs; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: 0security probe or Nuclei target scan of a live endpoint; Sigma: 0security Playbook Canary or Bogus Method in Web Logs; Sigma: 0security Probe or Nuclei Target Scan Against a Live Endpoint; Suricata: 3819201 TD 0security probe direct-override prompt; Suricata: 3819202 TD 0security probe delimiter-injection prompt (fake system markup); Suricata: 3819203 TD 0security probe indirect-document prompt (note to the assistant); Suricata: 3819204 TD 0security probe encoded-instruction prompt (fixed Base64 prefix); Suricata: 3819205 TD 0security probe persona-jailbreak prompt (DAN token); Suricata: 3819206 TD 0security probe system-prompt-extraction prompt; Suricata: 3819207 TD 0security probe secret-request prompt; Suricata: 3819208 TD 0security probe tool-execution prompt (echo canary, id); Suricata: 3819209 TD 0security probe markdown-exfiltration prompt (example.invalid image); Suricata: 3819210 TD 0security probe raw-html-output prompt (img onerror canary); Suricata: 3819213 TD 0security XSS reflection canary osec123xss in a URI; Suricata: 3819214 TD 0security XSS reflection canary osec123xss in a request body; Suricata: 3819215 TD 0security playbook bogus HTTP method ZERO (auth bypass probe); YARA: ZeroSecurity_CLI_Bundle_Or_Binary; YARA: ZeroSecurity_Probe_Report",
+   "enabled": true,
+   "score": 21,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

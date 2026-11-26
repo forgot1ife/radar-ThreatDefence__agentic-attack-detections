@@ -1,0 +1,42 @@
+// Nebula running on a host you monitor
+// Agentic attack detections by ThreatDefence (Nebula). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1610 (Deploy Container), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the Nebula source code (BerylliumSec/nebula at 409bf4f9). It is a Python core with a Tauri desktop app that runs
+// its agents' commands in a Kali container (Docker or Podman) or on the host:
+//  - Core: nebula-core runtime-service --data-dir ... --manifest-sha256 ...; nebula-core desktop-connect; nebula-core
+//    serve or headless; python -m nebula.v3.cli serve (container image); nebula-browserd
+//  - Agent commands: docker exec ... nebula-runtime-<id> /usr/bin/python3 -c "...os.execv('/bin/bash',['/bin/bash',
+//    '--noprofile','--norc','-c',sys.argv[2]])" /tmp/nebula-process-<id>.pid "<command>"
+//  - Containers nebula-runtime-*, nebula-terminal-*, nebula-exec-*; image localhost/nebula-kali-headless
+//  - Files: ~/.local/share/nebula/v3/, <app data>/io.nebula.security/core/, /tmp/nebula-process-*.pid,
+//    /run/nebula/public-ip, /etc/cron.d/nebula-public-ip
+// Commands that run inside its containers are seen only where the EDR covers container processes.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine contains "os.execv('/bin/bash',['/bin/bash','--noprofile','--norc','-c',sys.argv[2]])"
+            or ProcessCommandLine contains "/tmp/nebula-process-"
+            or ProcessCommandLine contains "localhost/nebula-kali-headless"
+            or ProcessCommandLine contains "--name=nebula-terminal-"
+            or ProcessCommandLine contains "--name=nebula-runtime-"
+            or ProcessCommandLine contains "/usr/local/lib/nebula-public-ip-update"
+            or (ProcessCommandLine contains "nebula-core runtime-service" and ProcessCommandLine contains "--manifest-sha256")
+            or ProcessCommandLine contains "nebula-core desktop-connect"
+            or ProcessCommandLine contains "nebula-core serve"
+            or ProcessCommandLine contains "nebula-core headless"
+            or ProcessCommandLine contains "-m nebula.v3.cli"
+            or FileName =~ "nebula-browserd"
+        | project Timestamp, DeviceName, AccountName, Signal="Nebula process", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath contains "/.local/share/nebula/v3/" or FolderPath contains "/io.nebula.security/core/"
+            or (FolderPath startswith "/tmp/nebula-process-" and FileName endswith ".pid")
+            or FolderPath in~ ("/run/nebula/public-ip", "/etc/cron.d/nebula-public-ip", "/usr/local/share/nebula/security-tools.json")
+            or FolderPath startswith "/var/lib/nebula-memory-runner/"
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, AccountName=InitiatingProcessAccountName, FolderPath
+        | project Timestamp, DeviceName, AccountName, Signal="Nebula files", Detail=strcat(FolderPath, " ", tostring(Files)), Parent="")
+| order by Timestamp desc

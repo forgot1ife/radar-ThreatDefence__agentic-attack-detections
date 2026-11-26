@@ -1,0 +1,79 @@
+{
+ "description": "32 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 19,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "raptor",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: RAPTOR running on a host you monitor; Sigma: RAPTOR Launcher, Pipelines or Helper Scripts",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: RAPTOR web scanner in web and proxy logs: its user agent, probe paths and probe values, and its client user agents; Suricata: 3819907 TD RAPTOR web scanner user enumeration probe account; Suricata: 3819908 TD RAPTOR web scanner lockout probe password; Suricata: 3819909 TD RAPTOR web scanner final lockout probe password",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.001"
+  },
+  {
+   "comment": "KQL hunt: RAPTOR running on a host you monitor; Sigma: RAPTOR Run Folders, Generated Exploits or Configuration Written; YARA: RAPTOR_Web_PoC_Artifacts",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1587.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: RAPTOR running on a host you monitor; Sigma: RAPTOR Launcher, Pipelines or Helper Scripts; Sigma: RAPTOR Run Folders, Generated Exploits or Configuration Written; Sigma: RAPTOR Scanner or Client User Agents in Proxy Logs; Suricata: 3819930 TD RAPTOR HTTP client user agent (core or SCA); Suricata: 3819931 TD RAPTOR helper client user agent; Suricata: 3819932 TD RAPTOR cve-diff or cve-env client user agent; YARA: RAPTOR_Claude_Code_Settings; YARA: RAPTOR_Source_Or_Install",
+   "enabled": true,
+   "score": 10,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Sentinel analytics: RAPTOR web scanner against a monitored site",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: RAPTOR web scanner in web and proxy logs: its user agent, probe paths and probe values, and its client user agents; Sigma: RAPTOR Scanner or Client User Agents in Proxy Logs; Sigma: RAPTOR Web Scanner User Agent or Probe Markers in Web Logs; Suricata: 3819901 TD RAPTOR web scanner user agent; Suricata: 3819902 TD RAPTOR web scanner probe host in a request header; Suricata: 3819903 TD RAPTOR web scanner probe host in the URI (OAuth redirect_uri check); Suricata: 3819904 TD RAPTOR web scanner OAuth state value; Suricata: 3819905 TD RAPTOR web scanner prototype pollution sentinel in a request body; Suricata: 3819906 TD RAPTOR web scanner prototype pollution sentinel in the URI; Suricata: 3819907 TD RAPTOR web scanner user enumeration probe account; Suricata: 3819910 TD RAPTOR web scanner error-page probe path; Suricata: 3819911 TD RAPTOR web scanner random control path; Suricata: 3819912 TD RAPTOR web scanner CL.0 request smuggling probe; Suricata: 3819914 TD RAPTOR web scanner cache-buster with X-Forwarded-Host callback; Suricata: 3819915 TD RAPTOR web scanner XSS execution canary; Suricata: 3819916 TD RAPTOR web scanner baseline value in the URI; Suricata: 3819917 TD RAPTOR web scanner baseline value in a JSON body; Suricata: 3819918 TD RAPTOR web scanner baseline e-mail address",
+   "enabled": true,
+   "score": 19,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "KQL hunt: RAPTOR web scanner in web and proxy logs: its user agent, probe paths and probe values, and its client user agents; Suricata: 3819913 TD RAPTOR web scanner parameter mining baseline",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

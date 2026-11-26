@@ -1,0 +1,5 @@
+{"name": "packaged API server wrapper started by systemd", "expected": true, "event": {"Image": "/usr/bin/dash", "CommandLine": "sh /usr/bin/kali-server-mcp --ip 127.0.0.1 --port 5000", "User": "_mcp-kali"}}
+{"name": "packaged API server after the wrapper's cd and exec", "expected": true, "event": {"Image": "/usr/bin/python3.13", "CommandLine": "python3 server.py --ip 0.0.0.0 --port 5000", "CurrentDirectory": "/usr/share/mcp-kali-server", "User": "kali"}}
+{"name": "git checkout client started by an MCP host", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 /opt/MCP-Kali-Server/client.py --server http://192.0.2.10:5000/", "User": "op"}}
+{"name": "near miss: another Flask app's server.py on 5000", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 server.py --port 5000", "CurrentDirectory": "/opt/shop", "User": "www-data"}}
+{"name": "near miss: another client.py on another port", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 client.py --server http://192.0.2.10:8888", "User": "op"}}

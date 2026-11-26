@@ -1,0 +1,39 @@
+title: BreachWeave (tch-agent) Home Folder, Solver State or Crawler Output Written
+id: 55bd5b4d-01fe-5887-b038-f7f5cf898c47
+status: experimental
+description: |
+    Detects files BreachWeave writes on the host that runs it: ~/.tch-agent/config (auth.json, models.json,
+    provider-prefs.json, settings.json, users.json on the pentest branch), ~/.tch-agent/solvers/<id> and
+    archive_solvers (startup.json, session, workspace), ~/.tch-agent/challenge, the compiled Linux solver binary in
+    ~/.tch-agent/runtime/self/, the marker file its solver image writes, and the .tch-networks-output folder of the
+    tch-headless crawler its skill drives.
+references:
+    - https://github.com/m-sec-org/BreachWeave
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.credential-access
+    - attack.t1552.001
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        TargetFilename|contains:
+            - '/.tch-agent/config/'
+            - '/.tch-agent/solvers/'
+            - '/.tch-agent/archive_solvers/'
+            - '/.tch-agent/challenge/'
+            - '/.tch-agent/runtime/'
+            - '\.tch-agent\config\'
+            - '\.tch-agent\solvers\'
+    selection_marker:
+        TargetFilename|endswith: '/THIS_IS_DOCKER_CONTAINER_NOT_TARGET_MACHINE.txt'
+    selection_crawler:
+        TargetFilename|contains: '/.tch-networks-output/'
+    condition: 1 of selection_*
+falsepositives:
+    - Red teams, CTF teams and researchers running BreachWeave
+level: medium

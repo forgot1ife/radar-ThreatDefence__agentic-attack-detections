@@ -1,0 +1,36 @@
+title: Nebula Core, Desktop Sidecar or Browser Sidecar Process
+id: fe4a3d7d-5728-5b90-80d1-833e25980251
+status: experimental
+description: |
+    Detects the processes of Nebula (BerylliumSec/nebula), an operator workstation whose agents run commands in a Kali
+    container or on the host: the core started by the desktop app (nebula-core runtime-service with --manifest-sha256
+    and --startup-id, nebula-core desktop-connect --bootstrap-stdin), the core run by hand or in its container image
+    (nebula-core serve or headless, python -m nebula.v3.cli serve), and its managed Chromium sidecar nebula-browserd.
+references:
+    - https://github.com/BerylliumSec/nebula
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_runtime:
+        CommandLine|contains|all:
+            - 'nebula-core runtime-service'
+            - '--manifest-sha256'
+    selection_desktop:
+        CommandLine|contains: 'nebula-core desktop-connect'
+    selection_cli:
+        CommandLine|contains:
+            - 'nebula-core serve'
+            - 'nebula-core headless'
+            - '-m nebula.v3.cli'
+            - 'nebula-browserd'
+    condition: 1 of selection_*
+falsepositives:
+    - Penetration testers and security teams running Nebula
+level: low

@@ -1,0 +1,2 @@
+{"name": "the cloud host", "expected": true, "event": {"QueryName": "cloud.0.security", "Image": "/home/dev/.0/bin/0security"}}
+{"name": "near miss: the documentation site", "expected": false, "event": {"QueryName": "docs.0.security", "Image": "/usr/bin/firefox"}}

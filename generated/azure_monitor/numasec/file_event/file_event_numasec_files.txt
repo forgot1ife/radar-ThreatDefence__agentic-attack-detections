@@ -1,0 +1,4 @@
+# numasec Operation, Database or Out-of-Band Session Files Written
+# Sigma id c601624c-74b4-5cfe-81ad-0c3bd1492ffe, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.numasec/operation/" or ObjectName endswith "\\.numasec\\operation*") or (ObjectName endswith "/numasec/numasec.db" or ObjectName endswith "\\numasec\\numasec.db" or ObjectName endswith "/numasec/interact-sessions.json" or ObjectName endswith "\\numasec\\interact-sessions.json")

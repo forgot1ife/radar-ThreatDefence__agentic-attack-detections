@@ -1,0 +1,40 @@
+title: Agentic Bug Hunter Scanner Markers in Web Logs
+id: 6e8b9896-8608-56e0-96ed-a67d31fe57cb
+status: experimental
+description: |
+    Detects requests from the Agentic Bug Hunter toolkit (awarexone/Agentic-Bug-Hunter at 82f4512e): the user agents its
+    scanners and verifiers set (agentic-bug-hunter/<tool>), the user agent of its password spray and wordlist crawl
+    (Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Bug-Bounty-Research), its WAF analyzer user agent, the WAF
+    baseline parameter _waftest=, the CRLF canary Set-Cookie:crlftest=1, the DOM XSS hook window.__cbbx and the SAML
+    control path /saml-control-<number>. All strings are fixed in the scripts.
+references:
+    - https://github.com/awarexone/Agentic-Bug-Hunter
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_ua_tool:
+        cs-user-agent|startswith: 'agentic-bug-hunter/'
+    selection_ua_other:
+        cs-user-agent|endswith: 'Bug-Bounty-Research'
+    selection_ua_waf:
+        cs-user-agent|contains: 'waf-response-analyzer/1.0'
+    selection_query:
+        cs-uri-query|contains:
+            - '_waftest='
+            - 'window.__cbbx'
+    selection_path:
+        cs-uri-stem|contains:
+            - 'crlftest=1'
+            - '/saml-control-'
+    condition: 1 of selection_*
+falsepositives:
+    - Bug bounty hunters testing your applications with Agentic Bug Hunter under a program's rules
+level: medium

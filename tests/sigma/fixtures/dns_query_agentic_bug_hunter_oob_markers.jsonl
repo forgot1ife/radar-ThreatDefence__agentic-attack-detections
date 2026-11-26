@@ -1,0 +1,4 @@
+{"name": "a blind ssrf marker", "expected": true, "event": {"QueryName": "ssrf-1a2b3c4d5e6f.c59e3crp82ke7bcnk1d0gdz3e7ikb8syb.oast.pro", "Image": "/usr/bin/java"}}
+{"name": "a log4shell marker", "expected": true, "event": {"QueryName": "log4j-abcdef012345.oob.example.test", "Image": "/usr/bin/java"}}
+{"name": "near miss: a host called ssrf-proxy", "expected": false, "event": {"QueryName": "ssrf-proxy.example.test", "Image": "/usr/bin/curl"}}
+{"name": "near miss: a marker that is not 12 hex", "expected": false, "event": {"QueryName": "rce-1a2b3c.example.test", "Image": "/usr/bin/curl"}}

@@ -48,7 +48,7 @@ def ecs():
     network_fields = {
         "dns_query": {"QueryName": "dns.question.name"},
         "proxy": {"c-uri": "url.original", "c-useragent": "user_agent.original", "cs-host": "url.domain"},
-        "webserver": {"cs-uri-stem": "url.path", "cs-uri-query": "url.query", "cs-user-agent": "user_agent.original"},
+        "webserver": {"cs-uri-stem": "url.path", "cs-uri-query": "url.query", "cs-user-agent": "user_agent.original", "cs-host": "url.domain"},
     }
     network_pipeline = ProcessingPipeline(name="ECS DNS, proxy and web server fields", priority=30, items=[
         ProcessingItem(identifier=f"ecs_{category}_fields", transformation=FieldMappingTransformation(fields),

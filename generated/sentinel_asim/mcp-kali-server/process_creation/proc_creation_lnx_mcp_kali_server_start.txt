@@ -1,0 +1,4 @@
+# MCP Kali Server API Server or MCP Client Started
+# Sigma id 007a41b4-3da4-5e66-909c-c458ddd16746, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "/usr/bin/kali-server-mcp" or TargetProcessCommandLine contains "/usr/share/mcp-kali-server/") or (TargetProcessCurrentDirectory startswith "/usr/share/mcp-kali-server" and (TargetProcessCommandLine contains "server.py" or TargetProcessCommandLine contains "client.py")) or TargetUsername =~ "_mcp-kali" or (TargetProcessCommandLine contains "client.py" and TargetProcessCommandLine contains "--server http" and TargetProcessCommandLine contains ":5000")

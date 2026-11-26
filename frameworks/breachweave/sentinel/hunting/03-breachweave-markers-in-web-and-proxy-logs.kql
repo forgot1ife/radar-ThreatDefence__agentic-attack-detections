@@ -1,0 +1,29 @@
+// BreachWeave Redis web root pages, NPS client downloads and console calls in web and proxy logs
+// Agentic attack detections by ThreatDefence (BreachWeave). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1505.003 (Server Software Component: Web Shell), T1105 (Ingress Tool Transfer), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From BreachWeave's shipped skills and web console (m-sec-org/BreachWeave at bc2d9502 and 6957a55f):
+//  - redis-webroot-rce and intranet-pentest write redis_test.php (or redis_echo.php), redis_diag.php and redis_exec.php
+//    into a web root through Redis, then POST cmd=RCOK to the first and run commands through the last.
+//  - The compromised host then fetches the NPS client from the operator's bridge: /files/nps/npc_windows_amd64.exe or
+//    /files/nps/npc_linux_amd64 on port 44944 in the skills.
+//  - Requests from your network to /api/runtime/solvers, /api/config/providers or a /stream?token=eyJ URL on another
+//    host are someone using a BreachWeave console (on main, with no authentication).
+
+let Pages = dynamic(["/redis_test.php", "/redis_diag.php", "/redis_exec.php", "/redis_echo.php"]);
+let Console = @"/api/(runtime/solvers|runtime/stream|config/providers|config/api-keys|config/host-settings|auth/settings)|/stream\?token=eyJ";
+union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(30d)
+        | where csUriStem has_any (Pages)
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), URLs=make_set(csUriStem, 5),
+            Methods=make_set(csMethod, 3) by Source="W3CIISLog", Src=cIP, Dst=sSiteName, Signal="Redis web root page"),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(30d)
+        | extend Path = tostring(split(RequestURL, "?")[0])
+        | where Path has_any (Pages) or RequestURL has "/files/nps/npc_" or RequestURL matches regex Console
+        | extend Signal = case(Path has_any (Pages), "Redis web root page", RequestURL has "/files/nps/npc_", "NPS client download from a bridge",
+            "BreachWeave console call")
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), URLs=make_set(RequestURL, 5),
+            Methods=make_set(RequestMethod, 3) by Source="CommonSecurityLog", Src=SourceIP, Dst=DestinationHostName, Signal)
+| order by LastSeen desc

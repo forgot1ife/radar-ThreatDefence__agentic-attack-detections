@@ -1,0 +1,45 @@
+title: RAPTOR Scanner or Client User Agents in Proxy Logs
+id: 1c133e20-4404-5377-b72d-f92356a26f91
+status: experimental
+description: |
+    Detects the user agents hard-coded in RAPTOR (gadievron/raptor): the web scanner's "RAPTOR Security Scanner
+    (Authorized Testing)", which a proxy sees when someone inside runs a scan out through it, and the clients RAPTOR
+    uses from the operator's host to reach package registries, GitHub, OSV, NVD and OCI registries (raptor/0.1 and
+    raptor-sca/0.1 with the project link, raptor-nvd, raptor-sca, raptor-env-verify, raptor-container-evidence,
+    raptor-uv-provenance, raptor-cvefix-envs), and its cve-diff and cve-env packages. Most of these go over TLS, so the
+    proxy must log the user agent of inspected traffic.
+references:
+    - https://github.com/gadievron/raptor
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection_scanner:
+        c-useragent|startswith: 'RAPTOR Security Scanner'
+    selection_core:
+        c-useragent|endswith: '(+https://github.com/gadievron/raptor)'
+    selection_helpers:
+        c-useragent|startswith:
+            - 'raptor-nvd/'
+            - 'raptor-env-verify/'
+            - 'raptor-container-evidence/'
+            - 'raptor-uv-provenance/'
+            - 'raptor-cvefix-envs/'
+    selection_release_check:
+        c-useragent: 'raptor-sca'
+    selection_cve_tools:
+        c-useragent:
+            - 'cve-env/0.1 (agentic CVE env builder)'
+            - 'cve-diff/0.1 (+https://github.com/cve-diff)'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests and research with RAPTOR
+    - Another tool that copies the user agent strings
+level: low

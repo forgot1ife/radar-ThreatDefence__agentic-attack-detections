@@ -1,0 +1,3 @@
+# MCP Kali Server API Server or MCP Client Started
+# Sigma id 007a41b4-3da4-5e66-909c-c458ddd16746, pipeline splunk_windows
+CommandLine IN ("*/usr/bin/kali-server-mcp*", "*/usr/share/mcp-kali-server/*") OR (CurrentDirectory="/usr/share/mcp-kali-server*" CommandLine IN ("*server.py*", "*client.py*")) OR User="_mcp-kali" OR (CommandLine="*client.py*" CommandLine="*--server http*" CommandLine="*:5000*")

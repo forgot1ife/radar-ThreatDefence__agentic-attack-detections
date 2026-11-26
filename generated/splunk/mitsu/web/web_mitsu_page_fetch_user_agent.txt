@@ -1,0 +1,3 @@
+# Mitsu Page Fetch User Agent in Web Logs
+# Sigma id 551b42bc-e87a-5189-ad7e-6dc4e9d6be2d, pipeline splunk_windows
+"cs-user-agent"="Mitsu/0.1 (terminal assistant; public search)"

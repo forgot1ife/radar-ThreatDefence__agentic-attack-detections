@@ -1,0 +1,40 @@
+// ARIA-X engine, console or sandbox on a host you monitor
+// Agentic attack detections by ThreatDefence (ARIA-X). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell), T1610 (Deploy Container)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// From the ARIA-X source code (01NGVI-QINGYI/ARIA-X, reviewed at 015e197, v0.3.0):
+//  - The engine runs as "python -m aria_x <subcommand>" (container: "python -m aria_x serve --host 0.0.0.0 --port 8787")
+//    or "<bin>/aria-x serve|run|demo". The console listens on TCP 8787, 127.0.0.1 by default.
+//  - With the default local sandbox every model command is "bash -lc <command>" under the ARIA-X Python process, with
+//    ARIA_X_SANDBOX=1; with the docker sandbox it is "docker run --rm -i --name aria-x-<12 hex> --network bridge
+//    -v <runs>/run_<id>/work:/work -w /work kalilinux/kali-rolling bash -lc <command>" (sessions: aria-x-sess-<8 hex>).
+//  - Files: <data>/aria-x.db (+ -wal, -shm), <runs>/run_<12 hex>/work/evidence/http_<date>_<time>_<n>.json,
+//    <runs>/run_<12 hex>/report.html|md|json, configs/aria-x.toml, temp folders aria-x-work-*, aria-x-tools-*.
+//  - ARTEX's port-8787 hunts also list an ARIA-X console; this hunt tells them apart by the command line.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has " -m aria_x "
+            or ProcessCommandLine has_any ("/aria-x serve", "/aria-x run ", "/aria-x demo")
+            or ProcessCommandLine startswith "aria-x "
+            or (ProcessCommandLine has "--name aria-x-" and ProcessCommandLine has ":/work -w /work" and ProcessCommandLine has "bash -lc")
+            or (ProcessCommandLine matches regex @"^(/bin/)?bash -lc " and (InitiatingProcessCommandLine has " -m aria_x " or InitiatingProcessCommandLine has_any ("/aria-x run ", "/aria-x serve")))
+        | summarize Events=count(), Commands=make_set(substring(ProcessCommandLine, 0, 250), 20), Timestamp=min(Timestamp)
+            by DeviceName, Parent=InitiatingProcessCommandLine
+        | project Timestamp, DeviceName, Signal="ARIA-X engine, console or sandbox command", Detail=tostring(Commands), Parent),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort == 8787
+        | where InitiatingProcessCommandLine has "aria_x" or InitiatingProcessCommandLine has "aria-x"
+        | project Timestamp, DeviceName, Signal=iff(LocalIP in ("127.0.0.1", "::1"), "ARIA-X console listening on loopback", "ARIA-X console listening on a reachable address"),
+            Detail=strcat(LocalIP, ":", LocalPort), Parent=InitiatingProcessCommandLine),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ ("aria-x.db", "aria-x.db-wal", "aria-x.db-shm", "aria-x.toml")
+            or (FolderPath has "/runs/run_" and FolderPath has "/work/evidence/http_")
+            or FolderPath has_any ("/aria-x-work-", "/aria-x-tools-", "/aria-x-doctor-", "/aria-x-demo-target-")
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, Parent=InitiatingProcessCommandLine
+        | project Timestamp, DeviceName, Signal="ARIA-X database, run evidence or working folder", Detail=tostring(Files), Parent)
+| order by Timestamp desc

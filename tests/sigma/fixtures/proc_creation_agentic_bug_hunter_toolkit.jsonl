@@ -1,0 +1,5 @@
+{"name": "the package install", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 -m pip install agentic-bug-hunter"}}
+{"name": "the autonomous agent", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "/home/user/.venv/bin/python3 /home/user/.local/bin/bughunter-agent --target app.example.test --time 2"}}
+{"name": "the hunt dashboard server", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 bughunter/tools/hunt_dashboard.py serve --port 8777"}}
+{"name": "the recon script", "expected": true, "event": {"Image": "/bin/bash", "CommandLine": "bash /opt/hunt/bughunter/tools/recon_engine.sh app.example.test"}}
+{"name": "near miss: another bug bounty helper", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 bbhelper/recon.py app.example.test"}}

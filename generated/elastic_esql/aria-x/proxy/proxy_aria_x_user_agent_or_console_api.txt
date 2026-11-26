@@ -1,0 +1,3 @@
+# ARIA-X Agent User Agent or Console API Use in Proxy Logs
+# Sigma id 11e72447-cb7d-50ee-95f1-6d45b8caab08, pipeline ecs
+from * metadata _id, _index, _version | where starts_with(user_agent.original, "ARIA-X/") and user_agent.original like "*(authorized security research)*" or url.original like "*/api/projects/p_*" and (ends_with(url.original, "/runs") or ends_with(url.original, "/hints")) or url.original like "*/api/runs/run_*" and ends_with(url.original, "/stop") or url.original like "*/api/report/run_*" or url.original like "*/api/export/p_*"

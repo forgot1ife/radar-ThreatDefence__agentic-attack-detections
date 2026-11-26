@@ -1,0 +1,4 @@
+# numasec API Server Started on All Interfaces
+# Sigma id 0e01c1a8-3edd-5ebc-b83d-8a47cece546e, pipeline azure_monitor
+SecurityEvent
+| where (NewProcessName endswith "/numasec" or NewProcessName endswith "\\numasec.exe") and (CommandLine contains "--hostname 0.0.0.0" or CommandLine contains "--hostname=0.0.0.0" or CommandLine contains "--mdns")

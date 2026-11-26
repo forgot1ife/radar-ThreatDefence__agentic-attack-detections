@@ -1,0 +1,4 @@
+# Sage (Mythic) Proof or Certificate File Written on a Windows Host
+# Sigma id fb757105-982f-50dc-b1cf-29e3f6730954, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "\\Windows\\Temp\\sage_remote_exec" or ObjectName contains "\\Windows\\Temp\\sage_ep_adjust" or ObjectName contains "\\Windows\\Temp\\sage_ca_export_" or ObjectName contains "\\Windows\\Temp\\sage_ca_dpapi_" or ObjectName contains "\\Windows\\Temp\\sage_forged_cert_" or ObjectName contains "\\Windows\\Temp\\sage_ca_signing_" or ObjectName contains "\\sage_cert_enroll_") or (ObjectName contains "\\sage_gpo_" and ObjectName endswith "_whoami.txt")

@@ -1,0 +1,3 @@
+# Custom AI Agent (burp-ai-agent) Active Scanner Payload Markers in Web Logs
+# Sigma id 09ef5599-3eed-5e0a-aaf8-2820d637992f, pipeline ecs
+(url.query:(*XSS\-BURP\-AI* OR *burp\-ai\-test* OR *evil\-burp\-ai*)) OR (url.path:(*XSS\-BURP\-AI* OR *evil\-burp\-ai*)) OR (cs-referer:(*XSS\-BURP\-AI* OR *evil\-burp\-ai*))

@@ -1,0 +1,27 @@
+// Clearwing testing you: its user agents and callbacks in web and proxy logs
+// Agentic attack detections by ThreatDefence (Clearwing). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Clearwing source code (Lazarus-AI-OSS/clearwing, reviewed at 08fe47d2):
+//  - Its Playwright browser sends "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Clearwing/1.0" and its
+//    JavaScript bundle analyzer "Mozilla/5.0 Clearwing/1.0".
+//  - Attack-surface probes send "clearwing-asm/0.5 (+https://github.com/Lazarus-AI/clearwing)".
+//  - Model calls can carry "clearwing (aiohttp openai fallback)" or "codex_cli_rs/0.0.0 (clearwing)".
+//  - A blind exploit proves itself by calling http://<operator>:<9999-10008>/callback/<24-character token> from your
+//    server, so look for that path leaving your network.
+// Most of its scanning goes through nmap and other Kali tools or Python's default client, which these strings do not
+// cover; look at what the same source did around a match.
+
+let UAMarkers = @"Clearwing/1\.0|^clearwing-asm/|^clearwing \(aiohttp openai fallback\)|codex_cli_rs/0\.0\.0 \(clearwing\)";
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA matches regex UAMarkers
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog | where RequestClientApplication matches regex UAMarkers
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication),
+    (CommonSecurityLog | where DestinationPort between (9999 .. 10008) and RequestURL matches regex @"/callback/[A-Za-z0-9_-]{24}(\?|/|$)"
+        | project TimeGenerated, Source="CommonSecurityLog (callback)", Src=SourceIP, Target=DestinationIP, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

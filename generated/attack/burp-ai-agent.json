@@ -1,0 +1,79 @@
+{
+ "description": "28 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 18,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "burp-ai-agent",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Suricata: 3818713 TD Burp AI Agent MCP server auto-generated certificate (CN=burp-mcp); Suricata: 3818714 TD Burp AI Agent MCP health answer identity header; Suricata: 3818715 TD Burp AI Agent MCP health or shutdown route request; Suricata: 3818716 TD Burp AI Agent MCP server name in initialize answer; Suricata: 3818717 TD Burp AI Agent MCP client name sent to an MCP server (burp-ai-agent-ext)",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Sigma: Custom AI Agent (burp-ai-agent) Test Domain Lookup; Suricata: 3818710 TD Burp AI Agent test domain lookup (evil-burp-ai)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "KQL hunt: Custom AI Agent (burp-ai-agent) testing you: its payload markers and test domains in web, proxy and DNS logs; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: Custom AI Agent (burp-ai-agent) payload markers in web or proxy logs; Sigma: Custom AI Agent (burp-ai-agent) Active Scanner Payload Markers in Web Logs; Sigma: Custom AI Agent (burp-ai-agent) Test Domain Lookup; Sigma: Custom AI Agent (burp-ai-agent) Test Domains or Payload Markers in Proxy Logs; Suricata: 3818701 TD Burp AI Agent XSS payload marker in URI (XSS-BURP-AI); Suricata: 3818702 TD Burp AI Agent XSS payload marker in request body (XSS-BURP-AI); Suricata: 3818703 TD Burp AI Agent XSS payload marker in a request header (XSS-BURP-AI); Suricata: 3818704 TD Burp AI Agent XSS payload marker in a cookie (XSS-BURP-AI); Suricata: 3818705 TD Burp AI Agent header injection test value in URI (burp-ai-test); Suricata: 3818706 TD Burp AI Agent header injection test value in request body (burp-ai-test); Suricata: 3818707 TD Burp AI Agent test domain in a request header (evil-burp-ai); Suricata: 3818708 TD Burp AI Agent test domain in URI (evil-burp-ai); Suricata: 3818709 TD Burp AI Agent test domain in request body (evil-burp-ai); Suricata: 3818710 TD Burp AI Agent test domain lookup (evil-burp-ai); Suricata: 3818711 TD Burp AI Agent SSTI arithmetic probe in URI (1337*73, 31337*3); Suricata: 3818712 TD Burp AI Agent SSTI arithmetic probe in request body (1337*73, 31337*3)",
+   "enabled": true,
+   "score": 18,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Custom AI Agent (burp-ai-agent) on a host you monitor; Sigma: Custom AI Agent (burp-ai-agent) MCP Server Certificate or MCP Bridge; Suricata: 3818713 TD Burp AI Agent MCP server auto-generated certificate (CN=burp-mcp)",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1587.003"
+  },
+  {
+   "comment": "KQL hunt: Custom AI Agent (burp-ai-agent) on a host you monitor; Sigma: Custom AI Agent (burp-ai-agent) Extension Files Written; Sigma: Custom AI Agent (burp-ai-agent) MCP Server Certificate or MCP Bridge; YARA: BurpAiAgent_Extension_Jar; YARA: BurpAiAgent_Source_Or_Classes",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Custom AI Agent (burp-ai-agent) testing you: its payload markers and test domains in web, proxy and DNS logs; Sentinel analytics: Custom AI Agent (burp-ai-agent) payload markers in web or proxy logs; Sigma: Custom AI Agent (burp-ai-agent) Active Scanner Payload Markers in Web Logs; Sigma: Custom AI Agent (burp-ai-agent) Test Domains or Payload Markers in Proxy Logs; Suricata: 3818701 TD Burp AI Agent XSS payload marker in URI (XSS-BURP-AI); Suricata: 3818702 TD Burp AI Agent XSS payload marker in request body (XSS-BURP-AI); Suricata: 3818703 TD Burp AI Agent XSS payload marker in a request header (XSS-BURP-AI); Suricata: 3818704 TD Burp AI Agent XSS payload marker in a cookie (XSS-BURP-AI); Suricata: 3818705 TD Burp AI Agent header injection test value in URI (burp-ai-test); Suricata: 3818706 TD Burp AI Agent header injection test value in request body (burp-ai-test); Suricata: 3818707 TD Burp AI Agent test domain in a request header (evil-burp-ai); Suricata: 3818708 TD Burp AI Agent test domain in URI (evil-burp-ai); Suricata: 3818709 TD Burp AI Agent test domain in request body (evil-burp-ai); Suricata: 3818711 TD Burp AI Agent SSTI arithmetic probe in URI (1337*73, 31337*3); Suricata: 3818712 TD Burp AI Agent SSTI arithmetic probe in request body (1337*73, 31337*3)",
+   "enabled": true,
+   "score": 15,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

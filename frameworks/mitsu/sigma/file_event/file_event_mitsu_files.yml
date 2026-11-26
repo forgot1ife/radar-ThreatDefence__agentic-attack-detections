@@ -1,0 +1,47 @@
+title: Mitsu Session, Configuration or Report Files Written
+id: d2be8aa4-645e-5d7a-a14d-04ad7d7ce8fb
+status: experimental
+description: |
+    Detects files Mitsu, an AI pentest agent, writes on the host that runs it. Sessions (the conversation and the
+    Intel record with targets, services, findings, accounts and credentials) go to ~/.local/share/mitsu/sessions/
+    <32 hex>.json, with pasted images in <id>.images/ and the attack-surface map and assessment reports in
+    <id>/artifacts/. Provider API keys go to ~/.config/mitsu/credentials.json and the MCP setup to
+    ~/.config/mitsu/mcp_servers.json. Armory installs go to ~/.local/share/mitsu/armory/<tool>/. The Codex and
+    Claude Code providers work in <temp>/mitsu-codex-sessions/ and <temp>/mitsu-claude-sessions/. XDG_CONFIG_HOME and
+    XDG_DATA_HOME move the first two folders; the folder names stay the same.
+references:
+    - https://github.com/ARCANGEL0/Mitsu
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.credential-access
+    - attack.t1552.001
+logsource:
+    category: file_event
+detection:
+    selection_data:
+        # config/storage.py:16-23,57,204,223, tui/menu.py:132, services/redteam_armory.py:133,172-176 at a4844932
+        TargetFilename|contains:
+            - '/mitsu/sessions/'
+            - '/.config/mitsu/'
+            - '/mitsu/armory/'
+            - '/mitsu-codex-sessions/'
+            - '/mitsu-claude-sessions/'
+    selection_marker:
+        # services/redteam_armory.py:133,319 (ownership marker in each Mitsu-installed tool folder)
+        TargetFilename|endswith: '/.mitsu-armory-managed'
+    selection_config:
+        # config/storage.py:57 and tui/menu.py:132 when XDG_CONFIG_HOME points elsewhere
+        TargetFilename|endswith:
+            - '/mitsu/credentials.json'
+            - '/mitsu/mcp_servers.json'
+            - '/mitsu/host.json'
+            - '/mitsu/instance.lock'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests, CTF and lab work with Mitsu
+    - Other software that keeps its data in a folder named mitsu
+level: low

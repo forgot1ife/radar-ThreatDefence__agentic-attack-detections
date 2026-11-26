@@ -1,0 +1,3 @@
+# MCP Kali Server API Server or MCP Client Started
+# Sigma id 007a41b4-3da4-5e66-909c-c458ddd16746, pipeline ecs
+(process.command_line:(*\/usr\/bin\/kali\-server\-mcp* OR *\/usr\/share\/mcp\-kali\-server\/*)) OR (process.working_directory:\/usr\/share\/mcp\-kali\-server* AND (process.command_line:(*server.py* OR *client.py*))) OR user.name:_mcp\-kali OR (process.command_line:*client.py* AND process.command_line:*\-\-server\ http* AND process.command_line:*\:5000*)

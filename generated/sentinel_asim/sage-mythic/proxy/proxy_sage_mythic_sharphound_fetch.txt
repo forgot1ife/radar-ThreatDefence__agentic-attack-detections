@@ -1,0 +1,4 @@
+# Sage (Mythic) SharpHound 2.13.0 Download by python-requests
+# Sigma id e756eef2-c8fc-56e2-b5d8-91797b510a6f, pipeline sentinel_asim
+imWebSession
+| where Url contains "/SpecterOps/SharpHound/releases/download/v2.13.0/SharpHound_v2.13.0_windows_x86.zip" and HttpUserAgent startswith "python-requests/"

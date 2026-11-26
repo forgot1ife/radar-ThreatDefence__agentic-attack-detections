@@ -1,0 +1,3 @@
+# RAPTOR Launcher, Pipelines or Helper Scripts
+# Sigma id 8535eed2-ab36-53b4-81f4-e9ce41a586c4, pipeline splunk_windows
+(CommandLine="*plugins/coverage*" CommandLine="*-n RAPTOR*") OR CommandLine IN ("*/core/security/scratch_supervisor.py*", "*/core/startup/install_guard.py*", "*/core/security/launch_scratch.py*", "*--_scratch-session-stage*") OR CommandLine="*libexec/raptor-*" OR CommandLine IN ("*raptor.py agentic*", "*raptor.py web --url*", "*raptor.py scan --repo*", "*raptor.py codeql --repo*", "*raptor.py fuzz --binary*", "*raptor_agentic.py*", "*raptor_fuzzing.py*", "*raptor_codeql.py*", "*packages/web/scanner.py*", "*packages/llm_analysis/agent.py*")

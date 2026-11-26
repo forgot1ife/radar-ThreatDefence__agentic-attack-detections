@@ -1,0 +1,4 @@
+# ARIA-X Database, Run Evidence or Working Folders
+# Sigma id ee1ec5c0-526b-536c-940d-c9ffc4a9ff50, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName endswith "/aria-x.db" or ObjectName endswith "/aria-x.db-wal" or ObjectName endswith "/aria-x.db-shm" or ObjectName endswith "/configs/aria-x.toml") or (ObjectName contains "/runs/run_" and ObjectName contains "/work/evidence/http_") or (ObjectName contains "/runs/run_" and (ObjectName endswith "/report.html" or ObjectName endswith "/report.md" or ObjectName endswith "/report.json")) or (ObjectName contains "/aria-x-work-" or ObjectName contains "/aria-x-doctor-" or ObjectName contains "/aria-x-tools-" or ObjectName contains "/aria-x-demo-target-")

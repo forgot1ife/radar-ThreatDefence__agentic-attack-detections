@@ -1,0 +1,3 @@
+# Mitsu Session, Configuration or Report Files Written
+# Sigma id d2be8aa4-645e-5d7a-a14d-04ad7d7ce8fb, pipeline ecs
+(TargetFilename:(*\/mitsu\/sessions\/* OR *\/.config\/mitsu\/* OR *\/mitsu\/armory\/* OR *\/mitsu\-codex\-sessions\/* OR *\/mitsu\-claude\-sessions\/*)) OR TargetFilename:*\/.mitsu\-armory\-managed OR (TargetFilename:(*\/mitsu\/credentials.json OR *\/mitsu\/mcp_servers.json OR *\/mitsu\/host.json OR *\/mitsu\/instance.lock))

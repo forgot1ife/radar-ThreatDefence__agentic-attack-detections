@@ -1,0 +1,3 @@
+# Sage (Mythic) Proof Marker or Proof File in a Command Line
+# Sigma id 2ae9dac8-6526-5252-b96a-097fbfd8004f, pipeline ecs
+(process.command_line:(*SAGE_REMOTE_EXEC_PROOF_* OR *SAGE_EP_ADJUST_PROOF* OR *SAGE_CA_EXPORT_PROOF* OR *SAGE_CERT_ENROLL_PROOF* OR *SAGE_CERT_AUTH_PROOF* OR *SagePfx\-v1\-*)) OR (process.command_line:(*\\sage_remote_exec* OR *\\sage_ep_adjust* OR *\\sage_ca_export_* OR *\\sage_ca_dpapi_* OR *\\sage_forged_cert_* OR *\\sage_ca_signing_* OR *\\sage_cert_enroll_* OR *\\sage_gpo_*))

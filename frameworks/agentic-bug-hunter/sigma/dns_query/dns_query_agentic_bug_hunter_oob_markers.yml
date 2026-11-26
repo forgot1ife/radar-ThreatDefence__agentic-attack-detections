@@ -1,0 +1,27 @@
+title: Agentic Bug Hunter Out-of-Band Payload Marker Resolved
+id: 9de3c394-884f-534e-b3a0-1db0acd835bc
+status: experimental
+description: |
+    Detects a host resolving a name built by Agentic Bug Hunter's OOB helper (awarexone/Agentic-Bug-Hunter at 82f4512e,
+    bughunter/tools/oob_listener.py): a first label of ssrf-, xxe-, sqli-, rce- or log4j- followed by 12 hex characters,
+    in front of the operator's interactsh host. A server that resolves one ran an injected SSRF, XXE, SQL, command or
+    Log4Shell payload.
+references:
+    - https://github.com/awarexone/Agentic-Bug-Hunter
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.command-and-control
+    - attack.t1071.004
+logsource:
+    category: dns_query
+detection:
+    selection:
+        QueryName|re: '^(ssrf|xxe|sqli|rce|log4j)-[0-9a-f]{12}\.'
+    condition: selection
+falsepositives:
+    - Hosts with names that start with one of the class words and 12 hex characters
+level: high

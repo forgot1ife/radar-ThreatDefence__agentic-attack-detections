@@ -1,0 +1,45 @@
+// Blitz Strike on a host you monitor
+// Agentic attack detections by ThreatDefence (Blitz Strike). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Blitz Strike (shinthink/blitzstrike, npm package blitzstrike) is an MCP server over stdio that an AI coding client
+// starts and drives. It has no web console. No report of its use in a real intrusion was found on November 26, 2026,
+// so this hunt looks for the software itself, from its source code at 9d7a6ecb:
+//  - The server: blitzstrike serve --mcp, started through npx -y blitzstrike, bunx blitzstrike, a global npm install
+//    or bun run <dir>/src/index.ts serve --mcp; blitzstrike install writes it into every AI client's MCP settings.
+//  - What it starts: nuclei -u <url> -jsonl -silent -no-color -timeout 10 ..., interactsh-client -json,
+//    chrome-devtools-mcp --headless --isolated, curl -sk -m 6 --resolve, and sh -c go install / pip install / apt-get
+//    install -y for missing catalog tools.
+//  - Its callback listener: a Node.js HTTP server on 0.0.0.0 and a random port, open while oob_start runs.
+//  - Files: ~/.blitzstrike/ (audit.jsonl, memory.jsonl, intelligence.jsonl, reports/, data/, tools/) and the OpenCode
+//    personas ~/.config/opencode/agents/Blitz Strike.md and Eagle Eye.md.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Cli = dynamic(["blitzstrike serve", "/src/index.ts serve --mcp", "blitzstrike install", "blitzstrike sync-data", "blitzstrike doctor",
+    "npx -y blitzstrike", "bunx blitzstrike", "npm i -g blitzstrike", "npm install -g blitzstrike", "bun add -g blitzstrike"]);
+let Children = dynamic(["-jsonl -silent -no-color -timeout 10", "interactsh-client -json", "chrome-devtools-mcp", "curl -sk -m 6 --resolve",
+    "sparse-checkout set payloads templates", "go install", "pip install", "apt-get install -y", "nuclei -update-templates"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (Cli)
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, Signal="Blitz Strike MCP server or CLI", Detail=strcat(AccountName, " ", tostring(Commands))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessCommandLine has "blitzstrike" and ProcessCommandLine has_any (Children)
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 20), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Tools started by the Blitz Strike MCP server", Detail=tostring(Commands)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and InitiatingProcessCommandLine has "blitzstrike"
+        | summarize Ports=make_set(LocalPort, 10), Timestamp=min(Timestamp) by DeviceName, LocalIP
+        | project Timestamp, DeviceName, Signal="Blitz Strike callback listener opened", Detail=strcat(LocalIP, " ", tostring(Ports))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/.blitzstrike/" or FolderPath has @"\.blitzstrike\"
+            or (FolderPath has "opencode" and FileName in~ ("Blitz Strike.md", "Eagle Eye.md"))
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Blitz Strike home folder, report or agent persona", Detail=tostring(Files))
+| order by Timestamp desc

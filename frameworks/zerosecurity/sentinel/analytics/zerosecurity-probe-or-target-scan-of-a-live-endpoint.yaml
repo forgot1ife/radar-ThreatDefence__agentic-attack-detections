@@ -1,0 +1,30 @@
+id: a2623f90-9a89-574a-86c5-0484734e0b88
+name: 0security probe or Nuclei target scan of a live endpoint
+description: |
+  A host ran 0security against a live target instead of a code folder: `0 probe <url>`, which sends fixed
+  prompt-injection, jailbreak, secret-request and tool-execution prompts to a model or agent endpoint (a public host
+  needs --i-own-this <host>), or `0 scan --scanner nuclei --target-url <url>`, which starts Nuclei with the flags
+  0security always passes (-jle into a 0-nuclei-<random> temp folder and -etags intrusive,dos,fuzz). Check that the
+  target belongs to you and that the test was agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+relevantTechniques:
+  - T1595.002
+query: |
+  DeviceProcessEvents
+  | where (ProcessCommandLine contains " probe http" and (ProcessCommandLine contains "0security" or ProcessCommandLine contains "0.js" or ProcessCommandLine contains "0 probe "))
+      or ProcessCommandLine contains "--i-own-this "
+      or (ProcessCommandLine contains "--target-url " and ProcessCommandLine contains "--scanner nuclei")
+      or (ProcessCommandLine contains "0-nuclei-" and ProcessCommandLine contains "-etags intrusive,dos,fuzz" and ProcessCommandLine contains "-pt http")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

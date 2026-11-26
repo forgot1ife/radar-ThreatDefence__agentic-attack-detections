@@ -1,0 +1,3 @@
+# 0security Client Traffic in Proxy Logs
+# Sigma id a3a4486f-1fc9-5c07-870f-a3f96b023c23, pipeline splunk_windows
+"c-useragent" IN ("0security/*", "@0/cli/*") OR "c-useragent" IN ("0security", "0security-audit-sink", "0/1.0") OR "cs-host"="cloud.0.security"

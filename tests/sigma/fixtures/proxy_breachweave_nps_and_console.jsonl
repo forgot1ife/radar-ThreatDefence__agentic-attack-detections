@@ -1,0 +1,5 @@
+{"name": "npc download from the bridge", "expected": true, "event": {"c-uri": "http://192.0.2.10:44944/files/nps/npc_windows_amd64.exe", "cs-method": "GET"}}
+{"name": "linux npc download", "expected": true, "event": {"c-uri": "http://192.0.2.10:44944/files/nps/npc_linux_amd64", "cs-method": "GET"}}
+{"name": "console event stream with a token", "expected": true, "event": {"c-uri": "http://192.0.2.30:3000/api/runtime/stream?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.sig", "cs-method": "GET"}}
+{"name": "near miss: another stream with a token", "expected": false, "event": {"c-uri": "http://192.0.2.31/events/stream?token=eyJhbGciOiJIUzI1NiJ9.e30.sig", "cs-method": "GET"}}
+{"name": "near miss: another download under files", "expected": false, "event": {"c-uri": "http://192.0.2.10/files/nps/readme.txt", "cs-method": "GET"}}

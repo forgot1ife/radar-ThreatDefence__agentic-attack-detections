@@ -1,0 +1,4 @@
+# RAPTOR Run Folders, Generated Exploits or Configuration Written
+# Sigma id 39348d65-ba8a-5516-aea7-5b14c119f540, pipeline microsoft_xdr
+DeviceFileEvents
+| where ((FolderPath endswith "/.raptor-run.json" or FolderPath endswith "/.claude/raptor.env" or FolderPath endswith "/.config/raptor/models.json" or FolderPath endswith "/.raptor/identity.json") or (FolderPath contains "/.raptor/projects/" or FolderPath contains "/.raptor/labeled_attempts/" or FolderPath contains "/.raptor/cache/" or FolderPath contains "/.local/share/raptor/sessions.d/")) or (FolderPath contains "/autonomous/exploits/" and (FolderPath endswith "_exploit.cpp" or FolderPath endswith "_exploit.c" or FolderPath endswith "_exploit.py" or FolderPath endswith "_exploit.java" or FolderPath endswith "_exploit.js" or FolderPath endswith "_exploit.go" or FolderPath endswith "_exploit.rb")) or (FolderPath contains "/autonomous/patches/" and FolderPath endswith "_patch.md")

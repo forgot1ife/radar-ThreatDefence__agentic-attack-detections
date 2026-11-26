@@ -1,0 +1,33 @@
+// Sage's Phoenix trace UI and its downloads in network and proxy logs
+// Agentic attack detections by ThreatDefence (Sage (Mythic)). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1105 (Ingress Tool Transfer)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Sage source code (MythicAgents/sage, reviewed at cbff42f0):
+//  - The embedded Arize Phoenix UI answers on TCP 6006 (OTLP gRPC on 4317) with no login by default; its traces hold every
+//    prompt and tool result, which can include credentials. Traffic to 6006 from outside the Mythic host deserves a look.
+//  - The SharpHound card makes the Mythic server fetch
+//    https://github.com/SpecterOps/SharpHound/releases/download/v2.13.0/SharpHound_v2.13.0_windows_x86.zip with python-requests.
+//  - The optional Slack notice goes to hooks.slack.com; its body ("Sage findings changed. Open Mythic to review.") is only
+//    visible with decryption, so the Suricata rules cover it.
+// Sage does not contact targets itself: target traffic is the Mythic payload's C2 and is not covered here.
+
+let Window = 30d;
+let HoundPath = "/SpecterOps/SharpHound/releases/download/v2.13.0/SharpHound_v2.13.0_windows_x86.zip";
+union isfuzzy=true
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where RequestURL has HoundPath and RequestClientApplication startswith "python-requests/"
+        | project TimeGenerated, Source="CommonSecurityLog", Signal="SharpHound 2.13.0 fetched by python-requests",
+            Detail=strcat(SourceIP, " ", RequestURL)),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where DestinationPort == 6006 and RequestURL has_any ("/graphql", "/projects", "/favicon.ico")
+        | project TimeGenerated, Source="CommonSecurityLog", Signal="Request to a Phoenix-style UI on 6006",
+            Detail=strcat(SourceIP, " -> ", DestinationIP, " ", RequestURL)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "InboundConnectionAccepted" and LocalPort in (6006, 4317) and RemoteIPType == "Public"
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Signal="Public connection to a Phoenix port",
+            Detail=strcat(DeviceName, " ", RemoteIP, " -> ", tostring(LocalPort), " ", InitiatingProcessCommandLine))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by Source, Signal
+| order by LastSeen desc

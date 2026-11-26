@@ -1,0 +1,3 @@
+# numasec API Server Started on All Interfaces
+# Sigma id 0e01c1a8-3edd-5ebc-b83d-8a47cece546e, pipeline ecs
+(process.executable:(*\/numasec OR *\\numasec.exe)) AND (process.command_line:(*\-\-hostname\ 0.0.0.0* OR *\-\-hostname\=0.0.0.0* OR *\-\-mdns*))

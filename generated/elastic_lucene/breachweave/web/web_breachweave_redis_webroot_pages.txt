@@ -1,0 +1,3 @@
+# BreachWeave Redis Web Root Pages Requested
+# Sigma id 01e4f975-cbb0-5b94-9c7a-b863d33d116d, pipeline ecs
+url.path:(*\/redis_test.php OR *\/redis_diag.php OR *\/redis_exec.php OR *\/redis_echo.php)

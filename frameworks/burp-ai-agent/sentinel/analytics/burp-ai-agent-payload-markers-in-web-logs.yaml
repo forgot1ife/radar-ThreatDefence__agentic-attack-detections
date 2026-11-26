@@ -1,0 +1,35 @@
+id: 174c7ab5-b034-56eb-bf44-359b4e1e9bb6
+name: Custom AI Agent (burp-ai-agent) payload markers in web or proxy logs
+description: |
+  A web or proxy request carried a fixed marker from the payload table of the Custom AI Agent Burp extension
+  (six2dez/burp-ai-agent, formerly Burp AI Agent): XSS-BURP-AI-1337 or DOM-XSS-BURP-AI from its XSS payloads,
+  burp-ai-test from its header and CRLF injection payloads, or one of the made-up domains evil-burp-ai.com,
+  evil-burp-ai-test.com and evil-burp-ai-cache.com from its OAuth redirect, Host header and cache poisoning payloads.
+  The source address ran the extension's AI active scanner against the target. Check whether the test was agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - InitialAccess
+relevantTechniques:
+  - T1595.002
+  - T1190
+query: |
+  let Markers = @"(?i)XSS-BURP-AI|burp-ai-test|evil-burp-ai";
+  union isfuzzy=true
+      (CommonSecurityLog | where RequestURL matches regex Markers or DestinationHostName matches regex Markers
+          | project TimeGenerated, Src=SourceIP, Target=DestinationHostName, Detail=RequestURL),
+      (W3CIISLog | where csUriStem matches regex Markers or csUriQuery matches regex Markers or csReferer matches regex Markers or csHost matches regex Markers
+          | project TimeGenerated, Src=cIP, Target=csHost, Detail=strcat(csUriStem, "?", csUriQuery, " ", scStatus))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Samples=make_set(Detail, 10) by Src, Target
+version: 1.0.0
+kind: Scheduled

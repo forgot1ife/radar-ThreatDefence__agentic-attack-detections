@@ -1,0 +1,3 @@
+# Custom AI Agent (burp-ai-agent) MCP Server Certificate or MCP Bridge
+# Sigma id f39908c5-5234-5ef1-9ec1-f8ca7d491be7, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*-genkeypair*" and process.command_line like "*CN=burp-mcp*" or process.command_line like "*supergateway*" and process.command_line like "*:9876/sse*"

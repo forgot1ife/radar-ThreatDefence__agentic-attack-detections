@@ -1,0 +1,3 @@
+# Custom AI Agent (burp-ai-agent) Active Scanner Payload Markers in Web Logs
+# Sigma id 09ef5599-3eed-5e0a-aaf8-2820d637992f, pipeline splunk_windows
+"cs-uri-query" IN ("*XSS-BURP-AI*", "*burp-ai-test*", "*evil-burp-ai*") OR "cs-uri-stem" IN ("*XSS-BURP-AI*", "*evil-burp-ai*") OR "cs-referer" IN ("*XSS-BURP-AI*", "*evil-burp-ai*")

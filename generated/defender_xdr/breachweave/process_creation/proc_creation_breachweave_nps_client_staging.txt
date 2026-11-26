@@ -1,0 +1,4 @@
+# BreachWeave Playbook NPS Client Staged on a Host
+# Sigma id ace68a85-41c0-58ab-a183-807781a45748, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "/files/nps/npc_" or (ProcessCommandLine contains "-server=" and ProcessCommandLine contains "-vkey=auto")

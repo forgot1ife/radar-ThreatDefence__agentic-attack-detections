@@ -1,0 +1,61 @@
+// Mitsu running on a host you monitor
+// Agentic attack detections by ThreatDefence (Mitsu). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1595.002 (Active Scanning: Vulnerability Scanning), T1552.001 (Unsecured Credentials: Credentials In Files)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the Mitsu source code (ARCANGEL0/Mitsu at a4844932, PyPI package mitsu 1.5.2):
+//  - Mitsu is a Python terminal app (console script "mitsu", or ./mitsu which runs uv run --project <checkout> mitsu).
+//    Its process is python running .../bin/mitsu or python -m mitsu.
+//  - With the Codex or Claude Code provider it starts, per turn, codex exec ... --config
+//    mcp_servers.mitsu.url="http://127.0.0.1:<port>/<token>/mcp" --config developer_instructions="You are Mitsu: ..."
+//    in <temp>/mitsu-codex-sessions/<id>, or claude -p ... --mcp-config {"mcpServers":{"mitsu":...}} --permission-mode
+//    dontAsk --allowedTools mcp__mitsu__<tool> in <temp>/mitsu-claude-sessions/<id>. The connection check sends
+//    "Reply exactly MITSU_OK.".
+//  - Its shell tool runs /bin/bash -o pipefail -c <command> (60 s limit), or sudo -S -p "" -- /bin/bash -o pipefail
+//    -c <command> with the password the operator typed into Mitsu. Armory tools (nmap, nuclei, sqlmap, ffuf, hydra,
+//    netexec and 160 more) start directly under the mitsu process, without a shell.
+//  - Managed SearXNG: docker run --name mitsu-searxng-<port> --publish 127.0.0.1:<port>:8080, volume mitsu-searxng-config.
+//  - Files: ~/.local/share/mitsu/sessions/<32 hex>.json (conversation and Intel, credentials included),
+//    <id>/artifacts/attack-surface-map.html and vulnerability-assessment-<UTC stamp>.html/.pdf, ~/.config/mitsu/
+//    credentials.json (provider API keys), mcp_servers.json, host.json, ~/.local/share/mitsu/armory/<tool>/.
+
+let Window = 30d;
+let MitsuParent = (cmd:string) { cmd endswith "/bin/mitsu" or cmd endswith " -m mitsu" or cmd contains "/uv/tools/mitsu/" };
+let Scanners = dynamic(["nmap", "masscan", "rustscan", "naabu", "httpx", "nuclei", "nikto", "sqlmap", "ffuf", "feroxbuster",
+    "gobuster", "dirsearch", "wpscan", "whatweb", "wafw00f", "dalfox", "commix", "hydra", "medusa", "ncrack", "nxc", "netexec",
+    "kerbrute", "certipy", "evil-winrm", "msfconsole", "searchsploit", "vulnx", "subfinder", "amass", "katana", "testssl"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine contains "mcp_servers.mitsu.url="
+            or ProcessCommandLine contains '"mcpServers":{"mitsu":{"type":"http"'
+            or ProcessCommandLine contains "mcp__mitsu__intel_upsert_asset"
+            or ProcessCommandLine contains "You are Mitsu: the operator"
+            or ProcessCommandLine contains "You are Mitsu, a security assessment assistant."
+            or ProcessCommandLine contains "MITSU_OK"
+        | project Timestamp, DeviceName, AccountName, Signal="Model CLI started by Mitsu",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine contains "/bin/bash -o pipefail -c " and MitsuParent(InitiatingProcessCommandLine)
+        | project Timestamp, DeviceName, AccountName, Signal=iff(FileName =~ "sudo", "Mitsu shell tool with sudo", "Mitsu shell tool"),
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=substring(InitiatingProcessCommandLine, 0, 150)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ (Scanners) and MitsuParent(InitiatingProcessCommandLine)
+        | project Timestamp, DeviceName, AccountName, Signal="Armory tool started by Mitsu",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=substring(InitiatingProcessCommandLine, 0, 150)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine contains "mitsu-searxng-config" or ProcessCommandLine contains "--name mitsu-searxng-"
+            or ProcessCommandLine contains "start mitsu-searxng-"
+        | project Timestamp, DeviceName, AccountName, Signal="Mitsu SearXNG container",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath contains "/mitsu/sessions/" or FolderPath contains "/.config/mitsu/" or FolderPath contains "/mitsu/armory/"
+            or FolderPath contains "/mitsu-codex-sessions/" or FolderPath contains "/mitsu-claude-sessions/"
+            or FileName == ".mitsu-armory-managed"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, AccountName=InitiatingProcessAccountName, Signal="Mitsu session, configuration or report files",
+            Detail=tostring(Files), Parent=InitiatingProcessFileName)
+| order by Timestamp desc

@@ -1,0 +1,30 @@
+id: 5eefe901-a985-52f4-b166-46615700323b
+name: Nebula agent commands or core on a host
+description: |
+  A host ran a command with the Python wrapper Nebula (BerylliumSec/nebula) passes to docker or podman exec for every
+  agent command (it writes /tmp/nebula-process-<id>.pid and execs /bin/bash --noprofile --norc -c <command>), built or
+  started its Kali image localhost/nebula-kali-headless, or started the Nebula core with runtime-service and
+  --manifest-sha256. Nebula is an operator workstation whose agents run Kali tools in containers or on the host.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine contains "os.execv('/bin/bash',['/bin/bash','--noprofile','--norc','-c',sys.argv[2]])"
+      or ProcessCommandLine contains "/tmp/nebula-process-"
+      or ProcessCommandLine contains "localhost/nebula-kali-headless"
+      or (ProcessCommandLine contains "nebula-core runtime-service" and ProcessCommandLine contains "--manifest-sha256")
+  | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine, Parent=InitiatingProcessCommandLine
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

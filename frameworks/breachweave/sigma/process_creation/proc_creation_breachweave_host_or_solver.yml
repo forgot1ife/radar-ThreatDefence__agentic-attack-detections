@@ -1,0 +1,46 @@
+title: BreachWeave (tch-agent) Web Console, Solver Container or Image Build Started
+id: 90eaf5e0-cc8c-51ce-acdb-aaa55a3bd0b6
+status: experimental
+description: |
+    Detects the BreachWeave multi-agent pentest platform (package tch-agent) on a host: the web console started from
+    the source tree (bun run apps/cli/src/main.ts web) or a compiled tch-agent binary, the docker run that starts a
+    solver container named tch-solver-<id> with the host's tch-agent binary mounted at /opt/tch-agent/tch-agent, the
+    solver RPC process inside that container, the docker buildx build of the tch-agent:latest solver image, and the
+    bun compile of the Linux solver binary into ~/.tch-agent/runtime/self/.
+references:
+    - https://github.com/m-sec-org/BreachWeave
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1610
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_console:
+        CommandLine|contains:
+            - 'apps/cli/src/main.ts web'
+            - 'tch-agent-linux-x64 web'
+            - 'tch-agent-darwin-arm64 web'
+            - 'tch-agent-darwin-x64 web'
+            - 'tch-agent-windows-x64.exe web'
+    selection_solver_run:
+        CommandLine|contains|all:
+            - '--name tch-solver-'
+            - '/opt/tch-agent/tch-agent'
+    selection_solver_rpc:
+        CommandLine|contains: '/opt/tch-agent/tch-agent solver rpc'
+    selection_image_build:
+        CommandLine|contains: 'ai.tch-agent.dockerfile-sha256='
+    selection_binary_build:
+        CommandLine|contains|all:
+            - 'scripts/build.ts'
+            - 'bun-linux-x64-baseline'
+            - '/.tch-agent/runtime/self/tch-agent-linux-x64'
+    condition: 1 of selection_*
+falsepositives:
+    - Red teams, CTF teams and researchers running BreachWeave
+level: medium

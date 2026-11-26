@@ -1,0 +1,3 @@
+# BreachWeave (tch-agent) Web Console, Solver Container or Image Build Started
+# Sigma id 90eaf5e0-cc8c-51ce-acdb-aaa55a3bd0b6, pipeline ecs
+(process.command_line:(*apps\/cli\/src\/main.ts\ web* OR *tch\-agent\-linux\-x64\ web* OR *tch\-agent\-darwin\-arm64\ web* OR *tch\-agent\-darwin\-x64\ web* OR *tch\-agent\-windows\-x64.exe\ web*)) OR (process.command_line:*\-\-name\ tch\-solver\-* AND process.command_line:*\/opt\/tch\-agent\/tch\-agent*) OR process.command_line:*\/opt\/tch\-agent\/tch\-agent\ solver\ rpc* OR process.command_line:*ai.tch\-agent.dockerfile\-sha256\=* OR (process.command_line:*scripts\/build.ts* AND process.command_line:*bun\-linux\-x64\-baseline* AND process.command_line:*\/.tch\-agent\/runtime\/self\/tch\-agent\-linux\-x64*)

@@ -1,0 +1,3 @@
+# Blitz Strike MCP Server or CLI on a Host
+# Sigma id 6f207162-61d5-5894-8af9-d8c01e73dc77, pipeline splunk_windows
+CommandLine IN ("*blitzstrike serve*", "*/src/index.ts serve --mcp*", "*blitzstrike/dist/index.js serve*") OR CommandLine IN ("*blitzstrike install*", "*blitzstrike install-tools*", "*blitzstrike sync-data*", "*blitzstrike doctor*", "*npx -y blitzstrike*", "*bunx blitzstrike*", "*npm i -g blitzstrike*", "*npm install -g blitzstrike*", "*bun add -g blitzstrike*", "*github.com/shinthink/blitzstrike*")

@@ -1,0 +1,3 @@
+# Clearwing Probe User Agents in Web Server Logs
+# Sigma id 8a3cdc8d-b2f4-5906-a2e7-c72f2295ffd6, pipeline splunk_windows
+"cs-user-agent" IN ("*Clearwing/1.0*", "clearwing-asm/*")

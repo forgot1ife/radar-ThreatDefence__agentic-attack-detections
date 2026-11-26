@@ -1,0 +1,3 @@
+# Sage (Mythic) Proof or Certificate File Written on a Windows Host
+# Sigma id fb757105-982f-50dc-b1cf-29e3f6730954, pipeline ecs
+from * metadata _id, _index, _version | where file.path like "*\\Windows\\Temp\\sage_remote_exec*" or file.path like "*\\Windows\\Temp\\sage_ep_adjust*" or file.path like "*\\Windows\\Temp\\sage_ca_export_*" or file.path like "*\\Windows\\Temp\\sage_ca_dpapi_*" or file.path like "*\\Windows\\Temp\\sage_forged_cert_*" or file.path like "*\\Windows\\Temp\\sage_ca_signing_*" or file.path like "*\\sage_cert_enroll_*" or file.path like "*\\sage_gpo_*" and ends_with(file.path, "_whoami.txt")

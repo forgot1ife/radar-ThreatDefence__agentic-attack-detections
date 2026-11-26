@@ -1,0 +1,9 @@
+RAPTOR Security Scanner (Authorized Testing)
+cve-env/0.1 (agentic CVE env builder)
+raptor-container-evidence/1
+raptor-env-verify/0.1
+raptor-nvd/0.1
+raptor-sca
+raptor-sca/0.1 (+https://github.com/gadievron/raptor)
+raptor-uv-provenance/1
+raptor/0.1 (+https://github.com/gadievron/raptor)

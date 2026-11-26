@@ -1,0 +1,3 @@
+# Blitz Strike SSRF Canary Fetched or Blitz Strike User Agent Through a Proxy
+# Sigma id f277be6f-0ef6-5aab-8185-bfd34dd06335, pipeline splunk_windows
+"c-uri"="*blitzstrike-ssrf-canary*" OR "c-useragent" IN ("*blitzstrike*", "*BlitzStrike*")

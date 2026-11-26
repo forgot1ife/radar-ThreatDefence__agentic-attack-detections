@@ -1,0 +1,107 @@
+{
+ "description": "36 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 17,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "agentic-bug-hunter",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Sigma: Agentic Bug Hunter Toolkit on a Host",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "Suricata: 3819721 TD Agentic Bug Hunter Hunt Dashboard page; Suricata: 3819722 TD Agentic Bug Hunter Hunt Dashboard Host-header guard answer; Suricata: 3819723 TD Agentic Bug Hunter model gateway attribution headers (X-Title BugHunter)",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Sigma: Agentic Bug Hunter Out-of-Band Payload Marker Resolved; Suricata: 3819716 TD Agentic Bug Hunter OOB marker lookup (ssrf-<12 hex>); Suricata: 3819717 TD Agentic Bug Hunter OOB marker lookup (xxe-<12 hex>); Suricata: 3819718 TD Agentic Bug Hunter OOB marker lookup (sqli-<12 hex>); Suricata: 3819719 TD Agentic Bug Hunter OOB marker lookup (rce-<12 hex>); Suricata: 3819720 TD Agentic Bug Hunter OOB marker lookup (log4j-<12 hex>)",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1110"
+  },
+  {
+   "comment": "KQL hunt: Agentic Bug Hunter on a host you monitor; KQL hunt: Agentic Bug Hunter password spray in Entra ID sign-in logs; Sentinel analytics: Agentic Bug Hunter scanner or password spray reached your logs; Sigma: Agentic Bug Hunter Password Spray or Wordlist Crawl Started; Sigma: Agentic Bug Hunter User Agents in Proxy Logs; Suricata: 3819702 TD Agentic Bug Hunter credential toolkit user agent (wordlist crawl or password spray); Suricata: 3819703 TD Agentic Bug Hunter password spray login attempt; Suricata: 3819704 TD Agentic Bug Hunter OAuth password-grant spray; YARA: AgenticBugHunter_Output_Files",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.003"
+  },
+  {
+   "comment": "KQL hunt: Agentic Bug Hunter testing you: its user agents and probe strings in web and proxy logs; Sentinel analytics: Agentic Bug Hunter scanner or password spray reached your logs; Sigma: Agentic Bug Hunter Out-of-Band Payload Marker Resolved; Sigma: Agentic Bug Hunter Scanner Markers in Web Logs; Suricata: 3819701 TD Agentic Bug Hunter scanner or verifier user agent; Suricata: 3819707 TD Agentic Bug Hunter CRLF scanner canary (Set-Cookie crlftest=1); Suricata: 3819708 TD Agentic Bug Hunter DOM XSS harness canary (window.__cbbx); Suricata: 3819709 TD Agentic Bug Hunter LLM red-team canary (RT_PWNED_); Suricata: 3819710 TD Agentic Bug Hunter upload execution check (RCE-VAL- test file); Suricata: 3819711 TD Agentic Bug Hunter upload check fetch (/proof_<epoch>.php|jsp|aspx); Suricata: 3819714 TD Agentic Bug Hunter unsigned SAML assertion for admin@target.com; Suricata: 3819715 TD Agentic Bug Hunter NoSQL injection login baseline; Suricata: 3819716 TD Agentic Bug Hunter OOB marker lookup (ssrf-<12 hex>); Suricata: 3819717 TD Agentic Bug Hunter OOB marker lookup (xxe-<12 hex>); Suricata: 3819718 TD Agentic Bug Hunter OOB marker lookup (sqli-<12 hex>); Suricata: 3819719 TD Agentic Bug Hunter OOB marker lookup (rce-<12 hex>); Suricata: 3819720 TD Agentic Bug Hunter OOB marker lookup (log4j-<12 hex>)",
+   "enabled": true,
+   "score": 17,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Agentic Bug Hunter on a host you monitor; Sigma: Agentic Bug Hunter Configuration, Memory or Spray Log Written; YARA: AgenticBugHunter_Source_Or_Package",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3819702 TD Agentic Bug Hunter credential toolkit user agent (wordlist crawl or password spray)",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1594"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Agentic Bug Hunter testing you: its user agents and probe strings in web and proxy logs; Sentinel analytics: Agentic Bug Hunter scanner or password spray reached your logs; Sigma: Agentic Bug Hunter Scanner Markers in Web Logs; Sigma: Agentic Bug Hunter User Agents in Proxy Logs; Suricata: 3819701 TD Agentic Bug Hunter scanner or verifier user agent; Suricata: 3819705 TD Agentic Bug Hunter WAF response analyzer user agent; Suricata: 3819706 TD Agentic Bug Hunter WAF block-baseline probe parameter (_waftest); Suricata: 3819707 TD Agentic Bug Hunter CRLF scanner canary (Set-Cookie crlftest=1)",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "Suricata: 3819712 TD Agentic Bug Hunter catch-all probe (/non_existent_<epoch>); Suricata: 3819713 TD Agentic Bug Hunter SAML control probe (/saml-control-)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

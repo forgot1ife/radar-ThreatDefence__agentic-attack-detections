@@ -1,0 +1,32 @@
+title: 0security Playbook Canary or Bogus Method in Web Logs
+id: 51599b19-cba6-5663-94bb-e1dd5d0bb695
+status: experimental
+description: |
+    Detects canaries that 0security's built-in playbooks and skills give its agent as examples: osec123xss as an
+    XSS reflection marker and ZERO-INJ-OK as a prompt-injection marker in a query string, and the HTTP method ZERO,
+    one of the non-standard verbs its auth-bypass playbook suggests. They are examples in the prompt, so the model
+    may use other strings. The `0 probe` prompts go in POST bodies, which web logs do not record; see the Suricata
+    rules for those.
+references:
+    - https://github.com/0sec-labs/0security
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_query:
+        cs-uri-query|contains:
+            - 'osec123xss'
+            - 'ZERO-INJ-OK'
+    selection_method:
+        cs-method: 'ZERO'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with 0security
+level: medium

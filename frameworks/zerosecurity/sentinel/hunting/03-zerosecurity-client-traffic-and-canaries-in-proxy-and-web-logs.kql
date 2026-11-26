@@ -1,0 +1,35 @@
+// 0security client traffic, console calls and playbook canaries in proxy and web logs
+// Agentic attack detections by ThreatDefence (0security). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the 0security source (0sec-labs/0security, reviewed at eec0d4c7):
+//  - User agents it sets itself, visible to a decrypting proxy: 0security/<version> (PostHog analytics), @0/cli/update-check
+//    (daily GitHub release check), @0/cli/<version> (cloud worker), 0security-audit-sink, 0security (Kimi sign-in), 0/1.0
+//    (DuckDuckGo fallback search). Its cloud host is cloud.0.security.
+//  - `0 probe` sends POST requests with no User-Agent at all (node:http), so a web log shows an empty user agent on POSTs
+//    to a chat endpoint, from one source, 200 ms or more apart, two of each of ten prompts by default.
+//  - Playbook canaries osec123xss and ZERO-INJ-OK in query strings, and the HTTP method ZERO.
+//  - Console calls: /_access/login (server-mode sign-in) and /healthz on port 48123.
+
+let UAs = dynamic(["0security", "0security-audit-sink", "0/1.0"]);
+let Canaries = dynamic(["osec123xss", "ZERO-INJ-OK"]);
+union isfuzzy=true
+    (CommonSecurityLog
+        | where TimeGenerated > ago(30d)
+        | where RequestClientApplication startswith "0security/" or RequestClientApplication startswith "@0/cli/"
+            or RequestClientApplication in (UAs) or DestinationHostName =~ "cloud.0.security"
+            or RequestURL has_any (Canaries) or RequestURL endswith "/_access/login"
+        | extend Signal = case(RequestURL has_any (Canaries), "playbook canary in a request",
+            RequestURL endswith "/_access/login", "0security server-mode sign-in",
+            DestinationHostName =~ "cloud.0.security", "0security cloud host", "0security client user agent")
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), URLs=make_set(RequestURL, 5),
+            Agents=make_set(RequestClientApplication, 3) by Source="CommonSecurityLog", Src=SourceIP, Dst=DestinationHostName, Signal),
+    (W3CIISLog
+        | where TimeGenerated > ago(30d)
+        | where csUriQuery has_any (Canaries) or csMethod == "ZERO"
+            or (csMethod =~ "POST" and (isempty(csUserAgent) or csUserAgent == "-") and csUriStem has_any ("chat", "completions", "messages", "ask", "agent"))
+        | extend Signal = case(csUriQuery has_any (Canaries), "playbook canary in a query", csMethod == "ZERO", "bogus method ZERO",
+            "POST to a chat endpoint with no user agent (0 probe sends none)")
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), URLs=make_set(strcat(csUriStem, "?", csUriQuery), 5),
+            Agents=make_set(csUserAgent, 3) by Source="W3CIISLog", Src=cIP, Dst=sSiteName, Signal)
+| order by Events desc

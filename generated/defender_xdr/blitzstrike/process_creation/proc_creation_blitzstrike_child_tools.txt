@@ -1,0 +1,4 @@
+# Tools Started by the Blitz Strike MCP Server
+# Sigma id 279848ea-5408-5f13-b82d-212174b82e67, pipeline microsoft_xdr
+DeviceProcessEvents
+| where InitiatingProcessCommandLine contains "blitzstrike" and (ProcessCommandLine contains "-jsonl -silent -no-color -timeout 10" or ProcessCommandLine contains "interactsh-client -json" or ProcessCommandLine contains "chrome-devtools-mcp" or ProcessCommandLine contains "curl -sk -m 6 --resolve" or ProcessCommandLine contains "sparse-checkout set payloads templates" or ProcessCommandLine contains "go install" or ProcessCommandLine contains "pip install" or ProcessCommandLine contains "apt-get install -y" or ProcessCommandLine contains "nuclei -update-templates")

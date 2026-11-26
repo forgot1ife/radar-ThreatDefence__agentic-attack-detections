@@ -1,0 +1,3 @@
+# Offensive Tool Started Directly by Mitsu
+# Sigma id 5032704b-d355-53db-a850-ea5da873acaa, pipeline splunk_windows
+Image IN ("*/nmap", "*/masscan", "*/rustscan", "*/naabu", "*/httpx", "*/nuclei", "*/nikto", "*/sqlmap", "*/ffuf", "*/feroxbuster", "*/gobuster", "*/dirsearch", "*/wpscan", "*/whatweb", "*/wafw00f", "*/dalfox", "*/commix", "*/hydra", "*/medusa", "*/ncrack", "*/netexec", "*/nxc", "*/kerbrute", "*/certipy", "*/evil-winrm", "*/msfconsole", "*/searchsploit", "*/vulnx", "*/subfinder", "*/amass", "*/katana", "*/testssl") ParentCommandLine IN ("*/bin/mitsu", "* -m mitsu") OR ParentCommandLine="*/uv/tools/mitsu/*"

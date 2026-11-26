@@ -1,0 +1,3 @@
+# ARIA-X Agent User Agent in Web Logs
+# Sigma id ec205ebf-a98f-5e15-899e-76c11bda5a73, pipeline ecs
+user_agent.original:ARIA\-X\/* AND (user_agent.original:(*\(authorized\ security\ research\)* OR *\(authorized\+security\+research\)*))

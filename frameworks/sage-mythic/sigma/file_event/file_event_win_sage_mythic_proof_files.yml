@@ -1,0 +1,40 @@
+title: Sage (Mythic) Proof or Certificate File Written on a Windows Host
+id: fb757105-982f-50dc-b1cf-29e3f6730954
+status: experimental
+description: |
+    Detects the files Sage, the AI operator for the Mythic C2 framework, has its tasks write by default: proof files
+    C:\Windows\Temp\sage_remote_exec_<host>_<callback>.txt and sage_ep_adjust_<slug>.txt, the CA key export
+    sage_ca_export_<slug>.pfx and its _backup folder, sage_ca_dpapi_, forged and signing certificates sage_forged_cert_ and
+    sage_ca_signing_, the certreq work folder %TEMP%\sage_cert_enroll_<slug>\, and the GPO proof sage_gpo_<slug>_whoami.txt in
+    C:\Users\Public or in SYSVOL.
+references:
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/ai/langgraph/capabilities.py
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/ai/langgraph/mythic_capability_adapter.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1047
+    - attack.credential-access
+    - attack.t1649
+logsource:
+    product: windows
+    category: file_event
+detection:
+    selection_temp:
+        TargetFilename|contains:
+            - '\Windows\Temp\sage_remote_exec'
+            - '\Windows\Temp\sage_ep_adjust'
+            - '\Windows\Temp\sage_ca_export_'
+            - '\Windows\Temp\sage_ca_dpapi_'
+            - '\Windows\Temp\sage_forged_cert_'
+            - '\Windows\Temp\sage_ca_signing_'
+            - '\sage_cert_enroll_'
+    selection_gpo:
+        TargetFilename|contains: '\sage_gpo_'
+        TargetFilename|endswith: '_whoami.txt'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized red-team engagements run with Sage in Mythic
+level: high

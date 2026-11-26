@@ -1,0 +1,52 @@
+title: Clearwing AI Pentest Agent Command Line
+id: d08c13be-2d60-5374-8952-c2698a095f3c
+status: experimental
+description: |
+    Detects the Clearwing command line (Lazarus-AI-OSS/clearwing): its console script or clearwing.py started with one
+    of its subcommands, such as scan, sourcehunt, operate, interactive, webui, campaign, asm or disclose. Clearwing is
+    an autonomous network pentest agent and source-code vulnerability hunter driven by a language model; operate runs
+    it toward goals with no operator in the loop and can approve exploits by itself with --auto-approve-exploits.
+references:
+    - https://github.com/Lazarus-AI-OSS/clearwing
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_entry:
+        CommandLine|contains:
+            - '/bin/clearwing '
+            - '\Scripts\clearwing.exe '
+            - '\Scripts\clearwing '
+            - 'clearwing.py '
+            - 'uv run clearwing '
+    selection_subcommand:
+        CommandLine|contains:
+            - ' scan '
+            - ' sourcehunt '
+            - ' operate '
+            - ' interactive'
+            - ' webui'
+            - ' campaign '
+            - ' asm '
+            - ' disclose '
+            - ' remediate '
+            - ' parallel '
+    selection_flags:
+        CommandLine|contains:
+            - '--auto-approve-exploits'
+            - '--webhook-secret'
+            - '--webhook-port'
+            - '--compile-commands'
+            - '--cve-list'
+    condition: selection_entry and (selection_subcommand or selection_flags)
+falsepositives:
+    - Security teams and researchers running Clearwing on systems they own or are authorized to test
+    - Another program named clearwing
+level: medium

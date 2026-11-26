@@ -1,0 +1,32 @@
+title: ARIA-X Agent User Agent in Web Logs
+id: ec205ebf-a98f-5e15-899e-76c11bda5a73
+status: experimental
+description: |
+    Detects requests from the ARIA-X engine reaching a web server. Its http_request and web_probe tools send the user
+    agent ARIA-X/<version> (authorized security research) on every request (src/aria_x/tools/net.py:40 and :215 in
+    01NGVI-QINGYI/ARIA-X at 015e197): ARIA-X/0.3.0, ARIA-X/0.2.1, or ARIA-X/0.1 for v0.1.0 and v0.2.0. IIS writes the
+    spaces as plus signs. Without a path list, web_probe requests /, /robots.txt, /sitemap.xml,
+    /.well-known/security.txt, /login, /admin, /api and /health in that order. The model can replace the user agent
+    through the tool's headers argument, and commands it runs in a shell carry their own user agents.
+references:
+    - https://github.com/01NGVI-QINGYI/ARIA-X
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-user-agent|startswith: 'ARIA-X/'
+        cs-user-agent|contains:
+            - '(authorized security research)'
+            - '(authorized+security+research)'
+    condition: selection
+falsepositives:
+    - Agreed ARIA-X assessments of your applications
+level: high

@@ -1,0 +1,3 @@
+# 0security Client Traffic in Proxy Logs
+# Sigma id a3a4486f-1fc9-5c07-870f-a3f96b023c23, pipeline ecs
+from * metadata _id, _index, _version | where starts_with(user_agent.original, "0security/") or starts_with(user_agent.original, "@0/cli/") or user_agent.original in ("0security", "0security-audit-sink", "0/1.0") or url.domain rlike "[cC][lL][oO][uU][dD]\\.0\\.[sS][eE][cC][uU][rR][iI][tT][yY]"

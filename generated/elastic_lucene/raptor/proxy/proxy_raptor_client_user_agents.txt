@@ -1,0 +1,3 @@
+# RAPTOR Scanner or Client User Agents in Proxy Logs
+# Sigma id 1c133e20-4404-5377-b72d-f92356a26f91, pipeline ecs
+user_agent.original:RAPTOR\ Security\ Scanner* OR user_agent.original:*\(\+https\:\/\/github.com\/gadievron\/raptor\) OR (user_agent.original:(raptor\-nvd\/* OR raptor\-env\-verify\/* OR raptor\-container\-evidence\/* OR raptor\-uv\-provenance\/* OR raptor\-cvefix\-envs\/*)) OR user_agent.original:raptor\-sca OR (user_agent.original:("cve\-env\/0.1 \(agentic CVE env builder\)" OR "cve\-diff\/0.1 \(\+https\:\/\/github.com\/cve\-diff\)"))

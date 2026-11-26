@@ -1,0 +1,4 @@
+# Sage (Mythic) Remote Execution Through a SageExec Scheduled Task
+# Sigma id 3887f0a9-6fca-560e-808a-a3dd393d3923, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "\\schtasks.exe" and ProcessCommandLine contains "SageExec_") or (InitiatingProcessCommandLine contains "schtasks.exe /Create /S " and InitiatingProcessCommandLine contains "SageExec_")

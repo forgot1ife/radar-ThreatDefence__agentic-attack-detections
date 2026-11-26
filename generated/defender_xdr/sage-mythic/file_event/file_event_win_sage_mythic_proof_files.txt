@@ -1,0 +1,4 @@
+# Sage (Mythic) Proof or Certificate File Written on a Windows Host
+# Sigma id fb757105-982f-50dc-b1cf-29e3f6730954, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "\\Windows\\Temp\\sage_remote_exec" or FolderPath contains "\\Windows\\Temp\\sage_ep_adjust" or FolderPath contains "\\Windows\\Temp\\sage_ca_export_" or FolderPath contains "\\Windows\\Temp\\sage_ca_dpapi_" or FolderPath contains "\\Windows\\Temp\\sage_forged_cert_" or FolderPath contains "\\Windows\\Temp\\sage_ca_signing_" or FolderPath contains "\\sage_cert_enroll_") or (FolderPath contains "\\sage_gpo_" and FolderPath endswith "_whoami.txt")

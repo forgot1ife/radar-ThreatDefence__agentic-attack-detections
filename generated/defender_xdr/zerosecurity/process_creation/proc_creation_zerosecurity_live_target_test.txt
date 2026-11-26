@@ -1,0 +1,4 @@
+# 0security Probe or Nuclei Target Scan Against a Live Endpoint
+# Sigma id 69c7dd9d-381a-5a6b-be5c-3d11304259ad, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ((ProcessCommandLine contains " probe http" or ProcessCommandLine contains "--i-own-this ") and (ProcessCommandLine contains "0security" or ProcessCommandLine contains "0.js" or ProcessCommandLine contains "0 probe ")) or (ProcessCommandLine contains "--target-url " and ProcessCommandLine contains "--scanner nuclei") or (ProcessCommandLine contains "0-nuclei-" and ProcessCommandLine contains "-etags intrusive,dos,fuzz" and ProcessCommandLine contains "-pt http")

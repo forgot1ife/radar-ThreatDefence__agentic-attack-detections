@@ -1,0 +1,35 @@
+// Mitsu reading your web pages, or running from your network: its user agents in web and proxy logs
+// Agentic attack detections by ThreatDefence (Mitsu). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1594 (Search Victim-Owned Websites), T1593.002 (Search Open Websites/Domains: Search Engines)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Mitsu source code (ARCANGEL0/Mitsu at a4844932):
+//  - The web_search MCP tool opens any URL the model passes with "Mitsu/0.1 (terminal assistant; public search)" and
+//    Accept "text/html,text/plain,application/json,application/xml,*/*;q=0.5". The system prompt tells the model to
+//    open every URL the operator gives this way before using curl or wget, so the first request a target sees is
+//    often this one. The same user agent goes to search engines (html.duckduckgo.com, www.google.com, www.bing.com,
+//    search.brave.com and others) and search APIs.
+//  - "Mitsu updater" fetches https://pypi.org/pypi/mitsu/json when the operator opens the update panel.
+//  - Scans through Armory tools carry those tools' own user agents; look for them from the same source address
+//    shortly after a Mitsu page fetch.
+// On a target, the source address is the operator's. In a proxy log, the source is a host of yours running Mitsu.
+
+let PageUA = "Mitsu/0.1 (terminal assistant; public search)";
+let UpdaterUA = "Mitsu updater";
+union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(30d)
+        | extend UA = replace_string(csUserAgent, "+", " ")
+        | where UA == PageUA
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (AzureDiagnostics
+        | where TimeGenerated > ago(30d)
+        | where Category == "ApplicationGatewayAccessLog"
+        | where userAgent_s == PageUA
+        | project TimeGenerated, Source=Category, Src=clientIP_s, Target=host_s, Detail=requestUri_s, UA=userAgent_s),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(30d)
+        | where RequestClientApplication in (PageUA, UpdaterUA)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 3) by Source, Src, Target
+| order by FirstSeen asc

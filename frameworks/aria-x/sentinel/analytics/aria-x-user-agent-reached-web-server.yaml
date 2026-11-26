@@ -1,0 +1,38 @@
+id: d8f689ad-7199-5dd1-838b-07b210add208
+name: ARIA-X agent user agent reached a web server
+description: |
+  A web server or proxy logged a request with the user agent ARIA-X/<version> (authorized security research), which
+  the ARIA-X engine (01NGVI-QINGYI/ARIA-X, reviewed at 015e197) sends on every request of its http_request and
+  web_probe tools (src/aria_x/tools/net.py:40,215). ARIA-X is an open-source LLM-driven security testing engine.
+  The user agent says the test is authorized; confirm with the application owner that it was agreed and came from
+  the declared source, then review what else the same address sent.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - InitialAccess
+relevantTechniques:
+  - T1595.002
+  - T1190
+query: |
+  union isfuzzy=true
+      (W3CIISLog
+          | extend UA=replace_string(csUserAgent, "+", " ")
+          | where UA startswith "ARIA-X/" and UA has "(authorized security research)"
+          | project TimeGenerated, Source="W3CIISLog", IPAddress=cIP, Target=csHost, Url=strcat(csUriStem, "?", csUriQuery), UserAgent=UA),
+      (CommonSecurityLog
+          | where RequestClientApplication startswith "ARIA-X/" and RequestClientApplication has "(authorized security research)"
+          | project TimeGenerated, Source="CommonSecurityLog", IPAddress=SourceIP, Target=DestinationHostName, Url=RequestURL, UserAgent=RequestClientApplication)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), SampleURLs=make_set(Url, 10),
+      UserAgents=make_set(UserAgent, 5), Sources=make_set(Source) by IPAddress, Target
+version: 1.0.0
+kind: Scheduled

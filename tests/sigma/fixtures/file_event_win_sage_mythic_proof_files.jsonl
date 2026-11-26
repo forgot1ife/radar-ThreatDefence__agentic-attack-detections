@@ -1,0 +1,6 @@
+{"name": "remote exec proof file", "expected": true, "event": {"TargetFilename": "C:\\Windows\\Temp\\sage_remote_exec_srv01_7.txt"}}
+{"name": "exported CA key", "expected": true, "event": {"TargetFilename": "C:\\Windows\\Temp\\sage_ca_export_ca01_backup\\ca01-CA.p12"}}
+{"name": "certreq work folder", "expected": true, "event": {"TargetFilename": "C:\\Users\\svc\\AppData\\Local\\Temp\\sage_cert_enroll_user1\\request.inf"}}
+{"name": "GPO proof in SYSVOL", "expected": true, "event": {"TargetFilename": "\\\\corp.example\\SYSVOL\\corp.example\\Policies\\{31B2F340-016D-11D2-945F-00C04FB984F9}\\Machine\\Preferences\\ScheduledTasks\\sage_gpo_default_domain_policy_whoami.txt"}}
+{"name": "near miss: Sage accounting data file", "expected": false, "event": {"TargetFilename": "C:\\ProgramData\\Sage\\Accounts\\sage_backup_2026.zip"}}
+{"name": "near miss: a GPO file named sage_gpo without the whoami suffix", "expected": false, "event": {"TargetFilename": "C:\\Users\\Public\\sage_gpo_notes.docx"}}

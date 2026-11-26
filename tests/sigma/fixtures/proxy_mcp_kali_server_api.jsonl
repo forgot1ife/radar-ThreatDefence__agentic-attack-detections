@@ -1,0 +1,5 @@
+{"name": "raw command route on 5000", "expected": true, "event": {"c-uri": "http://192.0.2.10:5000/api/command"}}
+{"name": "metasploit route on 5000", "expected": true, "event": {"c-uri": "http://192.0.2.10:5000/api/tools/metasploit"}}
+{"name": "stub tool route on another port", "expected": true, "event": {"c-uri": "http://192.0.2.10:8080/mcp/tools/kali_tools/nmap"}}
+{"name": "near miss: HexStrike tool route on 8888", "expected": false, "event": {"c-uri": "http://192.0.2.10:8888/api/tools/nmap"}}
+{"name": "near miss: another app's API on 5000", "expected": false, "event": {"c-uri": "http://192.0.2.10:5000/api/tools/list"}}

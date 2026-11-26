@@ -1,0 +1,3 @@
+# Mitsu Local SearXNG Container
+# Sigma id 319cdede-e39a-5f0d-8581-51ffe6ef432b, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*mitsu-searxng-config*" or process.command_line like "*--name mitsu-searxng-*" or process.command_line like "*start mitsu-searxng-*"

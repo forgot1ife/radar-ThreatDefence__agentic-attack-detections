@@ -1,0 +1,32 @@
+title: numasec API Server Started on All Interfaces
+id: 0e01c1a8-3edd-5ebc-b83d-8a47cece546e
+status: experimental
+description: |
+    Detects numasec started with its HTTP API on a non-loopback address: --hostname 0.0.0.0, or --mdns, which
+    changes the default address to 0.0.0.0 and announces numasec-<port> on numasec.local. The API has no
+    authentication unless NUMASEC_SERVER_PASSWORD is set, and it gives shell, file and agent access to anyone who
+    reaches it. A server bound to one specific address (--hostname 192.0.2.10) is not matched.
+references:
+    - https://github.com/FrancescoStabile/numasec/blob/1237a2f3515aebbd5260383c7088aa0ea806b600/packages/numasec/src/cli/network.ts
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1219
+logsource:
+    category: process_creation
+detection:
+    selection_image:
+        Image|endswith:
+            - '/numasec'
+            - '\numasec.exe'
+    selection_bind:
+        CommandLine|contains:
+            - '--hostname 0.0.0.0'
+            - '--hostname=0.0.0.0'
+            - '--mdns'
+    condition: all of selection_*
+falsepositives:
+    - A tester who serves numasec to a second machine on a trusted network
+level: medium

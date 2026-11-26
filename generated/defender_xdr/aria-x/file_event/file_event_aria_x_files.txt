@@ -1,0 +1,4 @@
+# ARIA-X Database, Run Evidence or Working Folders
+# Sigma id ee1ec5c0-526b-536c-940d-c9ffc4a9ff50, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath endswith "/aria-x.db" or FolderPath endswith "/aria-x.db-wal" or FolderPath endswith "/aria-x.db-shm" or FolderPath endswith "/configs/aria-x.toml") or (FolderPath contains "/runs/run_" and FolderPath contains "/work/evidence/http_") or (FolderPath contains "/runs/run_" and (FolderPath endswith "/report.html" or FolderPath endswith "/report.md" or FolderPath endswith "/report.json")) or (FolderPath contains "/aria-x-work-" or FolderPath contains "/aria-x-doctor-" or FolderPath contains "/aria-x-tools-" or FolderPath contains "/aria-x-demo-target-")

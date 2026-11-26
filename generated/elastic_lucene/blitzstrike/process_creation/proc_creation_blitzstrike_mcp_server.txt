@@ -1,0 +1,3 @@
+# Blitz Strike MCP Server or CLI on a Host
+# Sigma id 6f207162-61d5-5894-8af9-d8c01e73dc77, pipeline ecs
+(process.command_line:(*blitzstrike\ serve* OR *\/src\/index.ts\ serve\ \-\-mcp* OR *blitzstrike\/dist\/index.js\ serve*)) OR (process.command_line:(*blitzstrike\ install* OR *blitzstrike\ install\-tools* OR *blitzstrike\ sync\-data* OR *blitzstrike\ doctor* OR *npx\ \-y\ blitzstrike* OR *bunx\ blitzstrike* OR *npm\ i\ \-g\ blitzstrike* OR *npm\ install\ \-g\ blitzstrike* OR *bun\ add\ \-g\ blitzstrike* OR *github.com\/shinthink\/blitzstrike*))

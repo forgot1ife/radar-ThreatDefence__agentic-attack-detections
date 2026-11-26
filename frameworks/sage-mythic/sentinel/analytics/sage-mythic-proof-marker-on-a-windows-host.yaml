@@ -1,0 +1,30 @@
+id: f2a05e70-4ece-5eb1-96f3-306caef5bcb1
+name: Sage (Mythic) proof marker, proof file or SageExec task on a Windows host
+description: |
+  A process command line carried one of the default proof markers or names that Sage, the AI operator for the Mythic C2
+  framework, puts into the tasks it has a payload callback run: SAGE_REMOTE_EXEC_PROOF_ (a WMI-started cmd.exe that writes
+  C:\Windows\Temp\sage_remote_exec_<host>_<callback>.txt), a scheduled task named SageExec_, the PFX password prefix
+  SagePfx-v1- on certutil -backupKey, or the encoded marker script that turns off Defender real-time monitoring. Sage proposes
+  the tasks and, in supervised mode, runs each after an operator accepts it.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.003
+  - T1053.005
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine matches regex @"(?i)SAGE_(REMOTE_EXEC|EP_ADJUST|CA_EXPORT)_PROOF|SageExec_|SagePfx-v1-|\\sage_(remote_exec|ca_export_)"
+      or ProcessCommandLine contains "JABFAHIAcgBvAHIAQQBjAHQAaQBvAG4AUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAQwBvAG4AdABpAG4AdQBlACcAOwAkAGwAaQBuAGUAcwA9AE4AZQB3AC0ATwBiAGoAZQBjAHQAIABTAHkAcwB0AGUAbQAuAEMAbwBsAGwAZQBjAHQAaQBvAG4AcwAuAEcAZQBuAGUAcgBpAGMALgBMAGkAcwB0AFsAcwB0AHIAaQBuAGcAXQA7ACQAbABpAG4AZQBzAC4AQQBkAGQAKAAnAFMAQQBHAEUA"
+  | summarize Events=count(), Commands=make_set(substring(ProcessCommandLine, 0, 200), 15), Parents=make_set(InitiatingProcessFileName, 5),
+      FirstSeen=min(TimeGenerated) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

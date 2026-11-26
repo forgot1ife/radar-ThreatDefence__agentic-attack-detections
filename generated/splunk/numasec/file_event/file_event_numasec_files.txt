@@ -1,0 +1,3 @@
+# numasec Operation, Database or Out-of-Band Session Files Written
+# Sigma id c601624c-74b4-5cfe-81ad-0c3bd1492ffe, pipeline splunk_windows
+TargetFilename IN ("*/.numasec/operation/*", "*\\.numasec\\operation\\*") OR TargetFilename IN ("*/numasec/numasec.db", "*\\numasec\\numasec.db", "*/numasec/interact-sessions.json", "*\\numasec\\interact-sessions.json")

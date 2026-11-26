@@ -1,0 +1,4 @@
+# 0security State, Access Token or Remote Engine Files Written
+# Sigma id 9b5a7273-2f3d-58c3-b0f8-7f9dee0b2ac8, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName endswith "/.0/0.db" or TargetFileName endswith "/.0/access-token" or TargetFileName endswith "/.0/analytics-id" or TargetFileName endswith "/.0/analytics-sent.log" or TargetFileName endswith "/.0/engines.json" or TargetFileName endswith "/.0/web-connections.json" or TargetFileName endswith "/.0/bin/0security" or TargetFileName endswith "\\.0\\0.db" or TargetFileName endswith "\\.0\\access-token" or TargetFileName endswith "\\.0\\analytics-id" or TargetFileName endswith "\\.0\\analytics-sent.log") or (TargetFileName contains "/.0/runs/" or TargetFileName contains "\\.0\\runs\\") or TargetFileName startswith "/tmp/zero-engine/"

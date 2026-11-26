@@ -1,0 +1,3 @@
+# MCP Kali Server API Server or MCP Client Started
+# Sigma id 007a41b4-3da4-5e66-909c-c458ddd16746, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*/usr/bin/kali-server-mcp*" or process.command_line like "*/usr/share/mcp-kali-server/*" or starts_with(process.working_directory, "/usr/share/mcp-kali-server") and (process.command_line like "*server.py*" or process.command_line like "*client.py*") or user.name=="_mcp-kali" or process.command_line like "*client.py*" and process.command_line like "*--server http*" and process.command_line like "*:5000*"

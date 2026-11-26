@@ -1,0 +1,49 @@
+title: RAPTOR Launcher, Pipelines or Helper Scripts
+id: 8535eed2-ab36-53b4-81f4-e9ce41a586c4
+status: experimental
+description: |
+    Detects RAPTOR (gadievron/raptor) running on a host: the Claude Code session its launcher bin/raptor starts
+    (claude --plugin-dir <raptor>/plugins/coverage -n RAPTOR /raptor), the Python supervisors the launcher runs first,
+    the libexec/raptor-* helper scripts its Claude Code hooks and slash commands call, and its pipelines
+    (raptor.py agentic, raptor.py web --url, raptor_agentic.py, packages/web/scanner.py and the rest).
+references:
+    - https://github.com/gadievron/raptor
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_session:
+        CommandLine|contains|all:
+            - 'plugins/coverage'
+            - '-n RAPTOR'
+    selection_launcher:
+        CommandLine|contains:
+            - '/core/security/scratch_supervisor.py'
+            - '/core/startup/install_guard.py'
+            - '/core/security/launch_scratch.py'
+            - '--_scratch-session-stage'
+    selection_libexec:
+        CommandLine|contains: 'libexec/raptor-'
+    selection_pipeline:
+        CommandLine|contains:
+            - 'raptor.py agentic'
+            - 'raptor.py web --url'
+            - 'raptor.py scan --repo'
+            - 'raptor.py codeql --repo'
+            - 'raptor.py fuzz --binary'
+            - 'raptor_agentic.py'
+            - 'raptor_fuzzing.py'
+            - 'raptor_codeql.py'
+            - 'packages/web/scanner.py'
+            - 'packages/llm_analysis/agent.py'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized security research and code review with RAPTOR
+level: medium

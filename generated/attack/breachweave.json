@@ -1,0 +1,128 @@
+{
+ "description": "36 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 17,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "breachweave",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: NPS client staged on a host the way BreachWeave's skills tell the solver to; Sigma: BreachWeave Playbook NPS Client Staged on a Host",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1047"
+  },
+  {
+   "comment": "KQL hunt: NPS client staged on a host the way BreachWeave's skills tell the solver to",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1053.005"
+  },
+  {
+   "comment": "Suricata: 3819321 TD BreachWeave console shell command sent to a solver container",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: BreachWeave Redis web root pages, NPS client downloads and console calls in web and proxy logs; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: BreachWeave NPS Client Download or Console Event Stream in Proxy Logs; Suricata: 3819301 TD BreachWeave web console page (tch-agent title, main branch); Suricata: 3819302 TD BreachWeave web console page (BreachWeave title, pentest branch); Suricata: 3819303 TD BreachWeave web console inline script (__tchResizeObserverPatched); Suricata: 3819304 TD BreachWeave console runtime status answer; Suricata: 3819305 TD BreachWeave console runtime event stream opened; Suricata: 3819307 TD BreachWeave console registration setting answer (pentest branch); Suricata: 3819309 TD BreachWeave console event stream with a JWT in the URL (pentest branch); Suricata: 3819310 TD BreachWeave security search tool system prompt in a model request; Suricata: 3819311 TD BreachWeave Kimi web search request (builtin $web_search, temperature 0.6, thinking disabled); Suricata: 3819312 TD BreachWeave kimi-security solver prompt (Tencent Cloud Hackathon) in a model request; Suricata: 3819313 TD BreachWeave observer sidecar system prompt in a model request; Suricata: 3819314 TD BreachWeave planner system prompt in a model request; Suricata: 3819315 TD BreachWeave challenge platform API call with Agent-Token; Suricata: 3819321 TD BreachWeave console shell command sent to a solver container",
+   "enabled": true,
+   "score": 17,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Suricata: 3819308 TD BreachWeave console login or self-registration answer with a token (pentest branch)",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1078"
+  },
+  {
+   "comment": "KQL hunt: BreachWeave Redis web root pages, NPS client downloads and console calls in web and proxy logs; KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: NPS client staged on a host the way BreachWeave's skills tell the solver to; Sigma: BreachWeave NPS Client Download or Console Event Stream in Proxy Logs; Sigma: BreachWeave Playbook NPS Client Staged on a Host; Suricata: 3819319 TD BreachWeave NPS client download from a bridge (/files/nps/npc_); Suricata: 3819320 TD BreachWeave NPS client download from a bridge (/files/npc)",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "Sigma: BreachWeave Redis Web Root Pages Requested; Suricata: 3819316 TD BreachWeave Redis web root canary POST (cmd=RCOK)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "Sentinel analytics: BreachWeave playbook NPS client staged on a host",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1219"
+  },
+  {
+   "comment": "KQL hunt: BreachWeave Redis web root pages, NPS client downloads and console calls in web and proxy logs; Sigma: BreachWeave Redis Web Root Pages Requested; Suricata: 3819316 TD BreachWeave Redis web root canary POST (cmd=RCOK); Suricata: 3819317 TD BreachWeave Redis web root page request (redis_test, redis_diag, redis_exec, redis_echo); Suricata: 3819318 TD BreachWeave PHP diagnostic page answer (DIAG_START, disable_functions, com_loaded); YARA: BreachWeave_Redis_Webroot_Pages",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1505.003"
+  },
+  {
+   "comment": "Suricata: 3819306 TD BreachWeave console provider list with plaintext model API keys",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1552"
+  },
+  {
+   "comment": "Sigma: BreachWeave (tch-agent) Home Folder, Solver State or Crawler Output Written; YARA: BreachWeave_Host_Config_Files",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1552.001"
+  },
+  {
+   "comment": "KQL hunt: NPS client staged on a host the way BreachWeave's skills tell the solver to; Sigma: BreachWeave Playbook NPS Client Staged on a Host; Suricata: 3819319 TD BreachWeave NPS client download from a bridge (/files/nps/npc_)",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1572"
+  },
+  {
+   "comment": "KQL hunt: BreachWeave (tch-agent) web console, solver containers or image builds on a host you monitor; Sigma: BreachWeave (tch-agent) Home Folder, Solver State or Crawler Output Written; Sigma: BreachWeave (tch-agent) Web Console, Solver Container or Image Build Started; YARA: BreachWeave_Solver_Image_Dockerfile; YARA: BreachWeave_TchAgent_Binary_Or_Source",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: BreachWeave (tch-agent) web console, solver containers or image builds on a host you monitor; Sigma: BreachWeave (tch-agent) Web Console, Solver Container or Image Build Started; Suricata: 3819322 TD BreachWeave console host settings change with container binds; YARA: BreachWeave_Solver_Image_Dockerfile; YARA: BreachWeave_TchAgent_Binary_Or_Source",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1610"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

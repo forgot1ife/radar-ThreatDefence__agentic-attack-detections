@@ -1,0 +1,3 @@
+# Codex or Claude Code CLI Started by Mitsu
+# Sigma id 7059401f-52f3-55c9-9283-6b2d2c770648, pipeline splunk_windows
+CommandLine="*mcp_servers.mitsu.url=*" OR CommandLine IN ("*\"mcpServers\":{\"mitsu\":{\"type\":\"http\"*", "*mcp__mitsu__intel_upsert_asset*") OR CommandLine IN ("*You are Mitsu: the operator*", "*You are Mitsu, a security assessment assistant.*", "*Reply exactly MITSU_OK*")

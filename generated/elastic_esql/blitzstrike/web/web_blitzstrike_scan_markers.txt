@@ -1,0 +1,3 @@
+# Blitz Strike Scan Markers in Web Logs
+# Sigma id 83ba063b-98da-53ee-9f54-9c7e42f01b9d, pipeline ecs
+from * metadata _id, _index, _version | where user_agent.original like "*blitzstrike*" or user_agent.original like "*BlitzStrike*" or user_agent.original=="Mozilla/5.0 (recon-agent)" or url.query like "*evil-blitz.example.com*" or url.query like "*blitzstrike-ssrf-canary*" or url.query like "*X-BlitzStrike*" or url.query like "*bs-nonexistent-*" or url.query like "*__blitz_xss__*" or url.query like "*zzblitz*" or url.domain rlike "[bB][sS]-[mM][aA][rR][kK][eE][rR]\\.[eE][xX][aA][mM][pP][lL][eE]\\.[cC][oO][mM]"

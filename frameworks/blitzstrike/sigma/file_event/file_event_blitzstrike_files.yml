@@ -1,0 +1,33 @@
+title: Blitz Strike Home Folder, Reports or Agent Personas Written
+id: d2a75e3d-9c62-5ddf-9a30-9e4a6c2557c6
+status: experimental
+description: |
+    Detects the files Blitz Strike writes on the host that runs it: its home folder ~/.blitzstrike/ (audit.jsonl,
+    memory.jsonl, intelligence.jsonl, obligations.jsonl, circuit-breaker.json, reports/, data/payloads, data/templates,
+    tools/, shot-<time>.png screenshots), and the OpenCode agent personas that blitzstrike install copies into
+    ~/.config/opencode/agents/ (Blitz Strike.md, Blitz.md, Eagle Eye.md, Strike.md).
+references:
+    - https://github.com/shinthink/blitzstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        TargetFilename|contains:
+            - '/.blitzstrike/'
+            - '\.blitzstrike\'
+    selection_persona:
+        TargetFilename|endswith:
+            - '/opencode/agents/Blitz Strike.md'
+            - '\opencode\agents\Blitz Strike.md'
+            - '/opencode/agents/Eagle Eye.md'
+            - '\opencode\agents\Eagle Eye.md'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and bug bounty researchers running Blitz Strike
+level: low

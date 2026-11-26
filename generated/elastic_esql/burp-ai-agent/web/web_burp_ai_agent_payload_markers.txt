@@ -1,0 +1,3 @@
+# Custom AI Agent (burp-ai-agent) Active Scanner Payload Markers in Web Logs
+# Sigma id 09ef5599-3eed-5e0a-aaf8-2820d637992f, pipeline ecs
+from * metadata _id, _index, _version | where url.query like "*XSS-BURP-AI*" or url.query like "*burp-ai-test*" or url.query like "*evil-burp-ai*" or url.path like "*XSS-BURP-AI*" or url.path like "*evil-burp-ai*" or `cs-referer` like "*XSS-BURP-AI*" or `cs-referer` like "*evil-burp-ai*"

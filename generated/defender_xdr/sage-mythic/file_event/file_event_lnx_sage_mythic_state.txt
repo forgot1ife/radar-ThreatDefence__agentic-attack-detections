@@ -1,0 +1,4 @@
+# Sage (Mythic) State and Trace Databases on a Mythic Server
+# Sigma id 1230384f-fc23-5c73-b219-b8ecf62fbdb0, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/InstalledServices/sage/" and (FolderPath endswith "/sage.db" or FolderPath endswith "/.phoenix/phoenix.db")) or FolderPath contains "/.sage_engagement/" or FolderPath endswith "/opt/sage_data/sage.db"

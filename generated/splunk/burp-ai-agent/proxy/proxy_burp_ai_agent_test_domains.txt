@@ -1,0 +1,3 @@
+# Custom AI Agent (burp-ai-agent) Test Domains or Payload Markers in Proxy Logs
+# Sigma id 796d81b2-ba1d-5ab5-b141-1e5029ee37ba, pipeline splunk_windows
+"cs-host"="*evil-burp-ai*" OR "c-uri" IN ("*XSS-BURP-AI*", "*burp-ai-test*", "*evil-burp-ai*")

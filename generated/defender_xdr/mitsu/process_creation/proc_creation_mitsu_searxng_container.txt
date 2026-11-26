@@ -1,0 +1,4 @@
+# Mitsu Local SearXNG Container
+# Sigma id 319cdede-e39a-5f0d-8581-51ffe6ef432b, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "mitsu-searxng-config" or ProcessCommandLine contains "--name mitsu-searxng-" or ProcessCommandLine contains "start mitsu-searxng-"

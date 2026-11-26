@@ -1,0 +1,3 @@
+# Sage (Mythic) SharpHound 2.13.0 Download by python-requests
+# Sigma id e756eef2-c8fc-56e2-b5d8-91797b510a6f, pipeline ecs
+from * metadata _id, _index, _version | where url.original like "*/SpecterOps/SharpHound/releases/download/v2.13.0/SharpHound_v2.13.0_windows_x86.zip*" and starts_with(user_agent.original, "python-requests/")

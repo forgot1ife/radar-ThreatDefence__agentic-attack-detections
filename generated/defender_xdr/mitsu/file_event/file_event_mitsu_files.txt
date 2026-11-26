@@ -1,0 +1,4 @@
+# Mitsu Session, Configuration or Report Files Written
+# Sigma id d2be8aa4-645e-5d7a-a14d-04ad7d7ce8fb, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/mitsu/sessions/" or FolderPath contains "/.config/mitsu/" or FolderPath contains "/mitsu/armory/" or FolderPath contains "/mitsu-codex-sessions/" or FolderPath contains "/mitsu-claude-sessions/") or FolderPath endswith "/.mitsu-armory-managed" or (FolderPath endswith "/mitsu/credentials.json" or FolderPath endswith "/mitsu/mcp_servers.json" or FolderPath endswith "/mitsu/host.json" or FolderPath endswith "/mitsu/instance.lock")

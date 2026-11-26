@@ -1,0 +1,4 @@
+# numasec User Agents or Probe Markers in Proxy Logs
+# Sigma id 2b9f8316-81dc-5213-9ce5-a86aad9c1720, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent =~ "numasec" or (HttpUserAgent startswith "numasec-appsec-probe/" or HttpUserAgent startswith "numasec-knowledge-broker/" or HttpUserAgent startswith "numasec/") or (Url contains "/numasec_404_check_" or Url contains "numasec-xss")

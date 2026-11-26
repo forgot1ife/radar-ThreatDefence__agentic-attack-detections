@@ -1,0 +1,34 @@
+title: Sage (Mythic) State and Trace Databases on a Mythic Server
+id: 1230384f-fc23-5c73-b219-b8ecf62fbdb0
+status: experimental
+description: |
+    Detects the files Sage, the AI operator for the Mythic C2 framework, keeps in its installed service directory: the
+    LangGraph checkpoint and operation-memory database sage.db, the Phoenix trace store .phoenix/phoenix.db (full prompts and
+    tool results, which can include credentials), and the .sage_engagement folder with decision records and artifact keys.
+references:
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/runtime_db.py
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/main.py
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/docs/SECURITY_AND_DATA_HANDLING.md
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.007
+logsource:
+    product: linux
+    category: file_event
+detection:
+    selection_service_dir:
+        TargetFilename|contains: '/InstalledServices/sage/'
+        TargetFilename|endswith:
+            - '/sage.db'
+            - '/.phoenix/phoenix.db'
+    selection_engagement:
+        TargetFilename|contains: '/.sage_engagement/'
+    selection_mac_default:
+        TargetFilename|endswith: '/opt/sage_data/sage.db'
+    condition: 1 of selection_*
+falsepositives:
+    - A Mythic server you run with Sage installed
+level: medium

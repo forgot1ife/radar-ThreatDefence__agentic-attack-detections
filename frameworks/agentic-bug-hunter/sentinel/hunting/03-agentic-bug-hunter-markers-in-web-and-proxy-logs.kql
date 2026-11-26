@@ -1,0 +1,43 @@
+// Agentic Bug Hunter testing you: its user agents and probe strings in web and proxy logs
+// Agentic attack detections by ThreatDefence (Agentic Bug Hunter). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Agentic Bug Hunter source code (awarexone/Agentic-Bug-Hunter, reviewed at 82f4512e):
+//  - Python scanners and verifiers send User-Agent: agentic-bug-hunter/<tool> (verifier, cors_scanner, crlf_scanner,
+//    nosqli_scanner, dom_xss_harness, llm_redteam, poc_bundler). The spray and the cewler crawl send
+//    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Bug-Bounty-Research"; the WAF analyzer sends
+//    "Mozilla/5.0 (compatible; waf-response-analyzer/1.0)".
+//  - Probe strings: /?_waftest=<attack string> (WAF baseline), Set-Cookie:crlftest=1 appended to a path (CRLF),
+//    window.__cbbx with a cbbx<10 hex> canary in a parameter (DOM XSS), /saml-control-<number> and
+//    /non_existent_<unix time> (catch-all checks), /proof_<unix time>.php|jsp|aspx (upload execution check).
+//  - The shell scanners (vuln_scanner.sh, bypass_403.sh, recon_engine.sh) use curl, httpx, nuclei, ffuf and katana
+//    with their default user agents: the second part lists what the same source sent within a day of a marker.
+
+let Window = 30d;
+let QueryMarkers = dynamic(["_waftest=", "window.__cbbx", "crlftest=1"]);
+let PathRegex = @"(?i)(crlftest=1|/saml-control-[0-9]+$|/non_existent_[0-9]{10}$|/proof_[0-9]{10}\.(php|jsp|aspx)$)";
+let IsAbhUA = (ua:string) { ua startswith "agentic-bug-hunter/" or ua endswith "Bug-Bounty-Research" or ua has "waf-response-analyzer/1.0" };
+let Web = union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Method=csMethod, Path=csUriStem, Query=csUriQuery, UA),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where isnotempty(RequestURL)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Method=RequestMethod,
+            Path=RequestURL, Query="", UA=RequestClientApplication);
+let Marked = Web
+    | where IsAbhUA(UA) or Query has_any (QueryMarkers) or Path has_any (QueryMarkers) or Path matches regex PathRegex;
+let AbhSources = Marked | summarize MarkerFirst=min(TimeGenerated) by Src, Target;
+union
+    (Marked
+        | summarize Events=count(), Posts=countif(Method =~ "POST"), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated),
+            Samples=make_set(strcat(Path, iff(isempty(Query) or Query == "-", "", strcat("?", Query))), 10), UAs=make_set(UA, 5) by Source, Src, Target
+        | extend Signal="Agentic Bug Hunter user agent or probe string"),
+    (Web
+        | join kind=inner (AbhSources) on Src, Target
+        | where TimeGenerated between (MarkerFirst .. (MarkerFirst + 1d))
+        | where not(IsAbhUA(UA))
+        | summarize Events=count(), Posts=countif(Method =~ "POST"), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated),
+            Samples=make_set(Path, 10), UAs=make_set(UA, 5) by Source, Src, Target
+        | extend Signal="Other requests from the same source within a day of an Agentic Bug Hunter marker")
+| order by Src asc, FirstSeen asc

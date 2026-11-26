@@ -1,0 +1,42 @@
+id: 03459577-1931-5a72-a801-a044c2c6f5e2
+name: Blitz Strike AI pentest MCP server scanned a web server
+description: |
+  A web server or proxy logged a request with a string hard-coded in Blitz Strike (shinthink/blitzstrike, reviewed at
+  9d7a6ecb): one of its user agents (blitzstrike/1.0, blitzstrike/2, Mozilla/5.0 (compatible; BlitzStrike/2.4),
+  Mozilla/5.0 (blitzstrike ...)), or a marker its default run_engagement checks send (the open redirect host
+  evil-blitz.example.com, the SSRF canary httpbin.org/anything/blitzstrike-ssrf-canary, the CRLF header name
+  X-BlitzStrike, the host header bs-marker.example.com) or its file read control path /bs-nonexistent-. Blitz Strike is
+  an MCP server that an AI coding client drives; it is promoted for bug bounty work, so check whether the test was agreed.
+  A request from your own server to the SSRF canary means the probe worked.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - InitialAccess
+relevantTechniques:
+  - T1595.002
+  - T1190
+query: |
+  // Markers sit inside URL-encoded values (https%3A%2F%2Fevil-blitz...), so match substrings, not terms.
+  let Markers = @"(?i)evil-blitz\.example\.com|blitzstrike-ssrf-canary|x-blitzstrike|bs-nonexistent-";
+  union isfuzzy=true
+      (W3CIISLog
+          | extend UA=replace_string(csUserAgent, "+", " ")
+          | where UA contains "blitzstrike" or csUriQuery matches regex Markers or csUriStem matches regex Markers or csHost =~ "bs-marker.example.com"
+          | project TimeGenerated, Source="W3CIISLog", IPAddress=cIP, Target=csHost, Url=strcat(csUriStem, "?", csUriQuery), UserAgent=UA),
+      (CommonSecurityLog
+          | where RequestClientApplication contains "blitzstrike" or RequestURL matches regex Markers or DestinationHostName =~ "bs-marker.example.com"
+          | project TimeGenerated, Source="CommonSecurityLog", IPAddress=SourceIP, Target=DestinationHostName, Url=RequestURL, UserAgent=RequestClientApplication)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), SampleURLs=make_set(Url, 10),
+      UserAgents=make_set(UserAgent, 5), Sources=make_set(Source) by IPAddress, Target
+version: 1.0.0
+kind: Scheduled

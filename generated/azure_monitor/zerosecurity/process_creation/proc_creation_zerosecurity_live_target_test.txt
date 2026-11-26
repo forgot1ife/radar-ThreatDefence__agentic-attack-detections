@@ -1,0 +1,4 @@
+# 0security Probe or Nuclei Target Scan Against a Live Endpoint
+# Sigma id 69c7dd9d-381a-5a6b-be5c-3d11304259ad, pipeline azure_monitor
+SecurityEvent
+| where ((CommandLine contains " probe http" or CommandLine contains "--i-own-this ") and (CommandLine contains "0security" or CommandLine contains "0.js" or CommandLine contains "0 probe ")) or (CommandLine contains "--target-url " and CommandLine contains "--scanner nuclei") or (CommandLine contains "0-nuclei-" and CommandLine contains "-etags intrusive,dos,fuzz" and CommandLine contains "-pt http")

@@ -1,0 +1,3 @@
+# 0security Probe or Nuclei Target Scan Against a Live Endpoint
+# Sigma id 69c7dd9d-381a-5a6b-be5c-3d11304259ad, pipeline splunk_windows
+(CommandLine IN ("* probe http*", "*--i-own-this *") CommandLine IN ("*0security*", "*0.js*", "*0 probe *")) OR (CommandLine="*--target-url *" CommandLine="*--scanner nuclei*") OR (CommandLine="*0-nuclei-*" CommandLine="*-etags intrusive,dos,fuzz*" CommandLine="*-pt http*")

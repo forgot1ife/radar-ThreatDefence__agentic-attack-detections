@@ -1,0 +1,3 @@
+# Sage (Mythic) State and Trace Databases on a Mythic Server
+# Sigma id 1230384f-fc23-5c73-b219-b8ecf62fbdb0, pipeline splunk_windows
+(TargetFilename="*/InstalledServices/sage/*" TargetFilename IN ("*/sage.db", "*/.phoenix/phoenix.db")) OR TargetFilename="*/.sage_engagement/*" OR TargetFilename="*/opt/sage_data/sage.db"

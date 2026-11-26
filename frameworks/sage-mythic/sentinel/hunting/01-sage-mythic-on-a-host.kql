@@ -1,0 +1,36 @@
+// Sage (Mythic AI operator) on a server you monitor
+// Agentic attack detections by ThreatDefence (Sage (Mythic)). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.007 (Obtain Capabilities: Artificial Intelligence), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Sage (MythicAgents/sage, reviewed at cbff42f0) installs into a Mythic C2 server as the chat container "sage". From its source:
+//  - python3 /usr/local/bin/sage-entrypoint, then python3 main.py in /Mythic; the BloodHound MCP server runs as
+//    uv --directory /opt/bloodhound_mcp run --no-sync main.py.
+//  - It embeds Arize Phoenix: a listener on 6006 (UI and API, no login by default) and 4317 (OTLP gRPC), bound to every
+//    interface of the container by Phoenix's default.
+//  - Files in <Mythic>/InstalledServices/sage/: sage.db, .phoenix/phoenix.db, .sage_engagement/, tools/.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let SageProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where ProcessCommandLine has "/usr/local/bin/sage-entrypoint"
+        or (ProcessCommandLine has "--directory /opt/bloodhound_mcp" and ProcessCommandLine has "main.py");
+let SageDevices = SageProcesses | distinct DeviceName;
+union isfuzzy=true
+    (SageProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Sage entrypoint or its BloodHound MCP server", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FolderPath has "/InstalledServices/sage/" and (FileName =~ "sage.db" or FolderPath has "/.phoenix/phoenix.db"))
+            or FolderPath has "/.sage_engagement/"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Sage state or Phoenix trace database", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where DeviceName in (SageDevices)
+        | where (ActionType == "ListeningConnectionCreated" and LocalPort in (6006, 4317))
+            or (ActionType == "InboundConnectionAccepted" and LocalPort == 6006 and RemoteIPType == "Public")
+        | summarize Remotes=make_set(RemoteIP, 20), Timestamp=min(Timestamp) by DeviceName, ActionType, LocalPort
+        | project Timestamp, DeviceName, Signal=strcat("Phoenix port ", tostring(LocalPort), ": ", ActionType), Detail=tostring(Remotes))
+| order by Timestamp desc

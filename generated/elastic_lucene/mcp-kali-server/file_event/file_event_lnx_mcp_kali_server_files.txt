@@ -1,0 +1,3 @@
+# MCP Kali Server Files Written
+# Sigma id b8a0d660-48cf-505b-bf00-5001068dda48, pipeline ecs
+TargetFilename:*\/mks_msf_resource.rc OR TargetFilename:\/usr\/share\/mcp\-kali\-server\/* OR (TargetFilename:(*\/usr\/bin\/kali\-server\-mcp OR *\/etc\/default\/kali\-server\-mcp OR *\/systemd\/system\/kali\-server\-mcp.service))

@@ -1,0 +1,46 @@
+title: RAPTOR Web Scanner User Agent or Probe Markers in Web Logs
+id: f9797aae-db3c-5085-a08f-5cbacd34dd85
+status: experimental
+description: |
+    Detects requests from the web scanner of RAPTOR (gadievron/raptor, an autonomous security research framework that
+    runs on Claude Code): its fixed user agent "RAPTOR Security Scanner (Authorized Testing)", and the fixed probe values
+    its checks put in paths and query strings (error-page probes, random control paths, the CL.0 smuggling probe, the
+    parameter-mining baseline, the cache-buster, the XSS execution canary, the prototype pollution sentinel, the OAuth
+    probe host and state, and the baseline values). All of these strings are in the code at commit ac734352.
+references:
+    - https://github.com/gadievron/raptor
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection_ua:
+        cs-user-agent|startswith: 'RAPTOR Security Scanner'
+    selection_stem:
+        cs-uri-stem|contains:
+            - 'does-not-exist-raptor'
+            - '/raptor-clzero-probe'
+    selection_control:
+        cs-uri-stem|startswith: '/raptor-'
+        cs-uri-stem|endswith:
+            - '-does-not-exist'
+            - '/nonexistent.css'
+    selection_query:
+        cs-uri-query|contains:
+            - 'raptornosuchparam='
+            - 'raptorcb='
+            - '__raptor_hits'
+            - 'raptor_pp_probe_value_8472'
+            - 'evil-raptor-probe.example.com'
+            - 'state=raptor_probe'
+            - '=raptor-baseline'
+            - 'raptor%40example.invalid'
+            - 'raptor@example.invalid'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with RAPTOR
+level: medium

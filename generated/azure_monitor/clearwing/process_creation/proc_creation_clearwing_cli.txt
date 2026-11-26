@@ -1,0 +1,4 @@
+# Clearwing AI Pentest Agent Command Line
+# Sigma id d08c13be-2d60-5374-8952-c2698a095f3c, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "/bin/clearwing " or CommandLine contains "\\Scripts\\clearwing.exe " or CommandLine contains "\\Scripts\\clearwing " or CommandLine contains "clearwing.py " or CommandLine contains "uv run clearwing ") and ((CommandLine contains " scan " or CommandLine contains " sourcehunt " or CommandLine contains " operate " or CommandLine contains " interactive" or CommandLine contains " webui" or CommandLine contains " campaign " or CommandLine contains " asm " or CommandLine contains " disclose " or CommandLine contains " remediate " or CommandLine contains " parallel ") or (CommandLine contains "--auto-approve-exploits" or CommandLine contains "--webhook-secret" or CommandLine contains "--webhook-port" or CommandLine contains "--compile-commands" or CommandLine contains "--cve-list"))

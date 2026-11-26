@@ -1,0 +1,4 @@
+# numasec Operation, Database or Out-of-Band Session Files Written
+# Sigma id c601624c-74b4-5cfe-81ad-0c3bd1492ffe, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.numasec/operation/" or TargetFileName contains "\\.numasec\\operation\\") or (TargetFileName endswith "/numasec/numasec.db" or TargetFileName endswith "\\numasec\\numasec.db" or TargetFileName endswith "/numasec/interact-sessions.json" or TargetFileName endswith "\\numasec\\interact-sessions.json")

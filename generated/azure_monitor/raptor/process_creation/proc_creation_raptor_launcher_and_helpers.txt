@@ -1,0 +1,4 @@
+# RAPTOR Launcher, Pipelines or Helper Scripts
+# Sigma id 8535eed2-ab36-53b4-81f4-e9ce41a586c4, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "plugins/coverage" and CommandLine contains "-n RAPTOR") or (CommandLine contains "/core/security/scratch_supervisor.py" or CommandLine contains "/core/startup/install_guard.py" or CommandLine contains "/core/security/launch_scratch.py" or CommandLine contains "--_scratch-session-stage") or CommandLine contains "libexec/raptor-" or (CommandLine contains "raptor.py agentic" or CommandLine contains "raptor.py web --url" or CommandLine contains "raptor.py scan --repo" or CommandLine contains "raptor.py codeql --repo" or CommandLine contains "raptor.py fuzz --binary" or CommandLine contains "raptor_agentic.py" or CommandLine contains "raptor_fuzzing.py" or CommandLine contains "raptor_codeql.py" or CommandLine contains "packages/web/scanner.py" or CommandLine contains "packages/llm_analysis/agent.py")

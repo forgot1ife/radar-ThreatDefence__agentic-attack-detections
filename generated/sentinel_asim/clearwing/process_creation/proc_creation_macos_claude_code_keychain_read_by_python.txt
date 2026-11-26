@@ -1,0 +1,4 @@
+# Claude Code Keychain Credential Read by a Python Process
+# Sigma id f828b29f-c6c1-5953-8937-0f86e7af9512, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessName endswith "/security" and (TargetProcessCommandLine contains "find-generic-password" and TargetProcessCommandLine contains "Claude Code-credentials")) and (ParentProcessName contains "python" or ActingProcessName contains "python")

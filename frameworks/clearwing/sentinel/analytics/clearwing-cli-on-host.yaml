@@ -1,0 +1,29 @@
+id: ec384565-61e7-5eab-82ca-5842ca795aa6
+name: Clearwing AI pentest agent run on a host
+description: |
+  A host ran the Clearwing command line (Lazarus-AI-OSS/clearwing) with one of its attack subcommands: scan, operate,
+  interactive, sourcehunt, campaign, asm or webui, or with --auto-approve-exploits, which lets its operator model
+  approve exploits without a person. Clearwing is an autonomous network pentest agent and source-code vulnerability
+  hunter driven by a language model. Confirm the run was authorized.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - Execution
+relevantTechniques:
+  - T1595.002
+  - T1059.006
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has_any ("/bin/clearwing ", @"\Scripts\clearwing.exe ", @"\Scripts\clearwing ", "clearwing.py ", "uv run clearwing ")
+  | where ProcessCommandLine has_any (" scan ", " sourcehunt ", " operate ", " interactive", " webui", " campaign ", " asm ", "--auto-approve-exploits", "--webhook-secret")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Commands=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

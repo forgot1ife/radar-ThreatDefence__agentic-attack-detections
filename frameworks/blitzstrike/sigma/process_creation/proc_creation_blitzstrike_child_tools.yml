@@ -1,0 +1,39 @@
+title: Tools Started by the Blitz Strike MCP Server
+id: 279848ea-5408-5f13-b82d-212174b82e67
+status: experimental
+description: |
+    Detects the processes the Blitz Strike MCP server starts itself: nuclei with its fixed argument run
+    (-jsonl -silent -no-color -timeout 10), interactsh-client -json for out-of-band proof, chrome-devtools-mcp with
+    --headless --isolated, curl --resolve for its sinkhole check, the sparse git clone of its payload and template data,
+    and the shell installs (go install, pip install, apt-get install -y) it runs for any of the 130 tools in its catalog
+    that are missing. The parent command line names blitzstrike.
+references:
+    - https://github.com/shinthink/blitzstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_parent:
+        ParentCommandLine|contains: 'blitzstrike'
+    selection_child:
+        CommandLine|contains:
+            - '-jsonl -silent -no-color -timeout 10'
+            - 'interactsh-client -json'
+            - 'chrome-devtools-mcp'
+            - 'curl -sk -m 6 --resolve'
+            - 'sparse-checkout set payloads templates'
+            - 'go install'
+            - 'pip install'
+            - 'apt-get install -y'
+            - 'nuclei -update-templates'
+    condition: selection_parent and selection_child
+falsepositives:
+    - Security teams and bug bounty researchers running Blitz Strike
+level: medium

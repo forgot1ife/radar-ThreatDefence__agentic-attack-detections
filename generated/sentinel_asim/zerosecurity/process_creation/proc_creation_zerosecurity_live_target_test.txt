@@ -1,0 +1,4 @@
+# 0security Probe or Nuclei Target Scan Against a Live Endpoint
+# Sigma id 69c7dd9d-381a-5a6b-be5c-3d11304259ad, pipeline sentinel_asim
+imProcessCreate
+| where ((TargetProcessCommandLine contains " probe http" or TargetProcessCommandLine contains "--i-own-this ") and (TargetProcessCommandLine contains "0security" or TargetProcessCommandLine contains "0.js" or TargetProcessCommandLine contains "0 probe ")) or (TargetProcessCommandLine contains "--target-url " and TargetProcessCommandLine contains "--scanner nuclei") or (TargetProcessCommandLine contains "0-nuclei-" and TargetProcessCommandLine contains "-etags intrusive,dos,fuzz" and TargetProcessCommandLine contains "-pt http")

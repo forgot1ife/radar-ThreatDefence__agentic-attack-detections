@@ -1,0 +1,30 @@
+title: Mitsu Local SearXNG Container
+id: 319cdede-e39a-5f0d-8581-51ffe6ef432b
+status: experimental
+description: |
+    Detects the Docker commands Mitsu runs when the operator turns on its managed SearXNG search engine: docker volume
+    create mitsu-searxng-config, a helper container that writes settings.yml into that volume, and docker run --detach
+    --name mitsu-searxng-<port> --publish 127.0.0.1:<port>:8080 with ghcr.io/searxng/searxng:latest (8888 is the
+    port the setup dialog offers). Later sessions run docker start mitsu-searxng-<port>. When the user has just been
+    added to the docker group, Mitsu wraps the command in sg docker -c, which this rule also sees.
+references:
+    - https://github.com/ARCANGEL0/Mitsu
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1593.002
+logsource:
+    category: process_creation
+detection:
+    selection:
+        # services/searxng.py:56, 114-119, 209, 237-249 at a4844932
+        CommandLine|contains:
+            - 'mitsu-searxng-config'
+            - '--name mitsu-searxng-'
+            - 'start mitsu-searxng-'
+    condition: selection
+falsepositives:
+    - Mitsu used for authorized work
+level: medium

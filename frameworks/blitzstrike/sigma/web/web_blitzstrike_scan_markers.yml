@@ -1,0 +1,44 @@
+title: Blitz Strike Scan Markers in Web Logs
+id: 83ba063b-98da-53ee-9f54-9c7e42f01b9d
+status: experimental
+description: |
+    Detects Blitz Strike testing a web server: the user agents its own HTTP code sets (blitzstrike/1.0, blitzstrike/2,
+    Mozilla/5.0 (compatible; BlitzStrike/2.4), Mozilla/5.0 (blitzstrike oracle probe) and the other "blitzstrike ..."
+    probes, and Mozilla/5.0 (recon-agent) from its leaked key check), and the markers its live checks put in the query
+    string: the open redirect host evil-blitz.example.com, the SSRF canary URL http://httpbin.org/anything/blitzstrike-ssrf-canary,
+    the CRLF probe %0d%0aX-BlitzStrike%3A%20injected, the file read control path /bs-nonexistent-<id>, the browser XSS flag
+    window.__blitz_xss__ and the proof of concept marker zzblitz. The run_engagement call sends the user agent, the open
+    redirect, SSRF and CRLF markers by default. All strings are in the Blitz Strike code at 9d7a6ecb.
+references:
+    - https://github.com/shinthink/blitzstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_ua:
+        cs-user-agent|contains:
+            - 'blitzstrike'
+            - 'BlitzStrike'
+    selection_ua_keycheck:
+        cs-user-agent: 'Mozilla/5.0 (recon-agent)'
+    selection_query:
+        cs-uri-query|contains:
+            - 'evil-blitz.example.com'
+            - 'blitzstrike-ssrf-canary'
+            - 'X-BlitzStrike'
+            - 'bs-nonexistent-'
+            - '__blitz_xss__'
+            - 'zzblitz'
+    selection_host:
+        cs-host: 'bs-marker.example.com'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Blitz Strike
+level: high

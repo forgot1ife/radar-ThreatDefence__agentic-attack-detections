@@ -1,0 +1,7 @@
+{"name": "MCP keystore on macOS", "expected": true, "event": {"TargetFilename": "/Users/tester/.burp-ai-agent/certs/mcp-keystore.p12"}}
+{"name": "AI request log on Linux", "expected": true, "event": {"TargetFilename": "/home/tester/.burp-ai-agent/logs/ai-request-log.jsonl"}}
+{"name": "audit log on Windows", "expected": true, "event": {"TargetFilename": "C:\\Users\\tester\\.burp-ai-agent\\audit.jsonl"}}
+{"name": "full release JAR downloaded", "expected": true, "event": {"TargetFilename": "/home/tester/Downloads/Custom-AI-Agent-full-1.1.0.jar"}}
+{"name": "BApp store JAR built", "expected": true, "event": {"TargetFilename": "/home/tester/src/build/libs/custom-ai-agent-bapp.jar"}}
+{"name": "near miss: Burp's own folder", "expected": false, "event": {"TargetFilename": "/home/tester/.BurpSuite/UserConfigPro.json"}}
+{"name": "near miss: another extension JAR", "expected": false, "event": {"TargetFilename": "/home/tester/Downloads/burp-mcp-server-all.jar"}}

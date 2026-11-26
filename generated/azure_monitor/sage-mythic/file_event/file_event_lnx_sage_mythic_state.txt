@@ -1,0 +1,4 @@
+# Sage (Mythic) State and Trace Databases on a Mythic Server
+# Sigma id 1230384f-fc23-5c73-b219-b8ecf62fbdb0, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/InstalledServices/sage/" and (ObjectName endswith "/sage.db" or ObjectName endswith "/.phoenix/phoenix.db")) or ObjectName contains "/.sage_engagement/" or ObjectName endswith "/opt/sage_data/sage.db"

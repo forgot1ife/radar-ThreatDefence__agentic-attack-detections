@@ -1,0 +1,5 @@
+{"name": "headless server on all interfaces", "expected": true, "event": {"Image": "/usr/local/bin/numasec", "CommandLine": "numasec serve --hostname 0.0.0.0 --port 4096", "ParentImage": "/bin/bash"}}
+{"name": "headless server with mDNS", "expected": true, "event": {"Image": "/usr/lib/node_modules/numasec/node_modules/numasec-linux-x64/bin/numasec", "CommandLine": "numasec serve --mdns", "ParentImage": "/usr/bin/node"}}
+{"name": "TUI with its server on all interfaces", "expected": true, "event": {"Image": "C:\\Users\\tester\\AppData\\Roaming\\npm\\node_modules\\numasec\\node_modules\\numasec-windows-x64\\bin\\numasec.exe", "CommandLine": "numasec.exe --hostname=0.0.0.0", "ParentImage": "C:\\Program Files\\nodejs\\node.exe"}}
+{"name": "headless server on loopback", "expected": false, "event": {"Image": "/usr/local/bin/numasec", "CommandLine": "numasec serve --hostname 127.0.0.1 --port 4096", "ParentImage": "/bin/bash"}}
+{"name": "another server on all interfaces", "expected": false, "event": {"Image": "/usr/local/bin/opencode", "CommandLine": "opencode serve --hostname 0.0.0.0", "ParentImage": "/bin/bash"}}

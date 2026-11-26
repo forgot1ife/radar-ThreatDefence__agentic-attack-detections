@@ -1,0 +1,31 @@
+// numasec testing you: its probe user agents and markers in web and proxy logs
+// Agentic attack detections by ThreatDefence (numasec). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1595.003 (Active Scanning: Wordlist Scanning), T1046 (Network Service Discovery)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the numasec source code (FrancescoStabile/numasec at 1237a2f). These strings are hard-coded in numasec's own
+// probes, not chosen by the model:
+//  - appsec_probe sends User-Agent numasec-appsec-probe/1.2 with ' OR 1=1--, <script>numasec-xss</script>, a login
+//    as numasec-probe@example.invalid / numasec-probe and Origin https://evil.example (src/tool/appsec-probe.ts).
+//  - The directory fuzzer first requests /numasec_404_check_<epoch ms>, then its wordlist (src/scanner/dir-fuzzer.ts:123).
+//  - The service prober sends GET / with only the header Host: target (src/scanner/service-prober.ts:25).
+//  - The page fetch tool retries with the user agent numasec after a Cloudflare challenge (src/tool/webfetch.ts:99).
+// Operator side (TLS inspection only): numasec-knowledge-broker/1.2 to NVD, CISA, FIRST, OSV and GitHub advisories, and
+// numasec/<version> to model APIs and models.dev show which of your machines runs numasec.
+
+let Markers = @"numasec_404_check_|numasec-xss|numasec-probe@";
+let TargetUAs = dynamic(["numasec", "numasec-appsec-probe/1.2"]);
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA in~ (TargetUAs) or UA startswith "numasec-appsec-probe/" or csUriStem matches regex Markers or csUriQuery matches regex Markers
+            or (csHost == "target" and csUriStem == "/")
+        | project TimeGenerated, Source="W3CIISLog", Side="target", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery, " ", scStatus), UA),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication in~ (TargetUAs) or RequestClientApplication startswith "numasec-appsec-probe/" or RequestURL matches regex Markers
+        | project TimeGenerated, Source="CommonSecurityLog", Side="target", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication startswith "numasec-knowledge-broker/" or RequestClientApplication startswith "numasec/"
+        | project TimeGenerated, Source="CommonSecurityLog", Side="operator", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Side, Src, Target
+| order by FirstSeen asc

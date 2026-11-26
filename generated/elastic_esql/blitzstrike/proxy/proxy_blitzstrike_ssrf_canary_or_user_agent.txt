@@ -1,0 +1,3 @@
+# Blitz Strike SSRF Canary Fetched or Blitz Strike User Agent Through a Proxy
+# Sigma id f277be6f-0ef6-5aab-8185-bfd34dd06335, pipeline ecs
+from * metadata _id, _index, _version | where url.original like "*blitzstrike-ssrf-canary*" or user_agent.original like "*blitzstrike*" or user_agent.original like "*BlitzStrike*"

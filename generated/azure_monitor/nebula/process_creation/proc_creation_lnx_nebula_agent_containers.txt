@@ -1,0 +1,4 @@
+# Nebula Agent Command in Its Kali Container
+# Sigma id 59cff36b-f9b3-5b08-a685-ca1cd5c2cb84, pipeline azure_monitor
+SecurityEvent
+| where CommandLine contains "os.execv('/bin/bash',['/bin/bash','--noprofile','--norc','-c',sys.argv[2]])" or CommandLine contains "/tmp/nebula-process-" or ((NewProcessName endswith "/docker" or NewProcessName endswith "/podman") and (CommandLine contains " nebula-runtime-" or CommandLine contains "--name=nebula-runtime-" or CommandLine contains "--name=nebula-terminal-" or CommandLine contains "--name=nebula-exec-" or CommandLine contains "localhost/nebula-kali-headless")) or (CommandLine contains "/usr/local/bin/nebula-terminal-entrypoint" or CommandLine contains "/usr/local/lib/nebula-public-ip-update")

@@ -1,0 +1,37 @@
+id: 902ad352-2fc2-5c09-bd71-a49df68941ef
+name: Mitsu AI pentest agent on a host
+description: |
+  A host started the Codex or Claude Code CLI as Mitsu's model provider, with Mitsu's loopback MCP server in its
+  command line (mcp_servers.mitsu.url=, {"mcpServers":{"mitsu":...}} or --allowedTools mcp__mitsu__...), with Mitsu's
+  system prompt ("You are Mitsu: the operator", "You are Mitsu, a security assessment assistant.") or its connection
+  check ("Reply exactly MITSU_OK"), or created Mitsu's local SearXNG container (mitsu-searxng-<port>,
+  mitsu-searxng-config). Through that MCP server the model runs shell commands and 165 catalogued offensive tools
+  (nmap, nuclei, sqlmap, hydra, netexec, metasploit and others) against the targets the operator names, with no
+  per-command approval in AutoPwn mode. Strings from ARCANGEL0/Mitsu at a4844932.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine contains "mcp_servers.mitsu.url="
+      or ProcessCommandLine contains '"mcpServers":{"mitsu":{"type":"http"'
+      or ProcessCommandLine contains "mcp__mitsu__intel_upsert_asset"
+      or ProcessCommandLine contains "You are Mitsu: the operator"
+      or ProcessCommandLine contains "You are Mitsu, a security assessment assistant."
+      or ProcessCommandLine contains "MITSU_OK"
+      or ProcessCommandLine contains "mitsu-searxng-config"
+      or ProcessCommandLine contains "--name mitsu-searxng-"
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10)
+      by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

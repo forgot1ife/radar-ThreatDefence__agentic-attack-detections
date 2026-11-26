@@ -1,0 +1,5 @@
+{"name": "health route looks up nmap", "expected": true, "event": {"Image": "/usr/bin/which", "CommandLine": "which nmap", "ParentCommandLine": "python3 server.py --ip 127.0.0.1 --port 5000"}}
+{"name": "sqlmap route with its fixed --batch", "expected": true, "event": {"Image": "/usr/bin/sqlmap", "CommandLine": "sqlmap -u http://192.0.2.20/item.php?id=1 --batch", "ParentCommandLine": "/usr/bin/python3 ./server.py"}}
+{"name": "hydra route with its fixed -t 4", "expected": true, "event": {"Image": "/usr/bin/hydra", "CommandLine": "hydra -t 4 -l admin -P /usr/share/wordlists/rockyou.txt 192.0.2.20 ssh", "ParentCommandLine": "python3 server.py"}}
+{"name": "near miss: which nmap from an interactive shell", "expected": false, "event": {"Image": "/usr/bin/which", "CommandLine": "which nmap", "ParentCommandLine": "-zsh"}}
+{"name": "near miss: a web server.py running an unrelated child", "expected": false, "event": {"Image": "/usr/bin/git", "CommandLine": "git rev-parse HEAD", "ParentCommandLine": "python3 server.py"}}

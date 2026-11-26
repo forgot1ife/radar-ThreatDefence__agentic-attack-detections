@@ -1,0 +1,6 @@
+{"name": "kali container public address check", "expected": true, "event": {"cs-host": "api.ipify.org", "c-uri": "/", "c-useragent": "Nebula-Terminal/1"}}
+{"name": "terminal client to a remote core", "expected": true, "event": {"cs-host": "core.example.test", "c-uri": "/api/v1/auth/devices", "c-useragent": "nebula-chat"}}
+{"name": "knowledge source fetch", "expected": true, "event": {"cs-host": "docs.example.test", "c-uri": "/guide.html", "c-useragent": "Nebula/3 knowledge-source-fetcher"}}
+{"name": "pairing redeemed by a browser", "expected": true, "event": {"cs-host": "core.example.test", "c-uri": "/api/v1/auth/pairings/redeem", "c-useragent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"}}
+{"name": "near miss: an ordinary public address check", "expected": false, "event": {"cs-host": "api.ipify.org", "c-uri": "/", "c-useragent": "curl/8.5.0"}}
+{"name": "near miss: a user agent that only mentions nebula-chat", "expected": false, "event": {"cs-host": "chat.example.test", "c-uri": "/", "c-useragent": "Mozilla/5.0 nebula-chat-plugin/2.0"}}

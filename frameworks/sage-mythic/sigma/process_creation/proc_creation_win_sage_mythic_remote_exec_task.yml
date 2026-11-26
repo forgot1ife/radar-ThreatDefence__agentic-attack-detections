@@ -1,0 +1,32 @@
+title: Sage (Mythic) Remote Execution Through a SageExec Scheduled Task
+id: 3887f0a9-6fca-560e-808a-a3dd393d3923
+status: experimental
+description: |
+    Detects the scheduled-task fallback Sage, the AI operator for the Mythic C2 framework, uses to run a command on another
+    host: "schtasks.exe /Create /S <host> /RU SYSTEM /SC ONCE /ST 23:59 /TN "SageExec_<suffix>" /TR ... /F", then /Run and /Delete
+    for the same task name, before reading the proof file back over C$.
+references:
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/ai/langgraph/mythic_capability_adapter.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1053.005
+    - attack.lateral-movement
+    - attack.t1021.002
+logsource:
+    product: windows
+    category: process_creation
+detection:
+    selection_schtasks:
+        Image|endswith: '\schtasks.exe'
+        CommandLine|contains: 'SageExec_'
+    selection_parent:
+        ParentCommandLine|contains|all:
+            - 'schtasks.exe /Create /S '
+            - 'SageExec_'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized red-team engagements run with Sage in Mythic
+level: high

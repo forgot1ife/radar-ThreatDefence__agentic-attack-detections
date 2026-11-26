@@ -1,0 +1,33 @@
+// Blitz Strike testing you: its user agents and probe markers in web and proxy logs
+// Agentic attack detections by ThreatDefence (Blitz Strike). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Blitz Strike source code (shinthink/blitzstrike, reviewed at 9d7a6ecb):
+//  - run_engagement(<url>) sends, by default: 27 requests with User-Agent blitzstrike/1.0 that put a marker
+//    BS<base36 time><random> in the parameters q, search, query, s, id, url, redirect, name and page; https://evil-blitz.example.com
+//    in 11 redirect parameters and in an Origin header; http://httpbin.org/anything/blitzstrike-ssrf-canary in 23 URL
+//    parameters; %0d%0aX-BlitzStrike%3A%20injected in 8 parameters; and Host: bs-marker.example.com. Requests other than
+//    the sweep carry the runtime's own user agent ("node" under Node.js).
+//  - Single tools: verify_file_read sends /bs-nonexistent-<id> as its negative control, proto_pollution_probe sends
+//    blitzstrike_pollution_canary_9f3a, browser_validate puts window.__blitz_xss__ in the URL, auto_poc writes requests
+//    with the marker zzblitz for the model to send. Other user agents: Mozilla/5.0 (compatible; BlitzStrike/2.4),
+//    Mozilla/5.0 (blitzstrike oracle probe|cache probe|precedence probe|race probe), blitzstrike/2, Mozilla/5.0 (recon-agent).
+//  - A request from your own server to httpbin.org/anything/blitzstrike-ssrf-canary means the SSRF probe worked.
+// A marker means a check was running: look at what the same source sent just before and after it.
+
+let Window = 30d;
+let Markers = @"(?i)evil-blitz\.example\.com|blitzstrike-ssrf-canary|x-blitzstrike|bs-nonexistent-|__blitz_xss__|zzblitz|blitzstrike_pollution_canary";
+let IsBlitzUA = (ua:string) { ua contains "blitzstrike" or ua == "Mozilla/5.0 (recon-agent)" };
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where IsBlitzUA(UA) or csUriStem matches regex Markers or csUriQuery matches regex Markers or csHost =~ "bs-marker.example.com"
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where IsBlitzUA(RequestClientApplication) or RequestURL matches regex Markers or DestinationHostName =~ "bs-marker.example.com"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| extend SweepMarker=extract(@"=(BS[0-9A-Z]{9,14})(&|$)", 1, Detail)
+| extend SsrfWorked=Detail contains "httpbin.org/anything/blitzstrike-ssrf-canary" and Target =~ "httpbin.org"
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5), Targets=make_set(Target, 10), SweepMarkers=make_set(SweepMarker, 5), SsrfWorked=max(toint(SsrfWorked)) by Source, Src
+| order by FirstSeen asc

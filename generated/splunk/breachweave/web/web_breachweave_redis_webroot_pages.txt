@@ -1,0 +1,3 @@
+# BreachWeave Redis Web Root Pages Requested
+# Sigma id 01e4f975-cbb0-5b94-9c7a-b863d33d116d, pipeline splunk_windows
+"cs-uri-stem" IN ("*/redis_test.php", "*/redis_diag.php", "*/redis_exec.php", "*/redis_echo.php")

@@ -1,0 +1,3 @@
+# 0security Probe or Nuclei Target Scan Against a Live Endpoint
+# Sigma id 69c7dd9d-381a-5a6b-be5c-3d11304259ad, pipeline ecs
+((process.command_line:(*\ probe\ http* OR *\-\-i\-own\-this\ *)) AND (process.command_line:(*0security* OR *0.js* OR *0\ probe\ *))) OR (process.command_line:*\-\-target\-url\ * AND process.command_line:*\-\-scanner\ nuclei*) OR (process.command_line:*0\-nuclei\-* AND process.command_line:*\-etags\ intrusive,dos,fuzz* AND process.command_line:*\-pt\ http*)

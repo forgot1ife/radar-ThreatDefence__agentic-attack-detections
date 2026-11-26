@@ -1,0 +1,24 @@
+// MCP Kali Server API calls in firewall, proxy and network logs
+// Agentic attack detections by ThreatDefence (MCP Kali Server). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Microsoft Sentinel and Defender XDR. Test and baseline before alerting.
+// From the MCP Kali Server source (Wh0am123/MCP-Kali-Server at 00154c05):
+//  - The API server is plain HTTP on 5000 with no authentication. The MCP client (python-requests) calls GET /health at start,
+//    POST /api/command for raw commands and POST /api/tools/<nmap|gobuster|dirb|nikto|sqlmap|metasploit|hydra|john|wpscan|enum4linux>.
+//    /mcp/tools/kali_tools/<name> and /mcp/capabilities are stub routes only MKS has.
+//  - A call from another host means the operator exposed it (README: --ip 0.0.0.0, "openly hosting"), or someone else is using it.
+// HexStrike and NyxStrike use the same route names on 8888, so this hunt keeps to port 5000 apart from the stub route.
+
+let Routes = @"^/(api/command|api/tools/(nmap|gobuster|dirb|nikto|sqlmap|metasploit|hydra|john|wpscan|enum4linux)|health)$";
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | extend Path = tostring(parse_url(RequestURL).Path)
+        | where (DestinationPort == 5000 and Path matches regex Routes) or RequestURL contains "/mcp/tools/kali_tools/"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=strcat(DestinationIP, ":", DestinationPort), Detail=strcat(RequestMethod, " ", RequestURL)),
+    (DeviceNetworkEvents | where Timestamp > ago(30d)
+        | where ActionType == "InboundConnectionAccepted" and LocalPort == 5000 and InitiatingProcessCommandLine has "server.py"
+            and RemoteIPType != "Loopback"
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Src=RemoteIP, Target=strcat(DeviceName, ":", LocalPort),
+            Detail=substring(InitiatingProcessCommandLine, 0, 200))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10) by Source, Src, Target
+| order by FirstSeen asc

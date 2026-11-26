@@ -1,0 +1,4 @@
+# Mitsu Shell Tool Command
+# Sigma id b3879fc7-bb18-5a67-924a-4712b08de033, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "/bin/bash -o pipefail -c " and ((InitiatingProcessCommandLine endswith "/bin/mitsu" or InitiatingProcessCommandLine endswith " -m mitsu") or InitiatingProcessCommandLine contains "/uv/tools/mitsu/")

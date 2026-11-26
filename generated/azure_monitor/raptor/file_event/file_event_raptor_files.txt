@@ -1,0 +1,4 @@
+# RAPTOR Run Folders, Generated Exploits or Configuration Written
+# Sigma id 39348d65-ba8a-5516-aea7-5b14c119f540, pipeline azure_monitor
+SecurityEvent
+| where ((ObjectName endswith "/.raptor-run.json" or ObjectName endswith "/.claude/raptor.env" or ObjectName endswith "/.config/raptor/models.json" or ObjectName endswith "/.raptor/identity.json") or (ObjectName contains "/.raptor/projects/" or ObjectName contains "/.raptor/labeled_attempts/" or ObjectName contains "/.raptor/cache/" or ObjectName contains "/.local/share/raptor/sessions.d/")) or (ObjectName contains "/autonomous/exploits/" and (ObjectName endswith "_exploit.cpp" or ObjectName endswith "_exploit.c" or ObjectName endswith "_exploit.py" or ObjectName endswith "_exploit.java" or ObjectName endswith "_exploit.js" or ObjectName endswith "_exploit.go" or ObjectName endswith "_exploit.rb")) or (ObjectName contains "/autonomous/patches/" and ObjectName endswith "_patch.md")

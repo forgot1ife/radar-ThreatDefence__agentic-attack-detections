@@ -1,0 +1,34 @@
+title: MCP Kali Server Files Written
+id: b8a0d660-48cf-505b-bf00-5001068dda48
+status: experimental
+description: |
+    Detects files of MCP Kali Server: the Metasploit resource file /tmp/mks_msf_resource.rc its API server writes before
+    every Metasploit run (inside a systemd private /tmp under the Kali package's service), and the files the Kali package
+    mcp-kali-server installs (/usr/share/mcp-kali-server/, the wrapper scripts, their /etc/default files and the
+    kali-server-mcp and mcp-server systemd units).
+references:
+    - https://github.com/Wh0am123/MCP-Kali-Server
+    - https://gitlab.com/kalilinux/packages/mcp-kali-server
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_msf:
+        TargetFilename|endswith: '/mks_msf_resource.rc'
+    selection_package:
+        TargetFilename|startswith: '/usr/share/mcp-kali-server/'
+    selection_package_files:
+        TargetFilename|endswith:
+            - '/usr/bin/kali-server-mcp'
+            - '/etc/default/kali-server-mcp'
+            - '/systemd/system/kali-server-mcp.service'
+    condition: 1 of selection_*
+falsepositives:
+    - Kali users who installed mcp-kali-server for authorized testing or CTF work
+level: medium

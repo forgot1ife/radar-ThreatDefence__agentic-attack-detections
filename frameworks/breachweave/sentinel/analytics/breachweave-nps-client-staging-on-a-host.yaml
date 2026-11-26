@@ -1,0 +1,28 @@
+id: 24560f83-d37b-55f8-8652-7c591698a700
+name: BreachWeave playbook NPS client staged on a host
+description: |
+  A host fetched the NPS client from a path under /files/nps/npc_ (certutil, curl or wget), or started a client with
+  -server=<host>:<port> -vkey=auto. Both are the literal commands in BreachWeave's shipped skills (redis-webroot-rce,
+  intranet-pentest, known-product-exploit, remote-cmd-execution), which use the NPS client as the foothold after a web
+  shell or remote command execution. The skills start it through wmic process call create, setsid, nohup or a
+  scheduled task named "Windows Update".
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - CommandAndControl
+relevantTechniques:
+  - T1219
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has "/files/nps/npc_"
+      or (ProcessCommandLine has "-vkey=auto" and ProcessCommandLine has "-server=")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

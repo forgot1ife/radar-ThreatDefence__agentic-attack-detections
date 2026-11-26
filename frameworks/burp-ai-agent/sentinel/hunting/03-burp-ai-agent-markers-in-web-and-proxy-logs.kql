@@ -1,0 +1,27 @@
+// Custom AI Agent (burp-ai-agent) testing you: its payload markers and test domains in web, proxy and DNS logs
+// Agentic attack detections by ThreatDefence (Custom AI Agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the extension's payload table (six2dez/burp-ai-agent, scanner/PayloadGenerator.kt at b1738c0e):
+//  - XSS-BURP-AI-1337 and DOM-XSS-BURP-AI in its XSS payloads. Reflected XSS is tested on every insertion point, so
+//    this marker appears in almost every active scan it runs.
+//  - burp-ai-test in its header and CRLF injection payloads (X-Injected: burp-ai-test, Set-Cookie: burp-ai-test=true).
+//  - evil-burp-ai.com (OAuth redirect), evil-burp-ai-test.com (Host header) and evil-burp-ai-cache.com (cache poisoning,
+//    sent in Host, X-Forwarded-Host and the other allowed headers).
+// Its requests leave through Burp and carry the tester's own user agent. A server that looks up or fetches one of the
+// evil-burp-ai names followed a payload: look at what the same source sent just before.
+
+let Markers = @"(?i)XSS-BURP-AI|burp-ai-test|evil-burp-ai";
+union isfuzzy=true
+    (W3CIISLog
+        | where csUriStem matches regex Markers or csUriQuery matches regex Markers or csReferer matches regex Markers or csHost matches regex Markers
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csUriStem, "?", csUriQuery)),
+    (CommonSecurityLog
+        | where RequestURL matches regex Markers or DestinationHostName matches regex Markers
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL),
+    (DnsEvents
+        | where Name contains "evil-burp-ai"
+        | project TimeGenerated, Source="DnsEvents", Src=ClientIP, Target=Name, Detail="lookup of a scanner test domain")
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10) by Source, Src, Target
+| order by FirstSeen asc

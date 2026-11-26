@@ -1,0 +1,11 @@
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Bug-Bounty-Research
+Mozilla/5.0 (compatible; waf-response-analyzer/1.0)
+agentic-bug-hunter/2.1
+agentic-bug-hunter/breach_checker
+agentic-bug-hunter/cors_scanner
+agentic-bug-hunter/crlf_scanner
+agentic-bug-hunter/dom_xss_harness
+agentic-bug-hunter/llm_redteam
+agentic-bug-hunter/nosqli_scanner
+agentic-bug-hunter/poc_bundler
+agentic-bug-hunter/verifier

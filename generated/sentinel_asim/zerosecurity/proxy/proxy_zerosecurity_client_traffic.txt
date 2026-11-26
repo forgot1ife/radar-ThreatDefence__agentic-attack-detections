@@ -1,0 +1,4 @@
+# 0security Client Traffic in Proxy Logs
+# Sigma id a3a4486f-1fc9-5c07-870f-a3f96b023c23, pipeline sentinel_asim
+imWebSession
+| where (HttpUserAgent startswith "0security/" or HttpUserAgent startswith "@0/cli/") or (HttpUserAgent in~ ("0security", "0security-audit-sink", "0/1.0")) or HttpHost =~ "cloud.0.security"

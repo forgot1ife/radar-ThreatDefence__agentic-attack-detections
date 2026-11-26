@@ -1,3 +1,9 @@
+0security
+0security-audit-sink
+@0/cli/update-check
+ARIA-X/0.1 (authorized security research)
+ARIA-X/0.2.1 (authorized security research)
+ARIA-X/0.3.0 (authorized security research)
 ARTEX-worker/1.0
 ArtEx/1.0
 AutoPT/1.0
@@ -12,15 +18,25 @@ HexStrike-BrowserAgent/1.0 (Security Testing)
 HexStrike-HTTP-Framework/1.0
 HexStrike-HTTP-Framework/1.0 (Advanced Security Testing)
 LazyOwn/1.0
+Mitsu updater
+Mitsu/0.1 (terminal assistant; public search)
 Mozilla/5.0 (ARTEX)
 Mozilla/5.0 (Compatible Exploit)
 Mozilla/5.0 (Linux; LAzyOwnRedTeam 66_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Bug-Bounty-Research
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) ARTeX-authorized-pentest
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Firefox/120.0
 Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Clearwing/1.0
 Mozilla/5.0 (X11; Linux x86_64) artex-verify/1.0
+Mozilla/5.0 (blitzstrike cache probe)
+Mozilla/5.0 (blitzstrike oracle probe)
+Mozilla/5.0 (blitzstrike precedence probe)
+Mozilla/5.0 (blitzstrike race probe)
+Mozilla/5.0 (blitzstrike)
 Mozilla/5.0 (compatible; ArtEx/1.0)
 Mozilla/5.0 (compatible; ArtExVerify/1.0)
+Mozilla/5.0 (compatible; BlitzStrike/2.4)
 Mozilla/5.0 (compatible; CyberStrikeAI-WebShell/1.0)
 Mozilla/5.0 (compatible; Decepticon/1.0)
 Mozilla/5.0 (compatible; NeuroSploit-WebShell/1.0)
@@ -28,12 +44,19 @@ Mozilla/5.0 (compatible; RedAmon-JsRecon/1.0)
 Mozilla/5.0 (compatible; RedAmon/4.7)
 Mozilla/5.0 (compatible; aiscan/1.0; +https://github.com/chainreactors/aiscan)
 Mozilla/5.0 (compatible; cyber/1.0; +https://github.com/chainreactors/cyber-harness)
+Mozilla/5.0 (compatible; waf-response-analyzer/1.0)
+Mozilla/5.0 (recon-agent)
 Mozilla/5.0 (spa-api-recon spider)
 Mozilla/5.0 (spa-api-recon)
 Mozilla/5.0 ARTeX
+Mozilla/5.0 Clearwing/1.0
+Nebula-Terminal/1
+Nebula/3 knowledge-source-fetcher
+Nebula/3 knowledge-source-renderer
 NeuroSploit/4.4.3
 NyxStrike/1.0
 PentestCopilot/1.0
+RAPTOR Security Scanner (Authorized Testing)
 ReconProbe/1.0
 RedAmon-AISurfaceRecon/1.0
 RedAmon-CachePoison/1.0
@@ -41,6 +64,15 @@ Security-BrowserAgent/1.0 (Security Testing)
 Security-HTTP-Framework/1.0 (Advanced Security Testing)
 Vigilo-Greybox/1 (authorised security test)
 Vigilo-Preflight/1.0
+agentic-bug-hunter/2.1
+agentic-bug-hunter/breach_checker
+agentic-bug-hunter/cors_scanner
+agentic-bug-hunter/crlf_scanner
+agentic-bug-hunter/dom_xss_harness
+agentic-bug-hunter/llm_redteam
+agentic-bug-hunter/nosqli_scanner
+agentic-bug-hunter/poc_bundler
+agentic-bug-hunter/verifier
 aiscan
 antifox-enrich/1.0
 antifox-selfupdate
@@ -55,21 +87,45 @@ artex-spawn/1
 artex-update-check
 artex-verify/1.0
 azure-toolkit/1.0
+blitzstrike/1.0
+blitzstrike/2
+clearwing (aiohttp openai fallback)
+clearwing-asm/0.5
+clearwing-asm/0.5 (+https://github.com/Lazarus-AI/clearwing)
 codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown
+codex_cli_rs/0.0.0 (clearwing)
 commonhuman-core/openapi-discover
+cve-env/0.1 (agentic CVE env builder)
 cyber
 decepticon-http-sandbox/1
 decepticon-roe/1
 decepticon-telemetry/1.0
+deepseek-harness/0.0.1
 dm-edge
 lazyown-depconfuse/1.0
+nebula-chat
 neurosploit-logship/4.4
 norma/0.4
+numasec
+numasec-appsec-probe/1.2
+numasec-knowledge-broker/1.2
+numasec/
 pentest-ai-telemetry/1.0
 pentest-ai/1.6.2
 pentest-ai/authscan (+https://pentestai.xyz)
+pentest-harness/0.0.1 (+https://github.com/S1N6H/pentest-harness)
+pentest-harness/0.1.1-rc.2 (+https://github.com/S1N6H/pentest-harness)
+pentestcode
+pentestcode/
 pentestswarm-cli
 pentestswarm-webhook/1.0
 ptai-api-discovery/1.6.2
+raptor-container-evidence/1
+raptor-env-verify/0.1
+raptor-nvd/0.1
+raptor-sca
+raptor-sca/0.1 (+https://github.com/gadievron/raptor)
+raptor-uv-provenance/1
+raptor/0.1 (+https://github.com/gadievron/raptor)
 scopeweaver
 xalgorix-origin-calibration/1

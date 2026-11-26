@@ -1,0 +1,31 @@
+title: BreachWeave Redis Web Root Pages Requested
+id: 01e4f975-cbb0-5b94-9c7a-b863d33d116d
+status: experimental
+description: |
+    Detects requests for the PHP pages BreachWeave's redis-webroot-rce and intranet-pentest skills write into a web
+    root through Redis (CONFIG SET dbfilename): redis_test.php or redis_echo.php checked with a POST of cmd=RCOK,
+    redis_diag.php that prints DIAG_START and the PHP disable_functions list, and redis_exec.php that runs
+    system($_POST['cmd']).
+references:
+    - https://github.com/m-sec-org/BreachWeave
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.persistence
+    - attack.t1505.003
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-uri-stem|endswith:
+            - '/redis_test.php'
+            - '/redis_diag.php'
+            - '/redis_exec.php'
+            - '/redis_echo.php'
+    condition: selection
+falsepositives:
+    - A developer test page with one of these names
+level: high

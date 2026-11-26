@@ -1,0 +1,4 @@
+# Nebula Data Folder, Runtime or Container Files Written
+# Sigma id a619ae46-1b9f-5f55-9811-c1eba1009840, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.local/share/nebula/v3/" or FolderPath contains "/io.nebula.security/core/") or (FolderPath startswith "/tmp/nebula-process-" and FolderPath endswith ".pid") or (FolderPath in~ ("/run/nebula/public-ip", "/etc/cron.d/nebula-public-ip", "/usr/local/share/nebula/security-tools.json", "/usr/local/bin/nebula-terminal-entrypoint", "/usr/local/lib/nebula-public-ip-update")) or (FolderPath startswith "/tmp/nebula-kali-" and FolderPath endswith "/Dockerfile") or (FolderPath startswith "/run/nebula-memory-runner/" or FolderPath startswith "/var/lib/nebula-memory-runner/")

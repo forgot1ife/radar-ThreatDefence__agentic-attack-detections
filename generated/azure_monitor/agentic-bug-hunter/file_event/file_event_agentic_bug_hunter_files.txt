@@ -1,0 +1,4 @@
+# Agentic Bug Hunter Configuration, Memory or Spray Log Written
+# Sigma id a1c24960-ea1a-5ea5-a9b5-63885b4046c0, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.bughunter/" or ObjectName contains "/.cache/bbhunt/scope/" or ObjectName contains "/hunt-memory/audit.jsonl" or ObjectName contains "/hunt-memory/journal.jsonl" or ObjectName contains "/skills/johnwick/SKILL.md" or ObjectName contains "/skills/omni-killchain/SKILL.md" or ObjectName contains "/agents/credential-hunter.md") or (ObjectName contains "/spray/attempts-" and ObjectName endswith ".jsonl") or ObjectName endswith "/autonomous_session.json"

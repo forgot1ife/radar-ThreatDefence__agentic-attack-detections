@@ -1,0 +1,6 @@
+{"name": "the headless browser", "expected": true, "event": {"c-useragent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Clearwing/1.0", "cs-host": "app.example.test", "c-uri": "/login"}}
+{"name": "the threat-intel download", "expected": true, "event": {"c-useragent": "clearwing-asm/0.5", "cs-host": "www.cisa.gov", "c-uri": "/sites/default/files/feeds/known_exploited_vulnerabilities.json"}}
+{"name": "the fallback model client", "expected": true, "event": {"c-useragent": "clearwing (aiohttp openai fallback)", "cs-host": "llm.example.test", "c-uri": "/v1/chat/completions"}}
+{"name": "the reused ChatGPT subscription", "expected": true, "event": {"c-useragent": "codex_cli_rs/0.0.0 (clearwing)", "cs-host": "chatgpt.com", "c-uri": "/backend-api/codex/responses"}}
+{"name": "the real Codex CLI", "expected": false, "event": {"c-useragent": "codex_cli_rs/0.40.0 (Mac OS 15.1.0; arm64)", "cs-host": "chatgpt.com", "c-uri": "/backend-api/codex/responses"}}
+{"name": "a browser visiting a page about the tool", "expected": false, "event": {"c-useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36", "cs-host": "github.com", "c-uri": "/Lazarus-AI-OSS/clearwing"}}

@@ -1,0 +1,7 @@
+{"name": "operator token in the core data folder", "expected": true, "event": {"TargetFilename": "/home/op/.local/share/nebula/v3/runtime/operator-token"}}
+{"name": "desktop app core database", "expected": true, "event": {"TargetFilename": "/home/op/.local/share/io.nebula.security/core/nebula.db"}}
+{"name": "process group file in its container", "expected": true, "event": {"TargetFilename": "/tmp/nebula-process-0b6f4a52-1c3d-4e5f-8a9b-0c1d2e3f4a5b.pid"}}
+{"name": "public address status in its container", "expected": true, "event": {"TargetFilename": "/run/nebula/public-ip"}}
+{"name": "kali image build context", "expected": true, "event": {"TargetFilename": "/tmp/nebula-kali-k2j3h4g5/Dockerfile"}}
+{"name": "near miss: the Nebula overlay network config", "expected": false, "event": {"TargetFilename": "/etc/nebula/config.yml"}}
+{"name": "near miss: another app's data folder", "expected": false, "event": {"TargetFilename": "/home/op/.local/share/nebula-notes/v3/notes.db"}}

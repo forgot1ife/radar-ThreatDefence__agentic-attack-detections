@@ -1,0 +1,28 @@
+id: b49cd2b7-11dd-5f60-b1d7-1295f93a97fc
+name: MCP Kali Server command API on a host
+description: |
+  A host started the MCP Kali Server API server from the Kali package (/usr/bin/kali-server-mcp, /usr/share/mcp-kali-server/,
+  user _mcp-kali), or the server ran a Metasploit module through its fixed resource file (msfconsole -q -r /tmp/mks_msf_resource.rc).
+  MCP Kali Server is an open-source bridge that lets an AI assistant run any command and Kali tools on the host through a
+  Flask API on port 5000 with no authentication.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has_any ("kali-server-mcp", "mks_msf_resource.rc")
+      or ProcessCommandLine contains "/usr/share/mcp-kali-server/"
+      or (AccountName == "_mcp-kali" and ProcessCommandLine has "server.py")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

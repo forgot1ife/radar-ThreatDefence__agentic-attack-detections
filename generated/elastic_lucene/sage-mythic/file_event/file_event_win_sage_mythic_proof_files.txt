@@ -1,0 +1,3 @@
+# Sage (Mythic) Proof or Certificate File Written on a Windows Host
+# Sigma id fb757105-982f-50dc-b1cf-29e3f6730954, pipeline ecs
+(file.path:(*\\Windows\\Temp\\sage_remote_exec* OR *\\Windows\\Temp\\sage_ep_adjust* OR *\\Windows\\Temp\\sage_ca_export_* OR *\\Windows\\Temp\\sage_ca_dpapi_* OR *\\Windows\\Temp\\sage_forged_cert_* OR *\\Windows\\Temp\\sage_ca_signing_* OR *\\sage_cert_enroll_*)) OR (file.path:*\\sage_gpo_* AND file.path:*_whoami.txt)

@@ -1,0 +1,3 @@
+# numasec User Agents or Probe Markers in Proxy Logs
+# Sigma id 2b9f8316-81dc-5213-9ce5-a86aad9c1720, pipeline splunk_windows
+"c-useragent"="numasec" OR "c-useragent" IN ("numasec-appsec-probe/*", "numasec-knowledge-broker/*", "numasec/*") OR "c-uri" IN ("*/numasec_404_check_*", "*numasec-xss*")

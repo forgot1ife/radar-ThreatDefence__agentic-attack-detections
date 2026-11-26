@@ -1,0 +1,4 @@
+# Nebula Core, Desktop Sidecar or Browser Sidecar Process
+# Sigma id fe4a3d7d-5728-5b90-80d1-833e25980251, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "nebula-core runtime-service" and TargetProcessCommandLine contains "--manifest-sha256") or TargetProcessCommandLine contains "nebula-core desktop-connect" or (TargetProcessCommandLine contains "nebula-core serve" or TargetProcessCommandLine contains "nebula-core headless" or TargetProcessCommandLine contains "-m nebula.v3.cli" or TargetProcessCommandLine contains "nebula-browserd")

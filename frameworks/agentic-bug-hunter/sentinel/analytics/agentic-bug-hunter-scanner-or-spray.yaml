@@ -1,0 +1,51 @@
+id: a25ff974-8ace-5b56-a66d-1e8ca746b237
+name: Agentic Bug Hunter scanner or password spray reached your logs
+description: |
+  A web server, proxy or Entra ID sign-in log recorded a user agent hard-coded in Agentic Bug Hunter
+  (awarexone/Agentic-Bug-Hunter, reviewed at 82f4512e): agentic-bug-hunter/<tool> from its scanners and verifiers,
+  Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Bug-Bounty-Research from its password spray and wordlist crawl, or
+  Mozilla/5.0 (compatible; waf-response-analyzer/1.0). The toolkit is promoted to bug bounty hunters: check whether
+  the source is a researcher working under a program's rules, and treat a spray against sign-in endpoints as an attack
+  unless it was agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: AzureActiveDirectory
+    dataTypes:
+      - SigninLogs
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - InitialAccess
+  - CredentialAccess
+relevantTechniques:
+  - T1595.002
+  - T1190
+  - T1110.003
+query: |
+  let IsAbhUA = (ua:string) { ua startswith "agentic-bug-hunter/" or ua endswith "Bug-Bounty-Research" or ua has "waf-response-analyzer/1.0" };
+  union isfuzzy=true
+      (SigninLogs
+          | where IsAbhUA(UserAgent)
+          | project TimeGenerated, Source="SigninLogs", IPAddress, Target=AppDisplayName, Detail=UserPrincipalName, UserAgent),
+      (AADNonInteractiveUserSignInLogs
+          | where IsAbhUA(UserAgent)
+          | project TimeGenerated, Source="AADNonInteractiveUserSignInLogs", IPAddress, Target=AppDisplayName, Detail=UserPrincipalName, UserAgent),
+      (W3CIISLog
+          | extend UA=replace_string(csUserAgent, "+", " ")
+          | where IsAbhUA(UA)
+          | project TimeGenerated, Source="W3CIISLog", IPAddress=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem), UserAgent=UA),
+      (CommonSecurityLog
+          | where IsAbhUA(RequestClientApplication)
+          | project TimeGenerated, Source="CommonSecurityLog", IPAddress=SourceIP, Target=DestinationHostName, Detail=RequestURL, UserAgent=RequestClientApplication)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10),
+      UserAgents=make_set(UserAgent, 5), Sources=make_set(Source) by IPAddress, Target
+version: 1.0.0
+kind: Scheduled

@@ -1,0 +1,3 @@
+# ARIA-X Database, Run Evidence or Working Folders
+# Sigma id ee1ec5c0-526b-536c-940d-c9ffc4a9ff50, pipeline splunk_windows
+TargetFilename IN ("*/aria-x.db", "*/aria-x.db-wal", "*/aria-x.db-shm", "*/configs/aria-x.toml") OR (TargetFilename="*/runs/run_*" TargetFilename="*/work/evidence/http_*") OR (TargetFilename="*/runs/run_*" TargetFilename IN ("*/report.html", "*/report.md", "*/report.json")) OR TargetFilename IN ("*/aria-x-work-*", "*/aria-x-doctor-*", "*/aria-x-tools-*", "*/aria-x-demo-target-*")

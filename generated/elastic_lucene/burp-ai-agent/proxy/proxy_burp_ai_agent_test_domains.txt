@@ -1,0 +1,3 @@
+# Custom AI Agent (burp-ai-agent) Test Domains or Payload Markers in Proxy Logs
+# Sigma id 796d81b2-ba1d-5ab5-b141-1e5029ee37ba, pipeline ecs
+url.domain:/.*[eE][vV][iI][lL]-[bB][uU][rR][pP]-[aA][iI].*/ OR (url.original:(*XSS\-BURP\-AI* OR *burp\-ai\-test* OR *evil\-burp\-ai*))

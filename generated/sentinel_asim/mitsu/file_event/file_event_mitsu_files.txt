@@ -1,0 +1,4 @@
+# Mitsu Session, Configuration or Report Files Written
+# Sigma id d2be8aa4-645e-5d7a-a14d-04ad7d7ce8fb, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/mitsu/sessions/" or TargetFileName contains "/.config/mitsu/" or TargetFileName contains "/mitsu/armory/" or TargetFileName contains "/mitsu-codex-sessions/" or TargetFileName contains "/mitsu-claude-sessions/") or TargetFileName endswith "/.mitsu-armory-managed" or (TargetFileName endswith "/mitsu/credentials.json" or TargetFileName endswith "/mitsu/mcp_servers.json" or TargetFileName endswith "/mitsu/host.json" or TargetFileName endswith "/mitsu/instance.lock")

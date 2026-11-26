@@ -1,0 +1,8 @@
+{"name": "session file", "expected": true, "event": {"TargetFilename": "/home/op/.local/share/mitsu/sessions/0f3c2a9b8d7e6f5a4b3c2d1e0f9a8b7c.json"}}
+{"name": "assessment report", "expected": true, "event": {"TargetFilename": "/home/op/.local/share/mitsu/sessions/0f3c2a9b8d7e6f5a4b3c2d1e0f9a8b7c/artifacts/vulnerability-assessment-20261126-101500.pdf"}}
+{"name": "provider credentials", "expected": true, "event": {"TargetFilename": "/home/op/.config/mitsu/credentials.json"}}
+{"name": "credentials under a custom XDG_CONFIG_HOME", "expected": true, "event": {"TargetFilename": "/srv/cfg/mitsu/credentials.json"}}
+{"name": "claude provider work folder", "expected": true, "event": {"TargetFilename": "/tmp/mitsu-claude-sessions/7c9e6679-7425-40de-944b-e07fc1f90ae7/.keep"}}
+{"name": "armory ownership marker", "expected": true, "event": {"TargetFilename": "/home/op/.local/share/mitsu/armory/sqlmap/.mitsu-armory-managed"}}
+{"name": "an unrelated credentials file", "expected": false, "event": {"TargetFilename": "/home/op/.config/gcloud/credentials.json"}}
+{"name": "a file with mitsu in its name", "expected": false, "event": {"TargetFilename": "/home/op/Downloads/mitsubishi-manual.pdf"}}

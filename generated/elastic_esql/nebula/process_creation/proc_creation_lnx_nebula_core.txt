@@ -1,0 +1,3 @@
+# Nebula Core, Desktop Sidecar or Browser Sidecar Process
+# Sigma id fe4a3d7d-5728-5b90-80d1-833e25980251, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*nebula-core runtime-service*" and process.command_line like "*--manifest-sha256*" or process.command_line like "*nebula-core desktop-connect*" or process.command_line like "*nebula-core serve*" or process.command_line like "*nebula-core headless*" or process.command_line like "*-m nebula.v3.cli*" or process.command_line like "*nebula-browserd*"

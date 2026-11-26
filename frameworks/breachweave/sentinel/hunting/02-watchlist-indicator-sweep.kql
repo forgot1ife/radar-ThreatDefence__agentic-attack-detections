@@ -1,0 +1,33 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (BreachWeave). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1105 (Ingress Tool Transfer)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. No BreachWeave infrastructure has been published, so its rows are the console
+// and solver names, the files it writes, the Redis web root page names and the NPS client download paths.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "breachweave" | project value=tostring(SearchKey), type, confidence, actor, source;
+let Names = toscalar(IOC | where type == "file_name" and confidence in ("high", "medium") | summarize make_list(value));
+let Paths = toscalar(IOC | where type in ("file_path", "uri_string") and confidence in ("high", "medium") | summarize make_list(value));
+let Domains = toscalar(IOC | where type == "domain" | summarize make_list(value));
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (Paths) or DestinationHostName has_any (Domains)
+        | project TimeGenerated, Source="CommonSecurityLog", Detail=RequestURL,
+            Indicator=iff(DestinationHostName has_any (Domains), DestinationHostName, RequestURL)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriStem has_any (Paths)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=csUriStem, Detail=strcat(cIP, " ", sSiteName)),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where FileName in~ (Names) or ProcessCommandLine has_any (Paths)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator=FileName,
+            Detail=strcat(DeviceName, " ", substring(ProcessCommandLine, 0, 200))),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FileName in~ (Names) or FolderPath has_any (Paths)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FileName, Detail=strcat(DeviceName, " ", FolderPath)),
+    (DnsEvents | where TimeGenerated > ago(90d)
+        | where Name has_any (Domains)
+        | project TimeGenerated, Source="DnsEvents", Indicator=Name, Detail=ClientIP)
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

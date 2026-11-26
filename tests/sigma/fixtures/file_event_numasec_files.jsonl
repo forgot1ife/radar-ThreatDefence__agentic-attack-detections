@@ -1,0 +1,6 @@
+{"name": "operation ledger in a workspace", "expected": true, "event": {"TargetFilename": "/home/tester/shop/.numasec/operation/shop-pentest/cyber/ledger.jsonl"}}
+{"name": "stored evidence on Windows", "expected": true, "event": {"TargetFilename": "C:\\Users\\tester\\shop\\.numasec\\operation\\shop-pentest\\evidence\\9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08.txt"}}
+{"name": "numasec database", "expected": true, "event": {"TargetFilename": "/home/tester/.local/share/numasec/numasec.db"}}
+{"name": "out-of-band session store", "expected": true, "event": {"TargetFilename": "/home/tester/.local/state/numasec/interact-sessions.json"}}
+{"name": "project config folder, not an operation", "expected": false, "event": {"TargetFilename": "/home/tester/shop/.numasec/numasec.json"}}
+{"name": "opencode database", "expected": false, "event": {"TargetFilename": "/home/tester/.local/share/opencode/opencode.db"}}

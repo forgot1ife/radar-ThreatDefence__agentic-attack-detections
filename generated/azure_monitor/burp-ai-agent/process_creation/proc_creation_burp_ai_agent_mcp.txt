@@ -1,0 +1,4 @@
+# Custom AI Agent (burp-ai-agent) MCP Server Certificate or MCP Bridge
+# Sigma id f39908c5-5234-5ef1-9ec1-f8ca7d491be7, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "-genkeypair" and CommandLine contains "CN=burp-mcp") or (CommandLine contains "supergateway" and CommandLine contains ":9876/sse")

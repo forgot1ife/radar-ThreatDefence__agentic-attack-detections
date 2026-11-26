@@ -1,0 +1,114 @@
+{
+ "description": "32 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 8,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "clearwing",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Suricata: 3819511 TD Clearwing XOR exec stub in a downloaded file (obfuscate_payload); YARA: Clearwing_Python_Payload_Wrapper",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1027.013"
+  },
+  {
+   "comment": "KQL hunt: Clearwing on a host you monitor; Sentinel analytics: Clearwing AI pentest agent run on a host; Sigma: Clearwing AI Pentest Agent Command Line",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "Sigma: Clearwing User Agents in Proxy Logs; Suricata: 3819513 TD Clearwing sleeper beacon check-in (GET /checkin, Python-urllib); Suricata: 3819514 TD Clearwing out-of-band callback to its listener (/callback/<24 char token>, ports 9999-10008); Suricata: 3819515 TD Clearwing OpenAI-compatible fallback client user agent; Suricata: 3819516 TD Clearwing ChatGPT subscription client user agent (codex_cli_rs/0.0.0 (clearwing))",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Suricata: 3819509 TD Clearwing deconfliction watermark in a request body (### WATERMARK OPID:); Suricata: 3819510 TD Clearwing deconfliction watermark in a downloaded file (### WATERMARK OPID:); Suricata: 3819511 TD Clearwing XOR exec stub in a downloaded file (obfuscate_payload); Suricata: 3819512 TD Clearwing sleeper beacon script in a downloaded file (generate_c2_beacon); YARA: Clearwing_Python_Payload_Wrapper; YARA: Clearwing_Signed_Payload",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "Suricata: 3819505 TD Clearwing account recovery code probe (recoveryCode and recovery_code in one body)",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.001"
+  },
+  {
+   "comment": "KQL hunt: Clearwing testing you: its user agents and callbacks in web and proxy logs; Suricata: 3819503 TD Clearwing 1Password Mycelium probe client header (OP-User-Agent ...|clearwing|); Suricata: 3819506 TD Clearwing Struts CVE-2017-5638 check (whoami OGNL in Content-Type, bare Mozilla/5.0); Suricata: 3819507 TD Clearwing ProFTPD mod_copy check (CPTO /tmp/passwd); Suricata: 3819514 TD Clearwing out-of-band callback to its listener (/callback/<24 char token>, ports 9999-10008)",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Clearwing on a host you monitor; Sigma: Claude Code Keychain Credential Read by a Python Process",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1555.001"
+  },
+  {
+   "comment": "KQL hunt: Clearwing on a host you monitor; Sigma: Clearwing Configuration, Session or Disclosure Data Written; Suricata: 3819517 TD Clearwing web UI page; Suricata: 3819518 TD Clearwing web UI health answer; Suricata: 3819519 TD Clearwing web UI operator API answer (CLEARWING_WEB_API_KEY); Suricata: 3819520 TD Clearwing web UI disclosure or operator API call; YARA: Clearwing_Source_Or_Package",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3819504 TD Clearwing SRP user enumeration probe (nonexistent-<hex>@invalid.test)",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1589.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; Suricata: 3819508 TD Clearwing service scanner SSH probe banner (client OpenSSH_7.0)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Clearwing testing you: its user agents and callbacks in web and proxy logs; Sentinel analytics: Clearwing AI pentest agent run on a host; Sigma: Clearwing AI Pentest Agent Command Line; Sigma: Clearwing Probe User Agents in Web Server Logs; Sigma: Clearwing User Agents in Proxy Logs; Suricata: 3819501 TD Clearwing browser or bundle analyzer user agent (Clearwing/1.0); Suricata: 3819502 TD Clearwing attack-surface discovery user agent (clearwing-asm); Suricata: 3819503 TD Clearwing 1Password Mycelium probe client header (OP-User-Agent ...|clearwing|)",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

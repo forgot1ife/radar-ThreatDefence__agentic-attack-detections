@@ -1,0 +1,3 @@
+# RAPTOR Run Folders, Generated Exploits or Configuration Written
+# Sigma id 39348d65-ba8a-5516-aea7-5b14c119f540, pipeline ecs
+((TargetFilename:(*\/.raptor\-run.json OR *\/.claude\/raptor.env OR *\/.config\/raptor\/models.json OR *\/.raptor\/identity.json)) OR (TargetFilename:(*\/.raptor\/projects\/* OR *\/.raptor\/labeled_attempts\/* OR *\/.raptor\/cache\/* OR *\/.local\/share\/raptor\/sessions.d\/*))) OR (TargetFilename:*\/autonomous\/exploits\/* AND (TargetFilename:(*_exploit.cpp OR *_exploit.c OR *_exploit.py OR *_exploit.java OR *_exploit.js OR *_exploit.go OR *_exploit.rb))) OR (TargetFilename:*\/autonomous\/patches\/* AND TargetFilename:*_patch.md)

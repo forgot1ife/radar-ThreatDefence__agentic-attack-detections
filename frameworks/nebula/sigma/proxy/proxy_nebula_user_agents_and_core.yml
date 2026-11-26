@@ -1,0 +1,35 @@
+title: Nebula User Agents or Core API in Proxy Logs
+id: b00826e7-74ff-5d22-94ea-2ae5a1d56015
+status: experimental
+description: |
+    Detects requests Nebula (BerylliumSec/nebula) makes with its own user agents: nebula-chat (its terminal client
+    talking to a remote core), Nebula-Terminal/1 (its Kali containers checking their public address at api.ipify.org
+    every five minutes) and Nebula/3 knowledge-source-fetcher or -renderer (pages an operator adds as knowledge);
+    and requests to a core's device pairing and tool result endpoints.
+references:
+    - https://github.com/BerylliumSec/nebula
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_ua_exact:
+        c-useragent:
+            - 'nebula-chat'
+            - 'Nebula-Terminal/1'
+    selection_ua_knowledge:
+        c-useragent|startswith: 'Nebula/3 knowledge-source-'
+    selection_pairing:
+        c-uri|contains: '/api/v1/auth/pairings/redeem'
+    selection_results:
+        c-uri|contains|all:
+            - '/api/v1/automation-processes/'
+            - '/results'
+    condition: 1 of selection_*
+falsepositives:
+    - Penetration testers and security teams running Nebula
+level: medium

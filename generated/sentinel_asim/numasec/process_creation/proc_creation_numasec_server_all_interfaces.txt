@@ -1,0 +1,4 @@
+# numasec API Server Started on All Interfaces
+# Sigma id 0e01c1a8-3edd-5ebc-b83d-8a47cece546e, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessName endswith "/numasec" or TargetProcessName endswith "\\numasec.exe") and (TargetProcessCommandLine contains "--hostname 0.0.0.0" or TargetProcessCommandLine contains "--hostname=0.0.0.0" or TargetProcessCommandLine contains "--mdns")

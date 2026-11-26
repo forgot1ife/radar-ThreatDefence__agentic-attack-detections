@@ -1,0 +1,3 @@
+# Sage (Mythic) Proof Marker or Proof File in a Command Line
+# Sigma id 2ae9dac8-6526-5252-b96a-097fbfd8004f, pipeline splunk_windows
+CommandLine IN ("*SAGE_REMOTE_EXEC_PROOF_*", "*SAGE_EP_ADJUST_PROOF*", "*SAGE_CA_EXPORT_PROOF*", "*SAGE_CERT_ENROLL_PROOF*", "*SAGE_CERT_AUTH_PROOF*", "*SagePfx-v1-*") OR CommandLine IN ("*\\sage_remote_exec*", "*\\sage_ep_adjust*", "*\\sage_ca_export_*", "*\\sage_ca_dpapi_*", "*\\sage_forged_cert_*", "*\\sage_ca_signing_*", "*\\sage_cert_enroll_*", "*\\sage_gpo_*")

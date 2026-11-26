@@ -1,0 +1,3 @@
+# Clearwing AI Pentest Agent Command Line
+# Sigma id d08c13be-2d60-5374-8952-c2698a095f3c, pipeline ecs
+(process.command_line:(*\/bin\/clearwing\ * OR *\\Scripts\\clearwing.exe\ * OR *\\Scripts\\clearwing\ * OR *clearwing.py\ * OR *uv\ run\ clearwing\ *)) AND ((process.command_line:(*\ scan\ * OR *\ sourcehunt\ * OR *\ operate\ * OR *\ interactive* OR *\ webui* OR *\ campaign\ * OR *\ asm\ * OR *\ disclose\ * OR *\ remediate\ * OR *\ parallel\ *)) OR (process.command_line:(*\-\-auto\-approve\-exploits* OR *\-\-webhook\-secret* OR *\-\-webhook\-port* OR *\-\-compile\-commands* OR *\-\-cve\-list*)))

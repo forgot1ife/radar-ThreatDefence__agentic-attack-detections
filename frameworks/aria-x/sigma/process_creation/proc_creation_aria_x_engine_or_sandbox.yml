@@ -1,0 +1,55 @@
+title: ARIA-X Engine, Console or Sandbox Command
+id: 7f6d76af-d992-54e8-9470-fa4afe2f2753
+status: experimental
+description: |
+    Detects ARIA-X (01NGVI-QINGYI/ARIA-X at 015e197) running on a host: the engine started as python -m aria_x (the
+    container entry point is python -m aria_x serve --host 0.0.0.0 --port 8787) or through its aria-x command with the
+    serve, run or demo subcommand; the one-shot Docker sandbox it starts for every model command,
+    docker run --rm -i --name aria-x-<12 hex> ... -v <run>/work:/work -w /work <image> bash -lc <command> (interactive
+    sessions use --name aria-x-sess-<8 hex>); and, with the default local sandbox, bash -lc <command> as a child of the
+    ARIA-X Python process.
+references:
+    - https://github.com/01NGVI-QINGYI/ARIA-X
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.execution
+    - attack.t1059.004
+    - attack.t1610
+logsource:
+    category: process_creation
+detection:
+    selection_module:
+        CommandLine|contains: ' -m aria_x '
+    selection_cli:
+        CommandLine|contains:
+            - '/aria-x serve'
+            - '/aria-x run '
+            - '/aria-x demo'
+    selection_cli_start:
+        CommandLine|startswith:
+            - 'aria-x serve'
+            - 'aria-x run '
+            - 'aria-x demo'
+    selection_docker:
+        CommandLine|contains|all:
+            - ' run --rm -i '
+            - '--name aria-x-'
+            - ':/work -w /work'
+            - 'bash -lc'
+    selection_local_parent:
+        ParentCommandLine|contains:
+            - ' -m aria_x '
+            - '/aria-x run '
+            - '/aria-x serve'
+    selection_local_child:
+        CommandLine|startswith:
+            - 'bash -lc '
+            - '/bin/bash -lc '
+    condition: selection_module or selection_cli or selection_cli_start or selection_docker or (selection_local_parent and selection_local_child)
+falsepositives:
+    - Authorized use of ARIA-X
+level: medium

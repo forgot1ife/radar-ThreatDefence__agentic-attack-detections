@@ -1,0 +1,4 @@
+Nebula-Terminal/1
+Nebula/3 knowledge-source-fetcher
+Nebula/3 knowledge-source-renderer
+nebula-chat

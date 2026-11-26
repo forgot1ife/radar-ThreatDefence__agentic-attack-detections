@@ -1,0 +1,4 @@
+# BreachWeave Playbook NPS Client Staged on a Host
+# Sigma id ace68a85-41c0-58ab-a183-807781a45748, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "/files/nps/npc_" or (TargetProcessCommandLine contains "-server=" and TargetProcessCommandLine contains "-vkey=auto")

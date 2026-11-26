@@ -4,9 +4,12 @@ http://ftp.vietnam852.com:88/test/MicrosoftEdgeUpdate.exe
 http://ftp.vietnam852.com:88/test/WinRing0x64.sys
 http://ftp.vietnam852.com:88/test/smss.exe
 http://ftp.vietnam852.com:88/test/winlogon.exe
+http://httpbin.org/anything/blitzstrike-ssrf-canary
 https://api.aliasrobotics.com:666/
 https://api.aliasrobotics.com:666/key/info
 https://api.github.com/repos/BaaRai/ARTEX/releases/latest
+https://api.github.com/repos/FrancescoStabile/numasec/releases/latest
+https://api.github.com/repos/s0ld13rr/pentestcode/releases/latest
 https://b8t.shop/js/sby.js
 https://cdn.js-static.com/js/pps.js
 https://cdn.js-static.com/js/tgo.js
@@ -15,9 +18,11 @@ https://cdn.netlfjs.com/js/vla.js
 https://decepticon.red/install
 https://github.com/r74tech/llama.go/releases/download/
 https://logs.aliasrobotics.com/upload
+https://pypi.org/pypi/mitsu/json
 https://raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/master/config.py
 https://raw.githubusercontent.com/JoasASantos/NeuroSploit/main/setup.sh
 https://raw.githubusercontent.com/grisuno/LazyOwn/main/bootstrap.sh
+https://raw.githubusercontent.com/s0ld13rr/pentestcode/main/install.sh
 https://static-js.com/js/bmws.js
 https://static-js.com/js/nrt.js
 https://telemetry.pentestai.xyz/v1/event

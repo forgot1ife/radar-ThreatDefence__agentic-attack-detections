@@ -1,0 +1,3 @@
+# Tools Started by the Blitz Strike MCP Server
+# Sigma id 279848ea-5408-5f13-b82d-212174b82e67, pipeline splunk_windows
+ParentCommandLine="*blitzstrike*" CommandLine IN ("*-jsonl -silent -no-color -timeout 10*", "*interactsh-client -json*", "*chrome-devtools-mcp*", "*curl -sk -m 6 --resolve*", "*sparse-checkout set payloads templates*", "*go install*", "*pip install*", "*apt-get install -y*", "*nuclei -update-templates*")

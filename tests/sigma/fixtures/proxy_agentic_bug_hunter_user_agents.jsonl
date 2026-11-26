@@ -1,0 +1,4 @@
+{"name": "the HIBP breach check through the proxy", "expected": true, "event": {"c-useragent": "agentic-bug-hunter/breach_checker", "cs-host": "api.pwnedpasswords.com"}}
+{"name": "an oauth spray through the proxy", "expected": true, "event": {"c-useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Bug-Bounty-Research", "cs-host": "login.example.test"}}
+{"name": "the WAF analyzer", "expected": true, "event": {"c-useragent": "Mozilla/5.0 (compatible; waf-response-analyzer/1.0)", "cs-host": "app.example.test"}}
+{"name": "near miss: Safari on the same macOS version", "expected": false, "event": {"c-useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15", "cs-host": "app.example.test"}}

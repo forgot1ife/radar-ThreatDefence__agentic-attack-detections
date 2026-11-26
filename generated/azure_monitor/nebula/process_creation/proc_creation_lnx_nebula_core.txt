@@ -1,0 +1,4 @@
+# Nebula Core, Desktop Sidecar or Browser Sidecar Process
+# Sigma id fe4a3d7d-5728-5b90-80d1-833e25980251, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "nebula-core runtime-service" and CommandLine contains "--manifest-sha256") or CommandLine contains "nebula-core desktop-connect" or (CommandLine contains "nebula-core serve" or CommandLine contains "nebula-core headless" or CommandLine contains "-m nebula.v3.cli" or CommandLine contains "nebula-browserd")

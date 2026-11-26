@@ -1,0 +1,23 @@
+title: 0security Cloud Host Lookup
+id: b2286c95-c336-5cbf-9579-4e315fcc1913
+status: experimental
+description: |
+    Detects a lookup of cloud.0.security, the default host of 0security's cloud service (cloud credentials and the
+    Windows evidence worker). It is used only when an operator has configured a cloud token.
+references:
+    - https://github.com/0sec-labs/0security
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: dns_query
+detection:
+    selection:
+        QueryName: 'cloud.0.security'
+    condition: selection
+falsepositives:
+    - Developers and security teams who use the 0security cloud service
+level: low

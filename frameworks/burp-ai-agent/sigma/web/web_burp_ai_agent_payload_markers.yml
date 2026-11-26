@@ -1,0 +1,39 @@
+title: Custom AI Agent (burp-ai-agent) Active Scanner Payload Markers in Web Logs
+id: 09ef5599-3eed-5e0a-aaf8-2820d637992f
+status: experimental
+description: |
+    Detects the fixed markers in the payload table of the Custom AI Agent Burp extension (six2dez/burp-ai-agent,
+    formerly Burp AI Agent): XSS-BURP-AI-1337 and DOM-XSS-BURP-AI in its XSS payloads, burp-ai-test in its header and
+    CRLF injection payloads, and the domains evil-burp-ai.com, evil-burp-ai-test.com and evil-burp-ai-cache.com in its
+    OAuth redirect, host header and cache poisoning payloads (scanner/PayloadGenerator.kt at b1738c0e). Its requests
+    leave through Burp, so they carry no user agent of their own.
+references:
+    - https://github.com/six2dez/burp-ai-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_query:
+        cs-uri-query|contains:
+            - 'XSS-BURP-AI'
+            - 'burp-ai-test'
+            - 'evil-burp-ai'
+    selection_path:
+        cs-uri-stem|contains:
+            - 'XSS-BURP-AI'
+            - 'evil-burp-ai'
+    selection_referer:
+        cs-referer|contains:
+            - 'XSS-BURP-AI'
+            - 'evil-burp-ai'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with the Custom AI Agent extension's active scanner
+level: high

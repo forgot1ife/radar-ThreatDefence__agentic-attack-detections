@@ -1,0 +1,79 @@
+{
+ "description": "26 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 18,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "blitzstrike",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Blitz Strike on a host you monitor; Sigma: Tools Started by the Blitz Strike MCP Server",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "Suricata: 3819015 TD Blitz Strike self-hosted callback listener answer",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Blitz Strike testing you: its user agents and probe markers in web and proxy logs; Sentinel analytics: Blitz Strike AI pentest MCP server scanned a web server; Sigma: Blitz Strike SSRF Canary Fetched or Blitz Strike User Agent Through a Proxy; Sigma: Blitz Strike Scan Markers in Web Logs; Suricata: 3819003 TD Blitz Strike open redirect host in URI; Suricata: 3819005 TD Blitz Strike SSRF canary URL in request; Suricata: 3819006 TD Blitz Strike SSRF canary fetched by your server; Suricata: 3819007 TD Blitz Strike CRLF injection probe header name; Suricata: 3819009 TD Blitz Strike file read check control path in URI; Suricata: 3819010 TD Blitz Strike file read check control path in request body; Suricata: 3819011 TD Blitz Strike prototype pollution canary; Suricata: 3819012 TD Blitz Strike browser XSS check marker; Suricata: 3819013 TD Blitz Strike proof of concept marker in URI; Suricata: 3819014 TD Blitz Strike proof of concept marker in request body",
+   "enabled": true,
+   "score": 14,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Blitz Strike on a host you monitor; Sigma: Blitz Strike Home Folder, Reports or Agent Personas Written; Sigma: Blitz Strike MCP Server or CLI on a Host; YARA: BlitzStrike_Report_Or_Log; YARA: BlitzStrike_Source_Or_Package",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Blitz Strike testing you: its user agents and probe markers in web and proxy logs; Sentinel analytics: Blitz Strike AI pentest MCP server scanned a web server; Sigma: Blitz Strike SSRF Canary Fetched or Blitz Strike User Agent Through a Proxy; Sigma: Blitz Strike Scan Markers in Web Logs; Sigma: Tools Started by the Blitz Strike MCP Server; Suricata: 3819001 TD Blitz Strike user agent; Suricata: 3819002 TD Blitz Strike leaked key check user agent; Suricata: 3819003 TD Blitz Strike open redirect host in URI; Suricata: 3819004 TD Blitz Strike CORS check origin; Suricata: 3819005 TD Blitz Strike SSRF canary URL in request; Suricata: 3819007 TD Blitz Strike CRLF injection probe header name; Suricata: 3819008 TD Blitz Strike host header poisoning marker; Suricata: 3819009 TD Blitz Strike file read check control path in URI; Suricata: 3819010 TD Blitz Strike file read check control path in request body; Suricata: 3819011 TD Blitz Strike prototype pollution canary; Suricata: 3819012 TD Blitz Strike browser XSS check marker; Suricata: 3819013 TD Blitz Strike proof of concept marker in URI; Suricata: 3819014 TD Blitz Strike proof of concept marker in request body",
+   "enabled": true,
+   "score": 18,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

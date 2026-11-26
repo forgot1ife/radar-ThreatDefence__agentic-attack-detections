@@ -1,0 +1,25 @@
+title: MCP Kali Server Metasploit Resource File Run
+id: aee3c45f-09a4-5e31-a256-1ebabd6c1342
+status: experimental
+description: |
+    Detects MCP Kali Server's Metasploit route: the API server writes the module and its options to the fixed file
+    /tmp/mks_msf_resource.rc and runs msfconsole -q -r /tmp/mks_msf_resource.rc. Under the Kali package's service the
+    file sits in the service's private /tmp, but the command line keeps the /tmp path.
+references:
+    - https://github.com/Wh0am123/MCP-Kali-Server/blob/00154c053845b2ec4c3eef49ad09dd9bb2d3b7aa/server.py#L359
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        CommandLine|contains: 'mks_msf_resource.rc'
+    condition: selection
+falsepositives:
+    - Authorized tests driven through MCP Kali Server
+level: high

@@ -1,0 +1,46 @@
+title: Nebula Data Folder, Runtime or Container Files Written
+id: a619ae46-1b9f-5f55-9811-c1eba1009840
+status: experimental
+description: |
+    Detects files Nebula (BerylliumSec/nebula) writes: its core data folder ~/.local/share/nebula/v3/ (database,
+    runtime/operator-token, runtime/connection.json, logs), the desktop app's data folder io.nebula.security/core/, the
+    process group files /tmp/nebula-process-<id>.pid and /run/nebula/public-ip in its Kali containers, the files it
+    bakes into its Kali image, the build folder /tmp/nebula-kali-*, and its protected memory runner's state.
+references:
+    - https://github.com/BerylliumSec/nebula
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_data:
+        TargetFilename|contains:
+            - '/.local/share/nebula/v3/'
+            - '/io.nebula.security/core/'
+    selection_pidfile:
+        TargetFilename|startswith: '/tmp/nebula-process-'
+        TargetFilename|endswith: '.pid'
+    selection_container:
+        TargetFilename:
+            - '/run/nebula/public-ip'
+            - '/etc/cron.d/nebula-public-ip'
+            - '/usr/local/share/nebula/security-tools.json'
+            - '/usr/local/bin/nebula-terminal-entrypoint'
+            - '/usr/local/lib/nebula-public-ip-update'
+    selection_build:
+        TargetFilename|startswith: '/tmp/nebula-kali-'
+        TargetFilename|endswith: '/Dockerfile'
+    selection_runner:
+        TargetFilename|startswith:
+            - '/run/nebula-memory-runner/'
+            - '/var/lib/nebula-memory-runner/'
+    condition: 1 of selection_*
+falsepositives:
+    - Penetration testers and security teams running Nebula
+    - Other software named Nebula that uses the same folder names
+level: low

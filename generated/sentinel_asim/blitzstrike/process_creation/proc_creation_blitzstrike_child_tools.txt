@@ -1,0 +1,4 @@
+# Tools Started by the Blitz Strike MCP Server
+# Sigma id 279848ea-5408-5f13-b82d-212174b82e67, pipeline sentinel_asim
+imProcessCreate
+| where ActingProcessCommandLine contains "blitzstrike" and (TargetProcessCommandLine contains "-jsonl -silent -no-color -timeout 10" or TargetProcessCommandLine contains "interactsh-client -json" or TargetProcessCommandLine contains "chrome-devtools-mcp" or TargetProcessCommandLine contains "curl -sk -m 6 --resolve" or TargetProcessCommandLine contains "sparse-checkout set payloads templates" or TargetProcessCommandLine contains "go install" or TargetProcessCommandLine contains "pip install" or TargetProcessCommandLine contains "apt-get install -y" or TargetProcessCommandLine contains "nuclei -update-templates")

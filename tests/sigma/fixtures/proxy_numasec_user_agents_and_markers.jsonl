@@ -1,0 +1,7 @@
+{"name": "AppSec probe request", "expected": true, "event": {"cs-method": "GET", "cs-host": "shop.example.test", "c-uri": "/rest/products/search?q=%27+OR+1%3D1--", "c-useragent": "numasec-appsec-probe/1.2"}}
+{"name": "page fetch fallback user agent", "expected": true, "event": {"cs-method": "GET", "cs-host": "shop.example.test", "c-uri": "/", "c-useragent": "numasec"}}
+{"name": "directory fuzzer baseline with the Bun default user agent", "expected": true, "event": {"cs-method": "GET", "cs-host": "shop.example.test", "c-uri": "/numasec_404_check_1764123456789", "c-useragent": "Bun/1.3.11"}}
+{"name": "knowledge broker lookup at NVD", "expected": true, "event": {"cs-method": "GET", "cs-host": "services.nvd.nist.gov", "c-uri": "/rest/json/cves/2.0?cveId=CVE-2021-44228", "c-useragent": "numasec-knowledge-broker/1.2"}}
+{"name": "model list fetch", "expected": true, "event": {"cs-method": "GET", "cs-host": "models.dev", "c-uri": "/api.json", "c-useragent": "numasec/latest/1.2.1/cli"}}
+{"name": "opencode model list fetch", "expected": false, "event": {"cs-method": "GET", "cs-host": "models.dev", "c-uri": "/api.json", "c-useragent": "opencode/latest/1.4.6/cli"}}
+{"name": "another product whose user agent starts with numasec", "expected": false, "event": {"cs-method": "GET", "cs-host": "shop.example.test", "c-uri": "/", "c-useragent": "numasecurity-crawler/2.0"}}

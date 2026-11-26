@@ -1,0 +1,4 @@
+# Nebula Data Folder, Runtime or Container Files Written
+# Sigma id a619ae46-1b9f-5f55-9811-c1eba1009840, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.local/share/nebula/v3/" or TargetFileName contains "/io.nebula.security/core/") or (TargetFileName startswith "/tmp/nebula-process-" and TargetFileName endswith ".pid") or (TargetFileName in~ ("/run/nebula/public-ip", "/etc/cron.d/nebula-public-ip", "/usr/local/share/nebula/security-tools.json", "/usr/local/bin/nebula-terminal-entrypoint", "/usr/local/lib/nebula-public-ip-update")) or (TargetFileName startswith "/tmp/nebula-kali-" and TargetFileName endswith "/Dockerfile") or (TargetFileName startswith "/run/nebula-memory-runner/" or TargetFileName startswith "/var/lib/nebula-memory-runner/")

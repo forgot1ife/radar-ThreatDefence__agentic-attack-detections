@@ -1,0 +1,3 @@
+# ARIA-X Database, Run Evidence or Working Folders
+# Sigma id ee1ec5c0-526b-536c-940d-c9ffc4a9ff50, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(TargetFilename, "/aria-x.db") or ends_with(TargetFilename, "/aria-x.db-wal") or ends_with(TargetFilename, "/aria-x.db-shm") or ends_with(TargetFilename, "/configs/aria-x.toml") or TargetFilename like "*/runs/run_*" and TargetFilename like "*/work/evidence/http_*" or TargetFilename like "*/runs/run_*" and (ends_with(TargetFilename, "/report.html") or ends_with(TargetFilename, "/report.md") or ends_with(TargetFilename, "/report.json")) or TargetFilename like "*/aria-x-work-*" or TargetFilename like "*/aria-x-doctor-*" or TargetFilename like "*/aria-x-tools-*" or TargetFilename like "*/aria-x-demo-target-*"

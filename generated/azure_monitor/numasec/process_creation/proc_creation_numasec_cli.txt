@@ -1,0 +1,4 @@
+# numasec AI Security Agent on a Host
+# Sigma id 6521d3e9-170f-5ca5-b9ff-6df115949750, pipeline azure_monitor
+SecurityEvent
+| where (NewProcessName endswith "/bin/numasec" or NewProcessName endswith "\\bin\\numasec.exe") or (CommandLine contains "install -g numasec" or CommandLine contains "add -g numasec" or CommandLine contains "francescostabile/numasec") or ((NewProcessName endswith "/interactsh-client" or NewProcessName endswith "\\interactsh-client.exe") and (CommandLine contains "/numasec/log/int_" or CommandLine contains "\\numasec\\log\\int_"))

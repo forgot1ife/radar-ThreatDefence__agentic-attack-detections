@@ -1,0 +1,35 @@
+title: 0security Client Traffic in Proxy Logs
+id: a3a4486f-1fc9-5c07-870f-a3f96b023c23
+status: experimental
+description: |
+    Detects outbound requests from a host running 0security, by the user agents it sets itself: 0security/<version>
+    on usage analytics to PostHog, @0/cli/update-check on its daily release check against the GitHub API,
+    @0/cli/<version> on uploads to its cloud worker, 0security-audit-sink on audit log forwarding, 0security on Kimi
+    device sign-in, and 0/1.0 on its DuckDuckGo fallback web search; and any request to its cloud host
+    cloud.0.security. These are HTTPS, so the user agents are visible only to a proxy that decrypts.
+references:
+    - https://github.com/0sec-labs/0security
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_ua_prefix:
+        c-useragent|startswith:
+            - '0security/'
+            - '@0/cli/'
+    selection_ua_exact:
+        c-useragent:
+            - '0security'
+            - '0security-audit-sink'
+            - '0/1.0'
+    selection_cloud:
+        cs-host: 'cloud.0.security'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams who use 0security
+level: low

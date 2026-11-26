@@ -1,0 +1,38 @@
+title: numasec AI Security Agent on a Host
+id: 6521d3e9-170f-5ca5-b9ff-6df115949750
+status: experimental
+description: |
+    Detects numasec, an open-source terminal agent for application security and penetration testing built on OpenCode:
+    its binary from the numasec-<os>-<arch> npm packages, the npm, bun or Docker commands that install or run it, and the
+    interactsh-client process its out-of-band tool starts with a log file in the numasec data folder.
+references:
+    - https://github.com/FrancescoStabile/numasec
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_image:
+        Image|endswith:
+            - '/bin/numasec'
+            - '\bin\numasec.exe'
+    selection_install:
+        CommandLine|contains:
+            - 'install -g numasec'
+            - 'add -g numasec'
+            - 'francescostabile/numasec'
+    selection_interact:
+        Image|endswith:
+            - '/interactsh-client'
+            - '\interactsh-client.exe'
+        CommandLine|contains:
+            - '/numasec/log/int_'
+            - '\numasec\log\int_'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and testers who use numasec
+level: low

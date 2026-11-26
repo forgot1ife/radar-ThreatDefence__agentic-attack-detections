@@ -1,0 +1,4 @@
+{"name": "web_search tool opening a page", "expected": true, "event": {"c-useragent": "Mitsu/0.1 (terminal assistant; public search)", "cs-host": "app.example.test"}}
+{"name": "update check", "expected": true, "event": {"c-useragent": "Mitsu updater", "cs-host": "pypi.org"}}
+{"name": "SearXNG local probe user agent", "expected": false, "event": {"c-useragent": "Mitsu/0.1", "cs-host": "127.0.0.1"}}
+{"name": "a browser", "expected": false, "event": {"c-useragent": "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0", "cs-host": "pypi.org"}}

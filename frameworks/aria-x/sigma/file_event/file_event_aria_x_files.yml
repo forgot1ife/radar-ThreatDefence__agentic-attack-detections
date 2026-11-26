@@ -1,0 +1,49 @@
+title: ARIA-X Database, Run Evidence or Working Folders
+id: ee1ec5c0-526b-536c-940d-c9ffc4a9ff50
+status: experimental
+description: |
+    Detects files ARIA-X (01NGVI-QINGYI/ARIA-X at 015e197) writes: its SQLite database aria-x.db (WAL mode, with
+    aria-x.db-wal and aria-x.db-shm) in the data folder, the HTTP evidence records of a run in
+    runs/run_<12 hex>/work/evidence/http_<date>_<time>_<n>.json, the run reports runs/run_<12 hex>/report.html and
+    report.md, its configuration configs/aria-x.toml, and the temporary folders aria-x-work-, aria-x-doctor-, aria-x-tools-
+    and aria-x-demo-target-.
+references:
+    - https://github.com/01NGVI-QINGYI/ARIA-X
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: file_event
+detection:
+    selection_db:
+        TargetFilename|endswith:
+            - '/aria-x.db'
+            - '/aria-x.db-wal'
+            - '/aria-x.db-shm'
+            - '/configs/aria-x.toml'
+    selection_evidence:
+        TargetFilename|contains|all:
+            - '/runs/run_'
+            - '/work/evidence/http_'
+    selection_report:
+        TargetFilename|contains: '/runs/run_'
+        TargetFilename|endswith:
+            - '/report.html'
+            - '/report.md'
+            - '/report.json'
+    selection_tmp:
+        TargetFilename|contains:
+            - '/aria-x-work-'
+            - '/aria-x-doctor-'
+            - '/aria-x-tools-'
+            - '/aria-x-demo-target-'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized use of ARIA-X
+    - Other tools that keep runs in runs/run_<id>/ folders with report files
+level: medium

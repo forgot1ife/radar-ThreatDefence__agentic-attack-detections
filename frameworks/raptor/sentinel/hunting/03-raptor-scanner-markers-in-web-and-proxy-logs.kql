@@ -1,0 +1,33 @@
+// RAPTOR web scanner in web and proxy logs: its user agent, probe paths and probe values, and its client user agents
+// Agentic attack detections by ThreatDefence (RAPTOR). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1595.003 (Active Scanning: Wordlist Scanning), T1110.001 (Brute Force: Password Guessing)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the RAPTOR source code (gadievron/raptor, reviewed at ac734352), packages/web:
+//  - Every request from its HTTP client: User-Agent "RAPTOR Security Scanner (Authorized Testing)" (client.py:199).
+//    The Playwright browser it uses for crawling and the XSS proof does not set it, nor does ffuf or nuclei.
+//  - Fixed probes: /this-path-does-not-exist-raptor-probe, /api/does-not-exist-raptor, /raptor-<16 hex>-does-not-exist,
+//    /raptor-<16 hex>/nonexistent.css, raptornosuchparam=raptorparam1, ?raptorcb=<12 hex>, window.__raptor_hits,
+//    raptor_pp_probe_value_8472, evil-raptor-probe.example.com, state=raptor_probe, raptor-baseline, raptor@example.invalid
+//  - Login checks post username raptor_nonexistent_user_xyzzy_9291 and passwords raptor_probe_password_<0-4> and
+//    raptor_final_probe; those sit in request bodies, which web logs rarely keep.
+//  - From the operator's host: raptor/0.1 (+https://github.com/gadievron/raptor), raptor-sca/0.1 (...), raptor-nvd/0.1,
+//    raptor-sca and the other raptor-* clients, to package registries, GitHub, OSV and NVD.
+
+let ScannerUA = "RAPTOR Security Scanner";
+let UriMarkers = dynamic(["does-not-exist-raptor", "/raptor-clzero-probe", "raptornosuchparam=", "raptorcb=", "__raptor_hits",
+    "raptor_pp_probe_value_8472", "evil-raptor-probe.example.com", "state=raptor_probe", "=raptor-baseline", "raptor%40example.invalid"]);
+let ClientUA = @"^(raptor(-sca)?/[0-9.]+ \(\+https://github\.com/gadievron/raptor\)|raptor-sca|raptor-(nvd|env-verify|container-evidence|uv-provenance|cvefix-envs)/[0-9.]+)$";
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " "), Url=strcat(csUriStem, "?", csUriQuery)
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", Url), UA, Url),
+    (CommonSecurityLog | where isnotempty(RequestURL) or isnotempty(RequestClientApplication)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication, Url=RequestURL)
+| where TimeGenerated > ago(90d)
+| extend Signal=case(UA startswith ScannerUA, "RAPTOR web scanner user agent",
+    Url has_any (UriMarkers) or Url matches regex @"/raptor-[0-9a-f]{16}(-does-not-exist|/nonexistent\.css)", "RAPTOR web scanner probe",
+    UA matches regex ClientUA, "RAPTOR client user agent",
+    "")
+| where isnotempty(Signal)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Signal, Source, Src, Target
+| order by FirstSeen asc

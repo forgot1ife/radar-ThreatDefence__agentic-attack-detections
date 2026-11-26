@@ -1,0 +1,30 @@
+title: Nebula Core Pairing, Tool Results or Terminal Client in Web Logs
+id: 9f7c116c-47dd-5a62-a547-b311f187c249
+status: experimental
+description: |
+    Detects requests a Nebula (BerylliumSec/nebula) core receives: device pairing redemption at
+    /api/v1/auth/pairings/redeem, background tool results posted to /api/v1/automation-processes/<id>/results, and
+    its terminal client's user agent nebula-chat. In the logs of a web server or reverse proxy you run, these mean a
+    Nebula core is served from it.
+references:
+    - https://github.com/BerylliumSec/nebula
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1133
+logsource:
+    category: webserver
+detection:
+    selection_pairing:
+        cs-uri-stem: '/api/v1/auth/pairings/redeem'
+    selection_results:
+        cs-uri-stem|startswith: '/api/v1/automation-processes/'
+        cs-uri-stem|endswith: '/results'
+    selection_ua:
+        cs-user-agent: 'nebula-chat'
+    condition: 1 of selection_*
+falsepositives:
+    - A Nebula core you run on purpose behind your own reverse proxy
+level: medium

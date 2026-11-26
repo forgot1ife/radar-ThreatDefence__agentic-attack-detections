@@ -1,0 +1,4 @@
+# Custom AI Agent (burp-ai-agent) MCP Server Certificate or MCP Bridge
+# Sigma id f39908c5-5234-5ef1-9ec1-f8ca7d491be7, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "-genkeypair" and ProcessCommandLine contains "CN=burp-mcp") or (ProcessCommandLine contains "supergateway" and ProcessCommandLine contains ":9876/sse")

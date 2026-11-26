@@ -1,0 +1,8 @@
+{"name": "the core client to a package registry", "expected": true, "event": {"cs-host": "pypi.org", "c-uri": "/pypi/requests/json", "c-useragent": "raptor/0.1 (+https://github.com/gadievron/raptor)"}}
+{"name": "the sca client to osv", "expected": true, "event": {"cs-host": "api.osv.dev", "c-uri": "/v1/query", "c-useragent": "raptor-sca/0.1 (+https://github.com/gadievron/raptor)"}}
+{"name": "the github release check", "expected": true, "event": {"cs-host": "api.github.com", "c-uri": "/repos/semgrep/semgrep/releases/latest", "c-useragent": "raptor-sca"}}
+{"name": "the nvd client", "expected": true, "event": {"cs-host": "services.nvd.nist.gov", "c-uri": "/rest/json/cves/2.0?cveId=CVE-2024-0001", "c-useragent": "raptor-nvd/0.1"}}
+{"name": "a scan run out through the proxy", "expected": true, "event": {"cs-host": "app.example.test", "c-uri": "/", "c-useragent": "RAPTOR Security Scanner (Authorized Testing)"}}
+{"name": "the cve-env fetch", "expected": true, "event": {"cs-host": "security.example.test", "c-uri": "/advisory", "c-useragent": "cve-env/0.1 (agentic CVE env builder)"}}
+{"name": "near miss: another raptor- client", "expected": false, "event": {"cs-host": "cdn.example.test", "c-uri": "/", "c-useragent": "raptor-camera/2.1"}}
+{"name": "near miss: the release check name with a version", "expected": false, "event": {"cs-host": "api.github.com", "c-uri": "/", "c-useragent": "raptor-scanner/1.0"}}

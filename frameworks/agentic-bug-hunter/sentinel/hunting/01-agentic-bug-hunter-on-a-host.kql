@@ -1,0 +1,46 @@
+// Agentic Bug Hunter on a host you monitor
+// Agentic attack detections by ThreatDefence (Agentic Bug Hunter). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1110.003 (Brute Force: Password Spraying)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Agentic Bug Hunter (awarexone/Agentic-Bug-Hunter, reviewed at 82f4512e, package agentic-bug-hunter 6.0.1) is a bug
+// bounty toolkit of Python and shell scripts driven by a coding assistant (Claude Code, Codex, OpenCode,
+// Gemini/Antigravity) or by its own ReAct agent. From its source code:
+//  - Commands: bughunter <recon|hunt|validate|chat|mcp serve ...>, bughunter-agent --target <domain>, and scripts under
+//    bughunter/tools/ (recon_engine.sh, vuln_scanner.sh, bypass_403.sh, oob_listener.py, hunt_dashboard.py serve).
+//  - Credential chain: wordlist_engine.sh runs cewler with the user agent "... Intel Mac OS X 10_15_7) Bug-Bounty-Research",
+//    spray_orchestrator.sh starts _spray_http_form.py or _spray_oauth.py, or TREVORspray for Microsoft 365 and Okta.
+//  - Files: ~/.bughunter/ (config.json, google_oauth.json, workspace/), ~/.cache/bbhunt/scope/, hunt-memory/*.jsonl,
+//    recon/<target>/spray/attempts-<time>.jsonl, targets/<target>/autonomous_session.json, and skills such as
+//    ~/.claude/skills/johnwick/ copied by its installer.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let ToolMarkers = dynamic(["agentic-bug-hunter", "/bin/bughunter-agent", "/bin/bughunter mcp serve", "bughunter/engine.py",
+    "bughunter/agent.py", "bughunter/tools/recon_engine.sh", "bughunter/tools/vuln_scanner.sh", "bughunter/tools/bypass_403.sh",
+    "bughunter/tools/oob_listener.py", "hunt_dashboard.py serve", "waf_response_analyzer.py --calibrate"]);
+let SprayMarkers = dynamic(["spray_orchestrator.sh", "_spray_http_form.py", "_spray_oauth.py", "Intel Mac OS X 10_15_7) Bug-Bounty-Research"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (SprayMarkers)
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 300), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Agentic Bug Hunter password spray or wordlist crawl", Detail=tostring(Commands)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (ToolMarkers) and not(ProcessCommandLine has_any (SprayMarkers))
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Agentic Bug Hunter install, CLI, agent or scanner script", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/.bughunter/" or FolderPath has "/.cache/bbhunt/scope/"
+            or (FolderPath has "/spray/attempts-" and FileName endswith ".jsonl")
+            or FileName =~ "autonomous_session.json"
+            or FolderPath has_any ("/skills/johnwick/", "/skills/omni-killchain/", "/agents/credential-hunter.md")
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, AccountName=InitiatingProcessAccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Agentic Bug Hunter configuration, memory, spray log or skills", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where LocalPort == 8777 and ActionType == "ListeningConnectionCreated" and InitiatingProcessCommandLine has "hunt_dashboard.py"
+        | project Timestamp, DeviceName, AccountName=InitiatingProcessAccountName, Signal="Hunt Dashboard listening",
+            Detail=strcat(LocalIP, ":", LocalPort, " ", InitiatingProcessCommandLine))
+| order by Timestamp desc

@@ -1,0 +1,30 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (Custom AI Agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595 (Active Scanning), T1190 (Exploit Public-Facing Application)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation.
+// No Custom AI Agent infrastructure has been published, so these rows are fingerprints of the software: the payload
+// markers and made-up domains its active scanners send, and its file names.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "burp-ai-agent" | project value=tostring(SearchKey), type, confidence, actor, source;
+let Domains = toscalar(IOC | where type == "domain" and confidence in ("high", "medium") | summarize make_list(value));
+let Markers = toscalar(IOC | where type == "string" and confidence == "high" and value !startswith "CN=" | summarize make_list(value));
+let Files = toscalar(IOC | where type == "file_name" | summarize make_list(value));
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriQuery has_any (Markers) or csUriStem has_any (Markers) or csReferer has_any (Markers) or csHost has_any (Domains)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=csHost, Detail=strcat(cIP, " ", csUriStem, "?", csUriQuery)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (Markers) or DestinationHostName has_any (Domains)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=DestinationHostName, Detail=strcat(SourceIP, " ", RequestURL)),
+    (DnsEvents | where TimeGenerated > ago(90d)
+        | where Name has_any (Domains)
+        | project TimeGenerated, Source="DnsEvents", Indicator=Name, Detail=ClientIP),
+    (DeviceNetworkEvents | where Timestamp > ago(30d)
+        | where RemoteUrl has_any (Domains)
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Indicator=RemoteUrl, Detail=strcat(DeviceName, " ", InitiatingProcessFileName)),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FileName in~ (Files)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FileName, Detail=strcat(DeviceName, " ", FolderPath))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by Source, Indicator
+| order by LastSeen desc

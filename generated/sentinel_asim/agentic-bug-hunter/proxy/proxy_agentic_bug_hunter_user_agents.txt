@@ -1,0 +1,4 @@
+# Agentic Bug Hunter User Agents in Proxy Logs
+# Sigma id e62d17db-aba2-5459-8641-8b1e2116c933, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent startswith "agentic-bug-hunter/" or HttpUserAgent endswith "Intel Mac OS X 10_15_7) Bug-Bounty-Research" or HttpUserAgent contains "waf-response-analyzer/1.0"

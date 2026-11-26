@@ -1,0 +1,4 @@
+# Clearwing User Agents in Proxy Logs
+# Sigma id 789234ac-255a-5c6e-8f95-973b33f8c65e, pipeline sentinel_asim
+imWebSession
+| where (HttpUserAgent contains "Clearwing/1.0" or HttpUserAgent contains "codex_cli_rs/0.0.0 (clearwing)") or (HttpUserAgent startswith "clearwing-asm/" or HttpUserAgent startswith "clearwing (aiohttp openai fallback)")

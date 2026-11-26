@@ -1,0 +1,4 @@
+# MCP Kali Server API Called Across the Network
+# Sigma id fabd2ce9-5bb9-537f-afd8-7ab4f2f01aaf, pipeline sentinel_asim
+imWebSession
+| where (Url contains ":5000/api/command" or Url contains ":5000/api/tools/nmap" or Url contains ":5000/api/tools/gobuster" or Url contains ":5000/api/tools/dirb" or Url contains ":5000/api/tools/nikto" or Url contains ":5000/api/tools/sqlmap" or Url contains ":5000/api/tools/metasploit" or Url contains ":5000/api/tools/hydra" or Url contains ":5000/api/tools/john" or Url contains ":5000/api/tools/wpscan" or Url contains ":5000/api/tools/enum4linux") or Url contains "/mcp/tools/kali_tools/"

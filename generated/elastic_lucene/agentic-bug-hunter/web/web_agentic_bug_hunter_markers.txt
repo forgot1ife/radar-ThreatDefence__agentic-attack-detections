@@ -1,0 +1,3 @@
+# Agentic Bug Hunter Scanner Markers in Web Logs
+# Sigma id 6e8b9896-8608-56e0-96ed-a67d31fe57cb, pipeline ecs
+user_agent.original:agentic\-bug\-hunter\/* OR user_agent.original:*Bug\-Bounty\-Research OR user_agent.original:*waf\-response\-analyzer\/1.0* OR (url.query:(*_waftest\=* OR *window.__cbbx*)) OR (url.path:(*crlftest\=1* OR *\/saml\-control\-*))

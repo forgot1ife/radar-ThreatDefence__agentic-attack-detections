@@ -1,0 +1,29 @@
+title: Sage (Mythic) SharpHound 2.13.0 Download by python-requests
+id: e756eef2-c8fc-56e2-b5d8-91797b510a6f
+status: experimental
+description: |
+    Detects the SharpHound release that Sage's SharpHound card names being downloaded by a Python client. Sage, the AI
+    operator for the Mythic C2 framework, fetches
+    https://github.com/SpecterOps/SharpHound/releases/download/v2.13.0/SharpHound_v2.13.0_windows_x86.zip with requests.get
+    from the Mythic server before uploading SharpHound to a callback.
+references:
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/ttps/sharphound.md
+    - https://github.com/MythicAgents/sage/blob/cbff42f0abc54d3c64b40d3a71cffce01a057023/Payload_Type/sage/ai/langgraph/mythic_tools.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1105
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection:
+        c-uri|contains: '/SpecterOps/SharpHound/releases/download/v2.13.0/SharpHound_v2.13.0_windows_x86.zip'
+        c-useragent|startswith: 'python-requests/'
+    condition: selection
+falsepositives:
+    - Other scripts that download this SharpHound release with python-requests
+level: medium

@@ -1,0 +1,4 @@
+# ARIA-X Engine, Console or Sandbox Command
+# Sigma id 7f6d76af-d992-54e8-9470-fa4afe2f2753, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains " -m aria_x " or (ProcessCommandLine contains "/aria-x serve" or ProcessCommandLine contains "/aria-x run " or ProcessCommandLine contains "/aria-x demo") or (ProcessCommandLine startswith "aria-x serve" or ProcessCommandLine startswith "aria-x run " or ProcessCommandLine startswith "aria-x demo") or (ProcessCommandLine contains " run --rm -i " and ProcessCommandLine contains "--name aria-x-" and ProcessCommandLine contains ":/work -w /work" and ProcessCommandLine contains "bash -lc") or ((InitiatingProcessCommandLine contains " -m aria_x " or InitiatingProcessCommandLine contains "/aria-x run " or InitiatingProcessCommandLine contains "/aria-x serve") and (ProcessCommandLine startswith "bash -lc " or ProcessCommandLine startswith "/bin/bash -lc "))

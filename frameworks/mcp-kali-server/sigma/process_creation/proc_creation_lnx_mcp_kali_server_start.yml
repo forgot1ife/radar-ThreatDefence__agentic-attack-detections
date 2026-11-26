@@ -1,0 +1,44 @@
+title: MCP Kali Server API Server or MCP Client Started
+id: 007a41b4-3da4-5e66-909c-c458ddd16746
+status: experimental
+description: |
+    Detects MCP Kali Server (Wh0am123/MCP-Kali-Server) starting on a host: the Kali package's wrapper scripts
+    /usr/bin/kali-server-mcp (the API server) and /usr/bin/mcp-server (the MCP client), Python running the files the
+    package installs in /usr/share/mcp-kali-server/, a process of the package's system user _mcp-kali, or a git checkout's
+    client.py pointed at an API server on port 5000. The API server runs any command it is sent, with no authentication.
+references:
+    - https://github.com/Wh0am123/MCP-Kali-Server
+    - https://gitlab.com/kalilinux/packages/mcp-kali-server
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_wrapper:
+        CommandLine|contains:
+            - '/usr/bin/kali-server-mcp'
+            - '/usr/share/mcp-kali-server/'
+    selection_package_cwd:
+        CurrentDirectory|startswith: '/usr/share/mcp-kali-server'
+        CommandLine|contains:
+            - 'server.py'
+            - 'client.py'
+    selection_user:
+        User: '_mcp-kali'
+    selection_client:
+        CommandLine|contains|all:
+            - 'client.py'
+            - '--server http'
+            - ':5000'
+    condition: 1 of selection_*
+falsepositives:
+    - Kali users who installed mcp-kali-server for authorized testing or CTF work
+    - Other projects that name their MCP client client.py and use port 5000
+level: medium

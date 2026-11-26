@@ -1,0 +1,4 @@
+{"name": "docker run of the Mitsu SearXNG container", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker run --detach --name mitsu-searxng-8888 --restart=no --publish 127.0.0.1:8888:8080 --volume mitsu-searxng-config:/etc/searxng --env FORCE_OWNERSHIP=true ghcr.io/searxng/searxng:latest"}}
+{"name": "settings volume created", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker volume create mitsu-searxng-config"}}
+{"name": "container restarted in a later session", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker start mitsu-searxng-8888"}}
+{"name": "a stock SearXNG container", "expected": false, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker run -d --name searxng -p 8888:8080 -v ./searxng:/etc/searxng searxng/searxng:latest"}}

@@ -1,0 +1,4 @@
+# Mitsu Shell Tool Command
+# Sigma id b3879fc7-bb18-5a67-924a-4712b08de033, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "/bin/bash -o pipefail -c " and ((ActingProcessCommandLine endswith "/bin/mitsu" or ActingProcessCommandLine endswith " -m mitsu") or ActingProcessCommandLine contains "/uv/tools/mitsu/")

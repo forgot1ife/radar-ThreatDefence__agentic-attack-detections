@@ -1,0 +1,4 @@
+# Custom AI Agent (burp-ai-agent) Extension Files Written
+# Sigma id c7589efb-ab20-5f4a-af6f-c730e0b8bca3, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.burp-ai-agent/" or FolderPath contains "\\.burp-ai-agent\\") or (FolderPath contains "Custom-AI-Agent-full-" or FolderPath contains "Custom-AI-Agent-bapp-" or FolderPath contains "custom-ai-agent-bapp.jar")

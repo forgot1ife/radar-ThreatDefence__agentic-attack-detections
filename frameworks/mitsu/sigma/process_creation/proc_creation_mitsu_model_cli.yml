@@ -1,0 +1,42 @@
+title: Codex or Claude Code CLI Started by Mitsu
+id: 7059401f-52f3-55c9-9283-6b2d2c770648
+status: experimental
+description: |
+    Detects the Codex CLI or the Claude Code CLI started by Mitsu, an AI pentest agent, as its model provider. For
+    every turn Mitsu starts a loopback MCP server and passes it on the command line: codex exec with
+    --config mcp_servers.mitsu.url="http://127.0.0.1:<port>/<token>/mcp", or claude -p with
+    --mcp-config {"mcpServers":{"mitsu":{"type":"http","url":"http://127.0.0.1:<port>/<token>/mcp"}}} and
+    --allowedTools mcp__mitsu__<tool>. Mitsu's system prompt ("You are Mitsu: the operator's ...") is in the same
+    command line (developer_instructions for Codex, --system-prompt for Claude Code), and the connection check sends
+    "Reply exactly MITSU_OK.". The MCP server exposes Mitsu's shell tool and its Red Team Armory tools to the model.
+references:
+    - https://github.com/ARCANGEL0/Mitsu
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.resource-development
+    - attack.t1588.007
+logsource:
+    category: process_creation
+detection:
+    selection_codex:
+        # providers/codex_cli.py:119-155 and :344 at a4844932
+        CommandLine|contains: 'mcp_servers.mitsu.url='
+    selection_claude:
+        # providers/claude_code.py:376-405 at a4844932
+        CommandLine|contains:
+            - '"mcpServers":{"mitsu":{"type":"http"'
+            - 'mcp__mitsu__intel_upsert_asset'
+    selection_prompt:
+        # tui/session.py:5549, providers/claude_code.py:339, providers/codex_cli.py:243-245,309 at a4844932
+        CommandLine|contains:
+            - 'You are Mitsu: the operator'
+            - 'You are Mitsu, a security assessment assistant.'
+            - 'Reply exactly MITSU_OK'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests, CTF and lab work with Mitsu
+level: high

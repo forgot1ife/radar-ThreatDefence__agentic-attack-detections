@@ -1,0 +1,32 @@
+title: numasec Operation, Database or Out-of-Band Session Files Written
+id: c601624c-74b4-5cfe-81ad-0c3bd1492ffe
+status: experimental
+description: |
+    Detects files numasec writes: the operation folder <workspace>/.numasec/operation/<slug>/ with its ledger, facts,
+    evidence and deliverables, its database numasec.db in the numasec data folder, and its out-of-band session store
+    interact-sessions.json.
+references:
+    - https://github.com/FrancescoStabile/numasec
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_operation:
+        TargetFilename|contains:
+            - '/.numasec/operation/'
+            - '\.numasec\operation\'
+    selection_data:
+        TargetFilename|endswith:
+            - '/numasec/numasec.db'
+            - '\numasec\numasec.db'
+            - '/numasec/interact-sessions.json'
+            - '\numasec\interact-sessions.json'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and testers who use numasec
+level: low

@@ -1,0 +1,114 @@
+{
+ "description": "25 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 11,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "sage-mythic",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Sigma: Sage (Mythic) Remote Execution Through a SageExec Scheduled Task",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1021.002"
+  },
+  {
+   "comment": "KQL hunt: Commands and files from Sage tasks on Windows hosts; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Sage (Mythic) Proof Marker or Proof File in a Command Line; Sigma: Sage (Mythic) Proof or Certificate File Written on a Windows Host; YARA: SageMythic_Source; YARA: SageMythic_Target_Proof_File",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1047"
+  },
+  {
+   "comment": "KQL hunt: Commands and files from Sage tasks on Windows hosts; Sentinel analytics: Sage (Mythic) proof marker, proof file or SageExec task on a Windows host; Sigma: Sage (Mythic) Remote Execution Through a SageExec Scheduled Task",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1053.005"
+  },
+  {
+   "comment": "KQL hunt: Commands and files from Sage tasks on Windows hosts; Sigma: Sage (Mythic) Encoded Marker Script Such as Its Defender Change; YARA: SageMythic_Source",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.001"
+  },
+  {
+   "comment": "Sentinel analytics: Sage (Mythic) proof marker, proof file or SageExec task on a Windows host; Sigma: Sage (Mythic) Proof Marker or Proof File in a Command Line",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.003"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Sage (Mythic AI operator) on a server you monitor; KQL hunt: Sage's Phoenix trace UI and its downloads in network and proxy logs; Suricata: 3819101 TD Sage (Mythic) embedded Phoenix trace UI page on port 6006; Suricata: 3819102 TD Sage (Mythic) kernel trace spans served by Phoenix; Suricata: 3819103 TD Sage (Mythic) token scope preflight to the Mythic GraphQL API; Suricata: 3819104 TD Sage (Mythic) named query to the Mythic GraphQL API; Suricata: 3819105 TD Sage (Mythic) findings notice to a Slack webhook; Suricata: 3819107 TD Sage (Mythic) Mythic Operator prompt in a model request; Suricata: 3819108 TD Sage (Mythic) BloodHound agent prompt in a model request; Suricata: 3819109 TD Sage (Mythic) TTP library tool names in a model request",
+   "enabled": true,
+   "score": 11,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Sage's Phoenix trace UI and its downloads in network and proxy logs; Sigma: Sage (Mythic) SharpHound 2.13.0 Download by python-requests; Suricata: 3819106 TD Sage (Mythic) SharpHound release fetched by python-requests",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "YARA: SageMythic_Phoenix_Trace_Database",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1552"
+  },
+  {
+   "comment": "Sigma: Sage (Mythic) SharpHound 2.13.0 Download by python-requests",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Sage (Mythic AI operator) on a server you monitor; Sigma: Sage (Mythic) AI Operator Container Processes; Sigma: Sage (Mythic) State and Trace Databases on a Mythic Server; YARA: SageMythic_Prompts",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "KQL hunt: Commands and files from Sage tasks on Windows hosts; Sigma: Sage (Mythic) Proof Marker or Proof File in a Command Line; Sigma: Sage (Mythic) Proof or Certificate File Written on a Windows Host; YARA: SageMythic_Source",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1649"
+  },
+  {
+   "comment": "KQL hunt: Commands and files from Sage tasks on Windows hosts; Sigma: Sage (Mythic) Encoded Marker Script Such as Its Defender Change; YARA: SageMythic_Target_Proof_File",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1685"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

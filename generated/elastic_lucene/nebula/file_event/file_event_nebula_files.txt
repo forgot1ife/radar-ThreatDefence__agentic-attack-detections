@@ -1,0 +1,3 @@
+# Nebula Data Folder, Runtime or Container Files Written
+# Sigma id a619ae46-1b9f-5f55-9811-c1eba1009840, pipeline ecs
+(TargetFilename:(*\/.local\/share\/nebula\/v3\/* OR *\/io.nebula.security\/core\/*)) OR (TargetFilename:\/tmp\/nebula\-process\-* AND TargetFilename:*.pid) OR (TargetFilename:(\/run\/nebula\/public\-ip OR \/etc\/cron.d\/nebula\-public\-ip OR \/usr\/local\/share\/nebula\/security\-tools.json OR \/usr\/local\/bin\/nebula\-terminal\-entrypoint OR \/usr\/local\/lib\/nebula\-public\-ip\-update)) OR (TargetFilename:\/tmp\/nebula\-kali\-* AND TargetFilename:*\/Dockerfile) OR (TargetFilename:(\/run\/nebula\-memory\-runner\/* OR \/var\/lib\/nebula\-memory\-runner\/*))

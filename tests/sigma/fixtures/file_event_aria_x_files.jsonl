@@ -1,0 +1,6 @@
+{"name": "the database in the image data folder", "expected": true, "event": {"TargetFilename": "/app/data/aria-x.db-wal", "Image": "/usr/local/bin/python3.12"}}
+{"name": "an http evidence record of a run", "expected": true, "event": {"TargetFilename": "/home/op/ARIA-X/runs/run_9f8e7d6c5b4a/work/evidence/http_20261126_010203_01234567.json", "Image": "/usr/bin/python3.12"}}
+{"name": "the html report of a run", "expected": true, "event": {"TargetFilename": "/home/op/ARIA-X/runs/run_9f8e7d6c5b4a/report.html", "Image": "/usr/bin/python3.12"}}
+{"name": "a temporary sandbox folder", "expected": true, "event": {"TargetFilename": "/tmp/aria-x-tools-k2j3h4/evidence/http_20261126_010203_01234567.json", "Image": "/usr/bin/python3.12"}}
+{"name": "near miss: an ordinary report of a ci run", "expected": false, "event": {"TargetFilename": "/srv/ci/builds/run-42/report.html", "Image": "/usr/bin/python3.12"}}
+{"name": "near miss: a database of another tool named aria", "expected": false, "event": {"TargetFilename": "/var/lib/aria2/aria2.db", "Image": "/usr/bin/aria2c"}}

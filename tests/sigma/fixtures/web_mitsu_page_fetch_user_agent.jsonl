@@ -1,0 +1,3 @@
+{"name": "Mitsu reading the home page", "expected": true, "event": {"cs-user-agent": "Mitsu/0.1 (terminal assistant; public search)", "cs-uri-stem": "/"}}
+{"name": "another tool with a similar name", "expected": false, "event": {"cs-user-agent": "Mitsu/2.0 (crawler)", "cs-uri-stem": "/"}}
+{"name": "the updater user agent", "expected": false, "event": {"cs-user-agent": "Mitsu updater", "cs-uri-stem": "/pypi/mitsu/json"}}

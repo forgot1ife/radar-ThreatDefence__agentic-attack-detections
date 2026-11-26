@@ -1,0 +1,4 @@
+# Sage (Mythic) Proof Marker or Proof File in a Command Line
+# Sigma id 2ae9dac8-6526-5252-b96a-097fbfd8004f, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "SAGE_REMOTE_EXEC_PROOF_" or CommandLine contains "SAGE_EP_ADJUST_PROOF" or CommandLine contains "SAGE_CA_EXPORT_PROOF" or CommandLine contains "SAGE_CERT_ENROLL_PROOF" or CommandLine contains "SAGE_CERT_AUTH_PROOF" or CommandLine contains "SagePfx-v1-") or (CommandLine contains "\\sage_remote_exec" or CommandLine contains "\\sage_ep_adjust" or CommandLine contains "\\sage_ca_export_" or CommandLine contains "\\sage_ca_dpapi_" or CommandLine contains "\\sage_forged_cert_" or CommandLine contains "\\sage_ca_signing_" or CommandLine contains "\\sage_cert_enroll_" or CommandLine contains "\\sage_gpo_")

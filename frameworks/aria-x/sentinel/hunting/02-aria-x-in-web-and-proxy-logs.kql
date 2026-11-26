@@ -1,0 +1,42 @@
+// ARIA-X requests and console use in web and proxy logs
+// Agentic attack detections by ThreatDefence (ARIA-X). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the ARIA-X source code (01NGVI-QINGYI/ARIA-X, reviewed at 015e197, v0.3.0):
+//  - Every http_request and web_probe request carries User-Agent: ARIA-X/<version> (authorized security research)
+//    (ARIA-X/0.1 in v0.1.0 and v0.2.0). IIS logs the spaces as plus signs.
+//  - web_probe without a path list asks for /, /robots.txt, /sitemap.xml, /.well-known/security.txt, /login, /admin,
+//    /api and /health, at most 3 requests per second per host by default.
+//  - web_search fetches https://html.duckduckgo.com/html/?q=<query> with the same user agent (TLS inspection needed).
+//  - The console API on port 8787: POST /api/projects/p_<12 hex>/runs starts a run, /api/runs/run_<12 hex>/stop stops
+//    it, /api/report/run_<id> and /api/export/p_<id> download results. No authentication unless a token is set.
+//  - The model can replace the user agent, and shell tools (curl, nmap, sqlmap) use their own: the second part lists
+//    what the same source sent within a day of an ARIA-X user agent.
+
+let Window = 30d;
+let Web = union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Path=csUriStem, UA),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where isnotempty(RequestURL)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Path=RequestURL, UA=RequestClientApplication);
+let Marked = Web
+    | where (UA startswith "ARIA-X/" and UA has "(authorized security research)")
+        or (Path has "/api/projects/p_" and (Path endswith "/runs" or Path endswith "/hints"))
+        or (Path has "/api/runs/run_" and Path endswith "/stop")
+        or Path has_any ("/api/report/run_", "/api/export/p_");
+let Sources = Marked | where UA startswith "ARIA-X/" | summarize MarkerFirst=min(TimeGenerated) by Src, Target;
+union
+    (Marked
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Path, 10), UAs=make_set(UA, 5)
+            by Source, Src, Target
+        | extend Signal=iff(UAs has "ARIA-X/", "ARIA-X user agent", "ARIA-X console API use")),
+    (Web
+        | join kind=inner (Sources) on Src, Target
+        | where TimeGenerated between (MarkerFirst .. (MarkerFirst + 1d))
+        | where not(UA startswith "ARIA-X/")
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Path, 10), UAs=make_set(UA, 5)
+            by Source, Src, Target
+        | extend Signal="Other requests from the same source within a day of an ARIA-X user agent")
+| order by Src asc, FirstSeen asc

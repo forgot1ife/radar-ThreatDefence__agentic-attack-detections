@@ -1,0 +1,3 @@
+# Blitz Strike Scan Markers in Web Logs
+# Sigma id 83ba063b-98da-53ee-9f54-9c7e42f01b9d, pipeline ecs
+(user_agent.original:(*blitzstrike* OR *BlitzStrike*)) OR user_agent.original:"Mozilla\/5.0 \(recon\-agent\)" OR (url.query:(*evil\-blitz.example.com* OR *blitzstrike\-ssrf\-canary* OR *X\-BlitzStrike* OR *bs\-nonexistent\-* OR *__blitz_xss__* OR *zzblitz*)) OR url.domain:/[bB][sS]-[mM][aA][rR][kK][eE][rR]\.[eE][xX][aA][mM][pP][lL][eE]\.[cC][oO][mM]/

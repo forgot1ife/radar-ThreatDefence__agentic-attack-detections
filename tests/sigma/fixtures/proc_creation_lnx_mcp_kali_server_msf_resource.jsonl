@@ -1,0 +1,2 @@
+{"name": "metasploit route runs its resource file", "expected": true, "event": {"Image": "/usr/bin/msfconsole", "CommandLine": "msfconsole -q -r /tmp/mks_msf_resource.rc", "ParentCommandLine": "python3 server.py"}}
+{"name": "near miss: HexStrike's resource file", "expected": false, "event": {"Image": "/usr/bin/msfconsole", "CommandLine": "msfconsole -q -r /tmp/mcp_msf_resource.rc", "ParentCommandLine": "python3 hexstrike_server.py"}}

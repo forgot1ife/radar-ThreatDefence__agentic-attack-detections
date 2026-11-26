@@ -1,0 +1,3 @@
+# Nebula User Agents or Core API in Proxy Logs
+# Sigma id b00826e7-74ff-5d22-94ea-2ae5a1d56015, pipeline ecs
+from * metadata _id, _index, _version | where user_agent.original in ("nebula-chat", "Nebula-Terminal/1") or starts_with(user_agent.original, "Nebula/3 knowledge-source-") or url.original like "*/api/v1/auth/pairings/redeem*" or url.original like "*/api/v1/automation-processes/*" and url.original like "*/results*"

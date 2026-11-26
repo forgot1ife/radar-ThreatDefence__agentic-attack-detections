@@ -1,0 +1,4 @@
+# Nebula Agent Command in Its Kali Container
+# Sigma id 59cff36b-f9b3-5b08-a685-ca1cd5c2cb84, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "os.execv('/bin/bash',['/bin/bash','--noprofile','--norc','-c',sys.argv[2]])" or TargetProcessCommandLine contains "/tmp/nebula-process-" or ((TargetProcessName endswith "/docker" or TargetProcessName endswith "/podman") and (TargetProcessCommandLine contains " nebula-runtime-" or TargetProcessCommandLine contains "--name=nebula-runtime-" or TargetProcessCommandLine contains "--name=nebula-terminal-" or TargetProcessCommandLine contains "--name=nebula-exec-" or TargetProcessCommandLine contains "localhost/nebula-kali-headless")) or (TargetProcessCommandLine contains "/usr/local/bin/nebula-terminal-entrypoint" or TargetProcessCommandLine contains "/usr/local/lib/nebula-public-ip-update")

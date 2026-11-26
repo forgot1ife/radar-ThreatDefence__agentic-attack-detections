@@ -1,0 +1,31 @@
+title: Custom AI Agent (burp-ai-agent) Extension Files Written
+id: c7589efb-ab20-5f4a-af6f-c730e0b8bca3
+status: experimental
+description: |
+    Detects the Custom AI Agent Burp extension on a host: its release JARs (Custom-AI-Agent-full-<version>.jar,
+    Custom-AI-Agent-bapp-<version>.jar, custom-ai-agent-bapp.jar) and the files it writes under ~/.burp-ai-agent/
+    (audit.jsonl, logs/ai-request-log.jsonl, cache/, AGENTS/, certs/mcp-keystore.p12, backends/).
+references:
+    - https://github.com/six2dez/burp-ai-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_folder:
+        TargetFilename|contains:
+            - '/.burp-ai-agent/'
+            - '\.burp-ai-agent\'
+    selection_jar:
+        TargetFilename|contains:
+            - 'Custom-AI-Agent-full-'
+            - 'Custom-AI-Agent-bapp-'
+            - 'custom-ai-agent-bapp.jar'
+    condition: 1 of selection_*
+falsepositives:
+    - Penetration testers and security teams who use the extension
+level: low

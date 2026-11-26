@@ -1,0 +1,6 @@
+{"name": "usage analytics to PostHog", "expected": true, "event": {"cs-method": "POST", "c-uri": "https://eu.i.posthog.com/batch/", "cs-host": "eu.i.posthog.com", "c-useragent": "0security/0.45.0"}}
+{"name": "the daily update check", "expected": true, "event": {"cs-method": "GET", "c-uri": "https://api.github.com/repos/0sec-labs/0security/releases/latest", "cs-host": "api.github.com", "c-useragent": "@0/cli/update-check"}}
+{"name": "the DuckDuckGo fallback search", "expected": true, "event": {"cs-method": "GET", "c-uri": "https://html.duckduckgo.com/html/?q=cve-2026-1234", "cs-host": "html.duckduckgo.com", "c-useragent": "0/1.0"}}
+{"name": "the cloud host", "expected": true, "event": {"cs-method": "POST", "c-uri": "https://cloud.0.security/api/evidence", "cs-host": "cloud.0.security", "c-useragent": "node"}}
+{"name": "near miss: a user agent that starts with 0", "expected": false, "event": {"cs-method": "GET", "c-uri": "https://example.test/", "cs-host": "example.test", "c-useragent": "0xbot/2.1"}}
+{"name": "near miss: PostHog from another product", "expected": false, "event": {"cs-method": "POST", "c-uri": "https://eu.i.posthog.com/batch/", "cs-host": "eu.i.posthog.com", "c-useragent": "posthog-node/4.2.0"}}

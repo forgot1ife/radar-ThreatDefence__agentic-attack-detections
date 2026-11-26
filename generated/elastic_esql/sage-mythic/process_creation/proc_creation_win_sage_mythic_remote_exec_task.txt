@@ -1,0 +1,3 @@
+# Sage (Mythic) Remote Execution Through a SageExec Scheduled Task
+# Sigma id 3887f0a9-6fca-560e-808a-a3dd393d3923, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(process.executable.caseless, "\\schtasks.exe") and process.command_line like "*SageExec_*" or process.parent.command_line like "*schtasks.exe /Create /S *" and process.parent.command_line like "*SageExec_*"

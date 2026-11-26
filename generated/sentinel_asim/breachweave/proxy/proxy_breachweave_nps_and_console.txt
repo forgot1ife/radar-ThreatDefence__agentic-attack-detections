@@ -1,0 +1,4 @@
+# BreachWeave NPS Client Download or Console Event Stream in Proxy Logs
+# Sigma id 41e07cb9-d750-50e6-82c8-bc9a77277444, pipeline sentinel_asim
+imWebSession
+| where (Url contains "/files/nps/npc_windows_amd64.exe" or Url contains "/files/nps/npc_windows_386.exe" or Url contains "/files/nps/npc_linux_amd64") or (Url contains "/stream?token=eyJ" and (Url contains "/api/runtime/" or Url contains "/api/challenges/"))

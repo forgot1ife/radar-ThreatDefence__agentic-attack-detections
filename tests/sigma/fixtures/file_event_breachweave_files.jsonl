@@ -1,0 +1,6 @@
+{"name": "provider preferences in the config folder", "expected": true, "event": {"TargetFilename": "/home/op/.tch-agent/config/provider-prefs.json"}}
+{"name": "solver startup snapshot", "expected": true, "event": {"TargetFilename": "/home/op/.tch-agent/solvers/3f9a1c2b/startup.json"}}
+{"name": "marker file in the solver image", "expected": true, "event": {"TargetFilename": "/root/THIS_IS_DOCKER_CONTAINER_NOT_TARGET_MACHINE.txt"}}
+{"name": "tch-headless crawl artifact", "expected": true, "event": {"TargetFilename": "/root/workspace/.tch-networks-output/192.0.2.20_8088/GET_index.raw"}}
+{"name": "near miss: another dot folder", "expected": false, "event": {"TargetFilename": "/home/op/.tch/config/settings.json"}}
+{"name": "near miss: network output folder without the prefix", "expected": false, "event": {"TargetFilename": "/home/op/networks-output/scan.raw"}}

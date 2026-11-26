@@ -1,0 +1,4 @@
+# BreachWeave (tch-agent) Home Folder, Solver State or Crawler Output Written
+# Sigma id 55bd5b4d-01fe-5887-b038-f7f5cf898c47, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.tch-agent/config/" or ObjectName contains "/.tch-agent/solvers/" or ObjectName contains "/.tch-agent/archive_solvers/" or ObjectName contains "/.tch-agent/challenge/" or ObjectName contains "/.tch-agent/runtime/" or ObjectName endswith "\\.tch-agent\\config*" or ObjectName endswith "\\.tch-agent\\solvers*") or ObjectName endswith "/THIS_IS_DOCKER_CONTAINER_NOT_TARGET_MACHINE.txt" or ObjectName contains "/.tch-networks-output/"

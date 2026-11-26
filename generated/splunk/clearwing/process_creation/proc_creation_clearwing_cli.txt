@@ -1,0 +1,3 @@
+# Clearwing AI Pentest Agent Command Line
+# Sigma id d08c13be-2d60-5374-8952-c2698a095f3c, pipeline splunk_windows
+CommandLine IN ("*/bin/clearwing *", "*\\Scripts\\clearwing.exe *", "*\\Scripts\\clearwing *", "*clearwing.py *", "*uv run clearwing *") CommandLine IN ("* scan *", "* sourcehunt *", "* operate *", "* interactive*", "* webui*", "* campaign *", "* asm *", "* disclose *", "* remediate *", "* parallel *") OR CommandLine IN ("*--auto-approve-exploits*", "*--webhook-secret*", "*--webhook-port*", "*--compile-commands*", "*--cve-list*")

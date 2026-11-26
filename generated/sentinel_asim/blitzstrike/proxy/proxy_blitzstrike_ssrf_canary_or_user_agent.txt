@@ -1,0 +1,4 @@
+# Blitz Strike SSRF Canary Fetched or Blitz Strike User Agent Through a Proxy
+# Sigma id f277be6f-0ef6-5aab-8185-bfd34dd06335, pipeline sentinel_asim
+imWebSession
+| where Url contains "blitzstrike-ssrf-canary" or (HttpUserAgent contains "blitzstrike" or HttpUserAgent contains "BlitzStrike")

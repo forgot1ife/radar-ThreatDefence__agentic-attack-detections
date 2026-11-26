@@ -8436,6 +8436,7 @@ address,port,framework,matched_on,page_title,asn,country,last_seen,honeypot
 217.182.92.79,8443,pentagi,page title,PentAGI,AS16276,FR,2026-11-23,
 221.229.107.118,8443,pentagi,page title,PentAGI,AS146966,CN,2026-11-24,
 31.220.74.99,3000,pentest-copilot,favicon,CicadaAGI,AS51167,DE,2026-11-20,
+35.222.96.31,443,pentest-harness,boot script path (survives a renamed title),OG Harness,AS396982,US,2026-11-08,
 4.227.177.164,443,redamon,favicon,RedAmon,AS8075,US,2026-11-20,
 5.83.150.55,3000,redamon,favicon,RedAmon,AS209874,DE,2026-11-05,
 13.234.67.17,443,redamon,favicon,RedAmon,AS16509,IN,2026-11-06,

@@ -1,0 +1,35 @@
+id: 763f9094-370c-5e43-a801-1a8472cd383f
+name: numasec AppSec probe or directory fuzzer markers in web or proxy logs
+description: |
+  A web or proxy request carried a marker hard-coded in numasec (FrancescoStabile/numasec), an open-source AI agent for
+  application security and penetration testing built on OpenCode: the user agent numasec-appsec-probe/1.2 of its
+  AppSec probe (SQL injection, XSS, login, IDOR and CORS candidates), the XSS marker numasec-xss, the login probe
+  identity numasec-probe@example.invalid, or the /numasec_404_check_ path its directory fuzzer requests before every
+  run. Check who ran it and whether the test was agreed, and what the same source requested around it.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+relevantTechniques:
+  - T1595.002
+  - T1595.003
+query: |
+  let Markers = @"numasec_404_check_|numasec-xss|numasec-probe@";
+  union isfuzzy=true
+      (CommonSecurityLog | where RequestClientApplication startswith "numasec-appsec-probe/" or RequestURL matches regex Markers
+          | project TimeGenerated, Src=SourceIP, Target=DestinationHostName, UA=RequestClientApplication, Detail=RequestURL),
+      (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+          | where UA startswith "numasec-appsec-probe/" or csUriStem matches regex Markers or csUriQuery matches regex Markers
+          | project TimeGenerated, Src=cIP, Target=csHost, UA, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery, " ", scStatus))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Samples=make_set(Detail, 10), UAs=make_set(UA, 5) by Src, Target
+version: 1.0.0
+kind: Scheduled

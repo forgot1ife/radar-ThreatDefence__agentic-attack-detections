@@ -1,0 +1,26 @@
+title: Custom AI Agent (burp-ai-agent) Test Domain Lookup
+id: 49d026da-f31b-5ee2-a2db-e1f14107cf04
+status: experimental
+description: |
+    Detects a lookup of the made-up domains in the Custom AI Agent Burp extension's payload table: evil-burp-ai.com
+    (OAuth redirect payloads, also as legitimate.com.evil-burp-ai.com), evil-burp-ai-test.com (host header injection)
+    and evil-burp-ai-cache.com (cache poisoning). A server that resolves one followed a payload the scanner sent it.
+references:
+    - https://github.com/six2dez/burp-ai-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.command-and-control
+    - attack.t1071.004
+logsource:
+    category: dns_query
+detection:
+    selection:
+        QueryName|contains: 'evil-burp-ai'
+    condition: selection
+falsepositives:
+    - Authorized tests with the Custom AI Agent extension's active scanner
+level: medium

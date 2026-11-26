@@ -1,0 +1,6 @@
+{"name": "a web_search query to duckduckgo through an inspecting proxy", "expected": true, "event": {"c-useragent": "ARIA-X/0.3.0 (authorized security research)", "c-uri": "https://html.duckduckgo.com/html/?q=apache+2.4.49+path+traversal", "cs-host": "html.duckduckgo.com"}}
+{"name": "a run started on a remote console", "expected": true, "event": {"c-useragent": "Mozilla/5.0 (X11; Linux x86_64)", "c-uri": "http://203.0.113.10:8787/api/projects/p_0a1b2c3d4e5f/runs", "cs-host": "203.0.113.10"}}
+{"name": "a run stopped on a remote console", "expected": true, "event": {"c-useragent": "Mozilla/5.0 (X11; Linux x86_64)", "c-uri": "http://203.0.113.10:8787/api/runs/run_9f8e7d6c5b4a/stop", "cs-host": "203.0.113.10"}}
+{"name": "a project export from a remote console", "expected": true, "event": {"c-useragent": "python-requests/2.32.3", "c-uri": "http://203.0.113.10:8787/api/export/p_0a1b2c3d4e5f", "cs-host": "203.0.113.10"}}
+{"name": "near miss: a ci service listing runs of a project", "expected": false, "event": {"c-useragent": "Mozilla/5.0 (X11; Linux x86_64)", "c-uri": "https://ci.example.test/api/projects/web/runs", "cs-host": "ci.example.test"}}
+{"name": "near miss: a mobile app named ARIA-X", "expected": false, "event": {"c-useragent": "ARIA-X/2.1 (Android 14)", "c-uri": "https://api.example.test/feed", "cs-host": "api.example.test"}}

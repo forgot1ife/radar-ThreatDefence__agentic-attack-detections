@@ -1,0 +1,32 @@
+title: Agentic Bug Hunter User Agents in Proxy Logs
+id: e62d17db-aba2-5459-8641-8b1e2116c933
+status: experimental
+description: |
+    Detects the user agents hard-coded in Agentic Bug Hunter (awarexone/Agentic-Bug-Hunter at 82f4512e) leaving through
+    a forward proxy: agentic-bug-hunter/<tool> from its scanners, verifiers, HIBP breach check and HackerOne client,
+    Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) Bug-Bounty-Research from its password spray and cewler wordlist
+    crawl, and Mozilla/5.0 (compatible; waf-response-analyzer/1.0). A proxy sees them for plain-HTTP targets or with
+    TLS inspection. A match means the toolkit runs on a host behind the proxy.
+references:
+    - https://github.com/awarexone/Agentic-Bug-Hunter
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.credential-access
+    - attack.t1110.003
+logsource:
+    category: proxy
+detection:
+    selection_tool:
+        c-useragent|startswith: 'agentic-bug-hunter/'
+    selection_spray:
+        c-useragent|endswith: 'Intel Mac OS X 10_15_7) Bug-Bounty-Research'
+    selection_waf:
+        c-useragent|contains: 'waf-response-analyzer/1.0'
+    condition: 1 of selection_*
+falsepositives:
+    - Security staff who run Agentic Bug Hunter from your network
+level: medium

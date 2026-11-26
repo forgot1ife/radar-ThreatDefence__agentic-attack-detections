@@ -1,0 +1,33 @@
+title: Clearwing User Agents in Proxy Logs
+id: 789234ac-255a-5c6e-8f95-973b33f8c65e
+status: experimental
+description: |
+    Detects the user agents Clearwing (Lazarus-AI-OSS/clearwing) sets in its own code: Clearwing/1.0 in its headless
+    browser and JavaScript bundle analyzer, clearwing-asm/0.5 for attack-surface probes and threat-intel downloads,
+    "clearwing (aiohttp openai fallback)" for model gateways and "codex_cli_rs/0.0.0 (clearwing)" for a reused ChatGPT
+    subscription. The last two need TLS inspection when the model endpoint uses HTTPS.
+references:
+    - https://github.com/Lazarus-AI-OSS/clearwing
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_contains:
+        c-useragent|contains:
+            - 'Clearwing/1.0'
+            - 'codex_cli_rs/0.0.0 (clearwing)'
+    selection_start:
+        c-useragent|startswith:
+            - 'clearwing-asm/'
+            - 'clearwing (aiohttp openai fallback)'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and researchers running Clearwing
+level: medium

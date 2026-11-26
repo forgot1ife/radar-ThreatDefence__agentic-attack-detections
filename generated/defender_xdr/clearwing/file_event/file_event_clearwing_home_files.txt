@@ -1,0 +1,4 @@
+# Clearwing Configuration, Session or Disclosure Data Written
+# Sigma id f37c6bdc-b43b-5255-9b0e-b4cc44bc1153, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.clearwing/" or FolderPath contains "\\.clearwing\\") or (FolderPath contains "/clearwing_custom_tools_" or FolderPath contains "/clearwing-scratch-" or FolderPath contains "/clearwing-src-")

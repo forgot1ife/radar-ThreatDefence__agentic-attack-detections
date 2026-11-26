@@ -1,0 +1,3 @@
+# Mitsu Session, Configuration or Report Files Written
+# Sigma id d2be8aa4-645e-5d7a-a14d-04ad7d7ce8fb, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/mitsu/sessions/*" or TargetFilename like "*/.config/mitsu/*" or TargetFilename like "*/mitsu/armory/*" or TargetFilename like "*/mitsu-codex-sessions/*" or TargetFilename like "*/mitsu-claude-sessions/*" or ends_with(TargetFilename, "/.mitsu-armory-managed") or ends_with(TargetFilename, "/mitsu/credentials.json") or ends_with(TargetFilename, "/mitsu/mcp_servers.json") or ends_with(TargetFilename, "/mitsu/host.json") or ends_with(TargetFilename, "/mitsu/instance.lock")

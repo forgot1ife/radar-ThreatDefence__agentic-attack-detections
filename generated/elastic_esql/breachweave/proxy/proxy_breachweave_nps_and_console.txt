@@ -1,0 +1,3 @@
+# BreachWeave NPS Client Download or Console Event Stream in Proxy Logs
+# Sigma id 41e07cb9-d750-50e6-82c8-bc9a77277444, pipeline ecs
+from * metadata _id, _index, _version | where url.original like "*/files/nps/npc_windows_amd64.exe*" or url.original like "*/files/nps/npc_windows_386.exe*" or url.original like "*/files/nps/npc_linux_amd64*" or url.original like "*/stream\?token=eyJ*" and (url.original like "*/api/runtime/*" or url.original like "*/api/challenges/*")

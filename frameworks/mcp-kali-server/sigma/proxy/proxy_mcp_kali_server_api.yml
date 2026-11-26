@@ -1,0 +1,38 @@
+title: MCP Kali Server API Called Across the Network
+id: fabd2ce9-5bb9-537f-afd8-7ab4f2f01aaf
+status: experimental
+description: |
+    Detects calls to an MCP Kali Server API server through a proxy or a firewall that logs URLs: the raw command route
+    and the tool routes on the default port 5000 (/api/command, /api/tools/<tool>), and the stub route
+    /mcp/tools/kali_tools/ that only MKS has. The server has no authentication, so a
+    call from outside the Kali host is either an operator who exposed it or someone using it.
+references:
+    - https://github.com/Wh0am123/MCP-Kali-Server
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_api:
+        c-uri|contains:
+            - ':5000/api/command'
+            - ':5000/api/tools/nmap'
+            - ':5000/api/tools/gobuster'
+            - ':5000/api/tools/dirb'
+            - ':5000/api/tools/nikto'
+            - ':5000/api/tools/sqlmap'
+            - ':5000/api/tools/metasploit'
+            - ':5000/api/tools/hydra'
+            - ':5000/api/tools/john'
+            - ':5000/api/tools/wpscan'
+            - ':5000/api/tools/enum4linux'
+    selection_stub:
+        c-uri|contains: '/mcp/tools/kali_tools/'
+    condition: 1 of selection_*
+falsepositives:
+    - Another web application on port 5000 with a route named /api/command or /api/tools/<tool name>
+level: medium

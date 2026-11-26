@@ -1,0 +1,4 @@
+# Sage (Mythic) AI Operator Container Processes
+# Sigma id 8e8f8c42-3cd2-58df-8bbc-4a43e5d66576, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "/usr/local/bin/sage-entrypoint" or (TargetProcessCommandLine contains "--directory /opt/bloodhound_mcp" and TargetProcessCommandLine contains "main.py")

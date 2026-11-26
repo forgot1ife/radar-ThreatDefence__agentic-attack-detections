@@ -1,0 +1,4 @@
+# Agentic Bug Hunter Toolkit on a Host
+# Sigma id d98bc6b4-1575-5ada-9278-9b05e0d9145b, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "agentic-bug-hunter" or (ProcessCommandLine contains "/bin/bughunter-agent" or ProcessCommandLine contains "/bin/bughunter mcp serve" or ProcessCommandLine contains "bughunter/engine.py" or ProcessCommandLine contains "bughunter/agent.py") or (ProcessCommandLine contains "bughunter/tools/recon_engine.sh" or ProcessCommandLine contains "bughunter/tools/vuln_scanner.sh" or ProcessCommandLine contains "bughunter/tools/bypass_403.sh" or ProcessCommandLine contains "bughunter/tools/oob_listener.py" or ProcessCommandLine contains "hunt_dashboard.py serve" or ProcessCommandLine contains "waf_response_analyzer.py --calibrate")

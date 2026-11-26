@@ -1,0 +1,7 @@
+{"name": "the state database", "expected": true, "event": {"TargetFilename": "/home/dev/.0/0.db"}}
+{"name": "the server-mode access token in the Docker volume", "expected": true, "event": {"TargetFilename": "/data/.0/access-token"}}
+{"name": "per-run state", "expected": true, "event": {"TargetFilename": "/home/dev/.0/runs/r-20261126-1/journal.jsonl"}}
+{"name": "the remote engine folder", "expected": true, "event": {"TargetFilename": "/tmp/zero-engine/bundle.tar.gz"}}
+{"name": "the analytics log on Windows", "expected": true, "event": {"TargetFilename": "C:\\Users\\dev\\.0\\analytics-sent.log"}}
+{"name": "near miss: a database named 0.db elsewhere", "expected": false, "event": {"TargetFilename": "/var/lib/app/data/0.db"}}
+{"name": "near miss: a .0 suffix in a version folder", "expected": false, "event": {"TargetFilename": "/opt/tool-1.0/runs/x.log"}}

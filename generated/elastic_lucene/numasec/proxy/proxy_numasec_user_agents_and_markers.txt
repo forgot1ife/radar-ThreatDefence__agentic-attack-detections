@@ -1,0 +1,3 @@
+# numasec User Agents or Probe Markers in Proxy Logs
+# Sigma id 2b9f8316-81dc-5213-9ce5-a86aad9c1720, pipeline ecs
+user_agent.original:numasec OR (user_agent.original:(numasec\-appsec\-probe\/* OR numasec\-knowledge\-broker\/* OR numasec\/*)) OR (url.original:(*\/numasec_404_check_* OR *numasec\-xss*))

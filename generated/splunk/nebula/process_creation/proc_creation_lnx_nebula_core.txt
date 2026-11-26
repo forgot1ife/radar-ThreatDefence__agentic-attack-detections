@@ -1,0 +1,3 @@
+# Nebula Core, Desktop Sidecar or Browser Sidecar Process
+# Sigma id fe4a3d7d-5728-5b90-80d1-833e25980251, pipeline splunk_windows
+(CommandLine="*nebula-core runtime-service*" CommandLine="*--manifest-sha256*") OR CommandLine="*nebula-core desktop-connect*" OR CommandLine IN ("*nebula-core serve*", "*nebula-core headless*", "*-m nebula.v3.cli*", "*nebula-browserd*")

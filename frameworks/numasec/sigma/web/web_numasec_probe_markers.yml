@@ -1,0 +1,38 @@
+title: numasec Probe Markers in Web Server Logs
+id: af595a98-eec8-5530-a2b4-5bbf124f69e3
+status: experimental
+description: |
+    Detects numasec's built-in probes against a web server: the AppSec probe user agent numasec-appsec-probe/ (with
+    ' OR 1=1--, <script>numasec-xss</script>, a login as numasec-probe@example.invalid and Origin https://evil.example),
+    the page fetch fallback user agent numasec, the directory fuzzer's /numasec_404_check_<epoch ms> baseline, and the
+    service prober's request with the host header target.
+references:
+    - https://github.com/FrancescoStabile/numasec
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.t1595.003
+    - attack.discovery
+    - attack.t1046
+logsource:
+    category: webserver
+detection:
+    selection_ua_exact:
+        cs-user-agent: 'numasec'
+    selection_ua_probe:
+        cs-user-agent|startswith: 'numasec-appsec-probe/'
+    selection_baseline:
+        cs-uri-stem|startswith: '/numasec_404_check_'
+    selection_xss:
+        cs-uri-query|contains: 'numasec-xss'
+    selection_service_probe:
+        cs-host: 'target'
+        cs-uri-stem: '/'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with numasec
+    - A host or virtual host literally named target (selection_service_probe)
+level: high

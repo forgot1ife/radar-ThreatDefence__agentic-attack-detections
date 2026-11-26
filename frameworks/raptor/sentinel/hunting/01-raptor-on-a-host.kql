@@ -1,0 +1,35 @@
+// RAPTOR running on a host you monitor
+// Agentic attack detections by ThreatDefence (RAPTOR). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1588.002 (Obtain Capabilities: Tool), T1587.004 (Develop Capabilities: Exploits)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the RAPTOR source code (gadievron/raptor at ac734352). RAPTOR is a security research framework that runs as a
+// Claude Code session from a git checkout (or the docker.io/danielcuthbert/raptor tools image):
+//  - Launcher bin/raptor ends in: claude --plugin-dir <raptor>/plugins/coverage -n RAPTOR /raptor
+//    after python3 -I <raptor>/core/security/scratch_supervisor.py ... --_scratch-session-stage
+//  - Claude Code hooks and slash commands run libexec/raptor-* helpers (raptor-session-init, raptor-lifecycle-hook,
+//    raptor-agentic, raptor-run-sandboxed, ...); pipelines run python3 <raptor>/raptor.py agentic|web|scan|fuzz|codeql
+//  - Files: <raptor>/out/<command>_<target>_<YYYYMMDD_HHMMSS>_pid<N>_<seq>/.raptor-run.json, autonomous/exploits/<id>_exploit.cpp,
+//    autonomous/patches/<id>_patch.md, <raptor>/.claude/raptor.env, ~/.config/raptor/models.json, ~/.raptor/projects/,
+//    ~/.local/share/raptor/sessions.d/<pid>
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "plugins/coverage" and ProcessCommandLine has "-n RAPTOR")
+            or ProcessCommandLine has_any ("/core/security/scratch_supervisor.py", "/core/startup/install_guard.py", "--_scratch-session-stage")
+            or ProcessCommandLine contains "libexec/raptor-"
+            or ProcessCommandLine has_any ("raptor.py agentic", "raptor.py web --url", "raptor.py scan --repo", "raptor.py codeql --repo",
+                "raptor.py fuzz --binary", "raptor_agentic.py", "raptor_fuzzing.py", "raptor_codeql.py", "packages/web/scanner.py")
+        | project Timestamp, DeviceName, AccountName, Signal="RAPTOR process", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName == ".raptor-run.json"
+            or FolderPath endswith "/.claude/raptor.env" or FolderPath endswith "/.config/raptor/models.json"
+            or FolderPath contains "/.raptor/projects/" or FolderPath contains "/.local/share/raptor/sessions.d/"
+            or (FolderPath contains "/autonomous/exploits/" and FileName matches regex @"_exploit\.(cpp|c|py|java|js|go|rb)$")
+            or (FolderPath contains "/autonomous/patches/" and FileName endswith "_patch.md")
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, AccountName=InitiatingProcessAccountName, FolderPath
+        | project Timestamp, DeviceName, AccountName, Signal="RAPTOR files", Detail=strcat(FolderPath, " ", tostring(Files)), Parent="")
+| order by Timestamp desc

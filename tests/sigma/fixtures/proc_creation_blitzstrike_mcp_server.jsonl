@@ -1,0 +1,6 @@
+{"name": "the MCP server started by npx", "expected": true, "event": {"Image": "/usr/bin/node", "CommandLine": "node /home/user/.npm/_npx/3f1c2a/node_modules/.bin/blitzstrike serve --mcp", "ParentImage": "/usr/bin/node", "ParentCommandLine": "npm exec blitzstrike serve --mcp"}}
+{"name": "the global binary", "expected": true, "event": {"Image": "/usr/bin/node", "CommandLine": "node /usr/local/bin/blitzstrike serve --mcp", "ParentImage": "/usr/local/bin/claude", "ParentCommandLine": "claude"}}
+{"name": "the zero-install registration", "expected": true, "event": {"Image": "/usr/bin/node", "CommandLine": "npx -y blitzstrike install", "ParentImage": "/bin/bash", "ParentCommandLine": "-bash"}}
+{"name": "the source checkout under bun", "expected": true, "event": {"Image": "/home/user/.bun/bin/bun", "CommandLine": "bun run /opt/blitzstrike/src/index.ts serve --mcp", "ParentImage": "/usr/bin/node", "ParentCommandLine": "opencode"}}
+{"name": "another MCP server started by npx", "expected": false, "event": {"Image": "/usr/bin/node", "CommandLine": "npx -y @modelcontextprotocol/server-filesystem /home/user", "ParentImage": "/usr/bin/node", "ParentCommandLine": "claude"}}
+{"name": "a grep for the name", "expected": false, "event": {"Image": "/usr/bin/grep", "CommandLine": "grep -r blitzstrike /var/log", "ParentImage": "/bin/bash", "ParentCommandLine": "-bash"}}

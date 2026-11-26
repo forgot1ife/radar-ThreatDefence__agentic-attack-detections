@@ -1,0 +1,4 @@
+# Clearwing Configuration, Session or Disclosure Data Written
+# Sigma id f37c6bdc-b43b-5255-9b0e-b4cc44bc1153, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.clearwing/" or ObjectName endswith "\\.clearwing*") or (ObjectName contains "/clearwing_custom_tools_" or ObjectName contains "/clearwing-scratch-" or ObjectName contains "/clearwing-src-")

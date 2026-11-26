@@ -1,0 +1,3 @@
+# 0security Client Traffic in Proxy Logs
+# Sigma id a3a4486f-1fc9-5c07-870f-a3f96b023c23, pipeline ecs
+(user_agent.original:(0security\/* OR @0\/cli\/*)) OR (user_agent.original:(0security OR 0security\-audit\-sink OR 0\/1.0)) OR url.domain:/[cC][lL][oO][uU][dD]\.0\.[sS][eE][cC][uU][rR][iI][tT][yY]/

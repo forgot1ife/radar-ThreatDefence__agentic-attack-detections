@@ -1,0 +1,3 @@
+# Mitsu Shell Tool Command
+# Sigma id b3879fc7-bb18-5a67-924a-4712b08de033, pipeline ecs
+process.command_line:*\/bin\/bash\ \-o\ pipefail\ \-c\ * AND ((process.parent.command_line:(*\/bin\/mitsu OR *\ \-m\ mitsu)) OR process.parent.command_line:*\/uv\/tools\/mitsu\/*)

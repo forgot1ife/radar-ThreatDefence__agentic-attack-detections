@@ -1,0 +1,36 @@
+title: Mitsu Shell Tool Command
+id: b3879fc7-bb18-5a67-924a-4712b08de033
+status: experimental
+description: |
+    Detects a shell command run by Mitsu's built-in bash tool, which the model calls for anything the Armory tools do
+    not cover. Mitsu runs every such command as /bin/bash -o pipefail -c <command> from its own Python process
+    (installed as the mitsu console script, or python -m mitsu). When the command contains sudo, Mitsu asks the
+    operator for the password in its UI and runs sudo -S -p "" -- /bin/bash -o pipefail -c <command> instead, with
+    the password on standard input. Armory installers also run as /bin/bash -o pipefail -c <script>.
+references:
+    - https://github.com/ARCANGEL0/Mitsu
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+detection:
+    selection_command:
+        # tools/agent_host.py:1416-1421, 1557-1572 at a4844932
+        CommandLine|contains: '/bin/bash -o pipefail -c '
+    selection_parent_script:
+        # pyproject.toml:44-45 (console script "mitsu"), mitsu:11 (uv run --project <checkout> mitsu)
+        ParentCommandLine|endswith:
+            - '/bin/mitsu'
+            - ' -m mitsu'
+    selection_parent_uv_tool:
+        # scripts/install.sh:11 (uv tool install puts the environment in <uv tools dir>/mitsu/)
+        ParentCommandLine|contains: '/uv/tools/mitsu/'
+    condition: selection_command and 1 of selection_parent_*
+falsepositives:
+    - Authorized tests, CTF and lab work with Mitsu
+    - Another program installed as a script named mitsu that runs bash with -o pipefail
+level: medium

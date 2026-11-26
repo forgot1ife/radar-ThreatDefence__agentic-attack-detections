@@ -1,0 +1,4 @@
+# Mitsu User Agent in Proxy Logs
+# Sigma id 404c6310-7afa-5e1a-8304-068ed48aab1f, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent in~ ("Mitsu/0.1 (terminal assistant; public search)", "Mitsu updater")

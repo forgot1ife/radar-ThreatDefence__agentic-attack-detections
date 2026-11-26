@@ -1,0 +1,4 @@
+# ARIA-X Database, Run Evidence or Working Folders
+# Sigma id ee1ec5c0-526b-536c-940d-c9ffc4a9ff50, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName endswith "/aria-x.db" or TargetFileName endswith "/aria-x.db-wal" or TargetFileName endswith "/aria-x.db-shm" or TargetFileName endswith "/configs/aria-x.toml") or (TargetFileName contains "/runs/run_" and TargetFileName contains "/work/evidence/http_") or (TargetFileName contains "/runs/run_" and (TargetFileName endswith "/report.html" or TargetFileName endswith "/report.md" or TargetFileName endswith "/report.json")) or (TargetFileName contains "/aria-x-work-" or TargetFileName contains "/aria-x-doctor-" or TargetFileName contains "/aria-x-tools-" or TargetFileName contains "/aria-x-demo-target-")

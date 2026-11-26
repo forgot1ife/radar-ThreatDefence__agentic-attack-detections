@@ -1,0 +1,7 @@
+{"name": "a verifier request", "expected": true, "event": {"cs-uri-stem": "/account", "cs-uri-query": "id=2", "cs-user-agent": "agentic-bug-hunter/verifier"}}
+{"name": "a spray attempt logged by IIS", "expected": true, "event": {"cs-uri-stem": "/login", "cs-uri-query": "-", "cs-user-agent": "Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+Bug-Bounty-Research"}}
+{"name": "the WAF baseline probe", "expected": true, "event": {"cs-uri-stem": "/", "cs-uri-query": "_waftest=%24(id)", "cs-user-agent": "curl/8.7.1"}}
+{"name": "the CRLF canary in the path", "expected": true, "event": {"cs-uri-stem": "/account/%0d%0aSet-Cookie:crlftest=1", "cs-uri-query": "-", "cs-user-agent": "agentic-bug-hunter/crlf_scanner"}}
+{"name": "the SAML control probe", "expected": true, "event": {"cs-uri-stem": "/saml-control-2471983412", "cs-uri-query": "-", "cs-user-agent": "curl/8.7.1"}}
+{"name": "near miss: a browser that mentions the name", "expected": false, "event": {"cs-uri-stem": "/", "cs-uri-query": "-", "cs-user-agent": "Mozilla/5.0 (compatible; agentic-bug-hunter-fan/1.0)"}}
+{"name": "near miss: a waftest parameter without the underscore", "expected": false, "event": {"cs-uri-stem": "/settings", "cs-uri-query": "waftest=1", "cs-user-agent": "curl/8.7.1"}}

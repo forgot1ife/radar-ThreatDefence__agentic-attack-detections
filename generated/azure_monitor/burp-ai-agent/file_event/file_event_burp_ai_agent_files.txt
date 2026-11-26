@@ -1,0 +1,4 @@
+# Custom AI Agent (burp-ai-agent) Extension Files Written
+# Sigma id c7589efb-ab20-5f4a-af6f-c730e0b8bca3, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.burp-ai-agent/" or ObjectName endswith "\\.burp-ai-agent*") or (ObjectName contains "Custom-AI-Agent-full-" or ObjectName contains "Custom-AI-Agent-bapp-" or ObjectName contains "custom-ai-agent-bapp.jar")

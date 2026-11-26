@@ -1,0 +1,4 @@
+# BreachWeave (tch-agent) Home Folder, Solver State or Crawler Output Written
+# Sigma id 55bd5b4d-01fe-5887-b038-f7f5cf898c47, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.tch-agent/config/" or TargetFileName contains "/.tch-agent/solvers/" or TargetFileName contains "/.tch-agent/archive_solvers/" or TargetFileName contains "/.tch-agent/challenge/" or TargetFileName contains "/.tch-agent/runtime/" or TargetFileName contains "\\.tch-agent\\config\\" or TargetFileName contains "\\.tch-agent\\solvers\\") or TargetFileName endswith "/THIS_IS_DOCKER_CONTAINER_NOT_TARGET_MACHINE.txt" or TargetFileName contains "/.tch-networks-output/"

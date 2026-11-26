@@ -1,0 +1,5 @@
+{"name": "Sage checkpoint database", "expected": true, "event": {"TargetFilename": "/opt/Mythic/InstalledServices/sage/sage.db"}}
+{"name": "Phoenix trace store", "expected": true, "event": {"TargetFilename": "/opt/Mythic/InstalledServices/sage/.phoenix/phoenix.db"}}
+{"name": "engagement ledger", "expected": true, "event": {"TargetFilename": "/Mythic/.sage_engagement/state_ab12.json"}}
+{"name": "near miss: another service database", "expected": false, "event": {"TargetFilename": "/opt/Mythic/InstalledServices/apollo/agent.db"}}
+{"name": "near miss: a phoenix.db outside the Sage folder", "expected": false, "event": {"TargetFilename": "/home/dev/.phoenix/phoenix.db"}}

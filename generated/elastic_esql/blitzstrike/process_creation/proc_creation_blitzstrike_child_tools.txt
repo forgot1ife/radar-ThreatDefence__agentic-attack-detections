@@ -1,0 +1,3 @@
+# Tools Started by the Blitz Strike MCP Server
+# Sigma id 279848ea-5408-5f13-b82d-212174b82e67, pipeline ecs
+from * metadata _id, _index, _version | where process.parent.command_line like "*blitzstrike*" and (process.command_line like "*-jsonl -silent -no-color -timeout 10*" or process.command_line like "*interactsh-client -json*" or process.command_line like "*chrome-devtools-mcp*" or process.command_line like "*curl -sk -m 6 --resolve*" or process.command_line like "*sparse-checkout set payloads templates*" or process.command_line like "*go install*" or process.command_line like "*pip install*" or process.command_line like "*apt-get install -y*" or process.command_line like "*nuclei -update-templates*")

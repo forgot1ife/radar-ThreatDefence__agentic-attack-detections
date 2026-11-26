@@ -1,0 +1,3 @@
+# Agentic Bug Hunter Configuration, Memory or Spray Log Written
+# Sigma id a1c24960-ea1a-5ea5-a9b5-63885b4046c0, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/.bughunter/*" or TargetFilename like "*/.cache/bbhunt/scope/*" or TargetFilename like "*/hunt-memory/audit.jsonl*" or TargetFilename like "*/hunt-memory/journal.jsonl*" or TargetFilename like "*/skills/johnwick/SKILL.md*" or TargetFilename like "*/skills/omni-killchain/SKILL.md*" or TargetFilename like "*/agents/credential-hunter.md*" or TargetFilename like "*/spray/attempts-*" and ends_with(TargetFilename, ".jsonl") or ends_with(TargetFilename, "/autonomous_session.json")

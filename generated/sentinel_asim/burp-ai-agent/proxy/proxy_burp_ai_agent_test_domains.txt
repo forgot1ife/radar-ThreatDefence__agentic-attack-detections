@@ -1,0 +1,4 @@
+# Custom AI Agent (burp-ai-agent) Test Domains or Payload Markers in Proxy Logs
+# Sigma id 796d81b2-ba1d-5ab5-b141-1e5029ee37ba, pipeline sentinel_asim
+imWebSession
+| where HttpHost contains "evil-burp-ai" or (Url contains "XSS-BURP-AI" or Url contains "burp-ai-test" or Url contains "evil-burp-ai")

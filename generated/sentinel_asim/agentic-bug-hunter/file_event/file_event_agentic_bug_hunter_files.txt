@@ -1,0 +1,4 @@
+# Agentic Bug Hunter Configuration, Memory or Spray Log Written
+# Sigma id a1c24960-ea1a-5ea5-a9b5-63885b4046c0, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.bughunter/" or TargetFileName contains "/.cache/bbhunt/scope/" or TargetFileName contains "/hunt-memory/audit.jsonl" or TargetFileName contains "/hunt-memory/journal.jsonl" or TargetFileName contains "/skills/johnwick/SKILL.md" or TargetFileName contains "/skills/omni-killchain/SKILL.md" or TargetFileName contains "/agents/credential-hunter.md") or (TargetFileName contains "/spray/attempts-" and TargetFileName endswith ".jsonl") or TargetFileName endswith "/autonomous_session.json"

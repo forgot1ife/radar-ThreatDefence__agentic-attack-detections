@@ -1,0 +1,6 @@
+{"name": "the disclosure database", "expected": true, "event": {"TargetFilename": "/home/user/.clearwing/sourcehunt/disclosures.db", "Image": "/usr/bin/python3"}}
+{"name": "an audit log of agent commands", "expected": true, "event": {"TargetFilename": "/home/user/.clearwing/audit/3f2a9c1d/commands.jsonl", "Image": "/usr/bin/python3"}}
+{"name": "a windows home folder config", "expected": true, "event": {"TargetFilename": "C:\\Users\\user\\.clearwing\\config.yaml", "Image": "C:\\Python312\\python.exe"}}
+{"name": "an agent-made tool folder", "expected": true, "event": {"TargetFilename": "/tmp/clearwing_custom_tools_k2j3h4/probe_tool.py", "Image": "/usr/bin/python3"}}
+{"name": "a folder that only names clearwing", "expected": false, "event": {"TargetFilename": "/home/user/photos/clearwing-moth.jpg", "Image": "/usr/bin/cp"}}
+{"name": "a dotfile with a similar name", "expected": false, "event": {"TargetFilename": "/home/user/.clearwingrc", "Image": "/usr/bin/vim"}}

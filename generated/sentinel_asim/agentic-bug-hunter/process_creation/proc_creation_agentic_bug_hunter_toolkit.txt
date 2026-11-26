@@ -1,0 +1,4 @@
+# Agentic Bug Hunter Toolkit on a Host
+# Sigma id d98bc6b4-1575-5ada-9278-9b05e0d9145b, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "agentic-bug-hunter" or (TargetProcessCommandLine contains "/bin/bughunter-agent" or TargetProcessCommandLine contains "/bin/bughunter mcp serve" or TargetProcessCommandLine contains "bughunter/engine.py" or TargetProcessCommandLine contains "bughunter/agent.py") or (TargetProcessCommandLine contains "bughunter/tools/recon_engine.sh" or TargetProcessCommandLine contains "bughunter/tools/vuln_scanner.sh" or TargetProcessCommandLine contains "bughunter/tools/bypass_403.sh" or TargetProcessCommandLine contains "bughunter/tools/oob_listener.py" or TargetProcessCommandLine contains "hunt_dashboard.py serve" or TargetProcessCommandLine contains "waf_response_analyzer.py --calibrate")

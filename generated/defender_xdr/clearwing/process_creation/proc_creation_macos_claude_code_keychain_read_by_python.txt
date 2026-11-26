@@ -1,0 +1,4 @@
+# Claude Code Keychain Credential Read by a Python Process
+# Sigma id f828b29f-c6c1-5953-8937-0f86e7af9512, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/security" and (ProcessCommandLine contains "find-generic-password" and ProcessCommandLine contains "Claude Code-credentials")) and InitiatingProcessFolderPath contains "python"

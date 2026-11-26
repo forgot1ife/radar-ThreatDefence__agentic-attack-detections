@@ -1,0 +1,30 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (numasec). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595 (Active Scanning), T1071 (Application Layer Protocol)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. The numasec rows are strings from its source code: user agents, probe markers,
+// file paths and the image name. It has no published campaign addresses.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "numasec" | project value=tostring(SearchKey), type, confidence, actor, source;
+let UAs = toscalar(IOC | where type == "user_agent" and confidence in ("high", "medium") | summarize make_list(value));
+let URIs = toscalar(IOC | where type in ("uri_string", "string") and confidence in ("high", "medium") | summarize make_list(value));
+let Files = toscalar(IOC | where type in ("file_path", "file_name") | summarize make_list(value));
+let Images = toscalar(IOC | where type == "docker_image" | summarize make_list(value));
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA has_any (UAs) or csUriStem has_any (URIs) or csUriQuery has_any (URIs)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=iff(UA has_any (UAs), UA, strcat(csUriStem, "?", csUriQuery)), Detail=strcat(cIP, " -> ", csHost)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication has_any (UAs) or RequestURL has_any (URIs)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=iff(RequestClientApplication has_any (UAs), RequestClientApplication, RequestURL),
+            Detail=strcat(SourceIP, " -> ", DestinationHostName)),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (Files) or FileName in~ (Files)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FolderPath, Detail=DeviceName),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Images)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator=substring(ProcessCommandLine, 0, 200), Detail=DeviceName)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator
+| order by LastSeen desc

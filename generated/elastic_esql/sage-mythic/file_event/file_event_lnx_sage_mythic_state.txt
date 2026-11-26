@@ -1,0 +1,3 @@
+# Sage (Mythic) State and Trace Databases on a Mythic Server
+# Sigma id 1230384f-fc23-5c73-b219-b8ecf62fbdb0, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/InstalledServices/sage/*" and (ends_with(TargetFilename, "/sage.db") or ends_with(TargetFilename, "/.phoenix/phoenix.db")) or TargetFilename like "*/.sage_engagement/*" or ends_with(TargetFilename, "/opt/sage_data/sage.db")

@@ -1,0 +1,50 @@
+// Clearwing on a host you monitor
+// Agentic attack detections by ThreatDefence (Clearwing). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.006 (Command and Scripting Interpreter: Python), T1555.001 (Credentials from Password Stores: Keychain)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Clearwing (Lazarus-AI-OSS/clearwing) is a Python network pentest agent and source-code vulnerability hunter driven
+// by a language model. No report of its use in a real intrusion was found on November 26, 2026, so this hunt looks for
+// the software itself, from its source code (reviewed at 08fe47d2):
+//  - The console script with a subcommand: clearwing scan|sourcehunt|operate|interactive|webui|campaign|asm|disclose.
+//    operate --auto-approve-exploits lets its own operator model approve exploits.
+//  - On macOS, Python running security find-generic-password -s "Claude Code-credentials" -w to reuse a Claude login.
+//  - Listeners: web UI on 8899 (127.0.0.1 by default), sourcehunt webhook on 0.0.0.0:8787, and a callback listener
+//    the agent opens on 0.0.0.0, ports 9999-10008, for up to 10 minutes.
+//  - Files under ~/.clearwing/ (config.yaml, sessions/, audit/<session>/commands.jsonl, auth/, sourcehunt/disclosures.db)
+//    and the temporary folders clearwing_custom_tools_* and clearwing-scratch-*.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Entry = dynamic(["/bin/clearwing ", "\\Scripts\\clearwing.exe ", "\\Scripts\\clearwing ", "clearwing.py ", "uv run clearwing "]);
+let Sub = dynamic([" scan ", " sourcehunt ", " operate ", " interactive", " webui", " campaign ", " asm ", " disclose ", " remediate ", " parallel ", "--auto-approve-exploits", "--webhook-secret"]);
+let ClearwingProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where ProcessCommandLine has_any (Entry) and ProcessCommandLine has_any (Sub);
+let ClearwingDevices = ClearwingProcesses | distinct DeviceName;
+union isfuzzy=true
+    (ClearwingProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Clearwing command line", Detail=tostring(Commands)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName =~ "security" and ProcessCommandLine has "find-generic-password" and ProcessCommandLine has "Claude Code-credentials"
+        | where InitiatingProcessFileName has "python" or InitiatingProcessCommandLine has "clearwing"
+        | summarize Timestamp=min(Timestamp), Parents=make_set(substring(InitiatingProcessCommandLine, 0, 200), 5) by DeviceName
+        | project Timestamp, DeviceName, Signal="Python read the Claude Code token from the keychain", Detail=tostring(Parents)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort in (8899, 8787) and InitiatingProcessCommandLine has "clearwing"
+        | summarize Timestamp=min(Timestamp), Ports=make_set(LocalPort) by DeviceName, LocalIP
+        | project Timestamp, DeviceName, Signal="Clearwing web UI or webhook listening", Detail=strcat(LocalIP, " ", tostring(Ports))),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where DeviceName in (ClearwingDevices)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort between (9999 .. 10008)
+        | summarize Timestamp=min(Timestamp), Ports=make_set(LocalPort) by DeviceName, LocalIP
+        | project Timestamp, DeviceName, Signal="Callback listener on a device that runs Clearwing", Detail=strcat(LocalIP, " ", tostring(Ports))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/.clearwing/" or FolderPath has @"\.clearwing\" or FolderPath has "clearwing_custom_tools_" or FolderPath has "clearwing-scratch-"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Clearwing home folder or temporary folders", Detail=tostring(Files))
+| order by Timestamp desc

@@ -1,0 +1,4 @@
+# Codex or Claude Code CLI Started by Mitsu
+# Sigma id 7059401f-52f3-55c9-9283-6b2d2c770648, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "mcp_servers.mitsu.url=" or (TargetProcessCommandLine contains "\"mcpServers\":{\"mitsu\":{\"type\":\"http\"" or TargetProcessCommandLine contains "mcp__mitsu__intel_upsert_asset") or (TargetProcessCommandLine contains "You are Mitsu: the operator" or TargetProcessCommandLine contains "You are Mitsu, a security assessment assistant." or TargetProcessCommandLine contains "Reply exactly MITSU_OK")

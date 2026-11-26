@@ -1,0 +1,4 @@
+# 0security State, Access Token or Remote Engine Files Written
+# Sigma id 9b5a7273-2f3d-58c3-b0f8-7f9dee0b2ac8, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName endswith "/.0/0.db" or ObjectName endswith "/.0/access-token" or ObjectName endswith "/.0/analytics-id" or ObjectName endswith "/.0/analytics-sent.log" or ObjectName endswith "/.0/engines.json" or ObjectName endswith "/.0/web-connections.json" or ObjectName endswith "/.0/bin/0security" or ObjectName endswith "\\.0\\0.db" or ObjectName endswith "\\.0\\access-token" or ObjectName endswith "\\.0\\analytics-id" or ObjectName endswith "\\.0\\analytics-sent.log") or (ObjectName contains "/.0/runs/" or ObjectName endswith "\\.0\\runs*") or ObjectName startswith "/tmp/zero-engine/"

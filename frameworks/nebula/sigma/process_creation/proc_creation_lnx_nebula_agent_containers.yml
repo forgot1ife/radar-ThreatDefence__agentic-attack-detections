@@ -1,0 +1,43 @@
+title: Nebula Agent Command in Its Kali Container
+id: 59cff36b-f9b3-5b08-a685-ca1cd5c2cb84
+status: experimental
+description: |
+    Detects commands Nebula (BerylliumSec/nebula) runs for its agents and operator terminals: the Python wrapper it
+    passes to docker or podman exec, which records the process group in /tmp/nebula-process-<id>.pid and execs
+    /bin/bash --noprofile --norc -c <command>; its container names nebula-runtime-, nebula-terminal- and nebula-exec-;
+    its locally built image localhost/nebula-kali-headless; and the entrypoint and address check inside that image.
+references:
+    - https://github.com/BerylliumSec/nebula
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.t1610
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_wrapper:
+        CommandLine|contains: "os.execv('/bin/bash',['/bin/bash','--noprofile','--norc','-c',sys.argv[2]])"
+    selection_pidfile:
+        CommandLine|contains: '/tmp/nebula-process-'
+    selection_runtime:
+        Image|endswith:
+            - '/docker'
+            - '/podman'
+        CommandLine|contains:
+            - ' nebula-runtime-'
+            - '--name=nebula-runtime-'
+            - '--name=nebula-terminal-'
+            - '--name=nebula-exec-'
+            - 'localhost/nebula-kali-headless'
+    selection_image:
+        CommandLine|contains:
+            - '/usr/local/bin/nebula-terminal-entrypoint'
+            - '/usr/local/lib/nebula-public-ip-update'
+    condition: 1 of selection_*
+falsepositives:
+    - Penetration testers and security teams running Nebula
+level: medium

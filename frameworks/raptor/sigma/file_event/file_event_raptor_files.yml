@@ -1,0 +1,51 @@
+title: RAPTOR Run Folders, Generated Exploits or Configuration Written
+id: 39348d65-ba8a-5516-aea7-5b14c119f540
+status: experimental
+description: |
+    Detects files RAPTOR (gadievron/raptor) writes: the .raptor-run.json in every run folder, the Claude Code environment
+    file .claude/raptor.env its SessionStart hook writes, its model configuration ~/.config/raptor/models.json, its
+    per-user state under ~/.raptor/ and ~/.local/share/raptor/sessions.d/, and the exploit and patch files its agentic
+    pipeline writes under autonomous/exploits/ (<finding>_exploit.cpp from the LLM analysis; .c, .java, .js, .go, .rb or .py from the CodeQL analysis) and autonomous/patches/ (<finding>_patch.md).
+references:
+    - https://github.com/gadievron/raptor
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1587.004
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_names:
+        TargetFilename|endswith:
+            - '/.raptor-run.json'
+            - '/.claude/raptor.env'
+            - '/.config/raptor/models.json'
+            - '/.raptor/identity.json'
+    selection_state:
+        TargetFilename|contains:
+            - '/.raptor/projects/'
+            - '/.raptor/labeled_attempts/'
+            - '/.raptor/cache/'
+            - '/.local/share/raptor/sessions.d/'
+    exploit_dir:
+        TargetFilename|contains: '/autonomous/exploits/'
+    exploit_name:
+        TargetFilename|endswith:
+            - '_exploit.cpp'
+            - '_exploit.c'
+            - '_exploit.py'
+            - '_exploit.java'
+            - '_exploit.js'
+            - '_exploit.go'
+            - '_exploit.rb'
+    patch_dir:
+        TargetFilename|contains: '/autonomous/patches/'
+    patch_name:
+        TargetFilename|endswith: '_patch.md'
+    condition: 1 of selection_* or (exploit_dir and exploit_name) or (patch_dir and patch_name)
+falsepositives:
+    - Authorized security research and code review with RAPTOR
+level: low

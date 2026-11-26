@@ -1,0 +1,4 @@
+# Clearwing Configuration, Session or Disclosure Data Written
+# Sigma id f37c6bdc-b43b-5255-9b0e-b4cc44bc1153, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.clearwing/" or TargetFileName contains "\\.clearwing\\") or (TargetFileName contains "/clearwing_custom_tools_" or TargetFileName contains "/clearwing-scratch-" or TargetFileName contains "/clearwing-src-")

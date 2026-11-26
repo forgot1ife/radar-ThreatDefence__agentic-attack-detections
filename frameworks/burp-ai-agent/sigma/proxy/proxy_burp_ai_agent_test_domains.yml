@@ -1,0 +1,32 @@
+title: Custom AI Agent (burp-ai-agent) Test Domains or Payload Markers in Proxy Logs
+id: 796d81b2-ba1d-5ab5-b141-1e5029ee37ba
+status: experimental
+description: |
+    Detects a request to one of the made-up domains in the Custom AI Agent Burp extension's payload table
+    (evil-burp-ai.com, evil-burp-ai-test.com, evil-burp-ai-cache.com and names under them), which happens when one of
+    your servers follows its open redirect, OAuth redirect, host header or cache poisoning payload, and requests that
+    carry its XSS and header injection markers (XSS-BURP-AI, burp-ai-test) through a proxy.
+references:
+    - https://github.com/six2dez/burp-ai-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: proxy
+detection:
+    selection_host:
+        cs-host|contains: 'evil-burp-ai'
+    selection_uri:
+        c-uri|contains:
+            - 'XSS-BURP-AI'
+            - 'burp-ai-test'
+            - 'evil-burp-ai'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with the Custom AI Agent extension's active scanner
+level: high

@@ -1,0 +1,3 @@
+# ARIA-X Agent User Agent or Console API Use in Proxy Logs
+# Sigma id 11e72447-cb7d-50ee-95f1-6d45b8caab08, pipeline splunk_windows
+("c-useragent"="ARIA-X/*" "c-useragent"="*(authorized security research)*") OR ("c-uri"="*/api/projects/p_*" "c-uri" IN ("*/runs", "*/hints")) OR ("c-uri"="*/api/runs/run_*" "c-uri"="*/stop") OR "c-uri" IN ("*/api/report/run_*", "*/api/export/p_*")

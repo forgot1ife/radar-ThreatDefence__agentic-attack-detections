@@ -1,0 +1,6 @@
+{"name": "resource file in the service's private tmp", "expected": true, "event": {"TargetFilename": "/tmp/systemd-private-3f0c2a9b7d6e4f1a8b5c6d7e8f901234-kali-server-mcp.service-Ab12Cd/tmp/mks_msf_resource.rc"}}
+{"name": "resource file from a git checkout run", "expected": true, "event": {"TargetFilename": "/tmp/mks_msf_resource.rc"}}
+{"name": "package installs the API server", "expected": true, "event": {"TargetFilename": "/usr/share/mcp-kali-server/server.py"}}
+{"name": "package installs its service unit", "expected": true, "event": {"TargetFilename": "/usr/lib/systemd/system/kali-server-mcp.service"}}
+{"name": "near miss: HexStrike's resource file", "expected": false, "event": {"TargetFilename": "/tmp/mcp_msf_resource.rc"}}
+{"name": "near miss: another package's share folder", "expected": false, "event": {"TargetFilename": "/usr/share/mcp-server-fetch/server.py"}}

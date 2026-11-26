@@ -1,0 +1,4 @@
+# RAPTOR Scanner or Client User Agents in Proxy Logs
+# Sigma id 1c133e20-4404-5377-b72d-f92356a26f91, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent startswith "RAPTOR Security Scanner" or HttpUserAgent endswith "(+https://github.com/gadievron/raptor)" or (HttpUserAgent startswith "raptor-nvd/" or HttpUserAgent startswith "raptor-env-verify/" or HttpUserAgent startswith "raptor-container-evidence/" or HttpUserAgent startswith "raptor-uv-provenance/" or HttpUserAgent startswith "raptor-cvefix-envs/") or HttpUserAgent =~ "raptor-sca" or (HttpUserAgent in~ ("cve-env/0.1 (agentic CVE env builder)", "cve-diff/0.1 (+https://github.com/cve-diff)"))

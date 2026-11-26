@@ -1,0 +1,3 @@
+# RAPTOR Scanner or Client User Agents in Proxy Logs
+# Sigma id 1c133e20-4404-5377-b72d-f92356a26f91, pipeline splunk_windows
+"c-useragent"="RAPTOR Security Scanner*" OR "c-useragent"="*(+https://github.com/gadievron/raptor)" OR "c-useragent" IN ("raptor-nvd/*", "raptor-env-verify/*", "raptor-container-evidence/*", "raptor-uv-provenance/*", "raptor-cvefix-envs/*") OR "c-useragent"="raptor-sca" OR "c-useragent" IN ("cve-env/0.1 (agentic CVE env builder)", "cve-diff/0.1 (+https://github.com/cve-diff)")

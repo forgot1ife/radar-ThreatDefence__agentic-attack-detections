@@ -1,0 +1,33 @@
+title: BreachWeave Playbook NPS Client Staged on a Host
+id: ace68a85-41c0-58ab-a183-807781a45748
+status: experimental
+description: |
+    Detects the NPS client (npc) hand-off that BreachWeave's shipped skills (redis-webroot-rce, intranet-pentest,
+    known-product-exploit, remote-cmd-execution) tell the solver to run on a compromised host: certutil or curl/wget
+    fetching npc from the operator's bridge under /files/nps/npc_ (port 44944 in the skills), and npc started with
+    -server=<bridge>:<port> -vkey=auto through wmic process call create, setsid, nohup or a scheduled task named
+    "Windows Update". The vkey value "auto" and the /files/nps/ path are the skills' literals.
+references:
+    - https://github.com/m-sec-org/BreachWeave
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1105
+    - attack.t1572
+    - attack.execution
+    - attack.t1047
+logsource:
+    category: process_creation
+detection:
+    selection_download:
+        CommandLine|contains: '/files/nps/npc_'
+    selection_client:
+        CommandLine|contains|all:
+            - '-server='
+            - '-vkey=auto'
+    condition: 1 of selection_*
+falsepositives:
+    - Administrators who run the NPS client with the literal vkey "auto" (NPS clients normally pass a per-client key)
+level: high

@@ -1,0 +1,39 @@
+// numasec running on a host you monitor
+// Agentic attack detections by ThreatDefence (numasec). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1219 (Remote Access Tools)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the numasec source code (FrancescoStabile/numasec at 1237a2f). numasec is OpenCode renamed, with security tools
+// added, and ships as a Bun-compiled binary:
+//  - npm install -g numasec runs numasec from node_modules/numasec-<os>-<arch>/bin/numasec (numasec.exe on Windows);
+//    the Docker image is francescostabile/numasec (README; unverified on Docker Hub) with /usr/local/bin/numasec.
+//  - numasec serve (and acp, or the TUI with --hostname/--mdns) opens an HTTP API on 127.0.0.1:4096 by default. With
+//    --hostname 0.0.0.0 or --mdns and no NUMASEC_SERVER_PASSWORD it gives shell, file and agent access to anyone.
+//  - Its out-of-band tool runs interactsh-client -json -o <data>/numasec/log/int_<hex>.jsonl -v.
+//  - It writes <workspace>/.numasec/operation/<slug>/ (ledger, facts, evidence, deliverables) and
+//    ~/.local/share/numasec/numasec.db.
+// Folder names, the port and the server options are inherited from OpenCode with the name changed.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ ("numasec", "numasec.exe")
+            or ProcessCommandLine contains "install -g numasec" or ProcessCommandLine contains "add -g numasec"
+            or ProcessCommandLine contains "francescostabile/numasec"
+            or (FileName in~ ("interactsh-client", "interactsh-client.exe") and (ProcessCommandLine contains "/numasec/log/int_" or ProcessCommandLine contains @"\numasec\log\int_"))
+        | extend Exposed = FileName in~ ("numasec", "numasec.exe")
+            and (ProcessCommandLine contains "--hostname 0.0.0.0" or ProcessCommandLine contains "--hostname=0.0.0.0" or ProcessCommandLine contains "--mdns")
+        | project Timestamp, DeviceName, Signal=iff(Exposed, "numasec server on all interfaces", "numasec process or install"),
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and InitiatingProcessFileName in~ ("numasec", "numasec.exe")
+        | project Timestamp, DeviceName, Signal=iff(LocalIP in ("127.0.0.1", "::1"), "numasec API listening on loopback", "numasec API listening on a network address"),
+            Detail=strcat(LocalIP, ":", LocalPort), Parent=InitiatingProcessCommandLine),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath contains "/.numasec/operation/" or FolderPath contains @"\.numasec\operation\"
+            or (FileName in~ ("numasec.db", "interact-sessions.json") and (FolderPath contains "/numasec/" or FolderPath contains @"\numasec\"))
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, Folder=tostring(split(FolderPath, ".numasec")[0])
+        | project Timestamp, DeviceName, Signal="numasec operation or data files", Detail=strcat(Folder, " ", tostring(Files)), Parent="")
+| order by Timestamp desc

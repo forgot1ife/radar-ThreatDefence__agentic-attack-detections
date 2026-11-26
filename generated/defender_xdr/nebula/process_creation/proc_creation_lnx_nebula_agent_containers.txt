@@ -1,0 +1,4 @@
+# Nebula Agent Command in Its Kali Container
+# Sigma id 59cff36b-f9b3-5b08-a685-ca1cd5c2cb84, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "os.execv('/bin/bash',['/bin/bash','--noprofile','--norc','-c',sys.argv[2]])" or ProcessCommandLine contains "/tmp/nebula-process-" or ((FolderPath endswith "/docker" or FolderPath endswith "/podman") and (ProcessCommandLine contains " nebula-runtime-" or ProcessCommandLine contains "--name=nebula-runtime-" or ProcessCommandLine contains "--name=nebula-terminal-" or ProcessCommandLine contains "--name=nebula-exec-" or ProcessCommandLine contains "localhost/nebula-kali-headless")) or (ProcessCommandLine contains "/usr/local/bin/nebula-terminal-entrypoint" or ProcessCommandLine contains "/usr/local/lib/nebula-public-ip-update")

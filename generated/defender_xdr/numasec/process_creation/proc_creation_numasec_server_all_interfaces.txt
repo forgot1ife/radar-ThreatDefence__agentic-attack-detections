@@ -1,0 +1,4 @@
+# numasec API Server Started on All Interfaces
+# Sigma id 0e01c1a8-3edd-5ebc-b83d-8a47cece546e, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/numasec" or FolderPath endswith "\\numasec.exe") and (ProcessCommandLine contains "--hostname 0.0.0.0" or ProcessCommandLine contains "--hostname=0.0.0.0" or ProcessCommandLine contains "--mdns")
