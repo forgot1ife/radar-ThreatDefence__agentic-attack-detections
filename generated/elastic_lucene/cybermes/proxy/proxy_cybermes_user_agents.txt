@@ -1,0 +1,3 @@
+# Cybermes User Agents in Proxy Logs
+# Sigma id 2512cdbf-c8d9-561a-944d-935f7511d5e1, pipeline ecs
+(user_agent.original:(*\ Cybermes\/2.1\ \(Recon\ Crawler\) OR *\ Cybermes\/2.1\ \(Security\ Assessment\) OR *\ Cybermes\/3.2\ \(API\ Fuzzer\) OR *\ Cybermes\/3.2\ \(Subdomain\ Recon\))) OR (user_agent.original:(Cybermes\-AIGateway\-Auditor\/* OR Cybermes\-ExamAuditor\/* OR Cybermes\-Security\-Auditor\/* OR cybermes\-mcp\-updater\/*))

@@ -1,0 +1,3 @@
+# Pensar Apex Session, Run Store or Callback Listener Files
+# Sigma id c3503bd7-f892-5def-81b5-aea6a55e24fd, pipeline splunk_windows
+TargetFilename IN ("*/.pensar/sessions/*", "*\\.pensar\\sessions\\*", "*/.pensar/runtime/runs.sqlite*", "*\\.pensar\\runtime\\runs.sqlite*") OR (TargetFilename="*callback-listeners*" TargetFilename="*.cjs") OR TargetFilename="*/tmp/apex_payload_*"

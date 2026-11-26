@@ -1,0 +1,3 @@
+# Guardian AI Pentest CLI Started
+# Sigma id cfccbdb0-bbdb-52ae-9c12-dc3aefe2866a, pipeline splunk_windows
+CommandLine IN ("* -m cli.main *", "*/bin/guardian *", "*\\Scripts\\guardian.exe *") CommandLine IN ("* workflow run *", "* scan --target *", "* scan -t *", "* recon --target *", "* recon -t *", "* analyze *", "* report --session *", "* report -s *", "* --resume *")

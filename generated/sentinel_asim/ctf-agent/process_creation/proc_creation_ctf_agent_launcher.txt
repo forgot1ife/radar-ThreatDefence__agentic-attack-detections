@@ -1,0 +1,4 @@
+# CTF Agent Launcher or Its Model CLIs
+# Sigma id cd94c065-3444-5506-b867-660f8c4f47c3, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "ctf-solve" and (TargetProcessCommandLine contains "--ctfd-url" or TargetProcessCommandLine contains "--ctfd-token" or TargetProcessCommandLine contains "--challenges-dir" or TargetProcessCommandLine contains "--coordinator" or TargetProcessCommandLine contains "--max-challenges" or TargetProcessCommandLine contains "--msg-port" or TargetProcessCommandLine contains "--no-submit")) or (TargetProcessCommandLine contains "codex app-server" and ActingProcessCommandLine contains "ctf-solve") or (TargetProcessCommandLine contains "IMPORTANT: You are running inside a Docker sandbox. All files are under /challenge/" or TargetProcessCommandLine contains "You are a CTF competition coordinator running for the ENTIRE duration of a live competition")

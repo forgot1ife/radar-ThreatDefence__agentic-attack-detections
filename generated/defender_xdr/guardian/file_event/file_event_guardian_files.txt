@@ -1,0 +1,4 @@
+# Guardian Session, Log or Configuration Files Written
+# Sigma id ffbf7640-2e91-52dc-b0d5-4653db75db07, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath endswith "/.guardian/guardian.yaml" or FolderPath endswith "/.guardian/.env" or FolderPath endswith "/.guardian/kb/kb.sqlite3" or FolderPath endswith "/.guardian/ranker.pkl" or FolderPath endswith "/tmp/guardian_ffuf_wordlist.txt") or FolderPath endswith "/logs/ai_audit.log" or ((FolderPath contains "/reports/session_" or FolderPath contains "/reports/.session_") and (FolderPath endswith ".json" or FolderPath endswith ".tmp"))

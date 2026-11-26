@@ -1,0 +1,4 @@
+# CTF Agent CTFd Client User Agent in Proxy Logs
+# Sigma id 4a24d504-eed6-5ae1-beef-d4049823d2e6, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent =~ "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36" or (HttpUserAgent =~ "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36" and Url contains "/api/v1/")

@@ -1,0 +1,4 @@
+# KaliGPT AI Pentest Agent Started
+# Sigma id 40492751-b985-5e31-bb0e-655e78122279, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "/opt/KaliGPT/OpenSearchAPI/app.py" or TargetProcessCommandLine contains "/share/KaliGPT/OpenSearchAPI/app.py") or (TargetProcessCommandLine contains "/usr/local/bin/kaligpt" or TargetProcessCommandLine contains "/usr/bin/kaligpt ") or ((TargetProcessCommandLine contains " -m agents.gemini" or TargetProcessCommandLine contains " -m agents.ollama" or TargetProcessCommandLine contains " -m agents.openrouter" or TargetProcessCommandLine contains " -m agents.chatgpt" or TargetProcessCommandLine contains " -m agents.litellm" or TargetProcessCommandLine contains " -m agents.web_launcher") and TargetProcessCurrentDirectory contains "/KaliGPT")

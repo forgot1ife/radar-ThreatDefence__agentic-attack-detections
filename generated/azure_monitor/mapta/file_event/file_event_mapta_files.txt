@@ -1,0 +1,4 @@
+# MAPTA Run Log, Usage or Sandbox Script Files Written
+# Sigma id 29b59224-90dd-5e78-b1a9-38819639bffb, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName endswith "/scan_usage.log" or ObjectName endswith "\\scan_usage.log") or (ObjectName contains "_usage_log_" and ObjectName endswith ".json") or (ObjectName startswith "/home/user/temp_script_" and ObjectName endswith ".py")

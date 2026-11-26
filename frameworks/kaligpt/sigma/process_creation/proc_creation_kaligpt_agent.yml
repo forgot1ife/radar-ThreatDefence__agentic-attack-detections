@@ -1,0 +1,48 @@
+title: KaliGPT AI Pentest Agent Started
+id: 40492751-b985-5e31-bb0e-655e78122279
+status: experimental
+description: |
+    Detects KaliGPT (also called HackerX), a Linux command-line AI agent for offensive security. Its installer puts the
+    code in /opt/KaliGPT (Termux: /data/data/com.termux/files/usr/share/KaliGPT) and writes the launcher
+    /usr/local/bin/kaligpt. The launcher changes to /opt/KaliGPT, starts the companion search helper as
+    python /opt/KaliGPT/OpenSearchAPI/app.py in the background, and runs one provider module: python3 -m agents.gemini,
+    agents.ollama, agents.openrouter, agents.chatgpt or agents.litellm. Without a mode it runs python3 -m agents, which
+    starts python -m agents.<default provider> <prompt>.
+references:
+    - https://github.com/SudoHopeX/KaliGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_helper:
+        # installers/installer.deb.sh:291-306, installers/installer.arch.sh:193-201, installers/installer.termux.sh:240-247 at b15b8d48
+        CommandLine|contains:
+            - '/opt/KaliGPT/OpenSearchAPI/app.py'
+            - '/share/KaliGPT/OpenSearchAPI/app.py'
+    selection_launcher:
+        # installers/installer.deb.sh:136-141 (/usr/local/bin/kaligpt), installers/installer.termux.sh:11
+        CommandLine|contains:
+            - '/usr/local/bin/kaligpt'
+            - '/usr/bin/kaligpt '
+    selection_module:
+        # installers/installer.deb.sh:161-187,268-271 and agents/__main__.py:52 at b15b8d48
+        CommandLine|contains:
+            - ' -m agents.gemini'
+            - ' -m agents.ollama'
+            - ' -m agents.openrouter'
+            - ' -m agents.chatgpt'
+            - ' -m agents.litellm'
+            - ' -m agents.web_launcher'
+    selection_module_dir:
+        # the launcher runs cd /opt/KaliGPT (installers/installer.deb.sh:148) before python3 -m agents.<provider>
+        CurrentDirectory|contains: '/KaliGPT'
+    condition: selection_helper or selection_launcher or (selection_module and selection_module_dir)
+falsepositives:
+    - Authorized tests, CTF and lab work with KaliGPT
+level: medium

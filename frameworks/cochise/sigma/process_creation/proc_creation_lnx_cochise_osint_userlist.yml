@@ -1,0 +1,32 @@
+title: Cochise AI Pentest Agent User List in AD Attack Commands
+id: e3c3b754-8723-5465-bf52-1f7aa49c3df4
+status: experimental
+description: |
+    Detects commands that read /osint_users.txt, a user list at the root of the file system. The Cochise scenario prompt
+    tells the model that this file holds the user names for password spraying (templates/scenario.md:31), and the model
+    then runs nxc, netexec or impacket GetNPUsers with it on the Kali VM it drives over SSH (39 of the 59 run logs the
+    repository ships). The operator puts the file there; another path means another setup.
+references:
+    - https://github.com/andreashappe/cochise/blob/4db4fded894305083366b83e5cdba5fb68fcebc3/src/cochise/templates/scenario.md#L28-L34
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.credential-access
+    - attack.t1110.003
+    - attack.t1558.004
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        CommandLine|contains:
+            - ' /osint_users.txt'
+            - '=/osint_users.txt'
+            - '"/osint_users.txt'
+            - "'/osint_users.txt"
+            - '</osint_users.txt'
+    condition: selection
+falsepositives:
+    - Lab exercises that follow the Cochise setup by hand
+level: medium

@@ -1,0 +1,38 @@
+title: OpenHack Vendor Hosts or User Agents in Proxy Logs
+id: 024c4c1b-b8a5-57b7-b6f8-0bbf8c8af69c
+status: experimental
+description: |
+    Detects a host that runs or installs OpenHack (openhackai/OpenHack): the v0.x agent's default model gateway and
+    update check api.openhack.com, its login site app.openhack.com, the v2 installer install.openhack.com and the v2
+    release download from GitHub, the exact user agent openhack that v0.x sends to its gateway, the collector,
+    auth.openai.com and models.dev, and the Chrome/125.0 user agent of its web_fetch and search tools. The user agents
+    need TLS inspection on HTTPS.
+references:
+    - https://github.com/openhackai/OpenHack
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_hosts:
+        cs-host:
+            - 'api.openhack.com'
+            - 'app.openhack.com'
+            - 'install.openhack.com'
+    selection_release:
+        c-uri|contains: '/openhackai/OpenHack/releases/download/'
+    selection_ua_exact:
+        c-useragent: 'openhack'
+    selection_ua_fetch:
+        c-useragent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams installing or running OpenHack
+    - Another client that sends the bare user agent openhack
+level: low

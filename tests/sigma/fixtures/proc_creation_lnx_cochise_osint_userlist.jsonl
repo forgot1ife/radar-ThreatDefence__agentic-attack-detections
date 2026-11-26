@@ -1,0 +1,5 @@
+{"name": "AS-REP roasting with the user list", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 /usr/share/doc/python3-impacket/examples/GetNPUsers.py corp.example.test/ -no-pass -usersfile /osint_users.txt -dc-ip 10.20.0.10 -format john", "ParentImage": "/usr/bin/bash"}}
+{"name": "password spraying with names from the list", "expected": true, "event": {"Image": "/usr/bin/bash", "CommandLine": "bash -c nxc smb 10.20.0.10 -u $(head -20 /osint_users.txt | tr '\\n' ' ') -p Summer2022", "ParentImage": "/usr/sbin/sshd"}}
+{"name": "the list read into a loop", "expected": true, "event": {"Image": "/usr/bin/bash", "CommandLine": "bash -c while read u; do echo $u; done </osint_users.txt", "ParentImage": "/usr/sbin/sshd"}}
+{"name": "near miss: a user list in a home folder", "expected": false, "event": {"Image": "/usr/bin/nxc", "CommandLine": "nxc smb 10.20.0.10 -u /home/tester/osint_users.txt -p Summer2022", "ParentImage": "/usr/bin/bash"}}
+{"name": "near miss: another root-level list", "expected": false, "event": {"Image": "/usr/bin/nxc", "CommandLine": "nxc smb 10.20.0.10 -u /users.txt -p Summer2022", "ParentImage": "/usr/bin/bash"}}

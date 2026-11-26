@@ -1,0 +1,4 @@
+{"name": "the run log in the clone", "expected": true, "event": {"TargetFilename": "/home/user/cochise/logs/run-20261126-101500.json", "Image": "/home/user/cochise/.venv/bin/python3"}}
+{"name": "near miss: a run log with another name pattern", "expected": false, "event": {"TargetFilename": "/srv/app/logs/run-latest.json", "Image": "/usr/bin/python3"}}
+{"name": "near miss: the same name written by a copy tool", "expected": false, "event": {"TargetFilename": "/backup/cochise/logs/run-20261126-101500.json", "Image": "/usr/bin/rsync"}}
+{"name": "near miss: a text log with the date pattern", "expected": false, "event": {"TargetFilename": "/home/user/app/logs/run-20261126-101500.txt", "Image": "/usr/bin/python3"}}

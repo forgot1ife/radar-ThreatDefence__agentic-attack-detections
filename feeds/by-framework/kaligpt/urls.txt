@@ -1,0 +1,3 @@
+https://chatgpt.com/g/g-xouSQobsE-kaligpt/
+https://github.com/SudoHopeX/OpenSearchAPI.git
+https://raw.githubusercontent.com/SudoHopeX/KaliGPT/refs/heads/hackerx/install.sh

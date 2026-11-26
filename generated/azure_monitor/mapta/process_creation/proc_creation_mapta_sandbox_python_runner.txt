@@ -1,0 +1,4 @@
+# MAPTA Sandbox Python Runner
+# Sigma id 713ada5c-0f44-56fa-b2a1-d2f3a4deacfc, pipeline azure_monitor
+SecurityEvent
+| where CommandLine contains "python3 /home/user/temp_script_" and CommandLine contains ".py"

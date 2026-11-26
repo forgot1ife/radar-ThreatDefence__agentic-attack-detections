@@ -1,0 +1,4 @@
+# Claude Code or Codex CLI Started by OpenHack
+# Sigma id c04336d7-897c-5138-9198-8280c8a2f615, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "--safe-mode" and ProcessCommandLine contains "disableAllHooks" and ProcessCommandLine contains "forceLoginMethod") or ProcessCommandLine contains "openhack-subscription-" or ProcessCommandLine contains "source-review worker inside OpenHack"

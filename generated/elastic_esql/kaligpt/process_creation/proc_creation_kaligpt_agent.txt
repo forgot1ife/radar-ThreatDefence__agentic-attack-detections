@@ -1,0 +1,3 @@
+# KaliGPT AI Pentest Agent Started
+# Sigma id 40492751-b985-5e31-bb0e-655e78122279, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*/opt/KaliGPT/OpenSearchAPI/app.py*" or process.command_line like "*/share/KaliGPT/OpenSearchAPI/app.py*" or process.command_line like "*/usr/local/bin/kaligpt*" or process.command_line like "*/usr/bin/kaligpt *" or (process.command_line like "* -m agents.gemini*" or process.command_line like "* -m agents.ollama*" or process.command_line like "* -m agents.openrouter*" or process.command_line like "* -m agents.chatgpt*" or process.command_line like "* -m agents.litellm*" or process.command_line like "* -m agents.web_launcher*") and process.working_directory like "*/KaliGPT*"

@@ -1,0 +1,3 @@
+# Deadend CLI Agent Backend or Launcher Started
+# Sigma id dbdc81db-59be-504a-b89a-ca0857eb1628, pipeline splunk_windows
+(CommandLine="*deadend*" CommandLine="*--log-file*" CommandLine="*rpc-server-*") OR CommandLine IN ("*deadend_cli.jsonrpc_server*", "*deadend-jsonrpc-server*")

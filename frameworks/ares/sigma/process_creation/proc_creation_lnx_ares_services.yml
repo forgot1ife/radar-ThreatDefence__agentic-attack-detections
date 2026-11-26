@@ -1,0 +1,33 @@
+title: Ares Orchestrator or Worker Service
+id: 2006b526-b24f-5657-8a0e-505f46cc5025
+status: experimental
+description: |
+    Detects the Ares (dreadnode/ares) processes on its attack box. The orchestrator is started as a transient unit,
+    systemd-run --unit=ares-orchestrator.service --slice=system-ares.slice ... /usr/local/bin/ares orchestrator
+    (.taskfiles/ec2/scripts/launch-orchestrator.sh.tmpl:73-108), and each worker role runs from the ares@<role>.service
+    template as /usr/local/bin/ares worker (ansible/roles/redis/templates/ares@.service.j2:8,31). The single binary
+    is named ares, a common word, so the rule needs the install path or the unit names.
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/.taskfiles/ec2/scripts/launch-orchestrator.sh.tmpl#L73-L108
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ansible/roles/redis/templates/ares@.service.j2
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        CommandLine|contains:
+            - '/usr/local/bin/ares orchestrator'
+            - '/usr/local/bin/ares worker'
+            - '--unit=ares-orchestrator.service'
+            - '--slice=system-ares.slice'
+    condition: selection
+falsepositives:
+    - Authorized Ares deployments
+    - Unrelated software installed as /usr/local/bin/ares with orchestrator or worker subcommands
+level: medium

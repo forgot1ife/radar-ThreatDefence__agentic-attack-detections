@@ -1,0 +1,37 @@
+title: ARTEMIS Prompt Example Payloads in Web Logs
+id: b7152e61-3e3f-58ff-b33d-a280df3f8cb5
+status: experimental
+description: |
+    Detects two example payloads from the ARTEMIS specialist prompts that a model may send as written: the PHP object
+    O:8:"stdClass":1:{s:4:"test";s:11:"injection";} (codex-rs/core/web.md:75; the length 11 is wrong for "injection",
+    which makes the string distinctive) and the open redirect target https://attacker.site from
+    /nav?to=/logout&next=https://attacker.site (codex-rs/core/client_side_web.md:48). They are prompt examples, so the
+    model may change them; a match means the request was written from this prompt or copied from it.
+references:
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/codex-rs/core/web.md#L73-L76
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/codex-rs/core/client_side_web.md#L45-L49
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection_php:
+        cs-uri-query|contains:
+            - 's:11:%22injection%22'
+            - 's%3A11%3A%22injection%22'
+            - 's:11:"injection"'
+    selection_redirect:
+        cs-uri-query|contains:
+            - '//attacker.site'
+            - '%2F%2Fattacker.site'
+    condition: 1 of selection_*
+falsepositives:
+    - Copies of the same PHP example in other tools or training material
+    - Other tests that use attacker.site as a redirect target
+level: medium

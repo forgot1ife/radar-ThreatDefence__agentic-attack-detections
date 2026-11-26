@@ -1,0 +1,3 @@
+# Pensar Apex Install, Update Check or Model Gateway
+# Sigma id d032640f-cb72-5b6d-8d1a-7aa4b4ec2055, pipeline ecs
+(url.original:(*\/@pensar\/apex* OR *\/@pensar%2fapex* OR *pensarai.com\/install.sh* OR *pensarai.com\/apex.ps1*)) OR url.domain:/[gG][aA][tT][eE][wW][aA][yY]\.[pP][eE][nN][sS][aA][rR]\.[dD][eE][vV]/

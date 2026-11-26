@@ -1,0 +1,4 @@
+# hackingBuddyGPT Local Shell Command Markers Sent Through tmux
+# Sigma id 9acfd2b0-21a2-5d83-958c-7901906c161e, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/tmux" and ProcessCommandLine contains "send-keys") and (ProcessCommandLine contains "echo 'CMDSTART" or ProcessCommandLine contains "echo 'CMDEND" or ProcessCommandLine contains "echo \"__CLEAR_" or ProcessCommandLine contains "echo \"__END_")

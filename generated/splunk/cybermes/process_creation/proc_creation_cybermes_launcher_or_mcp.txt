@@ -1,0 +1,3 @@
+# Cybermes Launcher, MCP Server or Go Tools Started
+# Sigma id 24f3b9c4-c536-5d53-a9e1-41fd1cdec3f9, pipeline splunk_windows
+Image IN ("*/cybermes-mcp", "*\\cybermes-mcp.exe", "*/smart_pipe", "*/search_knowledge") OR CommandLine IN ("*cybermes-mcp@latest*", "*/.cybermes/bin/cybermes-mcp-v*", "*\\.cybermes\\bin\\cybermes-mcp-v*", "*cybermes-mcp.js*") OR CommandLine IN ("*./cybermes *", "*/cybermes gateway run*", "*cybermes.bat*", "*cybermes.ps1*", "*/opt/hermes-venv/bin/hermes*")

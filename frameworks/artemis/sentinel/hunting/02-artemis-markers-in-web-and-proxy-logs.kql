@@ -1,0 +1,24 @@
+// ARTEMIS prompt example payloads in web and proxy logs
+// Agentic attack detections by ThreatDefence (ARTEMIS). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1190 (Exploit Public-Facing Application), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the ARTEMIS source code (Stanford-Trinity/ARTEMIS at f309242d). ARTEMIS sends no fixed user agent or canary:
+// its sub-agents run stock Kali tools. Two example payloads in its specialist prompts may be sent as written:
+//  - the PHP object O:8:"stdClass":1:{s:4:"test";s:11:"injection";} (codex-rs/core/web.md:75). "injection" has 9
+//    characters, so s:11 is wrong; the same mistake points back to this prompt.
+//  - the open redirect target https://attacker.site from /nav?to=/logout&next=https://attacker.site
+//    (codex-rs/core/client_side_web.md:48).
+// These are prompt examples, so absence proves nothing. A hit is worth a look at everything else the same source sent.
+
+let Markers = @"(?i)s(:|%3a)11(:|%3a)(\x22|%22)injection(\x22|%22)|(//|%2f%2f)attacker\.site";
+union isfuzzy=true
+    (W3CIISLog
+        | where csUriQuery matches regex Markers or csUriStem matches regex Markers
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csUriStem, "?", csUriQuery), UA=csUserAgent),
+    (CommonSecurityLog
+        | where RequestURL matches regex Markers
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

@@ -1,0 +1,3 @@
+# OpenHack Collector or Canary Marker in Web Requests
+# Sigma id 6ca9ddde-7760-5bbb-850b-914c664cb0e8, pipeline ecs
+(url.query:(*__openhack_test_* OR *oob.openhack.com*)) OR url.path:*__openhack_test_*

@@ -1,0 +1,2 @@
+#fields	indicator	indicator_type	meta.source	meta.desc	meta.url
+api.openai.com	Intel::DOMAIN	threatdefence-ares	Ares low: OpenAI chat completions endpoint Ares calls for gpt-* models, the defaults in config/ares.yaml (gpt-5.2, gpt-5, gpt-5-mini). Investigate only when a server calls it unexpectedly alongside other activity (ares-llm/src/provider/openai.rs:14) (Ares operators)	https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-llm/src/provider/openai.rs#L14

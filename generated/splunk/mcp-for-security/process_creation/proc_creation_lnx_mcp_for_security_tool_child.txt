@@ -1,0 +1,3 @@
+# Recon or Exploitation Tool Started by an MCP for Security Wrapper
+# Sigma id 56966f5d-7af6-5729-835f-e065f8ebba9b, pipeline splunk_windows
+ParentCommandLine IN ("*-mcp/build/index.js*", "*/cero/build/index.js*") CommandLine IN ("* -silent*", "*aws --force --no-browser*", "* -subs-only *", "*scan single --url *", "*scan file -f *", "*/opt/commix/commix.py -u *", "*/opt/smuggler/smuggler.py -u *", "*sqlmap -u *", "*sqlmap.py -u *", "*wpscan -u *") OR Image IN ("*/nmap", "*/masscan", "*/nuclei", "*/httpx", "*/katana", "*/ffuf", "*/sqlmap", "*/wpscan", "*/sslscan", "*/arjun", "*/amass", "*/alterx", "*/assetfinder", "*/cero", "*/shuffledns", "*/gowitness", "*/waybackurls", "*/scout")

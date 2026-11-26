@@ -1,0 +1,4 @@
+{"name": "nmap from a Guardian scan", "expected": true, "event": {"Image": "/usr/bin/nmap", "CommandLine": "nmap -sV -sC -T4 -oX - app.example.test", "ParentCommandLine": "python -m cli.main scan --target app.example.test"}}
+{"name": "nuclei from a Guardian workflow", "expected": true, "event": {"Image": "/usr/local/bin/nuclei", "CommandLine": "nuclei -u https://app.example.test -jsonl -severity critical,high,medium -silent -rate-limit 150", "ParentCommandLine": "/usr/bin/python3 /home/op/.venv/bin/guardian workflow run --name web_pentest --target https://app.example.test"}}
+{"name": "nmap from a shell", "expected": false, "event": {"Image": "/usr/bin/nmap", "CommandLine": "nmap -sV app.example.test", "ParentCommandLine": "-bash"}}
+{"name": "an editor started by Guardian", "expected": false, "event": {"Image": "/usr/bin/less", "CommandLine": "less reports/report_20261126_101500.md", "ParentCommandLine": "python -m cli.main report --session 20261126_101500"}}

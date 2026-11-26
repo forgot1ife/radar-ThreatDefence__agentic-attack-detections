@@ -1,0 +1,3 @@
+# OpenHack Workspace, Temporary or Evidence Files Written
+# Sigma id 8ea1c520-4655-5cd8-9c00-8353bd6a6e9f, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/.openhack/*" or TargetFilename like "*\\.openhack\\*" or TargetFilename like "*/openhack-subscription-*" or TargetFilename like "*/openhack-login-*" or TargetFilename like "*\\openhack-subscription-*" or TargetFilename like "*\\openhack-login-*" or TargetFilename like "*/.openhack-evidence/*" or TargetFilename like "*.openhack-sandbox-override-*"

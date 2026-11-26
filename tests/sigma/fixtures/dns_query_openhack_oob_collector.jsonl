@@ -1,0 +1,4 @@
+{"name": "a server resolving the collector", "expected": true, "event": {"QueryName": "oob.openhack.com"}}
+{"name": "command output exfiltrated in a label", "expected": true, "event": {"QueryName": "www-data.oob.openhack.com"}}
+{"name": "near miss: the vendor's main site", "expected": false, "event": {"QueryName": "openhack.com"}}
+{"name": "near miss: a name that only ends in the same letters", "expected": false, "event": {"QueryName": "foooob.openhack.com"}}

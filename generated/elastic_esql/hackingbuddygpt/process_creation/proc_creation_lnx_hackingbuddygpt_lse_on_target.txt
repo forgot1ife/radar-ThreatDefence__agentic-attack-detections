@@ -1,0 +1,3 @@
+# hackingBuddyGPT lse.sh Enumeration on a Linux Target
+# Sigma id 5529ebfe-0cb8-584d-b734-37634b572708, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*linux-smart-enumeration/releases/latest/download/lse.sh*" and process.command_line like "*-O lse.sh*" or process.command_line like "*lse.sh -c -i -l 0*"

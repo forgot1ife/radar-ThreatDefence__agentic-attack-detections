@@ -1,0 +1,30 @@
+id: 0224d791-f0ea-5f9c-a51c-3a91f644afc8
+name: Host contacted the OpenHack out-of-band collector
+description: |
+  A device resolved or connected to oob.openhack.com, the out-of-band collector of the OpenHack v0.x pentest agent
+  (PyPI openhack 0.2.4, openhackai/OpenHack). The agent embeds https://oob.openhack.com/<label>-<12 hex> in blind
+  SSRF, command injection and XXE payloads, so a server that contacts it most likely ran one of them. The device that
+  runs the agent also contacts it when it reads the callbacks (a Python process); check the initiating process and
+  whether the test was authorized.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - InitialAccess
+  - CommandAndControl
+relevantTechniques:
+  - T1190
+  - T1071.001
+query: |
+  DeviceNetworkEvents
+  | where RemoteUrl =~ "oob.openhack.com" or RemoteUrl endswith ".oob.openhack.com" or RemoteUrl has "://oob.openhack.com"
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Urls=make_set(RemoteUrl, 10),
+      Processes=make_set(strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 200)), 5) by DeviceName, AccountName=InitiatingProcessAccountName
+version: 1.0.0
+kind: Scheduled

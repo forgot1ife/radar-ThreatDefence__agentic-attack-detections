@@ -1,0 +1,40 @@
+title: OpenHack Workspace, Temporary or Evidence Files Written
+id: 8ea1c520-4655-5cd8-9c00-8353bd6a6e9f
+status: experimental
+description: |
+    Detects files OpenHack (openhackai/OpenHack) writes. Both versions use ~/.openhack: v2 keeps settings.json,
+    credentials.json (API keys in plain text), dashboard-<port>.json and .log, and projects/<hash>/scans/<id>.json
+    reports with source evidence and findings; v0.x keeps config, auth.json (ChatGPT OAuth tokens), scans/ and
+    checkpoints/. v2 also writes <tmp>/openhack-subscription-* and <tmp>/openhack-login-* folders for its Claude Code
+    and Codex children, and v0.x writes .openhack-evidence/ and .openhack-sandbox-override-*.yml into the folder it
+    tests.
+references:
+    - https://github.com/openhackai/OpenHack
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        TargetFilename|contains:
+            - '/.openhack/'
+            - '\.openhack\'
+    selection_temp:
+        TargetFilename|contains:
+            - '/openhack-subscription-'
+            - '/openhack-login-'
+            - '\openhack-subscription-'
+            - '\openhack-login-'
+    selection_target:
+        TargetFilename|contains:
+            - '/.openhack-evidence/'
+            - '.openhack-sandbox-override-'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams running OpenHack
+    - Another program that uses a folder named .openhack
+level: low

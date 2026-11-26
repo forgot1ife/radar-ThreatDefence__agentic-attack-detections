@@ -1,0 +1,4 @@
+# hackingBuddyGPT Web API Report, Generated Spec or Benchmark Trace Written
+# Sigma id 9421ba54-f030-5fcc-ac07-57e6029b8333, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/hackingBuddyGPT/usecases/web_api/reports/" or FolderPath contains "/hackingBuddyGPT/usecases/web_api/openapi_spec/" or FolderPath contains "\\hackingBuddyGPT\\usecases\\web_api\\reports\\" or FolderPath contains "\\hackingBuddyGPT\\usecases\\web_api\\openapi_spec\\") or ((FolderPath contains "/benchmark_results/" and FolderPath contains "/traces/") and (FolderPath endswith ".jsonl" or FolderPath endswith "/console.log"))

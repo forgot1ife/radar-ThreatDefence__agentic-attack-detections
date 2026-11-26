@@ -1,0 +1,4 @@
+# Pensar Apex Agent Command Markers
+# Sigma id b406fa4b-5031-59e7-b5da-3d7408594f21, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "User-Agent: pensar-apex" or TargetProcessCommandLine contains "PensarBot/1.0" or TargetProcessCommandLine contains "InVzZSBzdHJpY3QiOwovLyBBcGV4IGNhbGxiYWNrIGxpc3RlbmVy" or TargetProcessCommandLine contains "process.env.APEX_CB_PROBE" or TargetProcessCommandLine contains "APEX_HIDDEN_PAYLOAD_COUNT" or TargetProcessCommandLine contains "APEX_FILE_PAYLOAD_COUNT" or TargetProcessCommandLine contains "__APEX_GREP_EXIT_" or TargetProcessCommandLine contains "<<'APEX_GLOB_PY'" or TargetProcessCommandLine contains "<<'APEX_LIST_PY'"

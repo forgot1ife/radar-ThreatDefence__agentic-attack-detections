@@ -1,0 +1,3 @@
+# Cain XSS Echo Marker in Web Logs
+# Sigma id 02d84781-b039-59de-a12a-f746c2fbb153, pipeline ecs
+from * metadata _id, _index, _version | where url.query like "*cainxss7f3a*"

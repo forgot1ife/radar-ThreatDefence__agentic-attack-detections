@@ -1,0 +1,38 @@
+// RedAI running on a host you monitor
+// Agentic attack detections by ThreatDefence (RedAI). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// RedAI (kpolley/redai) is a terminal workbench in which Claude Code or Codex agents scan a source tree for flaws and
+// then try to prove them against a running copy of the application. No report of its use in a real intrusion was found
+// on November 26, 2026, so this hunt looks for the software itself, from its source code (reviewed at 3ba2a98f):
+//  - The launcher is a Bun script: bun <...>/.bun/bin/redai after bun install -g @kpolley/redai, or bun run redai from
+//    a checkout.
+//  - Its browser validator starts Chrome with --user-data-dir=~/.redai/validator-environments/<name>/browser-profile
+//    <appUrl> for setup and copies that profile to ~/.redai/runs/<runId>/validation/browser-profile for agent-browser.
+//  - Its iOS validator runs xcrun simctl create redai-template-<name>-<time> and xcrun simctl clone <template>
+//    redai-<run>-<job>.
+//  - Its agents are told to keep PoCs and scripts in ~/.redai/runs/<runId>/artifacts/validation/<jobId>/, so their
+//    commands name that folder.
+//  - Files: ~/.redai/runs/<runId>/ (run.json, events.ndjson, state.json, report.md, report.json, report.html,
+//    artifacts/) and ~/.redai/validator-environments/<id>/environment.json. REDAI_HOME moves all of it.
+// The paths, names and launcher need a code change to remove; the agents' own commands are the model's.
+
+let Window = 30d;
+let RedaiProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where (FileName in~ ("bun", "bun.exe") and (ProcessCommandLine endswith "/bin/redai" or ProcessCommandLine endswith "bun run redai"))
+        or ProcessCommandLine has_any ("@kpolley/redai", "github.com/kpolley/redai")
+        or ProcessCommandLine contains "/.redai/validator-environments/" or ProcessCommandLine contains "/.redai/runs/"
+        or ProcessCommandLine contains @"\.redai\runs\" or ProcessCommandLine contains @"\.redai\validator-environments\"
+        or ProcessCommandLine contains "simctl create redai-template-"
+        or (ProcessCommandLine contains "simctl clone " and ProcessCommandLine contains " redai-");
+union isfuzzy=true
+    (RedaiProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 15), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="RedAI launcher, its browser profile, its simulators or agent commands on its run folder", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath matches regex @"[/\\]\.redai[/\\](runs|validator-environments|artifacts)[/\\]"
+        | summarize Files=make_set(FileName, 15), Timestamp=min(Timestamp) by DeviceName, AccountName=InitiatingProcessAccountName
+        | project Timestamp, DeviceName, AccountName, Signal="RedAI run, report or environment files", Detail=tostring(Files))
+| order by Timestamp desc

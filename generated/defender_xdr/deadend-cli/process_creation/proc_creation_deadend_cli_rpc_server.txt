@@ -1,0 +1,4 @@
+# Deadend CLI Agent Backend or Launcher Started
+# Sigma id dbdc81db-59be-504a-b89a-ca0857eb1628, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "deadend" and ProcessCommandLine contains "--log-file" and ProcessCommandLine contains "rpc-server-") or (ProcessCommandLine contains "deadend_cli.jsonrpc_server" or ProcessCommandLine contains "deadend-jsonrpc-server")

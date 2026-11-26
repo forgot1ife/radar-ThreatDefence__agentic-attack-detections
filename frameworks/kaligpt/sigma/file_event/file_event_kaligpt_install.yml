@@ -1,0 +1,40 @@
+title: KaliGPT Installed or Configured
+id: 51e6f829-09f4-564a-bef0-0f8a3fa8a1b3
+status: experimental
+description: |
+    Detects files written by the KaliGPT installer and agent. install.sh downloads kaligptinstaller.sh into the current
+    folder; the installer (run with sudo) clones KaliGPT into /opt/KaliGPT and SudoHopeX/OpenSearchAPI into
+    /opt/KaliGPT/OpenSearchAPI, creates the virtual environment /opt/KaliGPT/its_venv, writes the launchers
+    /usr/local/bin/kaligpt and /usr/local/bin/opensearchapi, and makes /opt/KaliGPT/agents/utils/api.config.json
+    (provider API keys in clear text) world-writable (chmod 666). On Termux the paths are
+    /data/data/com.termux/files/usr/share/KaliGPT and /data/data/com.termux/files/usr/bin/kaligpt.
+references:
+    - https://github.com/SudoHopeX/KaliGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.credential-access
+    - attack.t1552.001
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_dir:
+        # installers/installer.deb.sh:72,77,81,111,136,291,315; installers/installer.termux.sh:11-13 at b15b8d48
+        TargetFilename|contains:
+            - '/opt/KaliGPT/'
+            - '/share/KaliGPT/'
+    selection_launcher:
+        TargetFilename|endswith:
+            - '/bin/kaligpt'
+            - '/bin/opensearchapi'
+    selection_installer:
+        # install.sh:55,77,95
+        TargetFilename|endswith: '/kaligptinstaller.sh'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests, CTF and lab work with KaliGPT
+level: low

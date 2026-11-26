@@ -1,0 +1,4 @@
+# Cochise AI Pentest Agent Launcher
+# Sigma id a9ef7e9d-8998-55d6-961a-ed7197d6524d, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine endswith "/bin/cochise" or TargetProcessCommandLine endswith "\\Scripts\\cochise.exe") or (TargetProcessCommandLine contains "uv run cochise" or TargetProcessCommandLine contains "src/cochise.py" or TargetProcessCommandLine contains "cochise.cli.cochise" or TargetProcessCommandLine contains "/bin/cochise-replay " or TargetProcessCommandLine contains "/bin/cochise-analyze-" or TargetProcessCommandLine contains "uv run cochise-")

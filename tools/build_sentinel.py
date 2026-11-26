@@ -58,6 +58,7 @@ TECHNIQUE_TACTICS = {
     "T1078": {"DefenseEvasion", "Persistence", "PrivilegeEscalation", "InitialAccess"},
     "T1098": {"Persistence", "PrivilegeEscalation"},
     "T1110": {"CredentialAccess"},
+    "T1136": {"Persistence"},
     "T1190": {"InitialAccess"},
     "T1213": {"Collection"},
     "T1219": {"CommandAndControl"},

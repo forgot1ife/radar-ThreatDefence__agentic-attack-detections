@@ -1,0 +1,56 @@
+// CTF Agent running on a host you monitor
+// Agentic attack detections by ThreatDefence (CTF Agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1059.006 (Command and Scripting Interpreter: Python), T1609 (Container Administration Command), T1588.007 (Obtain Capabilities: Artificial Intelligence)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the CTF Agent source code (verialabs/ctf-agent at 3366d569). CTF Agent is a Python CLI with no web UI. It runs:
+//  - ctf-solve --ctfd-url ... [--coordinator claude|codex] [--msg-port N], usually through uv run (backend/cli.py:31-43)
+//  - codex app-server for each Codex solver and the Codex coordinator (backend/agents/codex_solver.py:186-191)
+//  - the Claude Code CLI through the Claude Agent SDK with permission_mode bypassPermissions; its Bash commands are
+//    rewritten to docker exec -i <full container id> bash -c <command> (backend/agents/claude_solver.py:189-201, 256-273)
+//  - one ctf-sandbox container per solver (sleep infinity, label ctf-agent, SYS_ADMIN, SYS_PTRACE, seccomp unconfined),
+//    with a host temp folder ctf-workspace-<random> mounted on /challenge/workspace (backend/sandbox.py:109-145)
+//  - inside it, every tool call as bash -c "timeout --signal=KILL --kill-after=5 <s> bash -c '<cmd>'", starting with
+//    uname -m (backend/sandbox.py:165-171, backend/agents/claude_solver.py:93)
+//  - a JSONL trace per solver in logs/trace-<challenge>-<model>-<YYYYmmdd-HHMMSS>.jsonl (backend/tracing.py:18-23)
+// Container processes show up only where the EDR sensor sees inside containers (Defender for Endpoint on the Linux host).
+
+let Window = 30d;
+let ExecBurst = 20;   // docker exec rewrites from one device in an hour before it is worth a look
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "ctf-solve" and ProcessCommandLine has_any ("--ctfd-url", "--ctfd-token", "--challenges-dir",
+                "--coordinator", "--max-challenges", "--msg-port", "--no-submit"))
+            or (ProcessCommandLine has "codex app-server" and InitiatingProcessCommandLine has "ctf-solve")
+            or ProcessCommandLine has_any ("IMPORTANT: You are running inside a Docker sandbox. All files are under /challenge/",
+                "You are a CTF competition coordinator running for the ENTIRE duration of a live competition")
+        | project Timestamp, DeviceName, Signal="CTF Agent launcher or model CLI", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "timeout --signal=KILL --kill-after=5 10 bash -c 'uname -m'"
+        | summarize Sandboxes=count(), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="CTF Agent sandbox start (uname -m through its wrapper)",
+            Detail=strcat(Sandboxes, " sandbox starts"), Parent=""),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "timeout --signal=KILL --kill-after=5 " and ProcessCommandLine has " bash -c "
+        | summarize Commands=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp)
+            by DeviceName, Hour=bin(Timestamp, 1h)
+        | where Commands >= ExecBurst
+        | project Timestamp, DeviceName, Signal="CTF Agent sandbox command wrapper burst", Detail=strcat(Commands, " commands: ", tostring(Examples)), Parent=""),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine matches regex @"docker exec -i [0-9a-f]{64} bash -c "
+        | summarize Commands=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp)
+            by DeviceName, Hour=bin(Timestamp, 1h)
+        | where Commands >= ExecBurst
+        | project Timestamp, DeviceName, Signal="CTF Agent Claude solver docker exec burst", Detail=strcat(Commands, " commands: ", tostring(Examples)), Parent=""),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/ctf-workspace-"
+            or (FolderPath has "/logs/trace-" and FileName endswith ".jsonl"
+                and FileName has_any ("-claude-opus-4-6-", "-gpt-5.4-", "-gpt-5.3-codex-", "-us.anthropic.claude-opus-4-6-v1-"))
+        | summarize Files=count(), Examples=make_set(FolderPath, 5), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="CTF Agent workspace or solver trace files", Detail=strcat(Files, " files: ", tostring(Examples)), Parent="")
+| order by Timestamp desc

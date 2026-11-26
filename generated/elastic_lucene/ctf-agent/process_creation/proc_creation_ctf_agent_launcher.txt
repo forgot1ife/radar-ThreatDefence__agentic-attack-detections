@@ -1,0 +1,3 @@
+# CTF Agent Launcher or Its Model CLIs
+# Sigma id cd94c065-3444-5506-b867-660f8c4f47c3, pipeline ecs
+(process.command_line:*ctf\-solve* AND (process.command_line:(*\-\-ctfd\-url* OR *\-\-ctfd\-token* OR *\-\-challenges\-dir* OR *\-\-coordinator* OR *\-\-max\-challenges* OR *\-\-msg\-port* OR *\-\-no\-submit*))) OR (process.command_line:*codex\ app\-server* AND process.parent.command_line:*ctf\-solve*) OR (process.command_line:(*IMPORTANT\:\ You\ are\ running\ inside\ a\ Docker\ sandbox.\ All\ files\ are\ under\ \/challenge\/* OR *You\ are\ a\ CTF\ competition\ coordinator\ running\ for\ the\ ENTIRE\ duration\ of\ a\ live\ competition*))

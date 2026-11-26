@@ -1,0 +1,3 @@
+# KaliGPT Installed or Configured
+# Sigma id 51e6f829-09f4-564a-bef0-0f8a3fa8a1b3, pipeline ecs
+(TargetFilename:(*\/opt\/KaliGPT\/* OR *\/share\/KaliGPT\/*)) OR (TargetFilename:(*\/bin\/kaligpt OR *\/bin\/opensearchapi)) OR TargetFilename:*\/kaligptinstaller.sh

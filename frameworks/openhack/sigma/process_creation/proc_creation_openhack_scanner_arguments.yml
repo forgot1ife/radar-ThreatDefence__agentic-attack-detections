@@ -1,0 +1,42 @@
+title: Network Scanners Started by the OpenHack v0.x Agent
+id: 1bd4cf6e-00f1-5166-b5cd-01a460d09b6a
+status: experimental
+description: |
+    Detects nmap, sqlmap, nuclei, httpx or subfinder started by the OpenHack v0.x pentest agent (PyPI openhack 0.2.4,
+    openhackai/OpenHack tag v0.2.4) with the fixed arguments its tools use: nmap -sV -Pn -T4, sqlmap -u <url> --batch
+    --disable-coloring, nuclei -silent -jsonl -target, httpx -silent -json -status-code -title -tech-detect -web-server
+    -no-color, subfinder -silent -d. The parent is the openhack console script.
+references:
+    - https://github.com/openhackai/OpenHack/blob/8fdfdddffa1f493d21e3e6dd98d911e7c531b84b/openhack/tools/recon.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.discovery
+    - attack.t1046
+logsource:
+    category: process_creation
+detection:
+    selection_parent:
+        ParentCommandLine|contains:
+            - '/bin/openhack'
+            - ' -m openhack'
+            - 'openhack/__main__.py'
+    tool_nmap:
+        CommandLine|contains: 'nmap -sV -Pn -T4 '
+    tool_sqlmap:
+        CommandLine|contains|all:
+            - 'sqlmap -u '
+            - ' --batch --disable-coloring'
+    tool_nuclei:
+        CommandLine|contains: 'nuclei -silent -jsonl -target '
+    tool_httpx:
+        CommandLine|contains: 'httpx -silent -json -status-code -title -tech-detect -web-server -no-color'
+    tool_subfinder:
+        CommandLine|contains: 'subfinder -silent -d '
+    condition: selection_parent and 1 of tool_*
+falsepositives:
+    - Authorized tests with the OpenHack v0.x agent
+level: medium

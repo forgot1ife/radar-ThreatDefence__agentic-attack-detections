@@ -1,0 +1,26 @@
+# Agentic attack detections by ThreatDefence: Ares (dreadnode)
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3813441-3813455.
+# Ares has no web console. These rules catch the residue its own code puts into Active Directory, SQL Server and
+# HTTP traffic on the target network (dreadnode/ares at 786b2987). Everything else it sends is stock impacket,
+# NetExec, certipy, bloodyAD and Responder traffic, which these rules do not try to cover.
+# SMB, Kerberos and TDS rules need the traffic in clear text: SMB 3 encryption, TDS encryption or LDAPS hide it.
+
+# --- Machine account Ares mints for RBCD: impacket-addcomputer over SAMR names it ARES-<8 hex>$ (UTF-16LE) ---
+alert tcp any any -> $HOME_NET 445 (msg:"TD Ares minted machine account name ARES-<8 hex>$ in SMB (SAMR create)"; flow:established,to_server; content:"A|00|R|00|E|00|S|00|-|00|"; fast_pattern; pcre:"/A\x00R\x00E\x00S\x00-\x00(?:[0-9A-F]\x00){8}\$\x00/"; classtype:trojan-activity; sid:3813441; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Ares, mitre_tactic_id TA0003, mitre_tactic_name Persistence, mitre_technique_id T1136.002, mitre_technique_name Domain_Account;)
+
+# --- The same account used as the client principal for S4U and TGT requests (RBCD chain, impacket over TCP 88) ---
+alert tcp any any -> $HOME_NET 88 (msg:"TD Ares minted machine account ARES-<8 hex>$ in a Kerberos request"; flow:established,to_server; content:"ARES-"; fast_pattern; pcre:"/ARES-[0-9A-F]{8}\$/"; classtype:trojan-activity; sid:3813442; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Ares, mitre_tactic_id TA0006, mitre_tactic_name Credential_Access, mitre_technique_id T1558, mitre_technique_name Steal_or_Forge_Kerberos_Tickets;)
+
+# --- GPO abuse probe: pygpoabuse immediate task named ARES_GPO_Probe_<8 hex> written to SYSVOL over SMB ---
+alert tcp any any -> $HOME_NET 445 (msg:"TD Ares GPO abuse probe task ARES_GPO_Probe_ written over SMB"; flow:established,to_server; content:"ARES_GPO_Probe_"; fast_pattern; pcre:"/ARES_GPO_Probe_[0-9a-f]{8}/"; classtype:trojan-activity; sid:3813443; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Ares, mitre_tactic_id TA0004, mitre_tactic_name Privilege_Escalation, mitre_technique_id T1484.001, mitre_technique_name Group_Policy_Modification, mitre_tactic_id TA0002, mitre_tactic_name Execution, mitre_technique_id T1053.005, mitre_technique_name Scheduled_Task;)
+
+# --- Far-host hive dump over a SQL Server link: the fixed -EncodedCommand payload in a TDS SQL batch (UTF-16LE) ---
+# The base64 below encodes $t=$env:TEMP / $a="$t\a.hive", lines 2-3 of the fixed script (lateral/mssql.rs:368-385).
+alert tcp any any -> $HOME_NET any (msg:"TD Ares SQL Server hive dump, fixed EncodedCommand payload in xp_cmdshell"; flow:established,to_server; content:"J|00|A|00|B|00|0|00|A|00|D|00|0|00|A|00|J|00|A|00|B|00|l|00|A|00|G|00|4|00|A|00|d|00|g|00|A|00|6|00|A|00|F|00|Q|00|A|00|R|00|Q|00|B|00|N|00|A|00|F|00|A|00|A|00|C|00|g|00|A|00|k|00|A|00|G|00|E|00|A|00|P|00|Q|00|A|00|i|00|A|00|C|00|Q|00|A|00|d|00|A|00|B|00|c|00|A|00|G|00|E|00|A|00|L|00|g|00|B|00|o|00|A|00|G|00|k|00|A|00|d|00|g|00|B|00|l|00|A|00|C|00|I|00|A|00|"; fast_pattern; classtype:trojan-activity; sid:3813444; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Ares, mitre_tactic_id TA0003, mitre_tactic_name Persistence, mitre_technique_id T1505.001, mitre_technique_name SQL_Stored_Procedures, mitre_tactic_id TA0006, mitre_tactic_name Credential_Access, mitre_technique_id T1003.002, mitre_technique_name Security_Account_Manager;)
+
+# --- The hive dump's own delimiter rows coming back in the xp_cmdshell result set (UTF-16LE) ---
+alert tcp $HOME_NET any -> any any (msg:"TD Ares SQL Server hive dump, ___ARES_HIVE_ delimiter in a result set"; flow:established,from_server; content:"_|00|_|00|_|00|A|00|R|00|E|00|S|00|_|00|H|00|I|00|V|00|E|00|_|00|"; fast_pattern; classtype:trojan-activity; sid:3813445; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Ares, mitre_tactic_id TA0006, mitre_tactic_name Credential_Access, mitre_technique_id T1003.002, mitre_technique_name Security_Account_Manager, mitre_tactic_id TA0010, mitre_tactic_name Exfiltration, mitre_technique_id T1041, mitre_technique_name Exfiltration_Over_C2_Channel;)
+
+# --- ESC8 probe: reqwest HEAD /certsrv/certfnsh.asp with no User-Agent header (privesc/adcs.rs:1364-1379) ---
+alert http any any -> $HOME_NET any (msg:"TD Ares ESC8 probe, HEAD /certsrv/certfnsh.asp with no User-Agent"; flow:established,to_server; http.method; content:"HEAD"; http.uri; content:"/certsrv/certfnsh.asp"; fast_pattern; endswith; http.header_names; content:!"User-Agent"; nocase; classtype:attempted-recon; sid:3813446; rev:1; metadata:created_at 2026_11_26, confidence Low, malware_family Ares, mitre_tactic_id TA0007, mitre_tactic_name Discovery, mitre_technique_id T1046, mitre_technique_name Network_Service_Discovery;)

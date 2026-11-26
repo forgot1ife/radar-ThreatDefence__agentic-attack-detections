@@ -1,0 +1,65 @@
+{
+ "description": "10 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 4,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "cochise",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Cochise network shape: one Python process talking to a model API and holding an SSH session, and its asyncssh banner; KQL hunt: Cochise running on a host you monitor, and the Kali VM it drives",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1021.004"
+  },
+  {
+   "comment": "KQL hunt: Cochise network shape: one Python process talking to a model API and holding an SSH session, and its asyncssh banner; KQL hunt: Cochise running on a host you monitor, and the Kali VM it drives; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Cochise AI Pentest Agent Launcher",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Cochise running on a host you monitor, and the Kali VM it drives; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: Cochise AI pentest agent user list in AD attack commands; Sigma: Cochise AI Pentest Agent User List in AD Attack Commands",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.003"
+  },
+  {
+   "comment": "Sigma: Cochise AI Pentest Agent User List in AD Attack Commands",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1558.004"
+  },
+  {
+   "comment": "Sigma: Cochise AI Pentest Agent Run Log Created; YARA: Cochise_Run_Log; YARA: Cochise_Scenario_Prompt; YARA: Cochise_Source",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

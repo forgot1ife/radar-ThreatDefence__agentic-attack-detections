@@ -1,0 +1,4 @@
+# Guardian Tool Wrapper Markers in a Command Line
+# Sigma id 2ba5eb49-9713-5e7a-bb88-ddb8b80e0e90, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "/tmp/guardian_ffuf_wordlist.txt" or ProcessCommandLine contains " -F guardian-prowler" or (ProcessCommandLine contains "dependency-check" and ProcessCommandLine endswith " --project guardian")

@@ -1,0 +1,36 @@
+title: Pensar Apex Session, Run Store or Callback Listener Files
+id: c3503bd7-f892-5def-81b5-aea6a55e24fd
+status: experimental
+description: |
+    Detects files Pensar Apex writes: a session folder under ~/.pensar/sessions/<id>/ (session.json, README.md,
+    findings/, scratchpad/, logs/, pocs/), the run store ~/.pensar/runtime/runs.sqlite, the staged callback listener
+    callback-listeners/listener-<32 hex>.cjs, and a prompt injection payload /tmp/apex_payload_<uuid>.txt
+    (src/core/session/index.ts:393-437, src/core/runtime/runStorePath.ts:4-12, callbackListener.ts:693-697,
+    executeCommand.ts:251-257). PENSAR_DATA_DIR moves the data folder.
+references:
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/session/index.ts#L393-L437
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/agents/offSecAgent/tools/callbackListener.ts#L693-L697
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_session:
+        TargetFilename|contains:
+            - '/.pensar/sessions/'
+            - '\.pensar\sessions\\'
+            - '/.pensar/runtime/runs.sqlite'
+            - '\.pensar\runtime\runs.sqlite'
+    selection_listener:
+        TargetFilename|contains: 'callback-listeners'
+        TargetFilename|endswith: '.cjs'
+    selection_payload:
+        TargetFilename|contains: '/tmp/apex_payload_'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams that use Pensar Apex
+level: medium

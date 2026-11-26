@@ -1,0 +1,4 @@
+# ARTEMIS Supervisor or Autonomous Driver Started
+# Sigma id 31ee5f21-c658-5247-99c8-c63658a63147, pipeline azure_monitor
+SecurityEvent
+| where ((CommandLine contains "supervisor.supervisor" or CommandLine contains "codex-supervisor") and (CommandLine contains "--benchmark-mode" or CommandLine contains "--skip-todos" or CommandLine contains "--use-prompt-generation" or CommandLine contains "--finish-on-submit" or CommandLine contains "--codex-binary" or CommandLine contains "configs/tests/ctf_easy.yaml" or CommandLine contains "configs/stanford/")) or ((CommandLine contains "codex autonomous " or CommandLine contains "codex auto ") and (CommandLine contains "--ignore-work-hours" or CommandLine contains "--driver-model" or CommandLine contains "--work-start-hour" or CommandLine contains "--logs-dir" or CommandLine contains "--mode "))

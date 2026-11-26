@@ -1,0 +1,6 @@
+{"name": "the run log in the working directory", "expected": true, "event": {"TargetFilename": "/opt/mapta/scan_usage.log", "Image": "/usr/bin/python3"}}
+{"name": "a per-target usage file", "expected": true, "event": {"TargetFilename": "/opt/mapta/app.example.test_usage_log_20261126_101500.json", "Image": "/usr/bin/python3"}}
+{"name": "the sandbox script", "expected": true, "event": {"TargetFilename": "/home/user/temp_script_3f9a1c07.py", "Image": "/usr/bin/python3"}}
+{"name": "near miss: another log file in the same folder", "expected": false, "event": {"TargetFilename": "/opt/mapta/scan.log", "Image": "/usr/bin/python3"}}
+{"name": "near miss: a usage log that is not JSON", "expected": false, "event": {"TargetFilename": "/var/log/app/disk_usage_log_20261126.txt", "Image": "/usr/bin/python3"}}
+{"name": "near miss: a temp_script outside /home/user", "expected": false, "event": {"TargetFilename": "/tmp/temp_script_3f9a1c07.py", "Image": "/usr/bin/python3"}}

@@ -1,0 +1,4 @@
+{"name": "the prompt PHP object in a query string", "expected": true, "event": {"cs-uri-stem": "/profile", "cs-uri-query": "data=O:8:%22stdClass%22:1:%7Bs:4:%22test%22;s:11:%22injection%22;%7D", "cs-method": "GET"}}
+{"name": "the prompt open redirect target", "expected": true, "event": {"cs-uri-stem": "/nav", "cs-uri-query": "to=/logout&next=https://attacker.site", "cs-method": "GET"}}
+{"name": "a correct PHP object with the same words", "expected": false, "event": {"cs-uri-stem": "/profile", "cs-uri-query": "data=O:8:%22stdClass%22:1:%7Bs:4:%22test%22;s:9:%22injection%22;%7D", "cs-method": "GET"}}
+{"name": "an open redirect test to another domain", "expected": false, "event": {"cs-uri-stem": "/nav", "cs-uri-query": "to=/logout&next=https://attacker.example", "cs-method": "GET"}}

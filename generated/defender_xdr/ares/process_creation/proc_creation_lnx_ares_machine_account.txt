@@ -1,0 +1,4 @@
+# Ares Minted Machine Account Created With impacket-addcomputer
+# Sigma id 3677dece-25bf-5667-92bc-36b7951a6616, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "addcomputer" and ProcessCommandLine matches regex "-computer-name\\s+ARES-[0-9A-F]{8}(\\s|$)"

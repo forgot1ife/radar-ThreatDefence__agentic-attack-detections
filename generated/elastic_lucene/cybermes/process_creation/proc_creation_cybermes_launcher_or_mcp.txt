@@ -1,0 +1,3 @@
+# Cybermes Launcher, MCP Server or Go Tools Started
+# Sigma id 24f3b9c4-c536-5d53-a9e1-41fd1cdec3f9, pipeline ecs
+(process.executable:(*\/cybermes\-mcp OR *\\cybermes\-mcp.exe OR *\/smart_pipe OR *\/search_knowledge)) OR (process.command_line:(*cybermes\-mcp@latest* OR *\/.cybermes\/bin\/cybermes\-mcp\-v* OR *\\.cybermes\\bin\\cybermes\-mcp\-v* OR *cybermes\-mcp.js*)) OR (process.command_line:(*.\/cybermes\ * OR *\/cybermes\ gateway\ run* OR *cybermes.bat* OR *cybermes.ps1* OR *\/opt\/hermes\-venv\/bin\/hermes*))

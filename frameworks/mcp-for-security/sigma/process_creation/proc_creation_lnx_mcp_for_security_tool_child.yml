@@ -1,0 +1,66 @@
+title: Recon or Exploitation Tool Started by an MCP for Security Wrapper
+id: 56966f5d-7af6-5729-835f-e065f8ebba9b
+status: experimental
+description: |
+    Detects a tool started by one of MCP for Security's wrappers (node <dir>/<tool>-mcp/build/index.js) with the fixed
+    argument shapes the wrappers build: nuclei/httpx/katana -u ... -silent, scout aws --force --no-browser,
+    assetfinder -subs-only, gowitness scan single --url / scan file -f, shuffledns -d ... -mode, masscan -p<ports>,
+    commix.py and smuggler.py -u, and any nmap, sqlmap, ffuf, wpscan, sslscan, arjun, amass, alterx, cero or
+    waybackurls run under a wrapper. The AI assistant in the MCP host chose the target and options.
+references:
+    - https://github.com/cyproxio/mcp-for-security/blob/51dd537f5829470ebe508afd33186bd1a0459256/nuclei-mcp/src/index.ts#L29
+    - https://github.com/cyproxio/mcp-for-security/blob/51dd537f5829470ebe508afd33186bd1a0459256/scoutsuite-mcp/src/index.ts#L38
+    - https://github.com/cyproxio/mcp-for-security/blob/51dd537f5829470ebe508afd33186bd1a0459256/commix-mcp/src/index.ts#L24
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.discovery
+    - attack.t1046
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_parent:
+        ParentCommandLine|contains:
+            - '-mcp/build/index.js'
+            - '/cero/build/index.js'
+    selection_fixed_args:
+        CommandLine|contains:
+            - ' -silent'
+            - 'aws --force --no-browser'
+            - ' -subs-only '
+            - 'scan single --url '
+            - 'scan file -f '
+            - '/opt/commix/commix.py -u '
+            - '/opt/smuggler/smuggler.py -u '
+            - 'sqlmap -u '
+            - 'sqlmap.py -u '
+            - 'wpscan -u '
+    selection_tools:
+        Image|endswith:
+            - '/nmap'
+            - '/masscan'
+            - '/nuclei'
+            - '/httpx'
+            - '/katana'
+            - '/ffuf'
+            - '/sqlmap'
+            - '/wpscan'
+            - '/sslscan'
+            - '/arjun'
+            - '/amass'
+            - '/alterx'
+            - '/assetfinder'
+            - '/cero'
+            - '/shuffledns'
+            - '/gowitness'
+            - '/waybackurls'
+            - '/scout'
+    condition: selection_parent and (selection_fixed_args or selection_tools)
+falsepositives:
+    - Other MCP servers laid out as <name>-mcp/build/index.js that run the same tools
+    - Authorized tests driven through MCP for Security
+level: medium

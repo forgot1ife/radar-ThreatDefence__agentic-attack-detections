@@ -1,0 +1,4 @@
+# Cybermes Launcher, MCP Server or Go Tools Started
+# Sigma id 24f3b9c4-c536-5d53-a9e1-41fd1cdec3f9, pipeline azure_monitor
+SecurityEvent
+| where (NewProcessName endswith "/cybermes-mcp" or NewProcessName endswith "\\cybermes-mcp.exe" or NewProcessName endswith "/smart_pipe" or NewProcessName endswith "/search_knowledge") or (CommandLine contains "cybermes-mcp@latest" or CommandLine contains "/.cybermes/bin/cybermes-mcp-v" or CommandLine contains "\\.cybermes\\bin\\cybermes-mcp-v" or CommandLine contains "cybermes-mcp.js") or (CommandLine contains "./cybermes " or CommandLine contains "/cybermes gateway run" or CommandLine contains "cybermes.bat" or CommandLine contains "cybermes.ps1" or CommandLine contains "/opt/hermes-venv/bin/hermes")

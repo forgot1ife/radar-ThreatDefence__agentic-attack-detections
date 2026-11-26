@@ -1,0 +1,3 @@
+# Guardian Tool Wrapper Markers in a Command Line
+# Sigma id 2ba5eb49-9713-5e7a-bb88-ddb8b80e0e90, pipeline splunk_windows
+CommandLine="*/tmp/guardian_ffuf_wordlist.txt*" OR CommandLine="* -F guardian-prowler*" OR (CommandLine="*dependency-check*" CommandLine="* --project guardian")

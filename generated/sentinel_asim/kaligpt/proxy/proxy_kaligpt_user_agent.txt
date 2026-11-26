@@ -1,0 +1,4 @@
+# KaliGPT Tool User Agent in Proxy Logs
+# Sigma id 102217b3-2b8e-561d-b153-7d2d086b6e71, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent in~ ("HackerX WebRequestFramework/1.0", "LocalScraper/1.0")

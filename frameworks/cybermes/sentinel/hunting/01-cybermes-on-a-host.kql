@@ -1,0 +1,46 @@
+// Cybermes running on a host you monitor
+// Agentic attack detections by ThreatDefence (Cybermes). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1595.002 (Active Scanning: Vulnerability Scanning), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the Cybermes source code (Zyrexnn/Cybermes at 149b9a66, v3.5.1):
+//  - Cybermes is a wrapper around Hermes Agent. ./cybermes (cybermes.bat, cybermes.ps1) sets HERMES_HOME=<clone>/.hermes
+//    and execs <clone>/venv/bin/hermes. The Docker image (ghcr.io/zyrexnn/cybermes, container cybermes-agent) installs
+//    Hermes in /opt/hermes-venv and runs "hermes gateway run" (Telegram control) by default.
+//  - Its .env.example sets HERMES_YOLO_MODE=1 and its config.yaml.example sets approvals.mode: 'off', so every
+//    command the model writes runs without asking. Neither shows on the command line.
+//  - Go tools in tools/bin or /usr/local/bin: cybermes-mcp (MCP server over stdio), smart_pipe, secret_scan,
+//    search_knowledge, aggregate_reports. AI clients start the MCP server with npx -y cybermes-mcp@latest, which caches
+//    ~/.cybermes/bin/cybermes-mcp-v<version>-<os>-<arch>.
+//  - cybermes-mcp runs nmap -sT --open -T3 --max-rate <n> -oN -, nuclei ... -silent -jsonl -timeout 10 -duc,
+//    httpx ... -silent -status-code -title -tech-detect -json, katana ... -jc -silent -ct, ffuf .../FUZZ ... -timeout 5 -s -json.
+//  - Files: ~/.cybermes/ (config.json, update_check.json, bin/), <HERMES_HOME>/skills/autonomous-godmode-hunter/,
+//    recon/<slug>/katana.txt, nmap_output.txt, nuclei_output.txt, reports/<slug>/findings|pocs|evidence/, SUMMARY.md,
+//    metadata.json, report.html, REPORT_<slug>.pdf.
+// The Hermes hunts (frameworks/hermes) also apply: attack tools under the hermes process fire there.
+
+let Window = 30d;
+let CmdRegex = @"\./cybermes\s|/cybermes gateway run|cybermes\.(bat|ps1)|/opt/hermes-venv/bin/hermes|cybermes-mcp@latest|[/\\]\.cybermes[/\\]bin[/\\]cybermes-mcp-v|cybermes-mcp\.js";
+let CybermesTools = dynamic(["cybermes-mcp", "cybermes-mcp.exe", "smart_pipe", "search_knowledge"]);
+let McpArgs = @"-sT --open -T3 --max-rate |-silent -jsonl -timeout 10 -duc|-silent -status-code -title -tech-detect -json -timeout |-jc -silent -ct |/FUZZ -w .* -timeout 5 -s -json";
+let PathRegex = @"[/\\]\.cybermes[/\\]|[/\\]\.hermes[/\\]skills[/\\]autonomous-godmode-hunter[/\\]";
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine matches regex CmdRegex or FileName in~ (CybermesTools)
+        | project Timestamp, DeviceName, Account=AccountName, Signal="Cybermes launcher, MCP server or Go tool",
+            Detail=substring(ProcessCommandLine, 0, 300)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessFileName startswith "cybermes-mcp" or ProcessCommandLine matches regex McpArgs
+        | where FileName in~ ("nmap", "nuclei", "httpx", "katana", "ffuf", "subfinder")
+        | project Timestamp, DeviceName, Account=AccountName, Signal="Scanner started by cybermes-mcp",
+            Detail=substring(ProcessCommandLine, 0, 300)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath matches regex PathRegex
+            or (FolderPath contains "/recon/" and FileName in~ ("katana.txt", "nuclei_output.txt"))
+            or (FolderPath contains "/reports/" and (FileName =~ "recon_notes.md" or FileName matches regex @"^REPORT_.+\.pdf$"))
+        | project Timestamp, DeviceName, Account=InitiatingProcessAccountName, Signal="Cybermes files",
+            Detail=strcat(FolderPath, " by ", InitiatingProcessFileName))
+| summarize Events=count(), FirstSeen=min(Timestamp), LastSeen=max(Timestamp), Details=make_set(Detail, 15) by DeviceName, Account, Signal
+| order by LastSeen desc

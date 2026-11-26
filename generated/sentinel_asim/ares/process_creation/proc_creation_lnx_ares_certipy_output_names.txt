@@ -1,0 +1,4 @@
+# Ares Certipy Output File Names
+# Sigma id 837d52f9-8850-5555-b56c-4eea801d0878, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "certipy" and TargetProcessCommandLine matches regex "-out\\s+\\S*(cert_|shadow_|forged_|cert_retrieve_)\\S+_[0-9]{13}-[0-9]+-[0-9]+"

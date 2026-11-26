@@ -1,0 +1,4 @@
+# RedAI Run, Report or Validator Environment Files Written
+# Sigma id 9f30b245-12fd-50bf-8b2e-e580e4e7291d, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath contains "/.redai/runs/" or FolderPath contains "/.redai/validator-environments/" or FolderPath contains "/.redai/artifacts/" or FolderPath contains "\\.redai\\runs\\" or FolderPath contains "\\.redai\\validator-environments\\" or FolderPath contains "\\.redai\\artifacts\\"

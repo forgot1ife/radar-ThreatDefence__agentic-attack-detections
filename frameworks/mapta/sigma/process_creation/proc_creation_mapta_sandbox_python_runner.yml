@@ -1,0 +1,28 @@
+title: MAPTA Sandbox Python Runner
+id: 713ada5c-0f44-56fa-b2a1-d2f3a4deacfc
+status: experimental
+description: |
+    Detects the way MAPTA runs model-written Python in its sandbox: the code is written to
+    /home/user/temp_script_<8 hex>.py and run as root with "source .venv/bin/activate && python3 <path>"
+    (main.py:691-700). Fires inside a local sandbox (Docker or VM) that an EDR watches; a cloud sandbox runs off your
+    network.
+references:
+    - https://github.com/arthurgervais/mapta/blob/0c167b86aedeb4f27745a84a8f7324518b0c960a/main.py#L691-L700
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+detection:
+    selection:
+        CommandLine|contains|all:
+            - 'python3 /home/user/temp_script_'
+            - '.py'
+    condition: selection
+falsepositives:
+    - Authorized research runs of MAPTA
+    - Other agents or notebooks that use the same temp_script_ naming in an E2B-style sandbox
+level: medium

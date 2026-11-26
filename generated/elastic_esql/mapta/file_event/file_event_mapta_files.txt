@@ -1,0 +1,3 @@
+# MAPTA Run Log, Usage or Sandbox Script Files Written
+# Sigma id 29b59224-90dd-5e78-b1a9-38819639bffb, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(TargetFilename, "/scan_usage.log") or ends_with(TargetFilename, "\\scan_usage.log") or TargetFilename like "*_usage_log_*" and ends_with(TargetFilename, ".json") or starts_with(TargetFilename, "/home/user/temp_script_") and ends_with(TargetFilename, ".py")

@@ -1,0 +1,4 @@
+# CTF Agent Claude Solver Command Redirected Into Its Sandbox
+# Sigma id 7511b526-3541-55af-9a2b-1f75039a7ad1, pipeline splunk_windows
+CommandLine="*docker exec -i *" CommandLine="* bash -c *"
+| regex CommandLine="docker exec -i [0-9a-f]{64} bash -c "

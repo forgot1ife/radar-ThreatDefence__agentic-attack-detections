@@ -1,0 +1,4 @@
+# Command Run by the KaliGPT Agent
+# Sigma id 00c313a4-6e2b-5975-824f-35700f7b6cf1, pipeline sentinel_asim
+imProcessCreate
+| where (ActingProcessCommandLine contains " -m agents.gemini" or ActingProcessCommandLine contains " -m agents.ollama" or ActingProcessCommandLine contains " -m agents.openrouter" or ActingProcessCommandLine contains " -m agents.chatgpt" or ActingProcessCommandLine contains " -m agents.litellm") and TargetProcessCurrentDirectory contains "/KaliGPT"

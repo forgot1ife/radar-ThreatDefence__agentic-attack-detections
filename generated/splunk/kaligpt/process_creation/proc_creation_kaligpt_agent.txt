@@ -1,0 +1,3 @@
+# KaliGPT AI Pentest Agent Started
+# Sigma id 40492751-b985-5e31-bb0e-655e78122279, pipeline splunk_windows
+CommandLine IN ("*/opt/KaliGPT/OpenSearchAPI/app.py*", "*/share/KaliGPT/OpenSearchAPI/app.py*") OR CommandLine IN ("*/usr/local/bin/kaligpt*", "*/usr/bin/kaligpt *") OR (CommandLine IN ("* -m agents.gemini*", "* -m agents.ollama*", "* -m agents.openrouter*", "* -m agents.chatgpt*", "* -m agents.litellm*", "* -m agents.web_launcher*") CurrentDirectory="*/KaliGPT*")

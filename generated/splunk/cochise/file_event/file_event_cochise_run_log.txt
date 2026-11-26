@@ -1,0 +1,4 @@
+# Cochise AI Pentest Agent Run Log Created
+# Sigma id 3cf82d57-e000-53fc-81da-ab752c10313e, pipeline splunk_windows
+TargetFilename="*/logs/run-20*" TargetFilename="*.json" Image="*python*"
+| regex TargetFilename="/logs/run-\\d{8}-\\d{6}\\.json$"

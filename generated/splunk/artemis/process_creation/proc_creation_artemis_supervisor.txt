@@ -1,0 +1,3 @@
+# ARTEMIS Supervisor or Autonomous Driver Started
+# Sigma id 31ee5f21-c658-5247-99c8-c63658a63147, pipeline splunk_windows
+(CommandLine IN ("*supervisor.supervisor*", "*codex-supervisor*") CommandLine IN ("*--benchmark-mode*", "*--skip-todos*", "*--use-prompt-generation*", "*--finish-on-submit*", "*--codex-binary*", "*configs/tests/ctf_easy.yaml*", "*configs/stanford/*")) OR (CommandLine IN ("*codex autonomous *", "*codex auto *") CommandLine IN ("*--ignore-work-hours*", "*--driver-model*", "*--work-start-hour*", "*--logs-dir*", "*--mode *"))

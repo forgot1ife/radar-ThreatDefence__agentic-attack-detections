@@ -1,0 +1,4 @@
+# RedAI AI Vulnerability Validation Workbench Running or Installed
+# Sigma id 76b101ba-b0a3-5471-a46b-29a2ac43c46a, pipeline sentinel_asim
+imProcessCreate
+| where ((TargetProcessName endswith "/bun" or TargetProcessName endswith "\\bun.exe") and (TargetProcessCommandLine endswith "/bin/redai" or TargetProcessCommandLine endswith "bun run redai")) or (TargetProcessCommandLine contains "@kpolley/redai" or TargetProcessCommandLine contains "github.com/kpolley/redai") or (TargetProcessCommandLine contains "/.redai/validator-environments/" or TargetProcessCommandLine contains "/.redai/runs/" or TargetProcessCommandLine contains "\\.redai\\validator-environments\\" or TargetProcessCommandLine contains "\\.redai\\runs\\") or TargetProcessCommandLine contains "simctl create redai-template-" or (TargetProcessCommandLine contains "simctl clone " and TargetProcessCommandLine contains " redai-")

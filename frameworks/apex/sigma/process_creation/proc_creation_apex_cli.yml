@@ -1,0 +1,42 @@
+title: Pensar Apex CLI or Kali Container Started
+id: 9f74677f-b4b2-5b01-bcac-dcce0e24b46f
+status: experimental
+description: |
+    Detects the Pensar Apex command line tool (npm package @pensar/apex, binary pensar) starting a headless pentest, a
+    targeted pentest, a threat model or a detached local run worker, its installation, and the kali-apex container from
+    the repository's compose file. Command names come from src/cli.ts:266-290, src/cli/agent-runs.ts:27-38,
+    README.md and container/docker-compose.yml:2-5. A bare "pensar" (the TUI) is too short to match on its own.
+references:
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/cli.ts#L266-L290
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/container/docker-compose.yml#L2-L5
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_cli:
+        CommandLine|contains:
+            - 'pensar pentest '
+            - 'pensar targeted-pentest '
+            - 'pensar threat-model'
+            - 'pensar agent-runs worker'
+            - 'pensar.js pentest '
+            - 'pensar.js targeted-pentest '
+    selection_install:
+        CommandLine|contains:
+            - '@pensar/apex'
+            - 'pensarai.com/install.sh'
+            - 'pensarai.com/apex.ps1'
+            - 'brew install apex'
+    selection_container:
+        CommandLine|contains:
+            - 'exec kali-apex'
+            - 'kali-apex:latest'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams that use Pensar Apex
+level: medium

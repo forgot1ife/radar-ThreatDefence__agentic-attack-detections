@@ -1,0 +1,4 @@
+# Deadend CLI Credential Wallet or Session Logs Written
+# Sigma id eff86319-406f-5534-b9ac-7ef50b199b05, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName endswith "/.deadend/reusable_credentials.json" or TargetFileName endswith "/.cache/deadend/memory/reusable_credentials.json") or (TargetFileName contains "/.cache/deadend/logs/" and (TargetFileName endswith "/requester.jsonl" or TargetFileName endswith "/python_interpreter.jsonl" or TargetFileName endswith ".log")) or (TargetFileName contains "/.deadend/agents/" and TargetFileName endswith "/auth_context/playwright_state.json")

@@ -1,0 +1,4 @@
+# Cochise AI Pentest Agent Run Log Created
+# Sigma id 3cf82d57-e000-53fc-81da-ab752c10313e, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/logs/run-20" and TargetFileName endswith ".json") and TargetFileName matches regex "/logs/run-\\d{8}-\\d{6}\\.json$" and TargetFilePath contains "python"

@@ -1,0 +1,4 @@
+# CTF Agent Launcher or Its Model CLIs
+# Sigma id cd94c065-3444-5506-b867-660f8c4f47c3, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "ctf-solve" and (ProcessCommandLine contains "--ctfd-url" or ProcessCommandLine contains "--ctfd-token" or ProcessCommandLine contains "--challenges-dir" or ProcessCommandLine contains "--coordinator" or ProcessCommandLine contains "--max-challenges" or ProcessCommandLine contains "--msg-port" or ProcessCommandLine contains "--no-submit")) or (ProcessCommandLine contains "codex app-server" and InitiatingProcessCommandLine contains "ctf-solve") or (ProcessCommandLine contains "IMPORTANT: You are running inside a Docker sandbox. All files are under /challenge/" or ProcessCommandLine contains "You are a CTF competition coordinator running for the ENTIRE duration of a live competition")

@@ -1,0 +1,2 @@
+{"name": "tag lookup of the nuclei wrapper", "expected": true, "event": {"c-uri": "https://raw.githubusercontent.com/projectdiscovery/nuclei-templates/refs/heads/main/TEMPLATES-STATS.json"}}
+{"name": "near miss: the same file through the short branch path", "expected": false, "event": {"c-uri": "https://raw.githubusercontent.com/projectdiscovery/nuclei-templates/main/TEMPLATES-STATS.json"}}

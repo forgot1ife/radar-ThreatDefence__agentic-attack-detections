@@ -1,0 +1,4 @@
+# Cybermes User Agents in Proxy Logs
+# Sigma id 2512cdbf-c8d9-561a-944d-935f7511d5e1, pipeline sentinel_asim
+imWebSession
+| where (HttpUserAgent endswith " Cybermes/2.1 (Recon Crawler)" or HttpUserAgent endswith " Cybermes/2.1 (Security Assessment)" or HttpUserAgent endswith " Cybermes/3.2 (API Fuzzer)" or HttpUserAgent endswith " Cybermes/3.2 (Subdomain Recon)") or (HttpUserAgent startswith "Cybermes-AIGateway-Auditor/" or HttpUserAgent startswith "Cybermes-ExamAuditor/" or HttpUserAgent startswith "Cybermes-Security-Auditor/" or HttpUserAgent startswith "cybermes-mcp-updater/")

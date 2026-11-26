@@ -1,0 +1,4 @@
+# Cain Workspace Stage Files Written
+# Sigma id de9463da-7ec1-544d-9f74-3cc10d85cfa2, pipeline sentinel_asim
+imFileEvent
+| where TargetFileName endswith "/recon/recon-output.txt" or TargetFileName endswith "\\recon\\recon-output.txt" or TargetFileName endswith "/test/test-output.txt" or TargetFileName endswith "\\test\\test-output.txt" or TargetFileName endswith "/test/gate-skipped.txt" or TargetFileName endswith "\\test\\gate-skipped.txt"

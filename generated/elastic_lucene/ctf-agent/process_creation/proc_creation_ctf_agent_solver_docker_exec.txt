@@ -1,0 +1,3 @@
+# CTF Agent Claude Solver Command Redirected Into Its Sandbox
+# Sigma id 7511b526-3541-55af-9a2b-1f75039a7ad1, pipeline ecs
+(process.command_line:*docker\ exec\ \-i\ * AND process.command_line:*\ bash\ \-c\ *) AND process.command_line:/.*docker exec -i [0-9a-f]{64} bash -c .*/

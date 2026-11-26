@@ -1,0 +1,31 @@
+// Deadend CLI testing you: its reflection marker in web logs, and its setup traffic in proxy and DNS logs
+// Agentic attack detections by ThreatDefence (Deadend CLI). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Deadend CLI source (straylabs-ai/deadend-cli at 34e83717, last tag v0.1.15):
+//  - The supervisor prompt tells the model to send deadend7x7probe to find where input is reflected. The project's own
+//    benchmark runs show GET /page?test=deadend7x7probe.
+//  - Logins and sign-ups use the shipped wallet: deadendtester / deadendpassword123! / hacker@straylabs.ai (v0.1.15 and
+//    the benchmark runs). Builds of 34e83717 send the literal placeholders <dummy_username> and <dummy_password>
+//    instead (inferred from the code). These sit in request bodies, which web logs rarely hold, so the query string
+//    is searched as well in case the model sends them in a GET.
+//  - Operator host: Docker Hub pulls of xoxruns/sandboxed_kali, release archives from GitHub, and the default Phoenix
+//    trace collector crunch.straylabs.ai (only when the operator turns tracing on).
+// The HTTP user agents (Chrome/131.0.0.0 and Chrome/120.0.0.0 on Windows) are ordinary browser strings and are not used.
+
+let MarkerRegex = @"(?i)deadend7x7probe|deadendpassword|deadendtester|hacker2?(@|%40)straylabs\.ai|(<|%3C)dummy_(username|password|email)(>|%3E)";
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriQuery matches regex MarkerRegex or csUriStem matches regex MarkerRegex
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL matches regex MarkerRegex
+            or RequestURL has "/xoxruns/sandboxed_kali/"
+            or (RequestURL has "/releases/download/" and RequestURL has_any ("deadend-linux-", "deadend-macos-", "deadend-cli-linux-", "deadend-cli-macos-"))
+            or DestinationHostName =~ "crunch.straylabs.ai"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL),
+    (DnsEvents | where TimeGenerated > ago(90d)
+        | where Name =~ "crunch.straylabs.ai"
+        | project TimeGenerated, Source="DnsEvents", Src=ClientIP, Target=Name, Detail="Deadend CLI default trace collector")
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10) by Source, Src, Target
+| order by FirstSeen asc

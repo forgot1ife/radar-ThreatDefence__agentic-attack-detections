@@ -1,0 +1,114 @@
+{
+ "description": "20 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 6,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "hackingbuddygpt",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: hackingBuddyGPT driving a Linux target over SSH; Suricata: 3813107 TD SSH login from an asyncssh client (hackingBuddyGPT, Cochise and other asyncssh tools)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1021.004"
+  },
+  {
+   "comment": "KQL hunt: hackingBuddyGPT driving a Linux target over SSH; YARA: HackingBuddyGPT_Shell_Markers",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1033"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: hackingBuddyGPT LLM pentest agent run on a host",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059"
+  },
+  {
+   "comment": "KQL hunt: hackingBuddyGPT on a host you monitor; Sigma: hackingBuddyGPT Local Shell Command Markers Sent Through tmux; YARA: HackingBuddyGPT_Shell_Markers",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: hackingBuddyGPT on a host you monitor; Sigma: hackingBuddyGPT LLM Pentest Agent Started; Sigma: hackingBuddyGPT Web API Report, Generated Spec or Benchmark Trace Written; YARA: HackingBuddyGPT_Run_Log",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: hackingBuddyGPT driving a Linux target over SSH; Sigma: hackingBuddyGPT lse.sh Enumeration on a Linux Target",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1082"
+  },
+  {
+   "comment": "Sigma: hackingBuddyGPT lse.sh Enumeration on a Linux Target",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "KQL hunt: hackingBuddyGPT WebAPITesting against your sites: discovery values and test payloads in web and proxy logs; Suricata: 3813104 TD hackingBuddyGPT WebAPITesting OTP brute force with the crAPI victim account",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.001"
+  },
+  {
+   "comment": "Suricata: 3813105 TD hackingBuddyGPT WebAPITesting login SQL injection with x counter field; Suricata: 3813106 TD hackingBuddyGPT WebAPITesting XSS2 probe in e-mail field",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "YARA: HackingBuddyGPT_Source",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: hackingBuddyGPT WebAPITesting against your sites: discovery values and test payloads in web and proxy logs; Sigma: hackingBuddyGPT Web API Discovery Values in Web Logs; Sigma: hackingBuddyGPT Web API Report, Generated Spec or Benchmark Trace Written; Suricata: 3813101 TD hackingBuddyGPT WebAPITesting discovery query api_key=YourAPIKeyHere; Suricata: 3813102 TD hackingBuddyGPT WebAPITesting discovery query access_token=YourAccessToken; Suricata: 3813103 TD hackingBuddyGPT WebAPITesting joined discovery path /products/1/users/profile",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

@@ -1,0 +1,3 @@
+# Deadend CLI Sandbox Image, Release Download or Trace Collector in Proxy Logs
+# Sigma id f58b3dd0-6f53-5478-8e47-23c1fef1341c, pipeline ecs
+url.original:*\/xoxruns\/sandboxed_kali\/* OR (url.original:*\/releases\/download\/* AND (url.original:(*\/deadend\-linux\-x86_64\-unknown\-linux\-gnu.tar.gz OR *\/deadend\-macos\-aarch64\-apple\-darwin.tar.gz OR *\/deadend\-cli\-linux\-x86_64.tar.gz OR *\/deadend\-cli\-macos\-aarch64.tar.gz))) OR url.domain:/[cC][rR][uU][nN][cC][hH]\.[sS][tT][rR][aA][yY][lL][aA][bB][sS]\.[aA][iI]/

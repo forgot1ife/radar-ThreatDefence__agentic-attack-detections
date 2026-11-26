@@ -1,0 +1,6 @@
+{"name": "a skill written by install.sh to its default target", "expected": true, "event": {"TargetFilename": "/home/user/.claude/skills/claude-red/web/offensive-sqli/SKILL.md", "Image": "/usr/bin/rsync"}}
+{"name": "the pack cloned into the skills folder", "expected": true, "event": {"TargetFilename": "/home/user/.claude/skills/claude-red/Skills/infrastructure/offensive-edr-evasion/SKILL.md", "Image": "/usr/bin/git"}}
+{"name": "a skill copied with --target to another skills folder", "expected": true, "event": {"TargetFilename": "/home/user/.config/agent/skills/wireless/offensive-wifi/SKILL.md", "Image": "/bin/cp"}}
+{"name": "a skill on Windows", "expected": true, "event": {"TargetFilename": "C:\\Users\\user\\.claude\\skills\\auth\\offensive-jwt\\SKILL.md", "Image": "C:\\Program Files\\Git\\cmd\\git.exe"}}
+{"name": "near miss: an ordinary skill", "expected": false, "event": {"TargetFilename": "/home/user/.claude/skills/pdf-tools/SKILL.md", "Image": "/usr/bin/git"}}
+{"name": "near miss: an offensive- folder that is not a skill", "expected": false, "event": {"TargetFilename": "/home/user/notes/offensive-security/README.md", "Image": "/usr/bin/vim"}}

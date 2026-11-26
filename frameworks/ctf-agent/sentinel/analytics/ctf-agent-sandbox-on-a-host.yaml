@@ -1,0 +1,31 @@
+id: 73d0de57-faae-5476-a3fe-50a4a39157dd
+name: CTF Agent AI solver sandbox started on a host
+description: |
+  A process ran timeout --signal=KILL --kill-after=5 10 bash -c 'uname -m', or a CTF Agent prompt or launcher showed up
+  in a command line. CTF Agent (verialabs/ctf-agent) runs this exact command in every new ctf-sandbox container to learn
+  its architecture before a solver model starts (backend/sandbox.py:165-171, backend/agents/claude_solver.py:93,
+  backend/agents/codex_solver.py:177); its sandboxes run with SYS_ADMIN, SYS_PTRACE and seccomp unconfined. CTF Agent
+  is published for CTF competitions; check who runs it and against what.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Low
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has "timeout --signal=KILL --kill-after=5 10 bash -c 'uname -m'"
+      or ProcessCommandLine has_any ("IMPORTANT: You are running inside a Docker sandbox. All files are under /challenge/",
+          "You are a CTF competition coordinator running for the ENTIRE duration of a live competition")
+      or (ProcessCommandLine has "ctf-solve" and ProcessCommandLine has_any ("--ctfd-url", "--ctfd-token", "--challenges-dir", "--msg-port"))
+  | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

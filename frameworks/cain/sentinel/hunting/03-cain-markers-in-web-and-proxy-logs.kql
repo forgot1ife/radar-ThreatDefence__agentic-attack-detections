@@ -1,0 +1,27 @@
+// Cain testing you: the markers its web skills give the model, in web and proxy logs
+// Agentic attack detections by ThreatDefence (Cain). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Cain source code (cdxiaodong/cain-agent, reviewed at 2e3f4f1c). Cain sends no request of its own to the
+// target: the model runs curl, nmap, sqlmap and other tools through a shell, with their own user agents. What its
+// test-stage skills add, when Cain runs from a clone (the skills/ folder is not in its Docker image):
+//  - skills/web/xss/SKILL.md:31: a unique echo marker, "such as cainxss7f3a", sent and grepped for in the response.
+//  - skills/web/csrf/SKILL.md:220: a marker value csrf_test_<timestamp> (for example as a user name) for state-changing
+//    CSRF checks. It is usually in a request body, so it shows only in logs that keep bodies.
+//  - skills/web/webpack-js-analysis/SKILL.md:41-45 (recon): curl requests for /webpack-manifest.json,
+//    /asset-manifest.json and <script>.js.map, sent with curl's default user agent. Context only.
+// A marker means a check was running: look at what the same source sent just before and after it.
+
+let Window = 30d;
+let Markers = @"(?i)cainxss7f3a|csrf_test_[0-9]{10,13}";
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | where csUriStem matches regex Markers or csUriQuery matches regex Markers
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA=csUserAgent),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where RequestURL matches regex Markers
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| extend Marker=extract(Markers, 0, Detail)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5), Targets=make_set(Target, 10), FoundMarkers=make_set(Marker, 5) by Source, Src
+| order by FirstSeen asc

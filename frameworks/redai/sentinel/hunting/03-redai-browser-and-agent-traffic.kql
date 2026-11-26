@@ -1,0 +1,25 @@
+// Which applications RedAI's browser and agents talked to
+// Agentic attack detections by ThreatDefence (RedAI). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1190 (Exploit Public-Facing Application), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// RedAI (kpolley/redai, reviewed at 3ba2a98f) puts no marker, user agent or header of its own into the requests it sends
+// to an application: its browser validator drives the operator's own Chrome profile through agent-browser and the
+// payloads are written by the model. Web and proxy logs therefore cannot name it. What can: the host. Chrome runs with
+// --user-data-dir under ~/.redai/ (validator-environments/<name>/browser-profile for setup,
+// runs/<runId>/validation/browser-profile during validation), and agent commands name files under ~/.redai/runs/. This
+// hunt lists the remote addresses those processes reached: the App URL that was tested, and anything the agents fetched.
+// The redai launcher itself (bun) is included: its own calls go to the model APIs. Chrome's network helper process may
+// not carry --user-data-dir on every platform, so a quiet result is not proof that RedAI's browser reached nothing.
+
+let Window = 30d;
+DeviceNetworkEvents
+| where Timestamp > ago(Window)
+| where ActionType in ("ConnectionSuccess", "ConnectionAttempt", "ConnectionRequest")
+| where InitiatingProcessCommandLine contains "/.redai/" or InitiatingProcessCommandLine contains @"\.redai\"
+    or (InitiatingProcessFileName in~ ("bun", "bun.exe")
+        and (InitiatingProcessCommandLine endswith "/bin/redai" or InitiatingProcessCommandLine endswith "bun run redai"))
+| extend Remote=coalesce(RemoteUrl, RemoteIP)
+| summarize Connections=count(), FirstSeen=min(Timestamp), LastSeen=max(Timestamp),
+    Ports=make_set(RemotePort, 10), Processes=make_set(InitiatingProcessFileName, 5)
+    by DeviceName, Account=InitiatingProcessAccountName, Remote
+| order by LastSeen desc

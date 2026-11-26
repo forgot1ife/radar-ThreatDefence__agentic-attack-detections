@@ -1,0 +1,37 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (Cain). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation.
+// No Cain infrastructure has been published and Cain has no telemetry, so these rows are fingerprints of the
+// software: its command line, its file and folder names, its XSS echo marker and its prompts.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "cain" | project value=tostring(SearchKey), type, confidence, actor, source;
+let Strings = toscalar(IOC | where type == "string" and confidence in ("high", "medium") | summarize make_list(value));
+let FileNames = toscalar(IOC | where type == "file_name" and confidence in ("high", "medium") | summarize make_list(value));
+let FilePaths = toscalar(IOC | where type == "file_path" | summarize make_list(value));
+let UriStrings = toscalar(IOC | where type == "uri_string" or (type == "string" and value == "cainxss7f3a") | summarize make_list(value));
+union isfuzzy=true
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Strings) or ProcessCommandLine has_any (FilePaths)
+        | extend Indicator=array_concat(Strings, FilePaths) | mv-expand Indicator to typeof(string) | where ProcessCommandLine contains Indicator
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator, Detail=strcat(DeviceName, " ", substring(ProcessCommandLine, 0, 200))),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FileName in~ (FileNames)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FileName, Detail=strcat(DeviceName, " ", FolderPath)),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (FilePaths)
+        | extend Indicator=FilePaths | mv-expand Indicator to typeof(string) | where FolderPath contains Indicator
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator, Detail=strcat(DeviceName, " ", FolderPath)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (UriStrings)
+        | extend Indicator=UriStrings | mv-expand Indicator to typeof(string) | where RequestURL contains Indicator
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator, Detail=strcat(SourceIP, " -> ", RequestURL)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriQuery has_any (UriStrings) or csUriStem has_any (UriStrings)
+        | extend Indicator=UriStrings | mv-expand Indicator to typeof(string) | where csUriQuery contains Indicator or csUriStem contains Indicator
+        | project TimeGenerated, Source="W3CIISLog", Indicator, Detail=strcat(cIP, " ", csUriStem, "?", csUriQuery))
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

@@ -1,0 +1,3 @@
+# Ares Working Files on Its Attack Box
+# Sigma id 803df3dd-f368-5641-8c18-8866ecce2778, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/tmp/ares-tickets/*" or TargetFilename like "*/tmp/ares_relay_*" or TargetFilename like "*/ares_shadowcred_*" or TargetFilename like "*/ares-hive-*" or TargetFilename like "*/var/log/ares/*" or TargetFilename like "*/.ares/sessions/*" or TargetFilename like "*/.ares/reports/*"

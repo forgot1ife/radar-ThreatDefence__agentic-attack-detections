@@ -1,0 +1,4 @@
+{"name": "web_request_analysis against a target", "expected": true, "event": {"c-useragent": "HackerX WebRequestFramework/1.0", "cs-host": "target.example"}}
+{"name": "get_local_server_content", "expected": true, "event": {"c-useragent": "LocalScraper/1.0", "cs-host": "intranet.example"}}
+{"name": "another version", "expected": false, "event": {"c-useragent": "HackerX WebRequestFramework/2.0", "cs-host": "target.example"}}
+{"name": "a browser", "expected": false, "event": {"c-useragent": "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0", "cs-host": "target.example"}}

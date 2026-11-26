@@ -1,0 +1,4 @@
+# Request to the OpenHack Out-of-Band Collector
+# Sigma id c0cbd179-e825-5d0a-ba58-a0db518698ec, pipeline sentinel_asim
+imWebSession
+| where HttpHost in~ ("oob.openhack.com") or HttpHost endswith ".oob.openhack.com"

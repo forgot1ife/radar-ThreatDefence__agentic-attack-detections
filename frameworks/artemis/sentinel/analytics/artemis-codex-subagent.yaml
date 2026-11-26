@@ -1,0 +1,31 @@
+id: f1627975-69fb-58d3-8b6f-26dc02954831
+name: ARTEMIS AI pentest agent sub-agent started on a host
+description: |
+  A process started the ARTEMIS fork of the Codex CLI as a sub-agent: codex exec with --wait-for-followup,
+  --instance-id and --log-session-dir. Only the ARTEMIS fork (Stanford-Trinity/ARTEMIS) has these options
+  (codex-rs/exec/src/cli.rs:66-80), and its supervisor always passes them together with
+  --dangerously-bypass-approvals-and-sandbox (supervisor/orchestration/instance_manager.py:77-105), so each sub-agent
+  runs model-written shell commands with no sandbox and no approval. ARTEMIS is research code; check who runs it and
+  against which scope.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has "--wait-for-followup" and ProcessCommandLine has "--instance-id"
+      and ProcessCommandLine has "--log-session-dir"
+  | extend Instance=extract(@"--instance-id\s+(\S+)", 1, ProcessCommandLine), Mode=extract(@"--mode\s+(\S+)", 1, ProcessCommandLine)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Instances=make_set(Instance, 20), Modes=make_set(Mode, 10),
+      Details=make_set(substring(ProcessCommandLine, 0, 300), 5) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

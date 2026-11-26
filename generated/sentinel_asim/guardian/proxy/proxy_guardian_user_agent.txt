@@ -1,0 +1,4 @@
+# Guardian Screenshot User Agent in Proxy Logs
+# Sigma id 600f6baf-0738-55e6-b3f9-d0e9ebef5c49, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent =~ "Guardian-CLI/4 (security testing; +authorized engagement)"

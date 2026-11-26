@@ -1,0 +1,3 @@
+# Ares SQL Server Hive Dump Through xp_cmdshell
+# Sigma id b080ca37-185c-5b9a-9f15-025bd2ae6b23, pipeline ecs
+process.command_line:*JABFAHIAcgBvAHIAQQBjAHQAaQBvAG4AUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAUwB0AG8AcAAnAAoAJAB0AD0AJABlAG4AdgA6AFQARQBNAFAACgAkAGEAPQAiACQAdABcAGEALgBoAGkAdgBlACIA* OR (process.command_line:*save* AND process.command_line:*HKLM\\SAM* AND process.command_line:*\\a.hive*) OR (process.command_line:*save* AND process.command_line:*HKLM\\SYSTEM* AND process.command_line:*\\b.hive*) OR (process.command_line:*save* AND process.command_line:*HKLM\\SECURITY* AND process.command_line:*\\c.hive*)

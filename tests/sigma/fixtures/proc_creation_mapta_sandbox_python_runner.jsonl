@@ -1,0 +1,4 @@
+{"name": "the shell that activates the venv and runs the script", "expected": true, "event": {"Image": "/bin/bash", "CommandLine": "/bin/bash -l -c source .venv/bin/activate && python3 /home/user/temp_script_3f9a1c07.py", "User": "root"}}
+{"name": "the python process itself", "expected": true, "event": {"Image": "/home/user/.venv/bin/python3", "CommandLine": "python3 /home/user/temp_script_3f9a1c07.py", "ParentImage": "/bin/bash", "User": "root"}}
+{"name": "near miss: a python script in the same home folder with another name", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 /home/user/scripts/report.py", "ParentImage": "/bin/bash"}}
+{"name": "near miss: a temp_script file under another home folder", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 /home/alice/temp_script_3f9a1c07.py", "ParentImage": "/bin/bash"}}

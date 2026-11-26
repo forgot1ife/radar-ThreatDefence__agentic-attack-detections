@@ -1,0 +1,79 @@
+{
+ "description": "16 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 10,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "cain",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Cain on a host you monitor: its command line, the pi backend bridge and the shell commands it runs, its workspace files; Sigma: Cain Pi Backend Bridge and Its Shell Commands",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Cain on a host you monitor: its command line, the pi backend bridge and the shell commands it runs, its workspace files; Sentinel analytics: Cain AI pentest agent run on a host; Sigma: Cain AI Pentest Agent Run",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "Sigma: Cain Pi Backend Bridge and Its Shell Commands",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.007"
+  },
+  {
+   "comment": "KQL hunt: Cain testing you: the markers its web skills give the model, in web and proxy logs",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; YARA: Cain_Agent_Source_Or_Prompt",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3813203 TD Cain recon stage prompt in model request; Suricata: 3813204 TD Cain test stage prompt in model request; Suricata: 3813205 TD Cain finding validation prompt in model request; Suricata: 3813206 TD Cain pi backend system prompt in model request",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "KQL hunt: Cain on a host you monitor: its command line, the pi backend bridge and the shell commands it runs, its workspace files; KQL hunt: Cain testing you: the markers its web skills give the model, in web and proxy logs; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: Cain AI pentest agent run on a host; Sigma: Cain AI Pentest Agent Run; Sigma: Cain Workspace Stage Files Written; Sigma: Cain XSS Echo Marker in Web Logs; Suricata: 3813201 TD Cain XSS echo marker in URI; Suricata: 3813202 TD Cain XSS echo marker in request body; YARA: Cain_Agent_Workspace_Files",
+   "enabled": true,
+   "score": 10,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

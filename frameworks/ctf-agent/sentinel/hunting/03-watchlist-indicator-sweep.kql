@@ -1,0 +1,31 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (CTF Agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1119 (Automated Collection), T1588.007 (Obtain Capabilities: Artificial Intelligence)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". CTF Agent has no addresses of its own: its rows are its CTFd client user agents, command strings, prompt
+// text and folder names, so this sweep looks in web and proxy user agents, process command lines and file paths.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "ctf-agent" | project value=tostring(SearchKey), type, confidence, actor, source;
+let UAs = toscalar(IOC | where type == "user_agent" and confidence in ("high", "medium") | summarize make_list(value));
+let Strings = toscalar(IOC | where type in ("string", "docker_image") and confidence in ("high", "medium") | summarize make_list(value));
+let Paths = toscalar(IOC | where type in ("file_path", "file_name") and confidence in ("high", "medium") | summarize make_list(value));
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA in (UAs)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=UA, Detail=strcat(cIP, " ", csMethod, " ", csUriStem)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication in (UAs)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=RequestClientApplication, Detail=strcat(SourceIP, " ", RequestURL)),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Strings)
+        | mv-apply s=Strings to typeof(string) on (where ProcessCommandLine has s | take 1 | project Indicator=s)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator, Detail=strcat(DeviceName, " ", substring(ProcessCommandLine, 0, 200))),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (Paths)
+        | mv-apply p=Paths to typeof(string) on (where FolderPath has p | take 1 | project Indicator=p)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator, Detail=strcat(DeviceName, " ", FolderPath))
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

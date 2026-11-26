@@ -1,0 +1,4 @@
+# Ares Minted Machine Account Created With impacket-addcomputer
+# Sigma id 3677dece-25bf-5667-92bc-36b7951a6616, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "addcomputer" and TargetProcessCommandLine matches regex "-computer-name\\s+ARES-[0-9A-F]{8}(\\s|$)"

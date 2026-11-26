@@ -1,0 +1,29 @@
+id: 24e37b5c-d7e9-5fb6-a06d-dc9c780f4f29
+name: Cochise AI pentest agent user list in AD attack commands
+description: |
+  A process command line read /osint_users.txt, a user list at the root of the file system. The Cochise scenario prompt
+  (andreashappe/cochise, src/cochise/templates/scenario.md:31) tells the model that this file holds the user names for
+  password spraying, and the model then runs nxc, netexec or impacket GetNPUsers with it on the Kali VM it drives over
+  SSH (39 of the 59 run logs the repository ships). Cochise is research code for Active Directory labs; check who runs
+  it and against what.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Low
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - CredentialAccess
+relevantTechniques:
+  - T1110.003
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has "/osint_users.txt"
+  | where ProcessCommandLine matches regex @"[\s=""'<]/osint_users\.txt"
+  | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

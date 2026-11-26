@@ -1,0 +1,3 @@
+# KaliGPT Installed or Configured
+# Sigma id 51e6f829-09f4-564a-bef0-0f8a3fa8a1b3, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/opt/KaliGPT/*" or TargetFilename like "*/share/KaliGPT/*" or ends_with(TargetFilename, "/bin/kaligpt") or ends_with(TargetFilename, "/bin/opensearchapi") or ends_with(TargetFilename, "/kaligptinstaller.sh")

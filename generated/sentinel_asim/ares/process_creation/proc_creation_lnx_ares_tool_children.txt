@@ -1,0 +1,4 @@
+# Ares Worker Starting Active Directory Attack Tools
+# Sigma id 4ab84c38-598f-5d0e-b311-fcce7d97a466, pipeline sentinel_asim
+imProcessCreate
+| where (ParentProcessName endswith "/ares" or ActingProcessName endswith "/ares") and (TargetProcessCommandLine contains "impacket-" or TargetProcessCommandLine contains "netexec" or TargetProcessCommandLine contains "nxc " or TargetProcessCommandLine contains "certipy" or TargetProcessCommandLine contains "bloodyAD" or TargetProcessCommandLine contains "pywhisker" or TargetProcessCommandLine contains "pygpoabuse" or TargetProcessCommandLine contains "responder" or TargetProcessCommandLine contains "coercer" or TargetProcessCommandLine contains "petitpotam" or TargetProcessCommandLine contains "dfscoerce" or TargetProcessCommandLine contains "bloodhound-python" or TargetProcessCommandLine contains "hashcat" or TargetProcessCommandLine contains "lsassy" or TargetProcessCommandLine contains "evil-winrm")

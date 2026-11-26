@@ -1,0 +1,45 @@
+title: Guardian AI Pentest CLI Started
+id: cfccbdb0-bbdb-52ae-9c12-dc3aefe2866a
+status: experimental
+description: |
+    Detects Guardian (zakirkun/guardian-cli), an AI pentest CLI in Python, started with one of its engagement
+    commands. It is run as the console script "guardian" (pip install -e .) or as "python -m cli.main" (the README,
+    guardian.bat and the Docker image's entry point), for example "guardian workflow run --name web_pentest --target
+    https://..." or "python -m cli.main scan --target <host>". The model then picks and runs nmap, httpx, subfinder,
+    nuclei, ffuf, sqlmap, wpscan and other tools against the target, each started directly by this Python process.
+references:
+    - https://github.com/zakirkun/guardian-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_entry:
+        # pyproject.toml:54, Dockerfile:142, guardian.bat:3 at 51864a81
+        CommandLine|contains:
+            - ' -m cli.main '
+            - '/bin/guardian '
+            - '\Scripts\guardian.exe '
+    selection_command:
+        # cli/main.py:74-83, cli/commands/workflow.py:19-46, cli/commands/scan.py:17, cli/commands/report.py:17 at 51864a81
+        CommandLine|contains:
+            - ' workflow run '
+            - ' scan --target '
+            - ' scan -t '
+            - ' recon --target '
+            - ' recon -t '
+            - ' analyze '
+            - ' report --session '
+            - ' report -s '
+            - ' --resume '
+    condition: all of selection_*
+falsepositives:
+    - Authorized tests with Guardian
+    - Another Python project with a cli/main.py module and similar sub-commands
+level: medium

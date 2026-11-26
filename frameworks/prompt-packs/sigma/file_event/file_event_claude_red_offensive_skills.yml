@@ -1,0 +1,39 @@
+title: Claude-Red Offensive Skills Installed for a Coding Agent
+id: 8818d933-0d08-5fd4-a553-e4bcf8f84118
+status: experimental
+description: |
+    Detects the Claude-Red skill pack (SnailSploit/Claude-Red at 6196ba74) being installed on a host: 79 SKILL.md files
+    named offensive-<topic> (SQL injection, EDR evasion, shellcode, C2 frameworks, AD attacks and more) that a coding
+    agent loads as instructions. The documented installs are git clone into ~/.claude/skills/claude-red and install.sh,
+    whose default target is ~/.claude/skills/claude-red/<category>/offensive-<topic>/SKILL.md; --target can point
+    elsewhere, so the second selection matches the offensive-<topic> skill folder under any skills folder.
+references:
+    - https://github.com/SnailSploit/Claude-Red
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.t1588.007
+logsource:
+    category: file_event
+detection:
+    selection_pack:
+        TargetFilename|contains:
+            - '/skills/claude-red/'
+            - '\skills\claude-red\'
+    selection_skill_folder_lnx:
+        TargetFilename|contains|all:
+            - '/skills/'
+            - '/offensive-'
+        TargetFilename|endswith: '/SKILL.md'
+    selection_skill_folder_win:
+        TargetFilename|contains|all:
+            - '\skills\'
+            - '\offensive-'
+        TargetFilename|endswith: '\SKILL.md'
+    condition: 1 of selection_*
+falsepositives:
+    - Security staff who use Claude-Red or another skill pack that names its skills offensive-<topic>
+level: low

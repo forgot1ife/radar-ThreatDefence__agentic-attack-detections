@@ -1,0 +1,28 @@
+title: Guardian Screenshot User Agent in Web Logs
+id: 28d04279-5c65-57b9-a6f6-ac7a8c2fe780
+status: experimental
+description: |
+    Detects the playwright_screenshot tool of Guardian (zakirkun/guardian-cli), an AI pentest CLI, loading a page of
+    your site. The tool opens every live URL found earlier by httpx, subfinder or nuclei in headless Chromium with the
+    user agent "Guardian-CLI/4 (security testing; +authorized engagement)", waits for the network to go idle and saves
+    a full-page PNG that a vision model then reviews. The page's scripts, styles and images are fetched with the same
+    user agent. It runs in the web_visual_pentest workflow and in any workflow step that names the tool. Guardian's
+    scans (nmap, httpx, nuclei, ffuf, sqlmap and others) carry those tools' own user agents, not this one.
+references:
+    - https://github.com/zakirkun/guardian-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1594
+logsource:
+    category: webserver
+detection:
+    selection:
+        # tools/playwright_screenshot.py:152-161 at 51864a81
+        cs-user-agent: 'Guardian-CLI/4 (security testing; +authorized engagement)'
+    condition: selection
+falsepositives:
+    - Authorized tests with Guardian
+level: medium

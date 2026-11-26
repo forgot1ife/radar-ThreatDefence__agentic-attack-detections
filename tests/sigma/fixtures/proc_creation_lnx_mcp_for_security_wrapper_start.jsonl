@@ -1,0 +1,5 @@
+{"name": "nmap wrapper from a checkout, as build.sh writes it", "expected": true, "event": {"Image": "/usr/bin/node", "CommandLine": "node /home/user/mcp-for-security/nmap-mcp/build/index.js /usr/bin/nmap", "ParentCommandLine": "/opt/mcp-host/mcp-host"}}
+{"name": "nuclei wrapper inside the image", "expected": true, "event": {"Image": "/usr/bin/node", "CommandLine": "node /app/nuclei-mcp/build/index.js /root/go/bin/nuclei", "ParentCommandLine": "bash"}}
+{"name": "MCP host starting the published image", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker run --rm -i cyprox/mcp-for-security node /app/sqlmap-mcp/build/index.js sqlmap", "ParentCommandLine": "/opt/mcp-host/mcp-host"}}
+{"name": "near miss: another node MCP server", "expected": false, "event": {"Image": "/usr/bin/node", "CommandLine": "node /home/user/weather-server/build/index.js", "ParentCommandLine": "/opt/mcp-host/mcp-host"}}
+{"name": "near miss: the wrapper path opened by an editor", "expected": false, "event": {"Image": "/usr/bin/vim", "CommandLine": "vim /home/user/mcp-for-security/nmap-mcp/build/index.js", "ParentCommandLine": "-bash"}}

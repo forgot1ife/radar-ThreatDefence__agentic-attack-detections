@@ -1,0 +1,33 @@
+# Agentic attack detections by ThreatDefence: Deadend CLI
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3813421-3813435. HTTP rules need cleartext HTTP or decrypted traffic.
+# Reviewed at straylabs-ai/deadend-cli 34e83717 (August 7, 2026) and the last tag v0.1.15 (acb8da6b, April 11, 2026).
+# Deadend CLI has no listener, so there are no console rules.
+
+# --- Requests that reach your targets ---
+# The supervisor prompt tells the model to "Send unique marker: deadend7x7probe" to find the reflection context
+# (deadend_prompts/_shared/_vulnerability_playbooks.jinja2:450, included by supervisor.instructions.jinja2:115).
+# The project's own XBOW runs show it on the wire as GET /page?test=deadend7x7probe.
+alert http any any -> $HTTP_SERVERS any (msg:"TD Deadend CLI reflection probe marker in URI"; flow:established,to_server; http.uri; content:"deadend7x7probe"; nocase; fast_pattern; classtype:web-application-attack; sid:3813421; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Deadend_CLI, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+alert http any any -> $HTTP_SERVERS any (msg:"TD Deadend CLI reflection probe marker in request body"; flow:established,to_server; http.request_body; content:"deadend7x7probe"; nocase; fast_pattern; classtype:web-application-attack; sid:3813422; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Deadend_CLI, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+# pw_send_payload swaps the wallet's dummy values for the real ones before sending (auth_handler.py:23-62,
+# browser_automation/__init__.py:134). With the shipped wallet the target gets the password deadendpassword123!
+# (raw or URL-encoded) and the user name deadendtester (data/reusable_credentials.json:7-9).
+alert http any any -> $HTTP_SERVERS any (msg:"TD Deadend CLI shipped test account password in request"; flow:established,to_server; http.request_body; content:"deadendpassword"; nocase; fast_pattern; classtype:web-application-attack; sid:3813423; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Deadend_CLI, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+# The shipped wallet's e-mail addresses, hacker@straylabs.ai and hacker2@straylabs.ai, sent in sign-up and login forms
+# (data/reusable_credentials.json:8,17). "@" may arrive raw or as %40.
+alert http any any -> $HTTP_SERVERS any (msg:"TD Deadend CLI shipped test account e-mail in request"; flow:established,to_server; http.request_body; content:"straylabs.ai"; nocase; fast_pattern; pcre:"/hacker2?(?:@|%40)straylabs\.ai/i"; classtype:web-application-attack; sid:3813424; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Deadend_CLI, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+# At 34e83717 the prompts give the model the placeholders <dummy_username>, <dummy_password> and <dummy_email>
+# (requester.instructions.jinja2:365,377; tools/send_payload.description.jinja2:35-39), but the swap only replaces the
+# wallet's dummy values (deadenduser...), so a build of this commit sends the placeholders themselves. Inferred from
+# the code, not seen in a capture.
+alert http any any -> $HTTP_SERVERS any (msg:"TD Deadend CLI unreplaced credential placeholder in request"; flow:established,to_server; http.request_body; content:"dummy_"; nocase; fast_pattern; pcre:"/(?:<|%3C)dummy_(?:username|password|email)(?:>|%3E)/i"; classtype:web-application-attack; sid:3813425; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Deadend_CLI, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+# The authenticate tool's JSON-flow example sets "request_headers": {"X-App": "deadend"}
+# (tools/authenticate.description.jinja2:132). Only sent when the model copies the example.
+alert http any any -> $HTTP_SERVERS any (msg:"TD Deadend CLI example header X-App deadend"; flow:established,to_server; http.header; content:"X-App|3a 20|deadend|0d 0a|"; nocase; fast_pattern; classtype:web-application-attack; sid:3813426; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Deadend_CLI, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+
+# --- Traffic from a host that runs Deadend CLI ---
+# Phoenix OTLP traces go to https://crunch.straylabs.ai/v1/traces when DEADEND_PHOENIX_OTEL_ENABLED is true and
+# PHOENIX_COLLECTOR_ENDPOINT is unset (jsonrpc_server.py:235-239,304-322). Off by default; the traces hold prompts and tool output.
+alert tls $HOME_NET any -> $EXTERNAL_NET any (msg:"TD Deadend CLI default Phoenix trace collector (TLS SNI)"; flow:established,to_server; tls.sni; content:"crunch.straylabs.ai"; bsize:19; fast_pattern; classtype:policy-violation; sid:3813427; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Deadend_CLI, mitre_tactic_id TA0011, mitre_tactic_name Command_and_Control, mitre_technique_id T1071.001, mitre_technique_name Web_Protocols;)
+alert dns $HOME_NET any -> any any (msg:"TD Deadend CLI default Phoenix trace collector (DNS)"; dns.query; content:"crunch.straylabs.ai"; nocase; bsize:19; fast_pattern; classtype:policy-violation; sid:3813428; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Deadend_CLI, mitre_tactic_id TA0011, mitre_tactic_name Command_and_Control, mitre_technique_id T1071.001, mitre_technique_name Web_Protocols;)

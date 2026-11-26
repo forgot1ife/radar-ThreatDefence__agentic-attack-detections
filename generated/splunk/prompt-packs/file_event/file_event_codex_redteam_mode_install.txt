@@ -1,0 +1,3 @@
+# codex-redteam-mode Jailbreak Profile Installed into Codex
+# Sigma id 030c3184-f012-5ee8-95b6-e5b7c819745a, pipeline splunk_windows
+TargetFilename IN ("*/.codex/redteam-mode/*", "*\\.codex\\redteam-mode\\*", "*/prompts/Jailbreak.*", "*\\prompts\\Jailbreak.*", "*/skills/redteam-boundary-policy/*", "*\\skills\\redteam-boundary-policy\\*") OR TargetFilename IN ("*redteam-install-manifest.json", "*redteam-install-transaction.json", "*/redteam-mode/system-instructions.md", "*\\redteam-mode\\system-instructions.md", "*/redteam-mode/rewrite_proxy.py", "*\\redteam-mode\\rewrite_proxy.py", "*/hooks/hook-security-context-hook.py", "*\\hooks\\hook-security-context-hook.py", "*/hooks/redteam_state.py", "*\\hooks\\redteam_state.py")

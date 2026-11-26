@@ -1,0 +1,34 @@
+id: 1218b954-5caa-5b16-a34c-8464764f0557
+name: Pensar Apex AI pentest agent commands on a host
+description: |
+  A process command line carries a string that Pensar Apex (pensarai/apex) puts in the commands its agent runs: the
+  header -H "User-Agent: pensar-apex" that it adds to curl, wget and web scanners aimed at its target, the base64 start
+  of its generated callback listener (node -e "eval(Buffer.from('InVzZSBzdHJpY3QiOwovLyBBcGV4IGNhbGxiYWNr..."), the
+  APEX_CB_PROBE readiness probe, or the markers of its grep, glob, list and payload helpers
+  (src/core/http/targetHeaders.ts:242-316, src/core/agents/offSecAgent/tools/callbackListener.ts:32-42). These strings
+  come from Apex's code, not from the model. Apex is sold and used for authorized testing; check who runs it and
+  whether the target agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - Reconnaissance
+relevantTechniques:
+  - T1059.004
+  - T1595.002
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has_any ("User-Agent: pensar-apex", "process.env.APEX_CB_PROBE", "APEX_HIDDEN_PAYLOAD_COUNT", "APEX_GLOB_PY", "APEX_LIST_PY")
+      or ProcessCommandLine contains "InVzZSBzdHJpY3QiOwovLyBBcGV4IGNhbGxiYWNr"
+      or ProcessCommandLine contains "__APEX_GREP_EXIT_"
+  | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

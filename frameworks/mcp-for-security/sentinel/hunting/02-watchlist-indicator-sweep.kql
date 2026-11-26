@@ -1,0 +1,25 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (MCP for Security). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1046 (Network Service Discovery)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. MCP for Security has no addresses or domains of its own and sends no telemetry;
+// its rows are its image name, wrapper paths, install paths, log lines, tool descriptions and the nuclei tag URL.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "mcp-for-security" | project value=tostring(SearchKey), type, confidence, actor, source;
+let HostStrings = toscalar(IOC | where type in ("file_path", "file_name", "docker_image", "string") and confidence in ("high", "medium") | summarize make_list(value));
+let WebStrings = toscalar(IOC | where type in ("url", "uri_string", "http_header") and confidence in ("high", "medium", "low") | summarize make_list(value));
+union isfuzzy=true
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (HostStrings) or InitiatingProcessCommandLine has_any (HostStrings)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator=substring(ProcessCommandLine, 0, 200), Detail=DeviceName),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (HostStrings)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FolderPath, Detail=strcat(DeviceName, " ", InitiatingProcessFileName)),
+    (Syslog | where TimeGenerated > ago(30d)
+        | where SyslogMessage has_any (HostStrings)
+        | project TimeGenerated, Source="Syslog", Indicator=substring(SyslogMessage, 0, 200), Detail=strcat(Computer, " ", ProcessName)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (WebStrings)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=RequestURL, Detail=strcat(SourceIP, " -> ", DestinationHostName))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by Source, Indicator
+| order by LastSeen desc

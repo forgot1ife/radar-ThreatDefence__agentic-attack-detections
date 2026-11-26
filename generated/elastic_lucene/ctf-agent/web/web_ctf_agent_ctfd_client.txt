@@ -1,0 +1,3 @@
+# CTF Agent CTFd Client User Agent in Web Server Logs
+# Sigma id aac966b2-6a0c-50cf-9aec-06d25d80eb99, pipeline ecs
+user_agent.original:"Mozilla\/5.0 \(Windows NT 6.1; WOW64\) AppleWebKit\/537.36"

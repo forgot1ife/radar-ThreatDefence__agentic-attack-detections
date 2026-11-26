@@ -1,0 +1,4 @@
+# Guardian Tool Wrapper Markers in a Command Line
+# Sigma id 2ba5eb49-9713-5e7a-bb88-ddb8b80e0e90, pipeline azure_monitor
+SecurityEvent
+| where CommandLine contains "/tmp/guardian_ffuf_wordlist.txt" or CommandLine contains " -F guardian-prowler" or (CommandLine contains "dependency-check" and CommandLine endswith " --project guardian")

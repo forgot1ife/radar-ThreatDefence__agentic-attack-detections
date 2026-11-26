@@ -1,0 +1,4 @@
+# Guardian AI Pentest CLI Started
+# Sigma id cfccbdb0-bbdb-52ae-9c12-dc3aefe2866a, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains " -m cli.main " or TargetProcessCommandLine contains "/bin/guardian " or TargetProcessCommandLine contains "\\Scripts\\guardian.exe ") and (TargetProcessCommandLine contains " workflow run " or TargetProcessCommandLine contains " scan --target " or TargetProcessCommandLine contains " scan -t " or TargetProcessCommandLine contains " recon --target " or TargetProcessCommandLine contains " recon -t " or TargetProcessCommandLine contains " analyze " or TargetProcessCommandLine contains " report --session " or TargetProcessCommandLine contains " report -s " or TargetProcessCommandLine contains " --resume ")

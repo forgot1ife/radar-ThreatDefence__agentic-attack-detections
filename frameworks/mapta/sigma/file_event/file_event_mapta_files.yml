@@ -1,0 +1,36 @@
+title: MAPTA Run Log, Usage or Sandbox Script Files Written
+id: 29b59224-90dd-5e78-b1a9-38819639bffb
+status: experimental
+description: |
+    Detects the files MAPTA writes. On the host that runs it: scan_usage.log (main.py:1077) and
+    <site>_usage_log_<YYYYMMDD_HHMMSS>.json (main.py:113) in the working directory. Inside a local sandbox:
+    /home/user/temp_script_<8 hex>.py, the model's Python code before it runs (main.py:693-697).
+references:
+    - https://github.com/arthurgervais/mapta/blob/0c167b86aedeb4f27745a84a8f7324518b0c960a/main.py#L110-L119
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: file_event
+detection:
+    selection_log:
+        # main.py:1073-1080
+        TargetFilename|endswith:
+            - '/scan_usage.log'
+            - '\scan_usage.log'
+    selection_usage:
+        # main.py:110-119, 988-989
+        TargetFilename|contains: '_usage_log_'
+        TargetFilename|endswith: '.json'
+    selection_sandbox_script:
+        # main.py:691-697
+        TargetFilename|startswith: '/home/user/temp_script_'
+        TargetFilename|endswith: '.py'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized research runs of MAPTA
+    - Other software that writes a scan_usage.log or a *_usage_log_*.json file
+level: low

@@ -1,0 +1,2 @@
+{"name": "chromium opened by kaligpt --web", "expected": true, "event": {"Image": "/usr/lib/chromium/chromium", "CommandLine": "chromium https://chatgpt.com/g/g-xouSQobsE-kaligpt/?prompt=how to exploit target.example", "ParentImage": "/usr/bin/python3.12", "ParentCommandLine": "python3 -m agents.web_launcher how to exploit target.example"}}
+{"name": "another custom GPT", "expected": false, "event": {"Image": "/usr/lib/chromium/chromium", "CommandLine": "chromium https://chatgpt.com/g/g-abc123-writing-coach", "ParentImage": "/usr/bin/bash", "ParentCommandLine": "bash"}}

@@ -1,0 +1,3 @@
+# Guardian Session, Log or Configuration Files Written
+# Sigma id ffbf7640-2e91-52dc-b0d5-4653db75db07, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(TargetFilename, "/.guardian/guardian.yaml") or ends_with(TargetFilename, "/.guardian/.env") or ends_with(TargetFilename, "/.guardian/kb/kb.sqlite3") or ends_with(TargetFilename, "/.guardian/ranker.pkl") or ends_with(TargetFilename, "/tmp/guardian_ffuf_wordlist.txt") or ends_with(TargetFilename, "/logs/ai_audit.log") or (TargetFilename like "*/reports/session_*" or TargetFilename like "*/reports/.session_*") and (ends_with(TargetFilename, ".json") or ends_with(TargetFilename, ".tmp"))

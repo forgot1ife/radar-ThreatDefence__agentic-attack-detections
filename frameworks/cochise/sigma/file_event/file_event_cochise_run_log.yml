@@ -1,0 +1,29 @@
+title: Cochise AI Pentest Agent Run Log Created
+id: 3cf82d57-e000-53fc-81da-ab752c10313e
+status: experimental
+description: |
+    Detects Python creating logs/run-<YYYYmmdd-HHMMSS>.json, the JSON-lines log Cochise opens at the start of every run in
+    its working directory (logger.py:33-48). The log holds every prompt, command, command output and credential the run
+    found. Other Python tools can use the same name pattern; check for a cochise clone next to it.
+references:
+    - https://github.com/andreashappe/cochise/blob/4db4fded894305083366b83e5cdba5fb68fcebc3/src/cochise/logger.py#L33-L52
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_name:
+        TargetFilename|contains: '/logs/run-20'
+        TargetFilename|endswith: '.json'
+    selection_exact:
+        TargetFilename|re: '/logs/run-\d{8}-\d{6}\.json$'
+    selection_proc:
+        Image|contains: 'python'
+    condition: all of selection_*
+falsepositives:
+    - Other Python tools that name their logs logs/run-<date>-<time>.json
+level: low

@@ -1,0 +1,33 @@
+title: Cain Workspace Stage Files Written
+id: de9463da-7ec1-544d-9f74-3cc10d85cfa2
+status: experimental
+description: |
+    Detects the stage files a Cain run writes into its workspace (./workspace by default, /workspaces/cain in its
+    Docker image): recon/recon-output.txt (the model's recon answer after redaction), recon/gate.json (always written,
+    {"recon_gate": "off"} unless --coverage-gate), test/test-output.txt and test/gate-skipped.txt
+    (src/cain_agent/handlers.py:65-74,256-261,370,408,541,613 at 2e3f4f1c). The report files are written through a
+    temporary file and a rename, so they are left to the hunt and the YARA rule.
+references:
+    - https://github.com/cdxiaodong/cain-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: file_event
+detection:
+    selection:
+        TargetFilename|endswith:
+            - '/recon/recon-output.txt'
+            - '\recon\recon-output.txt'
+            - '/test/test-output.txt'
+            - '\test\test-output.txt'
+            - '/test/gate-skipped.txt'
+            - '\test\gate-skipped.txt'
+    condition: selection
+falsepositives:
+    - Authorized tests and research with Cain
+    - Other tools that use the same recon/ and test/ file names
+level: low

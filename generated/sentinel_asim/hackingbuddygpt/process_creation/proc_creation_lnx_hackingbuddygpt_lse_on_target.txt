@@ -1,0 +1,4 @@
+# hackingBuddyGPT lse.sh Enumeration on a Linux Target
+# Sigma id 5529ebfe-0cb8-584d-b734-37634b572708, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "linux-smart-enumeration/releases/latest/download/lse.sh" and TargetProcessCommandLine contains "-O lse.sh") or TargetProcessCommandLine contains "lse.sh -c -i -l 0"

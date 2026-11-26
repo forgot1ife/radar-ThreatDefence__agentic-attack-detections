@@ -1,0 +1,4 @@
+# Pensar Apex Install, Update Check or Model Gateway
+# Sigma id d032640f-cb72-5b6d-8d1a-7aa4b4ec2055, pipeline sentinel_asim
+imWebSession
+| where (Url contains "/@pensar/apex" or Url contains "/@pensar%2fapex" or Url contains "pensarai.com/install.sh" or Url contains "pensarai.com/apex.ps1") or HttpHost =~ "gateway.pensar.dev"

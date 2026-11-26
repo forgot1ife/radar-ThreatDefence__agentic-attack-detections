@@ -1,0 +1,9 @@
+# Where to start
+
+Cybermes has no console of its own to find on the internet, so start with your web logs and your own hosts.
+
+1. **Search web server and WAF logs for its user agents.** `... Cybermes/2.1 (Recon Crawler)`, `... Cybermes/2.1 (Security Assessment)` and `... Cybermes/3.2 (API Fuzzer)` are its MCP server's own crawler, probe and fuzzer; `Cybermes-AIGateway-Auditor/1.0` (with `Origin: https://audit-canary.example.com`) and `Cybermes-ExamAuditor/1.0` are its audit scripts (hunt 02, Sigma web rule, Suricata 3813301-3813308). Then look at the same source address for nuclei, katana, ffuf or sqlmap traffic.
+2. **Look for the launcher and the MCP server on your hosts.** `bash ./cybermes ...`, a container `cybermes-agent` running `/opt/hermes-venv/bin/hermes gateway run`, or `cybermes-mcp` started through `npx -y cybermes-mcp@latest` (hunt 01, the analytics rule, Sigma process rules). Scanners started as `nmap -sT --open -T3 --max-rate ...`, `nuclei ... -silent -jsonl -timeout 10 -duc` or `ffuf ... -timeout 5 -s -json` are its MCP tools at work.
+3. **Run the Hermes hunts too.** Cybermes is Hermes with approvals off; Hermes hunt 01 shows attack tools under the hermes process and the Telegram gateway (see [hermes](../hermes)).
+4. **Check for its files.** `reports/<slug>/findings/`, `pocs/poc_*.py`, `evidence/recon_notes.md`, `report.html` and `REPORT_<slug>.pdf` hold the engagement; `recon/<slug>/katana.txt` and `nuclei_output.txt` the raw tool output; `~/.cybermes/` the MCP launcher (hunt 01, Sigma file rule, YARA).
+5. **Check proxy and AI-gateway logs** for `cybermes-mcp-updater/`, release downloads from `github.com/Zyrexnn/Cybermes/releases/download/` and, where model traffic is decrypted, `You are Cybermes, an` and `cybermes_fuzz_endpoints` in requests (Suricata 3813309-3813312). Model traffic from servers (behaviors hunt 02) catches it whatever provider it uses.

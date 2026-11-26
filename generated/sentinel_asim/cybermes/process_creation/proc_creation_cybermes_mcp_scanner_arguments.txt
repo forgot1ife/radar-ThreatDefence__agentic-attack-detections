@@ -1,0 +1,4 @@
+# Scanners Started With Cybermes MCP Argument Order
+# Sigma id 9cc640fd-512b-506a-ae60-87d3ff395ce4, pipeline sentinel_asim
+imProcessCreate
+| where (((ParentProcessName endswith "/cybermes-mcp" or ParentProcessName endswith "\\cybermes-mcp.exe") or (ActingProcessName endswith "/cybermes-mcp" or ActingProcessName endswith "\\cybermes-mcp.exe")) or (ParentProcessName contains "cybermes-mcp-v" or ActingProcessName contains "cybermes-mcp-v")) or (TargetProcessCommandLine contains "-sT --open -T3 --max-rate " and TargetProcessCommandLine contains " -oN - ") or TargetProcessCommandLine contains " -silent -jsonl -timeout 10 -duc" or TargetProcessCommandLine contains " -silent -status-code -title -tech-detect -json -timeout " or TargetProcessCommandLine contains " -jc -silent -ct " or (TargetProcessCommandLine contains "/FUZZ -w " and TargetProcessCommandLine contains " -timeout 5 -s -json")

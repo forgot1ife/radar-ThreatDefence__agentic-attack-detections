@@ -1,0 +1,61 @@
+title: Scanner Started Directly by Guardian
+id: 5a1d3506-981e-5827-99c9-f33b28810c6c
+status: experimental
+description: |
+    Detects a scanner or attack tool started directly by the Python process of Guardian (zakirkun/guardian-cli), an
+    AI pentest CLI. Each tool wrapper builds an argument list and starts it with asyncio.create_subprocess_exec, with
+    no shell, so the tool's parent is Guardian itself. Defaults include "nmap -sV -sC -T4 -oX - <target>",
+    "nuclei -u <url> -jsonl ... -silent -rate-limit ...", "httpx -json ...", "ffuf -u <url>/FUZZ -w <list> -json ...
+    -s" and "sqlmap -u <url> --batch --parse-errors ... --random-agent". prompt_fuzz, zap_api, burp_api and mobsf
+    start curl.
+references:
+    - https://github.com/zakirkun/guardian-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_tool:
+        # core/tool_agent.py:19-79 (tool registry), tools/base_tool.py:84-88 at 51864a81
+        Image|endswith:
+            - '/nmap'
+            - '/masscan'
+            - '/httpx'
+            - '/subfinder'
+            - '/amass'
+            - '/nuclei'
+            - '/nikto'
+            - '/sqlmap'
+            - '/ffuf'
+            - '/gobuster'
+            - '/wpscan'
+            - '/whatweb'
+            - '/wafw00f'
+            - '/arjun'
+            - '/xsstrike'
+            - '/cmseek'
+            - '/dnsrecon'
+            - '/testssl'
+            - '/testssl.sh'
+            - '/sslyze'
+            - '/kerbrute'
+            - '/crackmapexec'
+            - '/nxc'
+            - '/theHarvester'
+            - '/schemathesis'
+            - '/curl'
+    selection_parent:
+        # pyproject.toml:54, Dockerfile:142 at 51864a81
+        ParentCommandLine|contains:
+            - ' -m cli.main '
+            - '/bin/guardian '
+    condition: all of selection_*
+falsepositives:
+    - Authorized tests with Guardian
+    - Another Python project with a cli/main.py module that runs these tools
+level: medium

@@ -1,0 +1,3 @@
+{"name": "the XSS echo marker in a search parameter", "expected": true, "event": {"cs-method": "GET", "cs-host": "app.example.test", "cs-uri-stem": "/search", "cs-uri-query": "q=cainxss7f3a", "cs-user-agent": "curl/8.5.0", "cs-referer": ""}}
+{"name": "the marker with an HTML probe", "expected": true, "event": {"cs-method": "GET", "cs-host": "app.example.test", "cs-uri-stem": "/profile", "cs-uri-query": "name=cainxss7f3a%3C%3E%22%27", "cs-user-agent": "python-requests/2.32.3", "cs-referer": ""}}
+{"name": "near miss: a similar word in a query", "expected": false, "event": {"cs-method": "GET", "cs-host": "app.example.test", "cs-uri-stem": "/search", "cs-uri-query": "q=cain+xss", "cs-user-agent": "curl/8.5.0", "cs-referer": ""}}

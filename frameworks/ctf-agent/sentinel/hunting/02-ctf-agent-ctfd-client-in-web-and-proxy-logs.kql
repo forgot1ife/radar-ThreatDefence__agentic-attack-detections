@@ -1,0 +1,33 @@
+// CTF Agent playing on a CTFd platform: its CTFd client user agent in web and proxy logs
+// Agentic attack detections by ThreatDefence (CTF Agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1119 (Automated Collection), T1078.001 (Valid Accounts: Default Accounts)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the CTF Agent source code (verialabs/ctf-agent at 3366d569):
+//  - Its CTFd client sends exactly "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36", cut off before
+//    "(KHTML, like Gecko)", on every request (backend/ctfd.py:14,40-46). No browser sends this string.
+//  - It polls GET /api/v1/challenges?per_page=500 and /api/v1/users/me with the team or user solves every 5 seconds
+//    (backend/poller.py:24,122-125, backend/ctfd.py:125-128,173-189), fetches each challenge and its files, and submits
+//    flags to POST /api/v1/challenges/attempt (backend/ctfd.py:142-149). Without a token it logs in to /login as
+//    admin with the password admin (backend/config.py:10-12, backend/ctfd.py:49-76).
+//  - Its separate pull_challenges.py sends the full Chrome 45 on Windows 7 string used by es3n1n/Eruditus to /api/v1/
+//    (pull_challenges.py:35); that part also matches Eruditus.
+// On a CTF you host, a match is a team running this solver; whether that is allowed is the event's rule.
+
+let Window = 30d;
+let AgentUA = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36";
+let PullUA = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36";
+union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(Window)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA == AgentUA or (UA == PullUA and csUriStem startswith "/api/v1/")
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where RequestClientApplication == AgentUA or (RequestClientApplication == PullUA and RequestURL has "/api/v1/")
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=strcat(RequestMethod, " ", RequestURL),
+            UA=RequestClientApplication)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated),
+    FlagSubmissions=countif(Detail has "/api/v1/challenges/attempt"), Polls=countif(Detail has "per_page=500"),
+    Logins=countif(Detail has "POST /login"), Samples=make_set(Detail, 10), UAs=make_set(UA, 2) by Source, Src, Target
+| order by FirstSeen asc

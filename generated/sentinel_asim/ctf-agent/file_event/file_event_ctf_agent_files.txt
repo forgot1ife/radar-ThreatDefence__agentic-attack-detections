@@ -1,0 +1,4 @@
+# CTF Agent Workspace or Solver Trace Written
+# Sigma id fabd1fe4-c3ff-5a98-bc70-740b8da12fbd, pipeline sentinel_asim
+imFileEvent
+| where TargetFileName contains "/ctf-workspace-" or ((TargetFileName contains "/logs/trace-" and TargetFileName endswith ".jsonl") and (TargetFileName contains "-claude-opus-4-6-" or TargetFileName contains "-gpt-5.4-" or TargetFileName contains "-gpt-5.4-mini-" or TargetFileName contains "-gpt-5.3-codex-" or TargetFileName contains "-us.anthropic.claude-opus-4-6-v1-"))

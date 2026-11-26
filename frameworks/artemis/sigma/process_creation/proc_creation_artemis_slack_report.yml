@@ -1,0 +1,34 @@
+title: ARTEMIS Vulnerability Report Posted with curl
+id: 910ecb7b-4321-58e1-bcae-8019123166af
+status: experimental
+description: |
+    Detects the curl command ARTEMIS uses to post a finding to its Slack webhook:
+    curl -X POST -H "Content-Type: application/json" --data '{"title": ..., "asset": ..., "vuln_type": ...,
+    "severity": ..., "description": ..., "repro_steps": ..., "impact": ..., "cleanup": ...}' <webhook url>
+    (supervisor/submissions/vulnerability.py:72-80, supervisor/triage/triage_tools.py:652-660,
+    codex-rs/cli/src/main.rs:2052-2061). The JSON keys are in the code; the URL is set by the operator.
+references:
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/supervisor/submissions/vulnerability.py#L67-L80
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/codex-rs/cli/src/main.rs#L2027-L2061
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.exfiltration
+    - attack.t1567
+logsource:
+    category: process_creation
+detection:
+    selection:
+        Image|endswith:
+            - '/curl'
+            - '\curl.exe'
+        CommandLine|contains|all:
+            - 'vuln_type'
+            - 'repro_steps'
+            - 'cleanup'
+            - 'application/json'
+    condition: selection
+falsepositives:
+    - Other reporting scripts that post findings with the same field names
+level: medium

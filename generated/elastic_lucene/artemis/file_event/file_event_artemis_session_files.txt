@@ -1,0 +1,3 @@
+# ARTEMIS Session or Sub-Agent Files Written
+# Sigma id e87d7b9f-bbf8-5a93-afdd-24877d9ed5d3, pipeline ecs
+(TargetFilename:*supervisor_session_* AND (TargetFilename:(*supervisor_todo.json OR *supervisor_heartbeat.json OR *session_metadata.json OR *vulnerabilities_found.log OR *session_vulnerabilities.jsonl))) OR ((TargetFilename:(*\/workspaces\/* OR *\\workspaces\\*)) AND (TargetFilename:(*followup_input.json OR *realtime_context.txt))) OR (TargetFilename:(*\/codex\-logs\-backup\/autonomous_session_* OR *\\codex\-logs\-backup\\autonomous_session_*)) OR (TargetFilename:(*\/logs\/latest_session_heartbeat.json OR *\\logs\\latest_session_heartbeat.json))

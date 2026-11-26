@@ -1,0 +1,3 @@
+# Pensar Apex Agent Command Markers
+# Sigma id b406fa4b-5031-59e7-b5da-3d7408594f21, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*User-Agent: pensar-apex*" or process.command_line like "*PensarBot/1.0*" or process.command_line like "*InVzZSBzdHJpY3QiOwovLyBBcGV4IGNhbGxiYWNrIGxpc3RlbmVy*" or process.command_line like "*process.env.APEX_CB_PROBE*" or process.command_line like "*APEX_HIDDEN_PAYLOAD_COUNT*" or process.command_line like "*APEX_FILE_PAYLOAD_COUNT*" or process.command_line like "*__APEX_GREP_EXIT_*" or process.command_line like "*<<'APEX_GLOB_PY'*" or process.command_line like "*<<'APEX_LIST_PY'*"

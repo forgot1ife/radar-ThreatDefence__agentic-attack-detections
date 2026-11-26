@@ -1,0 +1,3 @@
+# Ares Worker Starting Active Directory Attack Tools
+# Sigma id 4ab84c38-598f-5d0e-b311-fcce7d97a466, pipeline ecs
+process.parent.executable:*\/ares AND (process.command_line:(*impacket\-* OR *netexec* OR *nxc\ * OR *certipy* OR *bloodyAD* OR *pywhisker* OR *pygpoabuse* OR *responder* OR *coercer* OR *petitpotam* OR *dfscoerce* OR *bloodhound\-python* OR *hashcat* OR *lsassy* OR *evil\-winrm*))

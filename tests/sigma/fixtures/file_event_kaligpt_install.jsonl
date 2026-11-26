@@ -1,0 +1,7 @@
+{"name": "provider key file", "expected": true, "event": {"TargetFilename": "/opt/KaliGPT/agents/utils/api.config.json"}}
+{"name": "launcher", "expected": true, "event": {"TargetFilename": "/usr/local/bin/kaligpt"}}
+{"name": "search helper launcher", "expected": true, "event": {"TargetFilename": "/usr/local/bin/opensearchapi"}}
+{"name": "downloaded installer", "expected": true, "event": {"TargetFilename": "/home/op/kaligptinstaller.sh"}}
+{"name": "termux install", "expected": true, "event": {"TargetFilename": "/data/data/com.termux/files/usr/share/KaliGPT/agents/utils/api.config.json"}}
+{"name": "unrelated file in /opt", "expected": false, "event": {"TargetFilename": "/opt/google/chrome/chrome"}}
+{"name": "file with a similar name", "expected": false, "event": {"TargetFilename": "/home/op/notes/kaligpt-review.md"}}

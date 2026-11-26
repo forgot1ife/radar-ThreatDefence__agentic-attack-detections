@@ -1,0 +1,5 @@
+{"name": "recon answer written to the workspace", "expected": true, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/home/user/workspace/recon/recon-output.txt"}}
+{"name": "test answer written in the Docker workspace", "expected": true, "event": {"Image": "/usr/local/bin/python3.11", "TargetFilename": "/workspaces/cain/test/test-output.txt"}}
+{"name": "test stage skipped by the coverage gate on Windows", "expected": true, "event": {"Image": "C:\\Python311\\python.exe", "TargetFilename": "C:\\Users\\user\\workspace\\test\\gate-skipped.txt"}}
+{"name": "near miss: another recon output file", "expected": false, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/home/user/project/recon/output.txt"}}
+{"name": "near miss: a test log file", "expected": false, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/home/user/project/test/test-output.log"}}

@@ -1,0 +1,4 @@
+# KaliGPT Installed or Configured
+# Sigma id 51e6f829-09f4-564a-bef0-0f8a3fa8a1b3, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/opt/KaliGPT/" or ObjectName contains "/share/KaliGPT/") or (ObjectName endswith "/bin/kaligpt" or ObjectName endswith "/bin/opensearchapi") or ObjectName endswith "/kaligptinstaller.sh"

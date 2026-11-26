@@ -1,0 +1,59 @@
+// ARTEMIS running on a host you monitor
+// Agentic attack detections by ThreatDefence (ARTEMIS). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059 (Command and Scripting Interpreter), T1059.004 (Unix Shell), T1059.006 (Python), T1567 (Exfiltration Over Web Service)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the ARTEMIS source code (Stanford-Trinity/ARTEMIS at f309242d). ARTEMIS is a Python supervisor that drives a
+// fork of the Codex CLI. It has no web UI. It runs:
+//  - python -m supervisor.supervisor --config-file <task>.yaml [--benchmark-mode] [--skip-todos] ... (supervisor/supervisor.py:51-72)
+//  - one sub-agent per task: codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check
+//    --log-session-dir <dir> --instance-id <id> --wait-for-followup -C <dir> --mode <specialist> <task>
+//    (supervisor/orchestration/instance_manager.py:77-105); --wait-for-followup and --instance-id exist only in the fork
+//  - the model's shell commands as children of that codex process, normally bash -lc <command>
+//  - curl -X POST -H "Content-Type: application/json" --data {"title":...,"vuln_type":...,"repro_steps":...} <webhook>
+//    for each finding (supervisor/submissions/vulnerability.py:72-80)
+//  - an older driver, codex autonomous -f <config>.yaml (alias auto) (codex-rs/cli/src/main.rs:64-66,144-187)
+// It writes logs/supervisor_session_<unix time>/ with workspaces/<id>/realtime_context.txt, status.json,
+// followup_input.json and final_result.json, and ~/codex-logs-backup/autonomous_session_<time>/ in autonomous mode.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "--wait-for-followup" and ProcessCommandLine has "--instance-id"
+            and ProcessCommandLine has "--log-session-dir"
+        | extend Instance=extract(@"--instance-id\s+(\S+)", 1, ProcessCommandLine), Mode=extract(@"--mode\s+(\S+)", 1, ProcessCommandLine)
+        | project Timestamp, DeviceName, Signal="ARTEMIS Codex sub-agent", Detail=strcat(Instance, " (", Mode, ") ", substring(ProcessCommandLine, 0, 300)),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessCommandLine has "--wait-for-followup" and InitiatingProcessCommandLine has "--instance-id"
+        | extend Instance=extract(@"--instance-id\s+(\S+)", 1, InitiatingProcessCommandLine)
+        | summarize Commands=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp)
+            by DeviceName, Instance
+        | project Timestamp, DeviceName, Signal="Commands run by an ARTEMIS sub-agent", Detail=strcat(Instance, ": ", Commands, " commands ", tostring(Examples)), Parent=""),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has_any ("supervisor.supervisor", "codex-supervisor")
+                and ProcessCommandLine has_any ("--benchmark-mode", "--skip-todos", "--use-prompt-generation", "--finish-on-submit",
+                    "--codex-binary", "configs/tests/ctf_easy.yaml", "configs/stanford/"))
+            or (ProcessCommandLine has_any ("codex autonomous ", "codex auto ")
+                and ProcessCommandLine has_any ("--ignore-work-hours", "--driver-model", "--work-start-hour", "--logs-dir", "--mode "))
+        | project Timestamp, DeviceName, Signal="ARTEMIS supervisor or autonomous driver", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ ("curl", "curl.exe") and ProcessCommandLine has "vuln_type" and ProcessCommandLine has "repro_steps"
+            and ProcessCommandLine has "cleanup"
+        | project Timestamp, DeviceName, Signal="ARTEMIS finding posted with curl", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FolderPath has "supervisor_session_" and FileName in~ ("supervisor_todo.json", "supervisor_heartbeat.json",
+                    "session_metadata.json", "vulnerabilities_found.log", "session_vulnerabilities.jsonl"))
+            or (FolderPath has "workspaces" and FileName in~ ("followup_input.json", "realtime_context.txt"))
+            or FolderPath has "codex-logs-backup"
+            or FileName =~ "latest_session_heartbeat.json"
+        | extend Folder=tostring(parse_path(FolderPath).DirectoryPath)
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, Folder
+        | project Timestamp, DeviceName, Signal="ARTEMIS session files", Detail=strcat(Folder, " ", tostring(Files)), Parent="")
+| order by Timestamp desc

@@ -1,0 +1,4 @@
+# Deadend CLI Sandbox Image, Release Download or Trace Collector in Proxy Logs
+# Sigma id f58b3dd0-6f53-5478-8e47-23c1fef1341c, pipeline sentinel_asim
+imWebSession
+| where Url contains "/xoxruns/sandboxed_kali/" or (Url contains "/releases/download/" and (Url endswith "/deadend-linux-x86_64-unknown-linux-gnu.tar.gz" or Url endswith "/deadend-macos-aarch64-apple-darwin.tar.gz" or Url endswith "/deadend-cli-linux-x86_64.tar.gz" or Url endswith "/deadend-cli-macos-aarch64.tar.gz")) or HttpHost =~ "crunch.straylabs.ai"

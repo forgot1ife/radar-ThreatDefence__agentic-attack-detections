@@ -1,0 +1,3 @@
+# ARTEMIS Vulnerability Report Posted with curl
+# Sigma id 910ecb7b-4321-58e1-bcae-8019123166af, pipeline ecs
+(process.executable:(*\/curl OR *\\curl.exe)) AND (process.command_line:*vuln_type* AND process.command_line:*repro_steps* AND process.command_line:*cleanup* AND process.command_line:*application\/json*)

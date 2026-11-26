@@ -1,0 +1,3 @@
+# Cochise AI Pentest Agent Launcher
+# Sigma id a9ef7e9d-8998-55d6-961a-ed7197d6524d, pipeline ecs
+(process.command_line:(*\/bin\/cochise OR *\\Scripts\\cochise.exe)) OR (process.command_line:(*uv\ run\ cochise* OR *src\/cochise.py* OR *cochise.cli.cochise* OR *\/bin\/cochise\-replay\ * OR *\/bin\/cochise\-analyze\-* OR *uv\ run\ cochise\-*))

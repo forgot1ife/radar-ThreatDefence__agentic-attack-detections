@@ -1,0 +1,3 @@
+# Pensar Apex Session, Run Store or Callback Listener Files
+# Sigma id c3503bd7-f892-5def-81b5-aea6a55e24fd, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/.pensar/sessions/*" or TargetFilename like "*\\.pensar\\sessions\\*" or TargetFilename like "*/.pensar/runtime/runs.sqlite*" or TargetFilename like "*\\.pensar\\runtime\\runs.sqlite*" or TargetFilename like "*callback-listeners*" and ends_with(TargetFilename, ".cjs") or TargetFilename like "*/tmp/apex_payload_*"

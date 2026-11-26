@@ -18,7 +18,7 @@ The image counts every agent found since 21 October 2026, across 25 public frame
 
 ## What is here
 
-- **Framework folders.** ARTEX and its AntiFox fork, Cairn, PentAGI, HexStrike, CyberStrikeAI, Strix, Hermes Agent, Agent Zero, RedAmon, Xalgorix, Pentest Swarm AI, Decepticon, Shannon, PentestGPT, Cyber-AutoAgent, CAI, HackSynth, VulnBot, AutoPT, PentestAgent (the paper's and GH05TCREW's), Dark Moon, NyxStrike, sapper-v2, NeuroSploit, Vigilo, Pentest Copilot, cyber-harness, CHYing-agent, Hexstrike-redteam, pentest-ai, LazyOwn, H-Pentest, Incalmo, Virga, MCP Kali Server, ARIA-X, Mitsu, burp-ai-agent, RAPTOR, Blitz Strike, Nebula, Clearwing, BreachWeave, numasec, Pentest Harness, Agentic Bug Hunter, 0security, Sage (Mythic) and PentestCode. Each folder is built from a review of the framework's source code and the public reporting on its use. Fourteen more frameworks whose consoles were found on the internet have smaller folders that say what the console and the tool look like, with the code behind each signal: AutoCVE, CyberStrike, Vulnerator AI, Decepticon, AIDA, BugTraceAI, Z3r0, AIRecon, LuaN1aoAgent, open-kritt, REDCELL, T3MP3ST, WormXGPT and Chufeng Agent Core.
+- **Framework folders.** ARTEX and its AntiFox fork, Cairn, PentAGI, HexStrike, CyberStrikeAI, Strix, Hermes Agent, Agent Zero, RedAmon, Xalgorix, Pentest Swarm AI, Decepticon, Shannon, PentestGPT, Cyber-AutoAgent, CAI, HackSynth, VulnBot, AutoPT, PentestAgent (the paper's and GH05TCREW's), Dark Moon, NyxStrike, sapper-v2, NeuroSploit, Vigilo, Pentest Copilot, cyber-harness, CHYing-agent, Hexstrike-redteam, pentest-ai, LazyOwn, H-Pentest, Incalmo, Virga, MCP Kali Server, ARIA-X, Mitsu, burp-ai-agent, RAPTOR, Blitz Strike, Nebula, Clearwing, BreachWeave, numasec, Pentest Harness, Agentic Bug Hunter, 0security, Sage (Mythic), PentestCode, hackingBuddyGPT, AutoPentester, MAPTA, PentesterFlow, Pentest Agent Suite, Cain, KaliGPT, Pensar Apex, MCP for Security, Guardian, Cybermes, ARTEMIS, CTF Agent, OpenHack, RedAI, Cochise, Deadend CLI and Ares, plus four offensive prompt packs. Each folder is built from a review of the framework's source code and the public reporting on its use. Fourteen more frameworks whose consoles were found on the internet have smaller folders that say what the console and the tool look like, with the code behind each signal: AutoCVE, CyberStrike, Vulnerator AI, Decepticon, AIDA, BugTraceAI, Z3r0, AIRecon, LuaN1aoAgent, open-kritt, REDCELL, T3MP3ST, WormXGPT and Chufeng Agent Core.
 - **Shared behaviors.** Rules for what these frameworks have in common, whatever the tool or the model behind it.
 - **Indicators and feeds.** One CSV of 580 sourced indicators, and the feeds generated from it.
 - **Exposed consoles.** A dated list of addresses where one of these consoles answers on the internet, in [`exposure/`](exposure), with a [count per framework](#exposed-consoles). It is a record of what is exposed, not a detection feed.
@@ -116,6 +116,25 @@ The capture is test traffic written from the framework source code and published
 | [0security](frameworks/zerosecurity) | 3 | 1 | 7 | 27 | 2 | intel | 40 |
 | [Sage (Mythic)](frameworks/sage-mythic) | 4 | 1 | 7 | 9 | 4 | intel | 38 |
 | [PentestCode](frameworks/pentestcode) | 4 | 1 | 6 | 9 | 3 |  | 21 |
+| [hackingBuddyGPT](frameworks/hackingbuddygpt) | 4 | 1 | 5 | 7 | 3 | intel | 16 |
+| [AutoPentester](frameworks/autopentester) | 3 | 1 | 2 | 9 | 2 | intel | 17 |
+| [MAPTA](frameworks/mapta) | 3 |  | 2 |  | 3 | intel | 11 |
+| [PentesterFlow](frameworks/pentesterflow) | 3 | 1 | 4 | 4 | 3 | intel | 18 |
+| [Pentest Agent Suite](frameworks/pentest-agent-suite) | 3 | 1 | 5 | 14 | 4 | intel | 23 |
+| [Cain](frameworks/cain) | 3 | 1 | 4 | 6 | 2 | intel | 17 |
+| [KaliGPT](frameworks/kaligpt) | 3 | 1 | 7 | 3 | 3 | intel | 14 |
+| [Pensar Apex](frameworks/apex) | 3 | 1 | 5 | 5 | 3 | intel | 23 |
+| [MCP for Security](frameworks/mcp-for-security) | 3 | 1 | 3 | 8 | 3 | intel | 17 |
+| [Guardian](frameworks/guardian) | 3 | 1 | 6 | 4 | 4 | intel | 13 |
+| [Cybermes](frameworks/cybermes) | 3 | 1 | 5 | 12 | 3 | intel | 24 |
+| [ARTEMIS](frameworks/artemis) | 3 | 1 | 6 | 4 | 4 | intel | 19 |
+| [CTF Agent](frameworks/ctf-agent) | 3 | 1 | 6 | 3 | 2 | intel | 13 |
+| [OpenHack](frameworks/openhack) | 3 | 1 | 8 | 14 | 3 | intel | 20 |
+| [RedAI](frameworks/redai) | 3 | 1 | 2 |  | 4 | intel | 12 |
+| [Cochise](frameworks/cochise) | 3 | 1 | 3 | 1 | 3 | intel | 9 |
+| [Deadend CLI](frameworks/deadend-cli) | 3 | 1 | 5 | 8 | 2 | intel | 16 |
+| [Ares](frameworks/ares) | 4 | 1 | 9 | 6 | 6 | intel | 20 |
+| [Offensive prompt packs](frameworks/prompt-packs) |  |  | 4 |  | 8 | intel | 25 |
 | [AutoCVE](frameworks/autocve) | | | | 2 | | script | |
 | [LuaN1aoAgent](frameworks/luan1aoagent) | | | | 4 | | script | |
 | [Shared behaviors](behaviors) | 9 | 2 | 6 | 18 | | package | |
@@ -177,6 +196,25 @@ The other eleven console-level folders (CyberStrike, Vulnerator AI, AIDA, BugTra
 | [0security](frameworks/zerosecurity) | Harness for persistent AI security agents (0security) with fixed LLM probe prompts and a server-mode console | No public report of use in an attack. Covered from its source code |
 | [Sage (Mythic)](frameworks/sage-mythic) | AI operator inside the Mythic C2 framework whose tasks leave fixed SAGE_ proof markers on Windows hosts | No public report of use in an attack. Covered from its source code |
 | [PentestCode](frameworks/pentestcode) | OpenCode fork with thirteen pentest agents, injection probe markers and pivot and persistence recipes | No public report of use in an attack. Covered from its source code |
+| [hackingBuddyGPT](frameworks/hackingbuddygpt) | TU Wien research framework (wintermute) for LLM-driven Linux and Windows privilege escalation, web, API and Active Directory testing | No public report of use in an attack. Covered from its source code |
+| [AutoPentester](frameworks/autopentester) | Research fork of the 2024 PentestGPT that runs the model's commands and Metasploit on the host without approval | No public report of use in an attack. Covered from its source code |
+| [MAPTA](frameworks/mapta) | UCL research agent: a gpt-5 main agent directs sandbox and validator agents against web targets | No public report of use in an attack. Covered from its source code |
+| [PentesterFlow](frameworks/pentesterflow) | Human-in-the-loop terminal agent for pentests and bug bounty with a shell, a browser and a Burp bridge | No public report of use in an attack. Covered from its source code |
+| [Pentest Agent Suite](frameworks/pentest-agent-suite) | Bug bounty framework of about 50 agents, skills and hooks for seven coding assistants, with a stealth browser | No public report of use in an attack. Covered from its source code |
+| [Cain](frameworks/cain) | Cloud-focused agent on the Claude Agent SDK with recon, test and report stages, Chinese clouds included | No public report of use in an attack. Covered from its source code |
+| [KaliGPT](frameworks/kaligpt) | Command-line AI assistant for Kali with several model providers, aimed at students | No public report of use in an attack. Covered from its source code |
+| [Pensar Apex](frameworks/apex) | Pensar's terminal pentest agent for black-box and white-box web testing, open core of a commercial console | No public report of use in an attack. Covered from its source code |
+| [MCP for Security](frameworks/mcp-for-security) | Archived collection of 23 stdio MCP servers that let an AI assistant run nmap, nuclei, sqlmap and other tools | No public report of use in an attack. Covered from its source code |
+| [Guardian](frameworks/guardian) | AI pentest CLI whose planner, tool-selector, analyst and reporter agents run YAML tool workflows | No public report of use in an attack. Covered from its source code |
+| [Cybermes](frameworks/cybermes) | Bug bounty and red team framework built on Hermes Agent, with about two hundred playbooks | No public report of use in an attack. Covered from its source code |
+| [ARTEMIS](frameworks/artemis) | Stanford research agent: a supervisor that starts and watches vulnerability-hunting sub-agents | No public report of use in an attack. Covered from its source code |
+| [CTF Agent](frameworks/ctf-agent) | CTF solver that races several models in parallel Docker sandboxes | No public report of use in an attack. Covered from its source code |
+| [OpenHack](frameworks/openhack) | Local source-code security scanner whose agents map, review, challenge and judge findings | No public report of use in an attack. Covered from its source code |
+| [RedAI](frameworks/redai) | Terminal workbench where Claude Code or Codex agents scan code and validate flaws in a browser or simulator | No public report of use in an attack. Covered from its source code |
+| [Cochise](frameworks/cochise) | Research prototype that drives an assumed-breach attack on an Active Directory lab from an attacker host | No public report of use in an attack. Covered from its source code |
+| [Deadend CLI](frameworks/deadend-cli) | Black-box web pentest agent: a Bun terminal UI driving a Python agent with sandboxed tools | No public report of use in an attack. Covered from its source code |
+| [Ares](frameworks/ares) | Dreadnode's Rust multi-agent platform that chains impacket, NetExec and certipy against Active Directory; it ships its own detections | No public report of use in an attack. Covered from its source code |
+| [Offensive prompt packs](frameworks/prompt-packs) | Four projects with no agent code (Claude-Red, pentest-ai-agents, codex-redteam-mode, vibe-pentest) that turn a coding agent into an attack tool | No public report of use in an attack. Covered from their files |
 | [AutoCVE](frameworks/autocve) | Python platform whose agents audit source code for new CVEs and write reports, with a web console and an API | No public report of use in an attack. 256 consoles exposed |
 | [CyberStrike](frameworks/cyberstrike) | TypeScript offensive security harness with a browser extension, an injection prober and a callback server. Not CyberStrikeAI | No public report of use in an attack |
 | [Vulnerator AI](frameworks/vulnerator-ai) | OODA-loop pentest agent: a Hermes Agent brain driving Kali and Playwright tools over MCP | No public report of use in an attack |
@@ -194,11 +232,11 @@ The other eleven console-level folders (CyberStrike, Vulnerator AI, AIDA, BugTra
 
 Each folder has a README, the hunts and rules, and a `source-code-signals.md` that explains what the framework leaves behind and where in its code each signal comes from.
 
-## Exposure tracking as of 25 Nov 2026
+## Exposure tracking as of 26 Nov 2026
 
 This project now tracks exposure as well as detection: which of these frameworks have consoles reachable on the internet, how many there are, and how the numbers move over time.
 
-![Active offensive agents by framework on 25 November 2026](docs/images/exposure-status-2026-11-25.png)
+![Active autonomous offensive frameworks: live consoles for the top 30 on 26 November 2026](docs/images/exposure-status-2026-11-26.png)
 
 ## Exposed consoles
 

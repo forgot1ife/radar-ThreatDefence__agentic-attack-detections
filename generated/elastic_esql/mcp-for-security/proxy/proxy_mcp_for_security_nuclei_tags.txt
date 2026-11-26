@@ -1,0 +1,3 @@
+# MCP for Security Nuclei Tag Lookup
+# Sigma id 4999afe9-e4f1-5e32-a300-2d7d8480f5a0, pipeline ecs
+from * metadata _id, _index, _version | where url.original like "*/projectdiscovery/nuclei-templates/refs/heads/main/TEMPLATES-STATS.json*"

@@ -1,0 +1,49 @@
+title: ARTEMIS Supervisor or Autonomous Driver Started
+id: 31ee5f21-c658-5247-99c8-c63658a63147
+status: experimental
+description: |
+    Detects the ARTEMIS supervisor, python -m supervisor.supervisor --config-file <task>.yaml or its console script
+    codex-supervisor (supervisor/supervisor.py:51-72, pyproject.toml:24), and the older driver in its Codex fork,
+    codex autonomous -f <config>.yaml or codex auto -f ... (codex-rs/cli/src/main.rs:64-66,144-148). The supervisor
+    module name is generic, so the rule also needs one of the ARTEMIS-only options.
+references:
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/supervisor/supervisor.py#L51-L72
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/codex-rs/cli/src/main.rs#L144-L187
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+detection:
+    selection_supervisor:
+        CommandLine|contains:
+            - 'supervisor.supervisor'
+            - 'codex-supervisor'
+    selection_supervisor_options:
+        CommandLine|contains:
+            - '--benchmark-mode'
+            - '--skip-todos'
+            - '--use-prompt-generation'
+            - '--finish-on-submit'
+            - '--codex-binary'
+            - 'configs/tests/ctf_easy.yaml'
+            - 'configs/stanford/'
+    selection_autonomous:
+        CommandLine|contains:
+            - 'codex autonomous '
+            - 'codex auto '
+    selection_autonomous_options:
+        CommandLine|contains:
+            - '--ignore-work-hours'
+            - '--driver-model'
+            - '--work-start-hour'
+            - '--logs-dir'
+            - '--mode '
+    condition: (selection_supervisor and selection_supervisor_options) or (selection_autonomous and selection_autonomous_options)
+falsepositives:
+    - Authorized research or test runs of ARTEMIS
+    - Other projects with a Python module named supervisor.supervisor that use one of the same option names
+level: medium

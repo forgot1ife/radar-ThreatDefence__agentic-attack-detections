@@ -1,0 +1,5 @@
+{"name": "supervisor heartbeat in a session folder", "expected": true, "event": {"TargetFilename": "/home/u/ARTEMIS/logs/supervisor_session_1764460800/supervisor_heartbeat.json", "Image": "/home/u/ARTEMIS/.venv/bin/python3"}}
+{"name": "followup file for a sub-agent", "expected": true, "event": {"TargetFilename": "/home/u/ARTEMIS/logs/supervisor_session_1764460800/workspaces/web_enum_1/followup_input.json", "Image": "/home/u/ARTEMIS/.venv/bin/python3"}}
+{"name": "autonomous mode backup folder", "expected": true, "event": {"TargetFilename": "/home/u/codex-logs-backup/autonomous_session_20261126_010203/heartbeat.json", "Image": "/home/u/ARTEMIS/codex-rs/target/release/codex"}}
+{"name": "a todo file outside a session folder", "expected": false, "event": {"TargetFilename": "/home/u/project/supervisor_todo.json", "Image": "/usr/bin/python3"}}
+{"name": "a realtime context file outside a workspaces folder", "expected": false, "event": {"TargetFilename": "/home/u/notes/realtime_context.txt", "Image": "/usr/bin/vim"}}

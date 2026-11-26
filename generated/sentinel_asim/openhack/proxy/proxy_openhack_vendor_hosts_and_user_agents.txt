@@ -1,0 +1,4 @@
+# OpenHack Vendor Hosts or User Agents in Proxy Logs
+# Sigma id 024c4c1b-b8a5-57b7-b6f8-0bbf8c8af69c, pipeline sentinel_asim
+imWebSession
+| where (HttpHost in~ ("api.openhack.com", "app.openhack.com", "install.openhack.com")) or Url contains "/openhackai/OpenHack/releases/download/" or HttpUserAgent =~ "openhack" or HttpUserAgent =~ "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"

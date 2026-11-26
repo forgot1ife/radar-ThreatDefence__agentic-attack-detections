@@ -1,0 +1,42 @@
+// Pensar Apex on a host you monitor
+// Agentic attack detections by ThreatDefence (Pensar Apex). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Pensar Apex (pensarai/apex, npm @pensar/apex, binary pensar) is a terminal agent that runs web application pentests
+// with model-driven tools. No report of its use in a real intrusion was found on November 26, 2026, so this hunt looks
+// for the software itself, from its source code (reviewed at 6e3c5488):
+//  - The CLI: pensar pentest / targeted-pentest / threat-model, pensar agent-runs worker, npm install @pensar/apex,
+//    the install scripts pensarai.com/install.sh and apex.ps1, and the kali-apex container.
+//  - Agent commands run as bash --norc --noprofile -c <command>. Apex adds -H "User-Agent: pensar-apex" to curl, wget,
+//    nuclei, ffuf, gobuster, httpx, feroxbuster, dirb, wfuzz, wpscan, sqlmap and nikto against in-scope hosts.
+//  - Its callback listener starts as node -e "eval(Buffer.from('InVzZSBzdHJpY3Qi...". Its helpers use APEX_CB_PROBE,
+//    APEX_HIDDEN_PAYLOAD_COUNT, __APEX_GREP_EXIT_, <<'APEX_GLOB_PY' and <<'APEX_LIST_PY'.
+//  - Files under ~/.pensar/ (sessions/<id>/, runtime/runs.sqlite, error.log), callback-listeners/listener-<nonce>.cjs.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+// has_any matches whole terms; the listener base64 and the grep marker run on into longer tokens, so they use contains.
+let AgentMarkers = dynamic(["User-Agent: pensar-apex", "PensarBot/1.0", "process.env.APEX_CB_PROBE", "APEX_HIDDEN_PAYLOAD_COUNT",
+    "APEX_FILE_PAYLOAD_COUNT", "APEX_GLOB_PY", "APEX_LIST_PY"]);
+let CliMarkers = dynamic(["pensar pentest ", "pensar targeted-pentest ", "pensar threat-model", "pensar agent-runs worker",
+    "@pensar/apex", "pensarai.com/install.sh", "pensarai.com/apex.ps1", "exec kali-apex", "kali-apex:latest"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (AgentMarkers) or ProcessCommandLine contains "InVzZSBzdHJpY3QiOwovLyBBcGV4IGNhbGxiYWNr"
+            or ProcessCommandLine contains "__APEX_GREP_EXIT_"
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Apex agent command (pensar-apex user agent, callback listener or helper)", Detail=tostring(Commands)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (CliMarkers)
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Apex CLI, install or kali-apex container", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/.pensar/sessions/" or FolderPath has @"\.pensar\sessions\" or FolderPath has ".pensar/runtime/runs.sqlite"
+            or (FolderPath has "callback-listeners" and FileName startswith "listener-" and FileName endswith ".cjs")
+            or FolderPath startswith "/tmp/apex_payload_"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Apex session, run store or callback listener files", Detail=tostring(Files))
+| order by Timestamp desc

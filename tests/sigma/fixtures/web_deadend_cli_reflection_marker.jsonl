@@ -1,0 +1,3 @@
+{"name": "marker in a query string", "expected": true, "event": {"cs-uri-stem": "/page", "cs-uri-query": "test=deadend7x7probe"}}
+{"name": "marker in a path", "expected": true, "event": {"cs-uri-stem": "/search/deadend7x7probe", "cs-uri-query": "-"}}
+{"name": "near miss: another deadend word", "expected": false, "event": {"cs-uri-stem": "/page", "cs-uri-query": "street=deadend-road"}}

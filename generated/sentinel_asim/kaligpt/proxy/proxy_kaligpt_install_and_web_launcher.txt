@@ -1,0 +1,4 @@
+# KaliGPT Installer Download or Web Launcher URL in Proxy Logs
+# Sigma id d1a45ed6-a96a-5378-b873-9711a7efb1a0, pipeline sentinel_asim
+imWebSession
+| where (HttpHost =~ "raw.githubusercontent.com" and Url startswith "/SudoHopeX/KaliGPT/") or (HttpHost =~ "github.com" and (Url startswith "/SudoHopeX/KaliGPT.git/" or Url startswith "/SudoHopeX/OpenSearchAPI.git/")) or (HttpHost =~ "chatgpt.com" and Url startswith "/g/g-xouSQobsE-kaligpt")

@@ -1,0 +1,25 @@
+title: Cain XSS Echo Marker in Web Logs
+id: 02d84781-b039-59de-a12a-f746c2fbb153
+status: experimental
+description: |
+    Detects the unique marker cainxss7f3a that Cain's test-stage XSS skill gives the model as the example value for
+    finding where a parameter is echoed (skills/web/xss/SKILL.md:31 at 2e3f4f1c). The skill is loaded from the
+    clone's skills/ folder, so this marker is expected from a run out of a clone (the documented pip install -e .),
+    not from the Docker image, which ships src/ only. The model may also pick another marker.
+references:
+    - https://github.com/cdxiaodong/cain-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-uri-query|contains: 'cainxss7f3a'
+    condition: selection
+falsepositives:
+    - Authorized tests with Cain
+level: medium

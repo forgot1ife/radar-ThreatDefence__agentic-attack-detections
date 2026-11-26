@@ -1,0 +1,31 @@
+title: KaliGPT Tool User Agent in Proxy Logs
+id: 102217b3-2b8e-561d-b153-7d2d086b6e71
+status: experimental
+description: |
+    Detects the fixed user agents of KaliGPT's HTTP tools leaving your network. "HackerX WebRequestFramework/1.0" is
+    set by web_request_analysis (a header, cookie, CORS, caching and content check of one URL) and get_raw_response,
+    both called by the model against targets. "LocalScraper/1.0" is set by get_local_server_content, meant for local
+    servers but callable with any URL. The model can override the user agent through the headers argument of the
+    first two tools. HTTPS targets need TLS inspection for the user agent to show.
+references:
+    - https://github.com/SudoHopeX/KaliGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.t1594
+logsource:
+    category: proxy
+detection:
+    selection:
+        # agents/utils/tools/web_request_framework.py:63,276 and agents/utils/tools/locals.py:35 at b15b8d48
+        c-useragent:
+            - 'HackerX WebRequestFramework/1.0'
+            - 'LocalScraper/1.0'
+    condition: selection
+falsepositives:
+    - Authorized tests, CTF and lab work with KaliGPT
+    - Another scraper that uses the user agent LocalScraper/1.0
+level: medium

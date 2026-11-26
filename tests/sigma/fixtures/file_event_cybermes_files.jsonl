@@ -1,0 +1,8 @@
+{"name": "native MCP binary cached by the npm launcher", "expected": true, "event": {"TargetFilename": "/home/user/.cybermes/bin/cybermes-mcp-v3.5.1-linux-amd64", "Image": "/usr/bin/node"}}
+{"name": "auto-loaded skill copied into the Hermes home", "expected": true, "event": {"TargetFilename": "/root/.hermes/skills/autonomous-godmode-hunter/SKILL.md", "Image": "/usr/bin/cp"}}
+{"name": "katana output kept by the MCP crawler", "expected": true, "event": {"TargetFilename": "/workspace/recon/app_example_test/katana.txt", "Image": "/usr/local/bin/cybermes-mcp"}}
+{"name": "recon notes in the report layout", "expected": true, "event": {"TargetFilename": "/workspace/reports/app_example_test/evidence/recon_notes.md", "Image": "/usr/local/bin/cybermes-mcp"}}
+{"name": "PDF report", "expected": true, "event": {"TargetFilename": "/workspace/reports/app_example_test/REPORT_app_example_test.pdf", "Image": "/usr/local/bin/cybermes-mcp"}}
+{"name": "katana output outside a recon folder", "expected": false, "event": {"TargetFilename": "/home/user/scans/katana.txt", "Image": "/usr/bin/bash"}}
+{"name": "Hermes' own skill folder", "expected": false, "event": {"TargetFilename": "/home/user/.hermes/skills/productivity/notes/SKILL.md", "Image": "/usr/bin/python3"}}
+{"name": "a report PDF outside a reports folder", "expected": false, "event": {"TargetFilename": "/home/user/Downloads/REPORT_q3.pdf", "Image": "/usr/bin/firefox"}}

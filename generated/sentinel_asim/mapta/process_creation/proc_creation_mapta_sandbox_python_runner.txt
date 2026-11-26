@@ -1,0 +1,4 @@
+# MAPTA Sandbox Python Runner
+# Sigma id 713ada5c-0f44-56fa-b2a1-d2f3a4deacfc, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "python3 /home/user/temp_script_" and TargetProcessCommandLine contains ".py"

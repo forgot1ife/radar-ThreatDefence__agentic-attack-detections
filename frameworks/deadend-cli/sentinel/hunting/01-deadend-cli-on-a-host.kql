@@ -1,0 +1,37 @@
+// Deadend CLI on a host you monitor
+// Agentic attack detections by ThreatDefence (Deadend CLI). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1610 (Deploy Container)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Deadend CLI (straylabs-ai/deadend-cli, formerly xoxruns/deadend-cli) is an autonomous web application pentest agent:
+// a Bun terminal UI (deadend) drives a Python JSON-RPC backend over stdin, which runs shell commands in a Kali
+// container (xoxruns/sandboxed_kali) and sends HTTP through Playwright. From its source at 34e83717:
+//  - Backend: ~/.cache/deadend/bin/deadend.sh or ~/.cache/deadend/server/deadend.sh --log-file
+//    ~/.cache/deadend/logs/rpc-server-<ms>.log, or uv run python -m deadend_cli.jsonrpc_server.
+//  - Files: ~/.deadend/reusable_credentials.json (copied on every start), ~/.deadend/config.json (model keys),
+//    ~/.cache/deadend/logs/<agent>/<session>/requester.jsonl and python_interpreter.jsonl,
+//    ~/.deadend/agents/<agent>/<session>/auth_context/playwright_state.json.
+//  - The sandbox is started through the Docker SDK (no docker CLI process): image xoxruns/sandboxed_kali, command
+//    /bin/bash, host network by default, the target source folder mounted read-only on /challenge.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "deadend" and ProcessCommandLine has "--log-file" and ProcessCommandLine has "rpc-server-")
+            or ProcessCommandLine has_any ("deadend_cli.jsonrpc_server", "deadend-jsonrpc-server")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Deadend CLI backend started", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FileName == "reusable_credentials.json" and (FolderPath has "/.deadend/" or FolderPath has "/.cache/deadend/memory/"))
+            or (FolderPath has "/.cache/deadend/logs/" and FileName in ("requester.jsonl", "python_interpreter.jsonl"))
+            or (FolderPath has "/.deadend/agents/" and FileName == "playwright_state.json")
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, AccountName=InitiatingProcessAccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Deadend CLI wallet, session log or cookie state written", Detail=tostring(Files)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "xoxruns/sandboxed_kali"
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Deadend CLI sandbox image named on a command line (manual pull or run)", Detail=tostring(Commands))
+| order by Timestamp desc

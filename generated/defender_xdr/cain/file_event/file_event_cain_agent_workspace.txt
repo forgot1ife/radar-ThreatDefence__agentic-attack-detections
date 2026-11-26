@@ -1,0 +1,4 @@
+# Cain Workspace Stage Files Written
+# Sigma id de9463da-7ec1-544d-9f74-3cc10d85cfa2, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath endswith "/recon/recon-output.txt" or FolderPath endswith "\\recon\\recon-output.txt" or FolderPath endswith "/test/test-output.txt" or FolderPath endswith "\\test\\test-output.txt" or FolderPath endswith "/test/gate-skipped.txt" or FolderPath endswith "\\test\\gate-skipped.txt"

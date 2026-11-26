@@ -1,0 +1,4 @@
+# Guardian AI Pentest CLI Started
+# Sigma id cfccbdb0-bbdb-52ae-9c12-dc3aefe2866a, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains " -m cli.main " or ProcessCommandLine contains "/bin/guardian " or ProcessCommandLine contains "\\Scripts\\guardian.exe ") and (ProcessCommandLine contains " workflow run " or ProcessCommandLine contains " scan --target " or ProcessCommandLine contains " scan -t " or ProcessCommandLine contains " recon --target " or ProcessCommandLine contains " recon -t " or ProcessCommandLine contains " analyze " or ProcessCommandLine contains " report --session " or ProcessCommandLine contains " report -s " or ProcessCommandLine contains " --resume ")

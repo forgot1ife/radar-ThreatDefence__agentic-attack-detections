@@ -1,0 +1,29 @@
+title: Ares Minted Machine Account Created With impacket-addcomputer
+id: 3677dece-25bf-5667-92bc-36b7951a6616
+status: experimental
+description: |
+    Detects Ares (dreadnode/ares) adding a machine account for resource-based constrained delegation. Its add_computer
+    wrapper ignores any name the model asks for and mints ARES-<8 uppercase hex> with the password Ar<16 hex>!7z, then
+    runs impacket-addcomputer -computer-name ARES-XXXXXXXX -computer-pass ... (privesc/delegation.rs:321-378). The
+    fixed prefix is there so Ares can tell its own residue from lab loot, which also makes it easy to spot.
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/privesc/delegation.rs#L321-L378
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.persistence
+    - attack.t1136.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_tool:
+        CommandLine|contains: 'addcomputer'
+    selection_name:
+        CommandLine|re: '-computer-name\s+ARES-[0-9A-F]{8}(\s|$)'
+    condition: all of selection_*
+falsepositives:
+    - Authorized Ares operations
+    - An operator who names test machine accounts ARES- followed by eight hex digits by hand
+level: high

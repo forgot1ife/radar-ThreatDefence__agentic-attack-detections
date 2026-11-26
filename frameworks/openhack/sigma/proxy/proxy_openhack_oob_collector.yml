@@ -1,0 +1,29 @@
+title: Request to the OpenHack Out-of-Band Collector
+id: c0cbd179-e825-5d0a-ba58-a0db518698ec
+status: experimental
+description: |
+    Detects requests to oob.openhack.com, the out-of-band collector of the OpenHack v0.x pentest agent (PyPI openhack
+    0.2.4). A server calling https://oob.openhack.com/<label>-<12 hex>/... ran a blind SSRF, command injection or XXE
+    payload the agent sent; the agent's own host calls /_hits?token=...&q=<marker> with the user agent openhack to read
+    the callbacks.
+references:
+    - https://github.com/openhackai/OpenHack/blob/8fdfdddffa1f493d21e3e6dd98d911e7c531b84b/openhack/tools/oob.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_exact:
+        cs-host: 'oob.openhack.com'
+    selection_sub:
+        cs-host|endswith: '.oob.openhack.com'
+    condition: 1 of selection_*
+falsepositives:
+    - The workstation or server that runs the OpenHack v0.x agent, when it polls the collector
+level: high

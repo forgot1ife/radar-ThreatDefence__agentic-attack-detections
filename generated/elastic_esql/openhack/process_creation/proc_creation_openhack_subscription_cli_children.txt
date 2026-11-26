@@ -1,0 +1,3 @@
+# Claude Code or Codex CLI Started by OpenHack
+# Sigma id c04336d7-897c-5138-9198-8280c8a2f615, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*--safe-mode*" and process.command_line like "*disableAllHooks*" and process.command_line like "*forceLoginMethod*" or process.command_line like "*openhack-subscription-*" or process.command_line like "*source-review worker inside OpenHack*"

@@ -1,0 +1,3 @@
+# Cain Pi Backend Bridge and Its Shell Commands
+# Sigma id 49b9fde8-9907-57fb-a6ab-863656728f4e, pipeline splunk_windows
+(Image IN ("*/node", "*\\node.exe") CommandLine IN ("*/toolchain/pi/bridge.mjs", "*\\toolchain\\pi\\bridge.mjs")) OR (ParentCommandLine IN ("*/toolchain/pi/bridge.mjs", "*\\toolchain\\pi\\bridge.mjs") CommandLine="* -c *")

@@ -1,0 +1,3 @@
+# Recon or Exploitation Tool Started by an MCP for Security Wrapper
+# Sigma id 56966f5d-7af6-5729-835f-e065f8ebba9b, pipeline ecs
+(process.parent.command_line:(*\-mcp\/build\/index.js* OR *\/cero\/build\/index.js*)) AND ((process.command_line:(*\ \-silent* OR *aws\ \-\-force\ \-\-no\-browser* OR *\ \-subs\-only\ * OR *scan\ single\ \-\-url\ * OR *scan\ file\ \-f\ * OR *\/opt\/commix\/commix.py\ \-u\ * OR *\/opt\/smuggler\/smuggler.py\ \-u\ * OR *sqlmap\ \-u\ * OR *sqlmap.py\ \-u\ * OR *wpscan\ \-u\ *)) OR (process.executable:(*\/nmap OR *\/masscan OR *\/nuclei OR *\/httpx OR *\/katana OR *\/ffuf OR *\/sqlmap OR *\/wpscan OR *\/sslscan OR *\/arjun OR *\/amass OR *\/alterx OR *\/assetfinder OR *\/cero OR *\/shuffledns OR *\/gowitness OR *\/waybackurls OR *\/scout)))

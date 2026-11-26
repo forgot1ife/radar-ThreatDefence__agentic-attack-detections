@@ -1,0 +1,3 @@
+# Ares Kerberos Ticket Helpers
+# Sigma id 7310d24c-036c-5a42-8cca-a94f21e26a69, pipeline ecs
+(process.command_line:*cross_realm_tgs.py* AND process.command_line:*\-\-in\-ccache*) OR process.command_line:*\/tmp\/ares\-tickets\/*

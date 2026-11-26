@@ -1,0 +1,3 @@
+# ARTEMIS Session or Sub-Agent Files Written
+# Sigma id e87d7b9f-bbf8-5a93-afdd-24877d9ed5d3, pipeline splunk_windows
+(TargetFilename="*supervisor_session_*" TargetFilename IN ("*supervisor_todo.json", "*supervisor_heartbeat.json", "*session_metadata.json", "*vulnerabilities_found.log", "*session_vulnerabilities.jsonl")) OR (TargetFilename IN ("*/workspaces/*", "*\\workspaces\\*") TargetFilename IN ("*followup_input.json", "*realtime_context.txt")) OR TargetFilename IN ("*/codex-logs-backup/autonomous_session_*", "*\\codex-logs-backup\\autonomous_session_*") OR TargetFilename IN ("*/logs/latest_session_heartbeat.json", "*\\logs\\latest_session_heartbeat.json")

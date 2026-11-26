@@ -1,0 +1,5 @@
+{"name": "file in a sandbox workspace folder", "expected": true, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/tmp/ctf-workspace-k3j9x2ab/solve.py"}}
+{"name": "solver trace for a default Codex model", "expected": true, "event": {"Image": "/home/user/ctf-agent/.venv/bin/python3", "TargetFilename": "/home/user/ctf-agent/logs/trace-baby-rop-gpt-5.4-mini-20260329-101500.jsonl"}}
+{"name": "solver trace for the Claude solver", "expected": true, "event": {"Image": "/home/user/ctf-agent/.venv/bin/python3", "TargetFilename": "/home/user/ctf-agent/logs/trace-warmup-claude-opus-4-6-20260329-101500.jsonl"}}
+{"name": "an unrelated trace log", "expected": false, "event": {"Image": "/usr/bin/node", "TargetFilename": "/srv/app/logs/trace-requests-20260329.jsonl"}}
+{"name": "a workspace folder with another name", "expected": false, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/tmp/ctf-work/solve.py"}}

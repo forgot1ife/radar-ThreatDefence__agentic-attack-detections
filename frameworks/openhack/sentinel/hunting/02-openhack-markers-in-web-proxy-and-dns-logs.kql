@@ -1,0 +1,30 @@
+// OpenHack testing you: its collector, canary rows and user agents in web, proxy and DNS logs
+// Agentic attack detections by ThreatDefence (OpenHack). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1190 (Exploit Public-Facing Application), T1595.002 (Active Scanning: Vulnerability Scanning), T1071.004 (Application Layer Protocol: DNS)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the OpenHack v0.x source code (PyPI openhack 0.2.4, openhackai/OpenHack tag v0.2.4 8fdfdddf):
+//  - Blind payloads make the target call https://oob.openhack.com/<label>-<12 hex>/... or resolve
+//    <data>.oob.openhack.com; the same URL shows up first as an SSRF parameter in requests to your servers.
+//  - Write-access proofs insert, read back, update and delete a row named __openhack_test_probe
+//    (email __openhack_test_@example.com), for example GET /rest/v1/<table>?name=eq.__openhack_test_probe.
+//  - web_fetch sends "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko)
+//    Chrome/125.0 Safari/537.36" (real Chrome writes Chrome/125.0.0.0); API calls send the bare user agent "openhack".
+// v2 (the current release) sends nothing to targets. Most v0.x scanning goes through nmap, sqlmap, nuclei and curl with
+// their own user agents; look at what the same source did around a match.
+
+let FetchUA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36";
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+        | where csUriQuery has "__openhack_test_" or csUriStem has "__openhack_test_" or csUriQuery has "oob.openhack.com" or UA == FetchUA
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog
+        | where RequestURL has "__openhack_test_" or RequestURL has "oob.openhack.com" or DestinationHostName endswith "oob.openhack.com"
+            or RequestClientApplication == FetchUA or RequestClientApplication == "openhack"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication),
+    (DnsEvents
+        | where Name =~ "oob.openhack.com" or Name endswith ".oob.openhack.com"
+        | project TimeGenerated, Source="DnsEvents", Src=ClientIP, Target=Name, Detail=tostring(IPAddresses), UA="")
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

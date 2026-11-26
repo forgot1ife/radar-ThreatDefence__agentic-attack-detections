@@ -1,0 +1,4 @@
+# Cybermes Launcher, MCP Server or Go Tools Started
+# Sigma id 24f3b9c4-c536-5d53-a9e1-41fd1cdec3f9, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/cybermes-mcp" or FolderPath endswith "\\cybermes-mcp.exe" or FolderPath endswith "/smart_pipe" or FolderPath endswith "/search_knowledge") or (ProcessCommandLine contains "cybermes-mcp@latest" or ProcessCommandLine contains "/.cybermes/bin/cybermes-mcp-v" or ProcessCommandLine contains "\\.cybermes\\bin\\cybermes-mcp-v" or ProcessCommandLine contains "cybermes-mcp.js") or (ProcessCommandLine contains "./cybermes " or ProcessCommandLine contains "/cybermes gateway run" or ProcessCommandLine contains "cybermes.bat" or ProcessCommandLine contains "cybermes.ps1" or ProcessCommandLine contains "/opt/hermes-venv/bin/hermes")

@@ -1,0 +1,3 @@
+# Scanner Started Directly by Guardian
+# Sigma id 5a1d3506-981e-5827-99c9-f33b28810c6c, pipeline ecs
+(process.executable:(*\/nmap OR *\/masscan OR *\/httpx OR *\/subfinder OR *\/amass OR *\/nuclei OR *\/nikto OR *\/sqlmap OR *\/ffuf OR *\/gobuster OR *\/wpscan OR *\/whatweb OR *\/wafw00f OR *\/arjun OR *\/xsstrike OR *\/cmseek OR *\/dnsrecon OR *\/testssl OR *\/testssl.sh OR *\/sslyze OR *\/kerbrute OR *\/crackmapexec OR *\/nxc OR *\/theHarvester OR *\/schemathesis OR *\/curl)) AND (process.parent.command_line:(*\ \-m\ cli.main\ * OR *\/bin\/guardian\ *))

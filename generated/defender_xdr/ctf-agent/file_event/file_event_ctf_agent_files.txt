@@ -1,0 +1,4 @@
+# CTF Agent Workspace or Solver Trace Written
+# Sigma id fabd1fe4-c3ff-5a98-bc70-740b8da12fbd, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath contains "/ctf-workspace-" or ((FolderPath contains "/logs/trace-" and FolderPath endswith ".jsonl") and (FolderPath contains "-claude-opus-4-6-" or FolderPath contains "-gpt-5.4-" or FolderPath contains "-gpt-5.4-mini-" or FolderPath contains "-gpt-5.3-codex-" or FolderPath contains "-us.anthropic.claude-opus-4-6-v1-"))

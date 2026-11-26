@@ -1,0 +1,3 @@
+# OpenHack Vendor Hosts or User Agents in Proxy Logs
+# Sigma id 024c4c1b-b8a5-57b7-b6f8-0bbf8c8af69c, pipeline ecs
+(url.domain:/[aA][pP][iI]\.[oO][pP][eE][nN][hH][aA][cC][kK]\.[cC][oO][mM]/ OR url.domain:/[aA][pP][pP]\.[oO][pP][eE][nN][hH][aA][cC][kK]\.[cC][oO][mM]/ OR url.domain:/[iI][nN][sS][tT][aA][lL][lL]\.[oO][pP][eE][nN][hH][aA][cC][kK]\.[cC][oO][mM]/) OR url.original:*\/openhackai\/OpenHack\/releases\/download\/* OR user_agent.original:openhack OR user_agent.original:"Mozilla\/5.0 \(Macintosh; Intel Mac OS X 10_15_7\) AppleWebKit\/537.36 \(KHTML, like Gecko\) Chrome\/125.0 Safari\/537.36"

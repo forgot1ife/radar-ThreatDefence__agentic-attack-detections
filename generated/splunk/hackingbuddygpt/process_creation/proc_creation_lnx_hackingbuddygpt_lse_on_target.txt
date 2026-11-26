@@ -1,0 +1,3 @@
+# hackingBuddyGPT lse.sh Enumeration on a Linux Target
+# Sigma id 5529ebfe-0cb8-584d-b734-37634b572708, pipeline splunk_windows
+(CommandLine="*linux-smart-enumeration/releases/latest/download/lse.sh*" CommandLine="*-O lse.sh*") OR CommandLine="*lse.sh -c -i -l 0*"

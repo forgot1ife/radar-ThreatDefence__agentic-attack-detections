@@ -1,0 +1,25 @@
+title: KaliGPT Web Launcher Opens the KaliGPT Custom GPT
+id: 1f3ca833-8fdb-5d54-8493-a2ee94034c89
+status: experimental
+description: |
+    Detects kaligpt --web, which starts a browser (chromium by default) on the author's custom GPT
+    https://chatgpt.com/g/g-xouSQobsE-kaligpt/?prompt=<prompt>. The browser is started directly with the URL and the
+    operator's prompt as its argument, so the prompt is in the command line.
+references:
+    - https://github.com/SudoHopeX/KaliGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.007
+logsource:
+    category: process_creation
+detection:
+    selection:
+        # agents/utils/web_launcher.json:15 and agents/web_launcher.py:184 at b15b8d48
+        CommandLine|contains: 'chatgpt.com/g/g-xouSQobsE-kaligpt'
+    condition: selection
+falsepositives:
+    - A user opening the KaliGPT custom GPT from a link
+level: low

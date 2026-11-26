@@ -1,0 +1,4 @@
+{"name": "orchestrator started as a transient systemd unit", "expected": true, "event": {"Image": "/usr/bin/systemd-run", "CommandLine": "systemd-run --unit=ares-orchestrator.service --slice=system-ares.slice --description=Ares Orchestrator (transient) --collect /usr/local/bin/ares orchestrator"}}
+{"name": "a worker started from the ares@ unit", "expected": true, "event": {"Image": "/usr/local/bin/ares", "CommandLine": "/usr/local/bin/ares worker", "ParentImage": "/usr/lib/systemd/systemd"}}
+{"name": "ares binary showing its help", "expected": false, "event": {"Image": "/usr/local/bin/ares", "CommandLine": "/usr/local/bin/ares --help"}}
+{"name": "another orchestrator unit", "expected": false, "event": {"Image": "/usr/bin/systemd-run", "CommandLine": "systemd-run --unit=build-orchestrator.service /opt/ci/orchestrator"}}

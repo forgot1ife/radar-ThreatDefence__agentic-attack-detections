@@ -1,0 +1,29 @@
+id: f156ad18-2ef4-58e0-8c42-4d4ec34cd628
+name: hackingBuddyGPT LLM pentest agent run on a host
+description: |
+  A host started hackingBuddyGPT: its wintermute (or hackingBuddyGPT) CLI with one of its use-cases, the module form
+  python -m hackingBuddyGPT.cli.wintermute, its benchmark_privesc.py launcher, or its container image
+  ghcr.io/ipa-lab/hackingbuddygpt. hackingBuddyGPT runs model-chosen commands on a target over SSH, psexec or HTTP with
+  no approval step. Check who ran it and against which host.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059
+query: |
+  let UseCases = dynamic([" MinimalPrivEscLinux", " MinimalToolCallPrivEscLinux", " PrivEscLinux", " ExPrivEscLinuxLSE",
+      " PrivEscWindows", " WebTestingWithExplanation", " WebTestingWithShell", " AdvancedWebTesting", " WebAPITesting", " AD --"]);
+  DeviceProcessEvents
+  | where ProcessCommandLine has_any ("hackingBuddyGPT.cli.wintermute", "benchmark_privesc.py", "ghcr.io/ipa-lab/hackingbuddygpt")
+      or ((ProcessCommandLine contains "wintermute" or ProcessCommandLine contains "hackingBuddyGPT") and ProcessCommandLine has_any (UseCases))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Commands=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

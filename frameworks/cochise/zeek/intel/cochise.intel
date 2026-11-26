@@ -1,0 +1,2 @@
+#fields	indicator	indicator_type	meta.source	meta.desc	meta.url
+openrouter.ai	Intel::DOMAIN	threatdefence-cochise	Cochise low: Model API reached by hackingBuddyGPT with the shipped .env.example model openrouter/anthropic/claude-3.5-sonnet (.env.example:13); also the documented default api_base. A public service many tools use, so only context (hackingBuddyGPT operators)	https://github.com/ipa-lab/hackingBuddyGPT/blob/e23d918592556f71b8e3b2ee152449e82fa14794/.env.example#L13-L19

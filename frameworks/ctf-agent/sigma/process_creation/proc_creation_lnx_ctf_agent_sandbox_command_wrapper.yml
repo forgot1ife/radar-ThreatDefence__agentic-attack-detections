@@ -1,0 +1,31 @@
+title: CTF Agent Sandbox Command Wrapper in a Container
+id: 9e8dbdc8-928d-5d8a-b90e-30c2e4087fcd
+status: experimental
+description: |
+    Detects the wrapper CTF Agent puts around every command it runs through the Docker API in a solver sandbox:
+    bash -c "timeout --signal=KILL --kill-after=5 <seconds> bash -c '<command>'" (backend/sandbox.py:165-171). Each new
+    sandbox first runs uname -m this way with a 10 second limit, so the exact start command is
+    timeout --signal=KILL --kill-after=5 10 bash -c 'uname -m' (backend/agents/claude_solver.py:93,
+    backend/agents/codex_solver.py:177). The processes are inside the ctf-sandbox container; the sensor has to see
+    container processes.
+references:
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/sandbox.py#L162-L171
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/agents/claude_solver.py#L93
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        CommandLine|contains|all:
+            - 'timeout --signal=KILL --kill-after=5 '
+            - ' bash -c '
+    condition: selection
+falsepositives:
+    - Scripts that use the same timeout options around bash -c; check for many of them from one container
+level: low

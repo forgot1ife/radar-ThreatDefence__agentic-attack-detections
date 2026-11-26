@@ -1,0 +1,3 @@
+# Guardian AI Pentest CLI Started
+# Sigma id cfccbdb0-bbdb-52ae-9c12-dc3aefe2866a, pipeline ecs
+(process.command_line:(*\ \-m\ cli.main\ * OR *\/bin\/guardian\ * OR *\\Scripts\\guardian.exe\ *)) AND (process.command_line:(*\ workflow\ run\ * OR *\ scan\ \-\-target\ * OR *\ scan\ \-t\ * OR *\ recon\ \-\-target\ * OR *\ recon\ \-t\ * OR *\ analyze\ * OR *\ report\ \-\-session\ * OR *\ report\ \-s\ * OR *\ \-\-resume\ *))

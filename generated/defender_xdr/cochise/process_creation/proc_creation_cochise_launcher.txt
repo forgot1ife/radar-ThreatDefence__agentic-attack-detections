@@ -1,0 +1,4 @@
+# Cochise AI Pentest Agent Launcher
+# Sigma id a9ef7e9d-8998-55d6-961a-ed7197d6524d, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine endswith "/bin/cochise" or ProcessCommandLine endswith "\\Scripts\\cochise.exe") or (ProcessCommandLine contains "uv run cochise" or ProcessCommandLine contains "src/cochise.py" or ProcessCommandLine contains "cochise.cli.cochise" or ProcessCommandLine contains "/bin/cochise-replay " or ProcessCommandLine contains "/bin/cochise-analyze-" or ProcessCommandLine contains "uv run cochise-")

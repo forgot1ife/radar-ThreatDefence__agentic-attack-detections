@@ -1,0 +1,32 @@
+// MAPTA model and Slack webhook traffic from one host in proxy logs
+// Agentic attack detections by ThreatDefence (MAPTA). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Microsoft Sentinel. Test before alerting. Behavioral and weak on its own.
+// From the MAPTA source code (arthurgervais/mapta at 0c167b86). MAPTA sends nothing fixed to a target. On the host that
+// runs it, every step is POST /v1/responses to api.openai.com (model gpt-5, main.py:545,629,893), and findings go to
+// the operator's Slack webhook (normally hooks.slack.com) as "Security Scanner Bot" (main.py:348-367,478-494).
+// A server that does both in the same hour is worth a look. With TLS inspection that logs request bodies, the strings
+// "security_scan", "sandbox_agent", "validator_agent" and "Security Scanner Bot" make it specific; they are not in
+// CommonSecurityLog by default.
+
+let Window = 14d;
+let MinModelCalls = 50;   // Responses API calls from one source in an hour
+let Model = CommonSecurityLog
+    | where TimeGenerated > ago(Window)
+    | where DestinationHostName =~ "api.openai.com" or RequestURL has "api.openai.com"
+    | where RequestURL has "/v1/responses"
+    | summarize ModelCalls=count() by SourceIP, Hour=bin(TimeGenerated, 1h)
+    | where ModelCalls >= MinModelCalls;
+let Webhook = CommonSecurityLog
+    | where TimeGenerated > ago(Window)
+    | where DestinationHostName =~ "hooks.slack.com" or RequestURL has "hooks.slack.com/services/"
+    | summarize WebhookPosts=count(), Urls=make_set(substring(RequestURL, 0, 60), 3) by SourceIP, Hour=bin(TimeGenerated, 1h);
+let MailTm = CommonSecurityLog
+    | where TimeGenerated > ago(Window)
+    | where DestinationHostName =~ "api.mail.tm" or RequestURL has "api.mail.tm/messages"
+    | summarize MailTmCalls=count() by SourceIP, Hour=bin(TimeGenerated, 1h);
+Model
+| join kind=inner Webhook on SourceIP, Hour
+| join kind=leftouter MailTm on SourceIP, Hour
+| project Hour, SourceIP, ModelCalls, WebhookPosts, MailTmCalls=coalesce(MailTmCalls, 0), Urls
+| order by Hour desc

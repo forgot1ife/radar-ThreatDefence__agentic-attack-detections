@@ -1,0 +1,34 @@
+title: hackingBuddyGPT Local Shell Command Markers Sent Through tmux
+id: 9acfd2b0-21a2-5d83-958c-7901906c161e
+status: experimental
+description: |
+    Detects the local_shell connector of hackingBuddyGPT driving a shell inside tmux. Each model command is framed by
+    tmux send-keys calls that type echo 'CMDSTART<8 hex>' and echo 'CMDEND<8 hex>' into the session, or, in its
+    fallback, echo "__CLEAR_<8 hex>__" and echo "__END_<8 hex>__". The commands then run on the machine that hosts the
+    tmux session.
+references:
+    - https://github.com/ipa-lab/hackingBuddyGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_tmux:
+        Image|endswith: '/tmux'
+        CommandLine|contains: 'send-keys'
+    selection_marker:
+        CommandLine|contains:
+            - "echo 'CMDSTART"
+            - "echo 'CMDEND"
+            - 'echo "__CLEAR_'
+            - 'echo "__END_'
+    condition: selection_tmux and selection_marker
+falsepositives:
+    - Researchers running hackingBuddyGPT in local shell mode on purpose
+    - Other tmux automation that frames commands with the same marker words
+level: medium

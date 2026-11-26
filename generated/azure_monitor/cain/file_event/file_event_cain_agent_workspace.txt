@@ -1,0 +1,4 @@
+# Cain Workspace Stage Files Written
+# Sigma id de9463da-7ec1-544d-9f74-3cc10d85cfa2, pipeline azure_monitor
+SecurityEvent
+| where ObjectName endswith "/recon/recon-output.txt" or ObjectName endswith "\\recon\\recon-output.txt" or ObjectName endswith "/test/test-output.txt" or ObjectName endswith "\\test\\test-output.txt" or ObjectName endswith "/test/gate-skipped.txt" or ObjectName endswith "\\test\\gate-skipped.txt"

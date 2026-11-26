@@ -1,0 +1,4 @@
+# Scanners Started With Cybermes MCP Argument Order
+# Sigma id 9cc640fd-512b-506a-ae60-87d3ff395ce4, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ((InitiatingProcessFolderPath endswith "/cybermes-mcp" or InitiatingProcessFolderPath endswith "\\cybermes-mcp.exe") or InitiatingProcessFolderPath contains "cybermes-mcp-v") or (ProcessCommandLine contains "-sT --open -T3 --max-rate " and ProcessCommandLine contains " -oN - ") or ProcessCommandLine contains " -silent -jsonl -timeout 10 -duc" or ProcessCommandLine contains " -silent -status-code -title -tech-detect -json -timeout " or ProcessCommandLine contains " -jc -silent -ct " or (ProcessCommandLine contains "/FUZZ -w " and ProcessCommandLine contains " -timeout 5 -s -json")

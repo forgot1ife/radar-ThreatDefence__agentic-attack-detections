@@ -1,0 +1,4 @@
+{"name": "the lse.sh download", "expected": true, "event": {"Image": "/usr/bin/wget", "CommandLine": "wget -q https://github.com/diego-treitos/linux-smart-enumeration/releases/latest/download/lse.sh -O lse.sh", "ParentImage": "/usr/bin/bash"}}
+{"name": "lse.sh with the agent's flags", "expected": true, "event": {"Image": "/usr/bin/bash", "CommandLine": "/bin/bash ./lse.sh -c -i -l 0", "ParentImage": "/usr/bin/bash"}}
+{"name": "near miss: lse.sh run by hand with other flags", "expected": false, "event": {"Image": "/usr/bin/bash", "CommandLine": "/bin/bash ./lse.sh -l 1 -i", "ParentImage": "/usr/bin/bash"}}
+{"name": "near miss: lse.sh downloaded under another name", "expected": false, "event": {"Image": "/usr/bin/curl", "CommandLine": "curl -sLo enum.sh https://github.com/diego-treitos/linux-smart-enumeration/releases/latest/download/lse.sh", "ParentImage": "/usr/bin/bash"}}

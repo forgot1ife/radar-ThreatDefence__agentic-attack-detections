@@ -1,0 +1,4 @@
+# Guardian Session, Log or Configuration Files Written
+# Sigma id ffbf7640-2e91-52dc-b0d5-4653db75db07, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName endswith "/.guardian/guardian.yaml" or ObjectName endswith "/.guardian/.env" or ObjectName endswith "/.guardian/kb/kb.sqlite3" or ObjectName endswith "/.guardian/ranker.pkl" or ObjectName endswith "/tmp/guardian_ffuf_wordlist.txt") or ObjectName endswith "/logs/ai_audit.log" or ((ObjectName contains "/reports/session_" or ObjectName contains "/reports/.session_") and (ObjectName endswith ".json" or ObjectName endswith ".tmp"))

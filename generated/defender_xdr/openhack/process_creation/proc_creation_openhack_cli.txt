@@ -1,0 +1,4 @@
+# OpenHack Scanner or Pentest Agent Command Line
+# Sigma id 391fd2eb-7a02-5ea7-8763-abe0399722aa, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains " dashboard --port " and ProcessCommandLine contains " --home " and ProcessCommandLine contains " --no-open") or (((FolderPath endswith "/openhack" or FolderPath endswith "\\openhack.exe") or (ProcessCommandLine contains "/bin/openhack " or ProcessCommandLine contains "\\Scripts\\openhack.exe " or ProcessCommandLine contains " -m openhack " or ProcessCommandLine contains "src/cli/index.ts ")) and (ProcessCommandLine contains " scan" or ProcessCommandLine contains " hack " or ProcessCommandLine contains " plan " or ProcessCommandLine contains " resume " or ProcessCommandLine contains " dashboard" or ProcessCommandLine contains "--claude-code" or ProcessCommandLine contains "--codex" or ProcessCommandLine contains "--anthropic" or ProcessCommandLine contains "--openai"))

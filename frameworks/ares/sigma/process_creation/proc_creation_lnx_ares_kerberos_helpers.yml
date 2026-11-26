@@ -1,0 +1,34 @@
+title: Ares Kerberos Ticket Helpers
+id: 7310d24c-036c-5a42-8cca-a94f21e26a69
+status: experimental
+description: |
+    Detects Ares (dreadnode/ares) using forged or requested Kerberos tickets. Ares writes its cross-realm TGS helper
+    cross_realm_tgs.py next to the ticket and runs python3 <dir>/cross_realm_tgs.py --in-ccache ... --target-realm ...
+    (privesc/trust.rs:13,181-235,452-470), and keeps golden, silver and inter-realm tickets in the fixed folder
+    /tmp/ares-tickets (privesc/delegation.rs:166, privesc/trust.rs:133), which shows up in tool arguments such as
+    bloodyAD ccache=/tmp/ares-tickets/<name>.ccache.
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/privesc/trust.rs#L440-L470
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/privesc/delegation.rs#L166
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.credential-access
+    - attack.t1558.001
+    - attack.lateral-movement
+    - attack.t1550.003
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_helper:
+        CommandLine|contains|all:
+            - 'cross_realm_tgs.py'
+            - '--in-ccache'
+    selection_ticket_dir:
+        CommandLine|contains: '/tmp/ares-tickets/'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized Ares operations
+level: high

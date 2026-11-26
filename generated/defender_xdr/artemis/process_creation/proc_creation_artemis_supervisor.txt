@@ -1,0 +1,4 @@
+# ARTEMIS Supervisor or Autonomous Driver Started
+# Sigma id 31ee5f21-c658-5247-99c8-c63658a63147, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ((ProcessCommandLine contains "supervisor.supervisor" or ProcessCommandLine contains "codex-supervisor") and (ProcessCommandLine contains "--benchmark-mode" or ProcessCommandLine contains "--skip-todos" or ProcessCommandLine contains "--use-prompt-generation" or ProcessCommandLine contains "--finish-on-submit" or ProcessCommandLine contains "--codex-binary" or ProcessCommandLine contains "configs/tests/ctf_easy.yaml" or ProcessCommandLine contains "configs/stanford/")) or ((ProcessCommandLine contains "codex autonomous " or ProcessCommandLine contains "codex auto ") and (ProcessCommandLine contains "--ignore-work-hours" or ProcessCommandLine contains "--driver-model" or ProcessCommandLine contains "--work-start-hour" or ProcessCommandLine contains "--logs-dir" or ProcessCommandLine contains "--mode "))

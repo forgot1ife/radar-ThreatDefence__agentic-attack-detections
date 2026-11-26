@@ -1,0 +1,26 @@
+title: Guardian Screenshot User Agent in Proxy Logs
+id: 600f6baf-0738-55e6-b3f9-d0e9ebef5c49
+status: experimental
+description: |
+    Detects a host on your network running the playwright_screenshot tool of Guardian (zakirkun/guardian-cli), an AI
+    pentest CLI. Headless Chromium loads each target URL, and every resource on the page, with the user agent
+    "Guardian-CLI/4 (security testing; +authorized engagement)". Most targets are HTTPS, so a proxy sees the user agent
+    only with TLS inspection; the destination host is still logged.
+references:
+    - https://github.com/zakirkun/guardian-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1594
+logsource:
+    category: proxy
+detection:
+    selection:
+        # tools/playwright_screenshot.py:154 at 51864a81
+        c-useragent: 'Guardian-CLI/4 (security testing; +authorized engagement)'
+    condition: selection
+falsepositives:
+    - Authorized tests with Guardian
+level: medium

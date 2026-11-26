@@ -1,0 +1,32 @@
+// hackingBuddyGPT driving a Linux target over SSH
+// Agentic attack detections by ThreatDefence (hackingBuddyGPT). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1033 (System Owner/User Discovery), T1021.004 (Remote Services: SSH), T1082 (System Information Discovery)
+// Example hunt for Defender XDR advanced hunting on Linux devices. Test and baseline before alerting.
+// The Linux privilege-escalation use-cases of hackingBuddyGPT keep one interactive bash open over SSH and type each
+// model command between echo __CMDSTART_<hex>__ and echo "__CMDEND_<hex>__:$?:$(id -u):$(id -un)"
+// (utils/connectors/ssh_interactive_connection.py:112-143 at e23d9185). echo is a shell builtin, so process telemetry
+// does not show the markers, but every agent command is followed by an id -u and an id -un process, children of the
+// SSH login shell. This hunt counts those pairs per shell; a person rarely runs id -un again and again. It also looks
+// for the lse.sh download and run of the ExPrivEscLinuxLSE use-case. The marker text itself is in the account's
+// ~/.bash_history: scan it with the YARA rule HackingBuddyGPT_Shell_Markers.
+
+let Window = 14d;
+let MinPairs = 10;
+let IdProbes = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where FileName == "id" and ProcessCommandLine in ("id -u", "id -un")
+    | where InitiatingProcessFileName in ("bash", "sh", "dash", "zsh")
+    | summarize IdU=countif(ProcessCommandLine == "id -u"), IdUn=countif(ProcessCommandLine == "id -un"),
+        FirstSeen=min(Timestamp), LastSeen=max(Timestamp), Accounts=make_set(AccountName, 5)
+        by DeviceName, ShellPid=InitiatingProcessId, Shell=InitiatingProcessFileName, ShellParent=InitiatingProcessParentFileName
+    | where IdU >= MinPairs and IdUn >= MinPairs
+    | project Timestamp=FirstSeen, DeviceName, Signal=strcat("id -u / id -un after each command in one ", Shell, " (parent ", ShellParent, ")"),
+        Detail=strcat(IdUn, " id -un between ", FirstSeen, " and ", LastSeen, ", accounts ", tostring(Accounts));
+let Lse = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where (ProcessCommandLine has "linux-smart-enumeration/releases/latest/download/lse.sh" and ProcessCommandLine has "-O lse.sh")
+        or ProcessCommandLine has "lse.sh -c -i -l 0"
+    | summarize Commands=make_set(ProcessCommandLine, 5), Timestamp=min(Timestamp) by DeviceName, AccountName
+    | project Timestamp, DeviceName, Signal="lse.sh fetched or run with hackingBuddyGPT's flags", Detail=strcat(AccountName, " ", tostring(Commands));
+union isfuzzy=true IdProbes, Lse
+| order by Timestamp desc

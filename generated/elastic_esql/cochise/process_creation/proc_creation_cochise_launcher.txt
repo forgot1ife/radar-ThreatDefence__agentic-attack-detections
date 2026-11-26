@@ -1,0 +1,3 @@
+# Cochise AI Pentest Agent Launcher
+# Sigma id a9ef7e9d-8998-55d6-961a-ed7197d6524d, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(process.command_line, "/bin/cochise") or ends_with(process.command_line, "\\Scripts\\cochise.exe") or process.command_line like "*uv run cochise*" or process.command_line like "*src/cochise.py*" or process.command_line like "*cochise.cli.cochise*" or process.command_line like "*/bin/cochise-replay *" or process.command_line like "*/bin/cochise-analyze-*" or process.command_line like "*uv run cochise-*"

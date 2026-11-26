@@ -1,0 +1,3 @@
+# Cybermes User Agents in Web Server Logs
+# Sigma id ff52480b-902e-56a6-9b55-37319c1e1919, pipeline splunk_windows
+"cs-user-agent" IN ("* Cybermes/2.1 (Recon Crawler)", "* Cybermes/2.1 (Security Assessment)", "* Cybermes/3.2 (API Fuzzer)") OR "cs-user-agent" IN ("Cybermes-AIGateway-Auditor/*", "Cybermes-ExamAuditor/*", "Cybermes-Security-Auditor/*")

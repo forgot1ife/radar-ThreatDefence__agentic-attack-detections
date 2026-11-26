@@ -1,0 +1,2 @@
+{"name": "flag submission from the agent", "expected": true, "event": {"cs-user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36", "cs-uri-stem": "/api/v1/challenges/attempt", "cs-method": "POST"}}
+{"name": "a browser on the same platform", "expected": false, "event": {"cs-user-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36", "cs-uri-stem": "/api/v1/challenges/attempt", "cs-method": "POST"}}

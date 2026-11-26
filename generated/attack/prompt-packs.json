@@ -1,0 +1,44 @@
+{
+ "description": "12 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 10,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "prompt-packs",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Sigma: Claude-Red Offensive Skills Installed for a Coding Agent; Sigma: pentest-ai-agents Subagents or Findings Database Installed; Sigma: vibe-pentest Skill or Sub-Agents Installed for a Coding Agent; YARA: ClaudeRed_Manifest; YARA: ClaudeRed_Offensive_Skill; YARA: ClaudeRed_Offensive_Skill_Broad; YARA: PentestAIAgents_Findings_Database_Scripts; YARA: PentestAIAgents_Subagent_Or_Command; YARA: VibePentest_Skill_Files",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Sigma: Claude-Red Offensive Skills Installed for a Coding Agent; Sigma: codex-redteam-mode Jailbreak Profile Installed into Codex; Sigma: pentest-ai-agents Subagents or Findings Database Installed; Sigma: vibe-pentest Skill or Sub-Agents Installed for a Coding Agent; YARA: ClaudeRed_Offensive_Skill; YARA: ClaudeRed_Offensive_Skill_Broad; YARA: CodexRedteamMode_Installed_Files; YARA: CodexRedteamMode_Jailbreak_Prompt; YARA: PentestAIAgents_Subagent_Or_Command; YARA: VibePentest_Skill_Files",
+   "enabled": true,
+   "score": 10,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

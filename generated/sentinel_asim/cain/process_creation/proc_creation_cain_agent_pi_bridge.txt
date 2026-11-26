@@ -1,0 +1,4 @@
+# Cain Pi Backend Bridge and Its Shell Commands
+# Sigma id 49b9fde8-9907-57fb-a6ab-863656728f4e, pipeline sentinel_asim
+imProcessCreate
+| where ((TargetProcessName endswith "/node" or TargetProcessName endswith "\\node.exe") and (TargetProcessCommandLine endswith "/toolchain/pi/bridge.mjs" or TargetProcessCommandLine endswith "\\toolchain\\pi\\bridge.mjs")) or ((ActingProcessCommandLine endswith "/toolchain/pi/bridge.mjs" or ActingProcessCommandLine endswith "\\toolchain\\pi\\bridge.mjs") and TargetProcessCommandLine contains " -c ")

@@ -1,0 +1,86 @@
+{
+ "description": "29 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 15,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "openhack",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: OpenHack on a host you monitor; Sigma: Network Scanners Started by the OpenHack v0.x Agent",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1046"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "Sentinel analytics: Host contacted the OpenHack out-of-band collector; Sigma: OpenHack Vendor Hosts or User Agents in Proxy Logs; Sigma: Request to the OpenHack Out-of-Band Collector; Suricata: 3813362 TD OpenHack out-of-band collector in TLS SNI (oob.openhack.com); Suricata: 3813363 TD OpenHack out-of-band collector in cleartext HTTP Host (oob.openhack.com)",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: OpenHack testing you: its collector, canary rows and user agents in web, proxy and DNS logs; Sigma: OpenHack Out-of-Band Collector Resolved; Suricata: 3813361 TD OpenHack out-of-band collector lookup (oob.openhack.com)",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "KQL hunt: OpenHack testing you: its collector, canary rows and user agents in web, proxy and DNS logs; Sentinel analytics: Host contacted the OpenHack out-of-band collector; Sigma: OpenHack Collector or Canary Marker in Web Requests; Sigma: OpenHack Out-of-Band Collector Resolved; Sigma: Request to the OpenHack Out-of-Band Collector; Suricata: 3813361 TD OpenHack out-of-band collector lookup (oob.openhack.com); Suricata: 3813362 TD OpenHack out-of-band collector in TLS SNI (oob.openhack.com); Suricata: 3813363 TD OpenHack out-of-band collector in cleartext HTTP Host (oob.openhack.com); Suricata: 3813364 TD OpenHack collector host in a request URI (SSRF or callback probe); Suricata: 3813365 TD OpenHack canary marker in a request URI (__openhack_test_); Suricata: 3813366 TD OpenHack canary marker in a request body (__openhack_test_)",
+   "enabled": true,
+   "score": 11,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: OpenHack on a host you monitor; Sigma: Claude Code or Codex CLI Started by OpenHack; Sigma: OpenHack Scanner or Pentest Agent Command Line; Sigma: OpenHack Vendor Hosts or User Agents in Proxy Logs; Sigma: OpenHack Workspace, Temporary or Evidence Files Written; Suricata: 3813368 TD OpenHack v0.x client user agent (openhack); Suricata: 3813369 TD OpenHack v0.x model gateway or update check lookup (api.openhack.com); Suricata: 3813370 TD OpenHack v0.x model gateway or update check in TLS SNI (api.openhack.com); Suricata: 3813371 TD OpenHack v2 installer lookup (install.openhack.com); Suricata: 3813372 TD OpenHack v2 installer in TLS SNI (install.openhack.com); Suricata: 3813373 TD OpenHack v2 dashboard host check answer (port forwarded); Suricata: 3813374 TD OpenHack v2 dashboard health answer; YARA: OpenHack_V0_Python_Package; YARA: OpenHack_V2_Executable_Or_Source; YARA: OpenHack_V2_Scan_Report",
+   "enabled": true,
+   "score": 15,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: OpenHack on a host you monitor; KQL hunt: OpenHack testing you: its collector, canary rows and user agents in web, proxy and DNS logs; Sigma: Network Scanners Started by the OpenHack v0.x Agent; Sigma: OpenHack Collector or Canary Marker in Web Requests; Sigma: OpenHack Scanner or Pentest Agent Command Line; Suricata: 3813365 TD OpenHack canary marker in a request URI (__openhack_test_); Suricata: 3813366 TD OpenHack canary marker in a request body (__openhack_test_); Suricata: 3813367 TD OpenHack web_fetch user agent (Chrome/125.0 with a two-part version)",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

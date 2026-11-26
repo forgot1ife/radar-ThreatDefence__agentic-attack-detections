@@ -1,0 +1,32 @@
+id: c35158b9-e01f-591f-8317-208190983805
+name: RedAI AI vulnerability validation workbench on a host
+description: |
+  A host ran RedAI (kpolley/redai) or one of the processes it starts: Chrome with a profile under ~/.redai/, an iOS
+  simulator created or cloned with a name starting redai-, or an agent command on a file in its run folder
+  ~/.redai/runs/. RedAI's Claude Code or Codex agents run shell commands without approval (Codex in danger-full-access
+  mode) and try to exploit the findings they report against a running copy of the application, signed in as the user
+  of the prepared browser profile.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Low
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where (FileName in~ ("bun", "bun.exe") and (ProcessCommandLine endswith "/bin/redai" or ProcessCommandLine endswith "bun run redai"))
+      or ProcessCommandLine contains "/.redai/validator-environments/" or ProcessCommandLine contains "/.redai/runs/"
+      or ProcessCommandLine contains @"\.redai\runs\" or ProcessCommandLine contains @"\.redai\validator-environments\"
+      or ProcessCommandLine contains "simctl create redai-template-"
+      or (ProcessCommandLine contains "simctl clone " and ProcessCommandLine contains " redai-")
+      or ProcessCommandLine contains "@kpolley/redai"
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

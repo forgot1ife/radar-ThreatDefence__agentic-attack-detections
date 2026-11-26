@@ -1,0 +1,4 @@
+# RedAI AI Vulnerability Validation Workbench Running or Installed
+# Sigma id 76b101ba-b0a3-5471-a46b-29a2ac43c46a, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ((FolderPath endswith "/bun" or FolderPath endswith "\\bun.exe") and (ProcessCommandLine endswith "/bin/redai" or ProcessCommandLine endswith "bun run redai")) or (ProcessCommandLine contains "@kpolley/redai" or ProcessCommandLine contains "github.com/kpolley/redai") or (ProcessCommandLine contains "/.redai/validator-environments/" or ProcessCommandLine contains "/.redai/runs/" or ProcessCommandLine contains "\\.redai\\validator-environments\\" or ProcessCommandLine contains "\\.redai\\runs\\") or ProcessCommandLine contains "simctl create redai-template-" or (ProcessCommandLine contains "simctl clone " and ProcessCommandLine contains " redai-")

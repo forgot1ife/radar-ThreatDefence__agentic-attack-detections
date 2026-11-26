@@ -1,0 +1,4 @@
+# Cybermes Launcher, MCP Server or Go Tools Started
+# Sigma id 24f3b9c4-c536-5d53-a9e1-41fd1cdec3f9, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessName endswith "/cybermes-mcp" or TargetProcessName endswith "\\cybermes-mcp.exe" or TargetProcessName endswith "/smart_pipe" or TargetProcessName endswith "/search_knowledge") or (TargetProcessCommandLine contains "cybermes-mcp@latest" or TargetProcessCommandLine contains "/.cybermes/bin/cybermes-mcp-v" or TargetProcessCommandLine contains "\\.cybermes\\bin\\cybermes-mcp-v" or TargetProcessCommandLine contains "cybermes-mcp.js") or (TargetProcessCommandLine contains "./cybermes " or TargetProcessCommandLine contains "/cybermes gateway run" or TargetProcessCommandLine contains "cybermes.bat" or TargetProcessCommandLine contains "cybermes.ps1" or TargetProcessCommandLine contains "/opt/hermes-venv/bin/hermes")

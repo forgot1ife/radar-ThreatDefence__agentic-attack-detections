@@ -1,0 +1,3 @@
+# hackingBuddyGPT LLM Pentest Agent Started
+# Sigma id f71da8d8-9932-5d4a-8e22-f0e02cb96a55, pipeline splunk_windows
+CommandLine IN ("*hackingBuddyGPT.cli.wintermute*", "*hackingbuddygpt-log-view*", "*hackingbuddygpt-log-analyze*", "*benchmark_privesc.py*", "*ghcr.io/ipa-lab/hackingbuddygpt*") OR (CommandLine IN ("*wintermute*", "*hackingBuddyGPT*") CommandLine IN ("* MinimalPrivEscLinux*", "* MinimalToolCallPrivEscLinux*", "* PrivEscLinux*", "* ExPrivEscLinuxLSE*", "* PrivEscWindows*", "* WebTestingWithExplanation*", "* WebTestingWithShell*", "* AdvancedWebTesting*", "* WebAPITesting*", "* AD --*"))

@@ -1,0 +1,7 @@
+{"name": "a jailbreak profile copied into the Codex prompts folder", "expected": true, "event": {"TargetFilename": "/home/user/.codex/prompts/Jailbreak.gpt-5.5.md", "Image": "/usr/bin/python3"}}
+{"name": "the combined system instructions", "expected": true, "event": {"TargetFilename": "/home/user/.codex/redteam-mode/system-instructions.md", "Image": "/usr/bin/python3"}}
+{"name": "the install manifest in a project install", "expected": true, "event": {"TargetFilename": "/srv/app/.codex/redteam-install-manifest.json", "Image": "/usr/bin/python3"}}
+{"name": "the boundary skill", "expected": true, "event": {"TargetFilename": "/home/user/.agents/skills/redteam-boundary-policy/SKILL.md", "Image": "/usr/bin/python3"}}
+{"name": "the prompt hook under a custom CODEX_HOME on Windows", "expected": true, "event": {"TargetFilename": "D:\\codex-home\\hooks\\hook-security-context-hook.py", "Image": "C:\\Python312\\python.exe"}}
+{"name": "near miss: Codex's own config", "expected": false, "event": {"TargetFilename": "/home/user/.codex/config.toml", "Image": "/usr/local/bin/codex"}}
+{"name": "near miss: an ordinary custom prompt", "expected": false, "event": {"TargetFilename": "/home/user/.codex/prompts/review.md", "Image": "/usr/bin/vim"}}

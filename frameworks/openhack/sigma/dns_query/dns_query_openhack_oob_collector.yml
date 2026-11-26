@@ -1,0 +1,30 @@
+title: OpenHack Out-of-Band Collector Resolved
+id: 7f31fda5-23a9-554f-9c36-584deaef6934
+status: experimental
+description: |
+    Detects a host resolving oob.openhack.com or a name under it. The OpenHack v0.x pentest agent (PyPI openhack 0.2.4)
+    mints callback URLs https://oob.openhack.com/<label>-<12 hex> for blind SSRF, command injection and XXE payloads,
+    and its prompt suggests nslookup $(id).oob.openhack.com, so a server that resolves this name most likely ran a
+    payload the agent sent. The host running the agent also resolves it when it polls the collector.
+references:
+    - https://github.com/openhackai/OpenHack/blob/8fdfdddffa1f493d21e3e6dd98d911e7c531b84b/openhack/tools/oob.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.command-and-control
+    - attack.t1071.004
+logsource:
+    category: dns_query
+detection:
+    selection_exact:
+        QueryName: 'oob.openhack.com'
+    selection_sub:
+        QueryName|endswith: '.oob.openhack.com'
+    condition: 1 of selection_*
+falsepositives:
+    - The workstation or server that runs the OpenHack v0.x agent, when it polls the collector
+    - Authorized tests with OpenHack against your servers
+level: high

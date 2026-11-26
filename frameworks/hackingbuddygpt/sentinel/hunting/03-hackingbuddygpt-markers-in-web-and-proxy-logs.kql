@@ -1,0 +1,28 @@
+// hackingBuddyGPT WebAPITesting against your sites: discovery values and test payloads in web and proxy logs
+// Agentic attack detections by ThreatDefence (hackingBuddyGPT). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.003 (Active Scanning: Wordlist Scanning), T1110.001 (Brute Force: Password Guessing)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the hackingBuddyGPT source (ipa-lab/hackingBuddyGPT at e23d9185), all sent with Python requests' default user
+// agent python-requests/<version>:
+//  - The discovery phase appends one parameter from a fixed table to the path, including api_key=YourAPIKeyHere and
+//    access_token=YourAccessToken, and requests /products/1/users/profile (two list entries joined by a missing comma).
+//  - Weaker values from the same table: callback=myFunction, filter=status%3Aactive, region=North+America,
+//    expand=details%2Cowner, fields=id%2Cname%2Cstatus, search=example+query.
+//  - Test steps given to the model: OTP guesses for adam007@example.com (the crAPI victim account), so many POSTs to an
+//    OTP path from one address. Bodies are not in these logs; the Suricata rules see them.
+
+let Strong = dynamic(["api_key=YourAPIKeyHere", "access_token=YourAccessToken", "/products/1/users/profile"]);
+let Weak = dynamic(["callback=myFunction", "filter=status%3Aactive", "region=North+America", "expand=details%2Cowner",
+    "fields=id%2Cname%2Cstatus", "search=example+query"]);
+union isfuzzy=true
+    (W3CIISLog
+        | extend Url=strcat(csUriStem, "?", csUriQuery), UA=replace_string(csUserAgent, "+", " ")
+        | where Url has_any (Strong) or (Url has_any (Weak) and UA startswith "python-requests/")
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", Url), UA),
+    (CommonSecurityLog
+        | where RequestURL has_any (Strong) or (RequestURL has_any (Weak) and RequestClientApplication startswith "python-requests/")
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

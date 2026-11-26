@@ -1,0 +1,3 @@
+# Command Run by the KaliGPT Agent
+# Sigma id 00c313a4-6e2b-5975-824f-35700f7b6cf1, pipeline ecs
+from * metadata _id, _index, _version | where (process.parent.command_line like "* -m agents.gemini*" or process.parent.command_line like "* -m agents.ollama*" or process.parent.command_line like "* -m agents.openrouter*" or process.parent.command_line like "* -m agents.chatgpt*" or process.parent.command_line like "* -m agents.litellm*") and process.working_directory like "*/KaliGPT*"

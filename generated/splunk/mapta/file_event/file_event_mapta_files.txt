@@ -1,0 +1,3 @@
+# MAPTA Run Log, Usage or Sandbox Script Files Written
+# Sigma id 29b59224-90dd-5e78-b1a9-38819639bffb, pipeline splunk_windows
+TargetFilename IN ("*/scan_usage.log", "*\\scan_usage.log") OR (TargetFilename="*_usage_log_*" TargetFilename="*.json") OR (TargetFilename="/home/user/temp_script_*" TargetFilename="*.py")

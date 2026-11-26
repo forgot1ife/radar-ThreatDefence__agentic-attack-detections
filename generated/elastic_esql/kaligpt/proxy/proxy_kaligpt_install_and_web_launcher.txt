@@ -1,0 +1,3 @@
+# KaliGPT Installer Download or Web Launcher URL in Proxy Logs
+# Sigma id d1a45ed6-a96a-5378-b873-9711a7efb1a0, pipeline ecs
+from * metadata _id, _index, _version | where url.domain rlike "[rR][aA][wW]\\.[gG][iI][tT][hH][uU][bB][uU][sS][eE][rR][cC][oO][nN][tT][eE][nN][tT]\\.[cC][oO][mM]" and starts_with(url.original, "/SudoHopeX/KaliGPT/") or url.domain rlike "[gG][iI][tT][hH][uU][bB]\\.[cC][oO][mM]" and (starts_with(url.original, "/SudoHopeX/KaliGPT.git/") or starts_with(url.original, "/SudoHopeX/OpenSearchAPI.git/")) or url.domain rlike "[cC][hH][aA][tT][gG][pP][tT]\\.[cC][oO][mM]" and starts_with(url.original, "/g/g-xouSQobsE-kaligpt")

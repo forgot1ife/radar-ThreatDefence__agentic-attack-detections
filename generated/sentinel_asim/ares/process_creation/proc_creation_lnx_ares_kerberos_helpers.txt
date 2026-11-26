@@ -1,0 +1,4 @@
+# Ares Kerberos Ticket Helpers
+# Sigma id 7310d24c-036c-5a42-8cca-a94f21e26a69, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "cross_realm_tgs.py" and TargetProcessCommandLine contains "--in-ccache") or TargetProcessCommandLine contains "/tmp/ares-tickets/"

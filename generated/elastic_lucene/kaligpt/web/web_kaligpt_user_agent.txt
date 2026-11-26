@@ -1,0 +1,3 @@
+# KaliGPT Tool User Agent in Web Server Logs
+# Sigma id aae705ac-c538-5883-8a33-4cafc5aa96f4, pipeline ecs
+user_agent.original:("HackerX WebRequestFramework\/1.0" OR LocalScraper\/1.0)

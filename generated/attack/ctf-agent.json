@@ -1,0 +1,72 @@
+{
+ "description": "15 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 6,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "ctf-agent",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: CTF Agent running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: CTF Agent AI solver sandbox started on a host; Sigma: CTF Agent Claude Solver Command Redirected Into Its Sandbox; Sigma: CTF Agent Sandbox Command Wrapper in a Container",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: CTF Agent running on a host you monitor; Sigma: CTF Agent Launcher or Its Model CLIs",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: CTF Agent playing on a CTFd platform: its CTFd client user agent in web and proxy logs; Suricata: 3813342 TD CTF Agent CTFd login with default admin/admin account",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1078.001"
+  },
+  {
+   "comment": "KQL hunt: CTF Agent playing on a CTFd platform: its CTFd client user agent in web and proxy logs; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: CTF Agent CTFd Client User Agent in Proxy Logs; Sigma: CTF Agent CTFd Client User Agent in Web Server Logs; Suricata: 3813341 TD CTF Agent CTFd client user agent; Suricata: 3813343 TD CTF Agent pull_challenges CTFd API request (Chrome 45 user agent, shared with Eruditus)",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1119"
+  },
+  {
+   "comment": "KQL hunt: CTF Agent running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: CTF Agent Launcher or Its Model CLIs; Sigma: CTF Agent Workspace or Solver Trace Written; YARA: CTF_Agent_Solver_Trace; YARA: CTF_Agent_Source",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "KQL hunt: CTF Agent running on a host you monitor; Sigma: CTF Agent Claude Solver Command Redirected Into Its Sandbox",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1609"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

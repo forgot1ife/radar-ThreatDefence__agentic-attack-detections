@@ -1,0 +1,3 @@
+# Scanners Started With Cybermes MCP Argument Order
+# Sigma id 9cc640fd-512b-506a-ae60-87d3ff395ce4, pipeline ecs
+((process.parent.executable:(*\/cybermes\-mcp OR *\\cybermes\-mcp.exe)) OR process.parent.executable:*cybermes\-mcp\-v*) OR (process.command_line:*\-sT\ \-\-open\ \-T3\ \-\-max\-rate\ * AND process.command_line:*\ \-oN\ \-\ *) OR process.command_line:*\ \-silent\ \-jsonl\ \-timeout\ 10\ \-duc* OR process.command_line:*\ \-silent\ \-status\-code\ \-title\ \-tech\-detect\ \-json\ \-timeout\ * OR process.command_line:*\ \-jc\ \-silent\ \-ct\ * OR (process.command_line:*\/FUZZ\ \-w\ * AND process.command_line:*\ \-timeout\ 5\ \-s\ \-json*)

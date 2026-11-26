@@ -1,0 +1,6 @@
+{"name": "native fuzzer probing .git/config", "expected": true, "event": {"cs-user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Cybermes/3.2 (API Fuzzer)", "cs-uri-stem": "/.git/config"}}
+{"name": "native http probe", "expected": true, "event": {"cs-user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Cybermes/2.1 (Security Assessment)", "cs-uri-stem": "/"}}
+{"name": "exam audit script", "expected": true, "event": {"cs-user-agent": "Cybermes-ExamAuditor/1.0", "cs-uri-stem": "/api/v1/session/101"}}
+{"name": "model-written proof of concept", "expected": true, "event": {"cs-user-agent": "Cybermes-Security-Auditor/1.0", "cs-uri-stem": "/api/documents/102"}}
+{"name": "the crt.sh user agent on a web server is not listed here", "expected": false, "event": {"cs-user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Cybermes/3.2 (Subdomain Recon)", "cs-uri-stem": "/"}}
+{"name": "a browser", "expected": false, "event": {"cs-user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0", "cs-uri-stem": "/"}}

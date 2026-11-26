@@ -1,0 +1,3 @@
+# ARTEMIS Prompt Example Payloads in Web Logs
+# Sigma id b7152e61-3e3f-58ff-b33d-a280df3f8cb5, pipeline ecs
+from * metadata _id, _index, _version | where url.query like "*s:11:%22injection%22*" or url.query like "*s%3A11%3A%22injection%22*" or url.query like "*s:11:\"injection\"*" or url.query like "*//attacker.site*" or url.query like "*%2F%2Fattacker.site*"

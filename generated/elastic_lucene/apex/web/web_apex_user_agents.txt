@@ -1,0 +1,3 @@
+# Pensar Apex User Agent in Web Server Logs
+# Sigma id f181a426-daa5-50b4-9928-25087e51b8ba, pipeline ecs
+user_agent.original:(pensar\-apex* OR *PensarBot\/1.0*)

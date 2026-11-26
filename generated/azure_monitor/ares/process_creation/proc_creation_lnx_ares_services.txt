@@ -1,0 +1,4 @@
+# Ares Orchestrator or Worker Service
+# Sigma id 2006b526-b24f-5657-8a0e-505f46cc5025, pipeline azure_monitor
+SecurityEvent
+| where CommandLine contains "/usr/local/bin/ares orchestrator" or CommandLine contains "/usr/local/bin/ares worker" or CommandLine contains "--unit=ares-orchestrator.service" or CommandLine contains "--slice=system-ares.slice"

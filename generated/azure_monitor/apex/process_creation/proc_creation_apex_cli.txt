@@ -1,0 +1,4 @@
+# Pensar Apex CLI or Kali Container Started
+# Sigma id 9f74677f-b4b2-5b01-bcac-dcce0e24b46f, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "pensar pentest " or CommandLine contains "pensar targeted-pentest " or CommandLine contains "pensar threat-model" or CommandLine contains "pensar agent-runs worker" or CommandLine contains "pensar.js pentest " or CommandLine contains "pensar.js targeted-pentest ") or (CommandLine contains "@pensar/apex" or CommandLine contains "pensarai.com/install.sh" or CommandLine contains "pensarai.com/apex.ps1" or CommandLine contains "brew install apex") or (CommandLine contains "exec kali-apex" or CommandLine contains "kali-apex:latest")

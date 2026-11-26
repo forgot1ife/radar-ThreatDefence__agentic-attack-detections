@@ -1,0 +1,3 @@
+# codex-redteam-mode Jailbreak Profile Installed into Codex
+# Sigma id 030c3184-f012-5ee8-95b6-e5b7c819745a, pipeline ecs
+(TargetFilename:(*\/.codex\/redteam\-mode\/* OR *\\.codex\\redteam\-mode\\* OR *\/prompts\/Jailbreak.* OR *\\prompts\\Jailbreak.* OR *\/skills\/redteam\-boundary\-policy\/* OR *\\skills\\redteam\-boundary\-policy\\*)) OR (TargetFilename:(*redteam\-install\-manifest.json OR *redteam\-install\-transaction.json OR *\/redteam\-mode\/system\-instructions.md OR *\\redteam\-mode\\system\-instructions.md OR *\/redteam\-mode\/rewrite_proxy.py OR *\\redteam\-mode\\rewrite_proxy.py OR *\/hooks\/hook\-security\-context\-hook.py OR *\\hooks\\hook\-security\-context\-hook.py OR *\/hooks\/redteam_state.py OR *\\hooks\\redteam_state.py))

@@ -1,0 +1,4 @@
+# Claude-Red Offensive Skills Installed for a Coding Agent
+# Sigma id 8818d933-0d08-5fd4-a553-e4bcf8f84118, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/skills/claude-red/" or FolderPath contains "\\skills\\claude-red\\") or ((FolderPath contains "/skills/" and FolderPath contains "/offensive-") and FolderPath endswith "/SKILL.md") or ((FolderPath contains "\\skills\\" and FolderPath contains "\\offensive-") and FolderPath endswith "\\SKILL.md")

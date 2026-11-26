@@ -1,0 +1,26 @@
+# Agentic attack detections by ThreatDefence: Cain (cain-agent)
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3813201-3813215. HTTP rules need cleartext HTTP or decrypted traffic.
+# Cain has no listener and no HTTP code of its own on the web path: requests to targets come from the shell commands
+# the model runs (curl, nmap, sqlmap and the like), with those tools' own user agents. What it adds is one echo marker
+# that its XSS skill gives the model, and its prompts in model requests (an Anthropic Messages gateway set with
+# PI_BASE_URL, an AI gateway or a TLS-inspecting proxy).
+# Source: cdxiaodong/cain-agent at 2e3f4f1c0c630264d8b6ed3f89d36aa5d900543c.
+
+# --- Requests that reach your targets ---
+# skills/web/xss/SKILL.md:31: the test-stage XSS skill tells the model to send a unique marker "such as cainxss7f3a" and grep the response for it.
+alert http any any -> $HTTP_SERVERS any (msg:"TD Cain XSS echo marker in URI"; flow:established,to_server; http.uri; content:"cainxss7f3a"; nocase; fast_pattern; classtype:web-application-attack; sid:3813201; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Cain, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+alert http any any -> $HTTP_SERVERS any (msg:"TD Cain XSS echo marker in request body"; flow:established,to_server; http.request_body; content:"cainxss7f3a"; nocase; fast_pattern; classtype:web-application-attack; sid:3813202; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Cain, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+
+# --- Cain prompts inside model requests ---
+# The prompts are Chinese; the rules match their UTF-8 bytes, as JSON.stringify writes them. A client that escapes
+# non-ASCII characters as \uXXXX would not match.
+# src/cain_agent/handlers.py:296,308: recon prompt "你是 Cain 的侦察 Agent,当前处于 recon 阶段" with the scope.yaml it quotes.
+alert http $HOME_NET any -> any any (msg:"TD Cain recon stage prompt in model request"; flow:established,to_server; http.request_body; content:"Cain |e7 9a 84 e4 be a6 e5 af 9f| Agent"; fast_pattern; content:"scope.yaml"; classtype:policy-violation; sid:3813203; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Cain, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence;)
+# src/cain_agent/handlers.py:451,467: test prompt "你是 Cain 的测试 Agent,当前处于 test 阶段" with the scope.yaml it quotes.
+alert http $HOME_NET any -> any any (msg:"TD Cain test stage prompt in model request"; flow:established,to_server; http.request_body; content:"Cain |e7 9a 84 e6 b5 8b e8 af 95| Agent"; fast_pattern; content:"scope.yaml"; classtype:policy-violation; sid:3813204; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Cain, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence;)
+# src/cain_agent/validator.py:128-135, src/cain_agent/multi_agent/orchestration.py:98-102: validation prompt
+# "你是独立的漏洞校验 Agent,与发现方 Agent 分属不同 session" with the finding wrapped in [UNTRUSTED_DATA].
+alert http $HOME_NET any -> any any (msg:"TD Cain finding validation prompt in model request"; flow:established,to_server; http.request_body; content:"|e4 bd a0 e6 98 af e7 8b ac e7 ab 8b e7 9a 84 e6 bc 8f e6 b4 9e e6 a0 a1 e9 aa 8c| Agent"; fast_pattern; content:"[UNTRUSTED_DATA]"; classtype:policy-violation; sid:3813205; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Cain, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence;)
+# toolchain/pi/bridge.mjs:266-268: system prompt of the pi backend (--backend pi), sent with every model request it makes.
+alert http $HOME_NET any -> any any (msg:"TD Cain pi backend system prompt in model request"; flow:established,to_server; http.request_body; content:"You are the execution engine of an authorized security-testing pipeline."; fast_pattern; content:"Read, Grep, or Glob for read-only filesystem inspection"; classtype:policy-violation; sid:3813206; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Cain, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence;)

@@ -1,0 +1,3 @@
+# Cochise AI Pentest Agent Launcher
+# Sigma id a9ef7e9d-8998-55d6-961a-ed7197d6524d, pipeline splunk_windows
+CommandLine IN ("*/bin/cochise", "*\\Scripts\\cochise.exe") OR CommandLine IN ("*uv run cochise*", "*src/cochise.py*", "*cochise.cli.cochise*", "*/bin/cochise-replay *", "*/bin/cochise-analyze-*", "*uv run cochise-*")

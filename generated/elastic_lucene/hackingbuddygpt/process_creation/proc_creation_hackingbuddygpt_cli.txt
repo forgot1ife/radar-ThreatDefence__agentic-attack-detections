@@ -1,0 +1,3 @@
+# hackingBuddyGPT LLM Pentest Agent Started
+# Sigma id f71da8d8-9932-5d4a-8e22-f0e02cb96a55, pipeline ecs
+(process.command_line:(*hackingBuddyGPT.cli.wintermute* OR *hackingbuddygpt\-log\-view* OR *hackingbuddygpt\-log\-analyze* OR *benchmark_privesc.py* OR *ghcr.io\/ipa\-lab\/hackingbuddygpt*)) OR ((process.command_line:(*wintermute* OR *hackingBuddyGPT*)) AND (process.command_line:(*\ MinimalPrivEscLinux* OR *\ MinimalToolCallPrivEscLinux* OR *\ PrivEscLinux* OR *\ ExPrivEscLinuxLSE* OR *\ PrivEscWindows* OR *\ WebTestingWithExplanation* OR *\ WebTestingWithShell* OR *\ AdvancedWebTesting* OR *\ WebAPITesting* OR *\ AD\ \-\-*)))

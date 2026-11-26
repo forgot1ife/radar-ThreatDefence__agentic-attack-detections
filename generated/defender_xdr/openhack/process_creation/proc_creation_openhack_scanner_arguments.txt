@@ -1,0 +1,4 @@
+# Network Scanners Started by the OpenHack v0.x Agent
+# Sigma id 1bd4cf6e-00f1-5166-b5cd-01a460d09b6a, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (InitiatingProcessCommandLine contains "/bin/openhack" or InitiatingProcessCommandLine contains " -m openhack" or InitiatingProcessCommandLine contains "openhack/__main__.py") and (ProcessCommandLine contains "nmap -sV -Pn -T4 " or (ProcessCommandLine contains "sqlmap -u " and ProcessCommandLine contains " --batch --disable-coloring") or ProcessCommandLine contains "nuclei -silent -jsonl -target " or ProcessCommandLine contains "httpx -silent -json -status-code -title -tech-detect -web-server -no-color" or ProcessCommandLine contains "subfinder -silent -d ")

@@ -1,0 +1,3 @@
+# Ares Working Files on Its Attack Box
+# Sigma id 803df3dd-f368-5641-8c18-8866ecce2778, pipeline ecs
+TargetFilename:(*\/tmp\/ares\-tickets\/* OR *\/tmp\/ares_relay_* OR *\/ares_shadowcred_* OR *\/ares\-hive\-* OR *\/var\/log\/ares\/* OR *\/.ares\/sessions\/* OR *\/.ares\/reports\/*)

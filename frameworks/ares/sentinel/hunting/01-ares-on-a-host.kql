@@ -1,0 +1,57 @@
+// Ares running on a host you monitor
+// Agentic attack detections by ThreatDefence (Ares). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1649 (Steal or Forge Authentication Certificates), T1110.002 (Brute Force: Password Cracking), T1136.002 (Create Account: Domain Account), T1558.001 (Steal or Forge Kerberos Tickets: Golden Ticket)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the Ares source code (dreadnode/ares at 786b2987). Ares is one Rust binary, /usr/local/bin/ares, run as
+// "ares orchestrator" (transient unit ares-orchestrator.service in system-ares.slice) and "ares worker" (one
+// ares@<role>.service per role), that drives impacket, NetExec, certipy, bloodyAD, hashcat and Responder. Its own
+// wrappers leave fixed values in the tool command lines:
+//  - pywhisker --filename /tmp/ares_shadowcred_<token>_<account> --pfx-password ares-shadow-cred, then
+//    certipy auth -pfx /tmp/ares_shadowcred_... -password ares-shadow-cred (ares-tools/src/acl.rs:262-270,456-480)
+//  - impacket-addcomputer -computer-name ARES-<8 hex> -computer-pass Ar<16 hex>!7z (privesc/delegation.rs:321-378)
+//  - hashcat --session ares-hc-<pid>-<n>, john --session=ares-jtr-<pid>-<n> (cracker.rs:18-30,1073)
+//  - python3 <dir>/cross_realm_tgs.py --in-ccache ... and tickets under /tmp/ares-tickets (privesc/trust.rs:133,452-470)
+// Files: /tmp/ares-tickets/, /tmp/ares_relay_<random>/relay.log, /var/log/ares/<role>.log, ~/.ares/sessions/.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any ("ares-shadow-cred", "/ares_shadowcred_")
+        | project Timestamp, DeviceName, Signal="Ares shadow credentials chain", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "addcomputer" and ProcessCommandLine matches regex @"-computer-name\s+ARES-[0-9A-F]{8}(\s|$)"
+        | project Timestamp, DeviceName, Signal="Ares minted machine account", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any ("--session ares-hc-", "--session=ares-hc-", "--session=ares-jtr-", "--session ares-jtr-")
+        | summarize Jobs=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 5), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Ares cracker sessions", Detail=strcat(Jobs, " jobs: ", tostring(Examples)), Parent=""),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "cross_realm_tgs.py" and ProcessCommandLine has "--in-ccache")
+            or ProcessCommandLine has "/tmp/ares-tickets/"
+        | project Timestamp, DeviceName, Signal="Ares Kerberos ticket helpers", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any ("/usr/local/bin/ares orchestrator", "/usr/local/bin/ares worker",
+            "--unit=ares-orchestrator.service", "--slice=system-ares.slice")
+        | summarize Starts=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 5), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Ares orchestrator or worker", Detail=strcat(Starts, " starts: ", tostring(Examples)), Parent=""),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessFileName == "ares"
+        | where ProcessCommandLine has_any ("impacket-", "netexec", "nxc ", "certipy", "bloodyAD", "pywhisker", "pygpoabuse",
+            "responder", "coercer", "petitpotam", "dfscoerce", "bloodhound-python", "hashcat", "lsassy", "evil-winrm")
+        | summarize Tools=count(), Examples=make_set(substring(ProcessCommandLine, 0, 150), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Ares worker starting attack tools", Detail=strcat(Tools, " tool runs: ", tostring(Examples)), Parent="ares"),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has_any ("/tmp/ares-tickets/", "/tmp/ares_relay_", "/ares_shadowcred_", "/ares-hive-", "/var/log/ares/", "/.ares/sessions/")
+        | summarize Files=count(), Examples=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Ares working files", Detail=strcat(Files, " files: ", tostring(Examples)), Parent="")
+| order by Timestamp desc

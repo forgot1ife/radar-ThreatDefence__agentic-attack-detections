@@ -1,0 +1,4 @@
+# KaliGPT Installed or Configured
+# Sigma id 51e6f829-09f4-564a-bef0-0f8a3fa8a1b3, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/opt/KaliGPT/" or TargetFileName contains "/share/KaliGPT/") or (TargetFileName endswith "/bin/kaligpt" or TargetFileName endswith "/bin/opensearchapi") or TargetFileName endswith "/kaligptinstaller.sh"

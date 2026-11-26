@@ -1,0 +1,5 @@
+{"name": "installed backend started by the terminal UI", "expected": true, "event": {"Image": "/home/user/.cache/deadend/bin/deadend.sh", "CommandLine": "/home/user/.cache/deadend/bin/deadend.sh --log-file /home/user/.cache/deadend/logs/rpc-server-1764115200000.log", "ParentImage": "/home/user/.local/bin/deadend"}}
+{"name": "PyOxidizer binary after the wrapper execs it", "expected": true, "event": {"Image": "/home/user/.cache/deadend/server/deadend", "CommandLine": "/home/user/.cache/deadend/server/deadend --log-file /home/user/.cache/deadend/logs/rpc-server-1764115200000.log"}}
+{"name": "backend from source in dev mode", "expected": true, "event": {"Image": "/usr/bin/uv", "CommandLine": "uv run python -m deadend_cli.jsonrpc_server --log-file /home/user/.cache/deadend/logs/rpc-server-1764115200000.log"}}
+{"name": "near miss: another tool's log file option", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 server.py --log-file /var/log/app/rpc-server.log"}}
+{"name": "near miss: a folder named deadend without the backend", "expected": false, "event": {"Image": "/usr/bin/ls", "CommandLine": "ls /home/user/projects/deadend"}}

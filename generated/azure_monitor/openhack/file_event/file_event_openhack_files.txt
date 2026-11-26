@@ -1,0 +1,4 @@
+# OpenHack Workspace, Temporary or Evidence Files Written
+# Sigma id 8ea1c520-4655-5cd8-9c00-8353bd6a6e9f, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.openhack/" or ObjectName endswith "\\.openhack*") or (ObjectName contains "/openhack-subscription-" or ObjectName contains "/openhack-login-" or ObjectName contains "\\openhack-subscription-" or ObjectName contains "\\openhack-login-") or (ObjectName contains "/.openhack-evidence/" or ObjectName contains ".openhack-sandbox-override-")

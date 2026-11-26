@@ -1,0 +1,38 @@
+title: Cain Pi Backend Bridge and Its Shell Commands
+id: 49b9fde8-9907-57fb-a6ab-863656728f4e
+status: experimental
+description: |
+    Detects Cain's second execution engine (cain-agent run --backend pi): the Python side starts
+    node <clone>/toolchain/pi/bridge.mjs (src/cain_agent/pi_executor.py:48-50,153-160), and the bridge runs every shell
+    command the model asks for as bash -c <command> (toolchain/pi/bridge.mjs:86) once Cain's scope check allowed it.
+    The second selection shows those commands, which are the model's reconnaissance and testing steps (curl, nmap,
+    sqlmap and the like). Strings are in cdxiaodong/cain-agent at 2e3f4f1c.
+references:
+    - https://github.com/cdxiaodong/cain-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.t1059.007
+logsource:
+    category: process_creation
+detection:
+    selection_bridge:
+        Image|endswith:
+            - '/node'
+            - '\node.exe'
+        CommandLine|endswith:
+            - '/toolchain/pi/bridge.mjs'
+            - '\toolchain\pi\bridge.mjs'
+    selection_shell:
+        ParentCommandLine|endswith:
+            - '/toolchain/pi/bridge.mjs'
+            - '\toolchain\pi\bridge.mjs'
+        CommandLine|contains: ' -c '
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests and research with Cain
+    - Another project that keeps a pi bridge at toolchain/pi/bridge.mjs
+level: medium

@@ -1,0 +1,4 @@
+{"name": "start marker typed into the tmux session", "expected": true, "event": {"Image": "/usr/bin/tmux", "CommandLine": "tmux send-keys -t hacking_session echo 'CMDSTART1a2b3c4d' Enter"}}
+{"name": "fallback end marker", "expected": true, "event": {"Image": "/usr/bin/tmux", "CommandLine": "tmux send-keys -t hacking_session echo \"__END_9f8e7d6c__\" Enter"}}
+{"name": "near miss: the command itself sent to tmux", "expected": false, "event": {"Image": "/usr/bin/tmux", "CommandLine": "tmux send-keys -t hacking_session sudo -l Enter"}}
+{"name": "near miss: the marker echoed by a shell, not tmux", "expected": false, "event": {"Image": "/usr/bin/bash", "CommandLine": "bash -c echo 'CMDSTART1a2b3c4d'"}}

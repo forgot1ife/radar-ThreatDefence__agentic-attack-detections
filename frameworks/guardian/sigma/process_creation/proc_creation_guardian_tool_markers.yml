@@ -1,0 +1,37 @@
+title: Guardian Tool Wrapper Markers in a Command Line
+id: 2ba5eb49-9713-5e7a-bb88-ddb8b80e0e90
+status: experimental
+description: |
+    Detects fixed values that Guardian (zakirkun/guardian-cli), an AI pentest CLI, puts on the command lines of the
+    tools it runs. ffuf gets "-w /tmp/guardian_ffuf_wordlist.txt" when none of the usual SecLists or dirb wordlists
+    exist (a 16-entry list Guardian writes itself), Prowler gets "-F guardian-prowler" as its output file name, and
+    OWASP dependency-check ends with "--project guardian" unless the workflow names another project.
+references:
+    - https://github.com/zakirkun/guardian-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.003
+    - attack.discovery
+    - attack.t1580
+logsource:
+    category: process_creation
+detection:
+    selection_ffuf:
+        # tools/ffuf.py:44-53 at 51864a81
+        CommandLine|contains: '/tmp/guardian_ffuf_wordlist.txt'
+    selection_prowler:
+        # tools/prowler.py:30-37 at 51864a81
+        CommandLine|contains: ' -F guardian-prowler'
+    selection_depcheck_image:
+        # tools/dependency_check.py:31-39 at 51864a81
+        CommandLine|contains: 'dependency-check'
+    selection_depcheck_project:
+        CommandLine|endswith: ' --project guardian'
+    condition: selection_ffuf or selection_prowler or (selection_depcheck_image and selection_depcheck_project)
+falsepositives:
+    - Authorized tests with Guardian
+    - A dependency-check run for a project that is really named guardian
+level: medium

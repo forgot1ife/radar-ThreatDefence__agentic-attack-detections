@@ -1,0 +1,3 @@
+# Cybermes User Agents in Web Server Logs
+# Sigma id ff52480b-902e-56a6-9b55-37319c1e1919, pipeline ecs
+(user_agent.original:(*\ Cybermes\/2.1\ \(Recon\ Crawler\) OR *\ Cybermes\/2.1\ \(Security\ Assessment\) OR *\ Cybermes\/3.2\ \(API\ Fuzzer\))) OR (user_agent.original:(Cybermes\-AIGateway\-Auditor\/* OR Cybermes\-ExamAuditor\/* OR Cybermes\-Security\-Auditor\/*))

@@ -1,0 +1,47 @@
+// MCP for Security tool wrappers on a host you monitor
+// Agentic attack detections by ThreatDefence (MCP for Security). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1046 (Network Service Discovery), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting and Microsoft Sentinel. Test before alerting.
+// From the MCP for Security source (cyproxio/mcp-for-security at 51dd537f):
+//  - 23 stdio MCP servers, each started by the MCP host as node <dir>/<tool>-mcp/build/index.js <tool binary>
+//    (/app/<tool>-mcp/build/index.js in the image cyprox/mcp-for-security). No listener.
+//  - The wrapper is the parent of the tool it runs, with fixed shapes: nuclei/httpx/katana -u ... -silent,
+//    scout aws --force --no-browser, assetfinder -subs-only, gowitness scan single --url / scan file -f,
+//    python3 /opt/commix/commix.py -u <url> <url>, python3 /opt/smuggler/smuggler.py -u <url>.
+//  - Set-up writes mcp-config.json next to the wrapper folders through jq into mcp-config.json.tmp (build.sh) or
+//    mcp-config.tmp (start.sh) and mv; the image clones commix, smuggler and sqlmap into /opt.
+// Folder names such as nmap-mcp are shared by unrelated MCP projects: check the folder and mcp-config.json beside it.
+
+let Window = 30d;
+let Wrappers = dynamic(["/alterx-mcp/build/index.js", "/amass-mcp/build/index.js", "/arjun-mcp/build/index.js",
+    "/assetfinder-mcp/build/index.js", "/cero/build/index.js", "/cero-mcp/build/index.js", "/commix-mcp/build/index.js",
+    "/crtsh-mcp/build/index.js", "/ffuf-mcp/build/index.js", "/gowitness-mcp/build/index.js",
+    "/http-headers-security-mcp/build/index.js", "/httpx-mcp/build/index.js", "/katana-mcp/build/index.js",
+    "/masscan-mcp/build/index.js", "/mobsf-mcp/build/index.js", "/nmap-mcp/build/index.js", "/nuclei-mcp/build/index.js",
+    "/scoutsuite-mcp/build/index.js", "/shuffledns-mcp/build/index.js", "/smuggler-mcp/build/index.js",
+    "/sqlmap-mcp/build/index.js", "/sslscan-mcp/build/index.js", "/waybackurls-mcp/build/index.js", "/wpscan-mcp/build/index.js"]);
+let FixedArgs = dynamic([" -silent", "aws --force --no-browser", " -subs-only ", "scan single --url ", "scan file -f ",
+    "/opt/commix/commix.py -u ", "/opt/smuggler/smuggler.py -u ", "sqlmap -u ", "wpscan -u "]);
+let Tools = dynamic(["nmap", "masscan", "nuclei", "httpx", "katana", "ffuf", "sqlmap", "wpscan", "sslscan", "arjun", "amass",
+    "alterx", "assetfinder", "cero", "shuffledns", "gowitness", "waybackurls", "scout"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (FileName startswith "node" and ProcessCommandLine has_any (Wrappers))
+            or ProcessCommandLine has "cyprox/mcp-for-security"
+        | project Timestamp, DeviceName, AccountName, Signal="MCP for Security wrapper or image started",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessCommandLine has_any (Wrappers)
+        | where ProcessCommandLine has_any (FixedArgs) or FileName in~ (Tools)
+        | project Timestamp, DeviceName, AccountName, Signal="Tool run by an MCP for Security wrapper",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=substring(InitiatingProcessCommandLine, 0, 150)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName in ("mcp-config.json.tmp", "mcp-config.tmp")
+            or FolderPath has_any ("/opt/commix/commix.py", "/opt/smuggler/smuggler.py")
+            or (FileName == "urls.txt" and InitiatingProcessCommandLine has "/gowitness-mcp/build/index.js")
+        | project Timestamp, DeviceName, AccountName=InitiatingProcessAccountName, Signal="MCP for Security set-up or work file",
+            Detail=FolderPath, Parent=substring(InitiatingProcessCommandLine, 0, 150))
+| order by Timestamp desc

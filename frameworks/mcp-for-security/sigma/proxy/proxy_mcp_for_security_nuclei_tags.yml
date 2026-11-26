@@ -1,0 +1,25 @@
+title: MCP for Security Nuclei Tag Lookup
+id: 4999afe9-e4f1-5e32-a300-2d7d8480f5a0
+status: experimental
+description: |
+    Detects the request the nuclei wrapper of MCP for Security makes when the AI assistant calls its get-nuclei-tags
+    tool: a GET of TEMPLATES-STATS.json from the nuclei-templates repository on raw.githubusercontent.com through the
+    refs/heads/main path form. Needs a proxy that sees full URLs (TLS inspection). Other scripts that read the same
+    statistics file through this path form also match.
+references:
+    - https://github.com/cyproxio/mcp-for-security/blob/51dd537f5829470ebe508afd33186bd1a0459256/nuclei-mcp/src/index.ts#L83
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection:
+        c-uri|contains: '/projectdiscovery/nuclei-templates/refs/heads/main/TEMPLATES-STATS.json'
+    condition: selection
+falsepositives:
+    - Other tools or scripts that read nuclei's template statistics
+level: low

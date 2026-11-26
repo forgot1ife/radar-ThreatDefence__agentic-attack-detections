@@ -1,0 +1,11 @@
+# Agentic attack detections by ThreatDefence: Cochise
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3813401-3813415, unused: see below.
+# Cochise has no web console and sends no fixed marker to a target. The one network rule is for its SSH client: it
+# drives a Kali VM over asyncssh and does not set client_version, so the VM sees the asyncssh default banner
+# (andreashappe/cochise at 4db4fded, src/cochise/ssh_connection.py:19; asyncssh 2.24.0 in uv.lock). Any asyncssh
+# client sends the same banner: treat a hit as context, and look at what the session runs.
+
+# --- SSH client banner SSH-2.0-AsyncSSH_<version> to an internal SSH server ---
+# Covered by the shared asyncssh rule 3813107 in frameworks/hackingbuddygpt/suricata/hackingbuddygpt.rules (port 22),
+# which names both tools; Cochise has no rule of its own.

@@ -1,0 +1,38 @@
+// MAPTA running on a host you monitor
+// Agentic attack detections by ThreatDefence (MAPTA). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the MAPTA source code (arthurgervais/mapta at 0c167b86). MAPTA is one Python script (main.py) with no web UI.
+// Where it runs it writes, in the working directory next to targets.txt:
+//  - scan_usage.log, with "Main Agent Usage - Target: <url>" lines (main.py:86,1077)
+//  - <site>_usage_log_<YYYYMMDD_HHMMSS>.json and <target>.md per target (main.py:113,981-989)
+// Inside its sandbox it writes the model's Python to /home/user/temp_script_<8 hex>.py and runs it as root with
+// "source .venv/bin/activate && python3 <path>" (main.py:691-700). That part is only visible when the sandbox is local
+// and the EDR sees inside it; a cloud sandbox runs off your network.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "/home/user/temp_script_" and ProcessCommandLine has "python3"
+        | summarize Scripts=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 5), Timestamp=min(Timestamp)
+            by DeviceName, AccountName
+        | project Timestamp, DeviceName, Signal="MAPTA sandbox Python runner", Detail=strcat(Scripts, " runs as ", AccountName, ": ", tostring(Examples)), Parent=""),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName =~ "scan_usage.log" or (FileName contains "_usage_log_" and FileName endswith ".json")
+            or (FolderPath startswith "/home/user/" and FileName startswith "temp_script_" and FileName endswith ".py")
+        | extend Folder=tostring(parse_path(FolderPath).DirectoryPath)
+        | summarize Files=make_set(FileName, 20), Writers=make_set(InitiatingProcessCommandLine, 5), Timestamp=min(Timestamp) by DeviceName, Folder
+        // a usage file alone is common; the log, or the log with usage files, is MAPTA
+        | where Files has "scan_usage.log" or Files has "temp_script_"
+        | project Timestamp, DeviceName, Signal="MAPTA run files", Detail=strcat(Folder, " ", tostring(Files)), Parent=tostring(Writers)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ ("main.py", "analyze_logs.py") or (FileName in~ ("trace.log", "metrics.json") and FolderPath has "ctf-logs")
+        | extend Dir=tostring(parse_path(FolderPath).DirectoryPath)
+        | extend Root=iff(Dir has "ctf-logs", extract(@"^(.*)[/\\]ctf-logs[/\\]", 1, Dir), Dir)
+        | summarize Files=make_set(FileName, 5), Timestamp=min(Timestamp) by DeviceName, Root
+        | where Files has "main.py" and Files has "analyze_logs.py" and (Files has "trace.log" or Files has "metrics.json")
+        | project Timestamp, DeviceName, Signal="MAPTA clone on disk", Detail=strcat(Root, " ", tostring(Files)), Parent="")
+| order by Timestamp desc

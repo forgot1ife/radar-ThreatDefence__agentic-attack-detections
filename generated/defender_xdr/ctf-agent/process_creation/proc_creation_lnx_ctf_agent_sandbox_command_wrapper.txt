@@ -1,0 +1,4 @@
+# CTF Agent Sandbox Command Wrapper in a Container
+# Sigma id 9e8dbdc8-928d-5d8a-b90e-30c2e4087fcd, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "timeout --signal=KILL --kill-after=5 " and ProcessCommandLine contains " bash -c "

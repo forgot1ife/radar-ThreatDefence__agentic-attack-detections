@@ -1,0 +1,4 @@
+{"name": "web_request_analysis on the home page", "expected": true, "event": {"cs-user-agent": "HackerX WebRequestFramework/1.0", "cs-uri-stem": "/"}}
+{"name": "get_local_server_content", "expected": true, "event": {"cs-user-agent": "LocalScraper/1.0", "cs-uri-stem": "/status"}}
+{"name": "a different scraper", "expected": false, "event": {"cs-user-agent": "LocalScraper/1.0 (+https://crawler.example)", "cs-uri-stem": "/"}}
+{"name": "python requests default", "expected": false, "event": {"cs-user-agent": "python-requests/2.32.3", "cs-uri-stem": "/"}}

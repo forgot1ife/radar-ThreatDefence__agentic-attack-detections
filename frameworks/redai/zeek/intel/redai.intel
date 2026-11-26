@@ -1,0 +1,2 @@
+#fields	indicator	indicator_type	meta.source	meta.desc	meta.url
+github.com/kpolley/redai	Intel::URL	threatdefence-redai	RedAI medium: RedAI source repository, cloned for a local install (git clone https://github.com/kpolley/redai.git, README.md:50) (RedAI operators)	https://github.com/kpolley/redai/blob/3ba2a98fb70e0855a28f97951af82ece9ecfe633/README.md#L50

@@ -1,0 +1,5 @@
+{"name": "update check", "expected": true, "event": {"c-uri": "https://registry.npmjs.org/@pensar/apex/latest", "cs-host": "registry.npmjs.org"}}
+{"name": "install script", "expected": true, "event": {"c-uri": "https://pensarai.com/install.sh", "cs-host": "pensarai.com"}}
+{"name": "model gateway", "expected": true, "event": {"c-uri": "https://gateway.pensar.dev/gateway/invoke", "cs-host": "gateway.pensar.dev"}}
+{"name": "near miss: another npm package", "expected": false, "event": {"c-uri": "https://registry.npmjs.org/apex/latest", "cs-host": "registry.npmjs.org"}}
+{"name": "near miss: Pensar web site", "expected": false, "event": {"c-uri": "https://pensar.dev/", "cs-host": "pensar.dev"}}

@@ -1,0 +1,2 @@
+{"name": "collector lookup", "expected": true, "event": {"QueryName": "crunch.straylabs.ai"}}
+{"name": "near miss: the vendor's main site", "expected": false, "event": {"QueryName": "straylabs.ai"}}

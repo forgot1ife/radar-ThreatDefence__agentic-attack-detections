@@ -1,0 +1,34 @@
+// Cybermes user agents and audit canary in web and proxy logs
+// Agentic attack detections by ThreatDefence (Cybermes). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1594 (Search Victim-Owned Websites), T1595.002 (Active Scanning: Vulnerability Scanning), T1595.003 (Active Scanning: Wordlist Scanning)
+// From the Cybermes source code (Zyrexnn/Cybermes at 149b9a66):
+//  - The Go MCP server's own engines, used when katana, httpx or ffuf are not installed, send
+//    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Cybermes/2.1 (Recon Crawler)", "... Cybermes/2.1 (Security Assessment)"
+//    and "... Cybermes/3.2 (API Fuzzer)"; subdomain discovery sends "... Cybermes/3.2 (Subdomain Recon)" to crt.sh.
+//  - scripts/audit_ai_gateway_config.py sends Cybermes-AIGateway-Auditor/1.0 to / (with Origin
+//    https://audit-canary.example.com) and /api/v1/models; scripts/audit_exam_state_machine.py sends Cybermes-ExamAuditor/1.0.
+//  - .cursorrules tells coding agents to set Cybermes-Security-Auditor/1.0 in scripts they write.
+//  - The npm launcher checks https://registry.npmjs.org/cybermes-mcp/latest as cybermes-mcp-updater/<version>.
+// After a hit, look at the same source address for scanner traffic (nuclei, katana, ffuf, sqlmap) in the next hour.
+
+let Window = 30d;
+let UaRegex = @"Cybermes/(2\.1|3\.2) \((Recon Crawler|Security Assessment|API Fuzzer|Subdomain Recon)\)$|^Cybermes-(AIGateway-Auditor|ExamAuditor|Security-Auditor)/|^cybermes-mcp-updater/";
+union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(Window)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA matches regex UaRegex
+        | project TimeGenerated, Source="W3CIISLog", Client=cIP, UA, Request=strcat(csMethod, " ", csUriStem)),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where RequestClientApplication matches regex UaRegex or RequestURL has "audit-canary.example.com"
+        | project TimeGenerated, Source="CommonSecurityLog", Client=SourceIP, UA=RequestClientApplication, Request=RequestURL),
+    (AzureDiagnostics
+        | where TimeGenerated > ago(Window)
+        | where Category in ("ApplicationGatewayAccessLog", "ApplicationGatewayFirewallLog", "FrontDoorAccessLog")
+        | extend UA=tostring(column_ifexists("userAgent_s", "")), Client=tostring(column_ifexists("clientIP_s", "")),
+            Request=tostring(column_ifexists("requestUri_s", ""))
+        | where UA matches regex UaRegex
+        | project TimeGenerated, Source=Category, Client, UA, Request)
+| summarize Requests=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Paths=make_set(Request, 20) by Source, Client, UA
+| order by LastSeen desc

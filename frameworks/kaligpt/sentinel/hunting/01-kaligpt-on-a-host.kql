@@ -1,0 +1,42 @@
+// KaliGPT (HackerX) running on a host you monitor
+// Agentic attack detections by ThreatDefence (KaliGPT). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1595.002 (Active Scanning: Vulnerability Scanning), T1552.001 (Unsecured Credentials: Credentials In Files)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the KaliGPT source code (SudoHopeX/KaliGPT at b15b8d48, branch hackerx, KaliGPT v1.3):
+//  - The installer clones KaliGPT to /opt/KaliGPT and SudoHopeX/OpenSearchAPI to /opt/KaliGPT/OpenSearchAPI, creates the
+//    venv /opt/KaliGPT/its_venv, and writes /usr/local/bin/kaligpt and /usr/local/bin/opensearchapi. Termux uses
+//    /data/data/com.termux/files/usr/share/KaliGPT and .../usr/bin/kaligpt.
+//  - The launcher runs cd /opt/KaliGPT, starts python /opt/KaliGPT/OpenSearchAPI/app.py in the background (Flask on
+//    127.0.0.1:5000; Google searches drive chromium through nodriver on an Xvfb display), then python3 -m agents.<provider>
+//    (gemini, ollama, openrouter, chatgpt, litellm). Without a mode, python3 -m agents starts python -m agents.<default>.
+//  - The shell tool execute_generic_linux_command splits the model's command on spaces and starts it directly
+//    (no shell) under the provider process, with working folder /opt/KaliGPT.
+//  - kaligpt --web starts a browser on https://chatgpt.com/g/g-xouSQobsE-kaligpt/?prompt=<prompt>.
+//  - Provider API keys are in /opt/KaliGPT/agents/utils/api.config.json in clear text; the installer runs chmod 666 on it.
+
+let Window = 30d;
+let Providers = @"\s-m agents\.(gemini|ollama|openrouter|chatgpt|litellm)\b";
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine contains "/OpenSearchAPI/app.py" and ProcessCommandLine contains "KaliGPT")
+            or ProcessCommandLine contains "/bin/kaligpt"
+            or ProcessCommandLine contains "chatgpt.com/g/g-xouSQobsE-kaligpt"
+            or (ProcessCommandLine matches regex Providers and (ProcessCommandLine contains "KaliGPT" or InitiatingProcessCommandLine contains "KaliGPT"))
+        | project Timestamp, DeviceName, AccountName, Signal="KaliGPT process",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessCommandLine matches regex Providers
+        | where InitiatingProcessCommandLine contains "KaliGPT"
+        | project Timestamp, DeviceName, AccountName, Signal="Command run by the KaliGPT agent",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=substring(InitiatingProcessCommandLine, 0, 150)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath contains "/opt/KaliGPT/" or FolderPath contains "/share/KaliGPT/"
+            or FolderPath endswith "/bin/kaligpt" or FolderPath endswith "/bin/opensearchapi"
+            or FileName =~ "kaligptinstaller.sh"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, AccountName=InitiatingProcessAccountName, Signal="KaliGPT install or configuration files",
+            Detail=tostring(Files), Parent=InitiatingProcessFileName)
+| order by Timestamp desc

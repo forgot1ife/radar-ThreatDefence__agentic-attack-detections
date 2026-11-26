@@ -1,0 +1,4 @@
+# RedAI Run, Report or Validator Environment Files Written
+# Sigma id 9f30b245-12fd-50bf-8b2e-e580e4e7291d, pipeline azure_monitor
+SecurityEvent
+| where ObjectName contains "/.redai/runs/" or ObjectName contains "/.redai/validator-environments/" or ObjectName contains "/.redai/artifacts/" or ObjectName endswith "\\.redai\\runs*" or ObjectName endswith "\\.redai\\validator-environments*" or ObjectName endswith "\\.redai\\artifacts*"

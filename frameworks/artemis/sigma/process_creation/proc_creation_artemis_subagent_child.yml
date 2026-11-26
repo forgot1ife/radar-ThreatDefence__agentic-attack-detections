@@ -1,0 +1,27 @@
+title: Process Started by an ARTEMIS Codex Sub-Agent
+id: 889646e6-85f5-5e2e-a702-6154ba536fc6
+status: experimental
+description: |
+    Detects a command run by an ARTEMIS sub-agent: a process whose parent is the forked Codex CLI started with
+    --wait-for-followup and --instance-id (supervisor/orchestration/instance_manager.py:77-86). Codex runs the shell
+    commands the model writes, normally as bash -lc <command>, so the children are the scanners, exploits and shells the
+    model chose. Group by the --instance-id value to see one task.
+references:
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/supervisor/orchestration/instance_manager.py#L77-L115
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+detection:
+    selection:
+        ParentCommandLine|contains|all:
+            - '--wait-for-followup'
+            - '--instance-id'
+    condition: selection
+falsepositives:
+    - Authorized research or test runs of ARTEMIS
+level: medium

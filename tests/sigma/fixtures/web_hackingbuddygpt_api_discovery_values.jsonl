@@ -1,0 +1,5 @@
+{"name": "the api_key placeholder", "expected": true, "event": {"cs-uri-stem": "/users", "cs-uri-query": "api_key=YourAPIKeyHere", "cs-user-agent": "python-requests/2.32.3"}}
+{"name": "the access_token placeholder", "expected": true, "event": {"cs-uri-stem": "/orders/1", "cs-uri-query": "access_token=YourAccessToken", "cs-user-agent": "python-requests/2.32.3"}}
+{"name": "the joined discovery path", "expected": true, "event": {"cs-uri-stem": "/products/1/users/profile", "cs-uri-query": "-", "cs-user-agent": "python-requests/2.32.3"}}
+{"name": "near miss: a real key", "expected": false, "event": {"cs-uri-stem": "/users", "cs-uri-query": "api_key=3f9a1c22e8", "cs-user-agent": "python-requests/2.32.3"}}
+{"name": "near miss: the two real paths", "expected": false, "event": {"cs-uri-stem": "/users/profile", "cs-uri-query": "-", "cs-user-agent": "python-requests/2.32.3"}}

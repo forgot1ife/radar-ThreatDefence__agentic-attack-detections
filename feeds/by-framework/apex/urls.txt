@@ -1,0 +1,2 @@
+https://pensarai.com/install.sh
+https://registry.npmjs.org/@pensar/apex/latest

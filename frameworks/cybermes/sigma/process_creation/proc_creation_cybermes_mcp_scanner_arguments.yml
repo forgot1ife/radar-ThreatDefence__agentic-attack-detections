@@ -1,0 +1,52 @@
+title: Scanners Started With Cybermes MCP Argument Order
+id: 9cc640fd-512b-506a-ae60-87d3ff395ce4
+status: experimental
+description: |
+    Detects nmap, nuclei, httpx, katana and ffuf started with the exact argument lists that the Cybermes Go MCP server
+    (cybermes-mcp, Zyrexnn/Cybermes at 149b9a66) builds for its cybermes_nmap_scan, cybermes_nuclei_scan,
+    cybermes_http_probe, cybermes_recon_crawl and cybermes_fuzz_endpoints tools. The parent is cybermes-mcp. An operator
+    typing the same tools by hand rarely uses the same flags in the same order.
+references:
+    - https://github.com/Zyrexnn/Cybermes
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.t1595.003
+    - attack.discovery
+    - attack.t1046
+logsource:
+    category: process_creation
+detection:
+    selection_parent:
+        ParentImage|endswith:
+            - '/cybermes-mcp'
+            - '\cybermes-mcp.exe'
+    selection_parent_cached:
+        ParentImage|contains: 'cybermes-mcp-v'
+    selection_nmap:
+        # pkg/nmap/nmap.go:282-296
+        CommandLine|contains|all:
+            - '-sT --open -T3 --max-rate '
+            - ' -oN - '
+    selection_nuclei:
+        # pkg/mcp/tools_nuclei.go:151-157
+        CommandLine|contains: ' -silent -jsonl -timeout 10 -duc'
+    selection_httpx:
+        # pkg/probe/probe.go:239-247
+        CommandLine|contains: ' -silent -status-code -title -tech-detect -json -timeout '
+    selection_katana:
+        # pkg/crawl/crawler.go:177-183
+        CommandLine|contains: ' -jc -silent -ct '
+    selection_ffuf:
+        # pkg/fuzz/fuzzer.go:227-236
+        CommandLine|contains|all:
+            - '/FUZZ -w '
+            - ' -timeout 5 -s -json'
+    condition: 1 of selection_parent* or selection_nmap or selection_nuclei or selection_httpx or selection_katana or selection_ffuf
+falsepositives:
+    - Authorized security testers who run Cybermes
+    - Scripts that happen to call these scanners with the same flags in the same order
+level: medium

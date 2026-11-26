@@ -1,0 +1,3 @@
+# CTF Agent Launcher or Its Model CLIs
+# Sigma id cd94c065-3444-5506-b867-660f8c4f47c3, pipeline splunk_windows
+(CommandLine="*ctf-solve*" CommandLine IN ("*--ctfd-url*", "*--ctfd-token*", "*--challenges-dir*", "*--coordinator*", "*--max-challenges*", "*--msg-port*", "*--no-submit*")) OR (CommandLine="*codex app-server*" ParentCommandLine="*ctf-solve*") OR CommandLine IN ("*IMPORTANT: You are running inside a Docker sandbox. All files are under /challenge/*", "*You are a CTF competition coordinator running for the ENTIRE duration of a live competition*")

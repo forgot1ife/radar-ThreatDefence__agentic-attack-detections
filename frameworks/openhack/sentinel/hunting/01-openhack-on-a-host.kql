@@ -1,0 +1,59 @@
+// OpenHack on a host you monitor
+// Agentic attack detections by ThreatDefence (OpenHack). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1595.002 (Active Scanning: Vulnerability Scanning), T1046 (Network Service Discovery)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// OpenHack (openhackai/OpenHack) has shipped two programs under one name. No report of either in a real intrusion was
+// found on November 26, 2026, so this hunt looks for the software itself, from its source code:
+//  - v2 (main at f94e153c): one executable, usually ~/.local/bin/openhack, that starts its dashboard as
+//    "openhack dashboard --port 6969 --home <folder> --no-open" on 127.0.0.1, and in subscription mode runs
+//    claude --safe-mode ... --settings {"disableAllHooks":true,"apiKeyHelper":"","forceLoginMethod":"claudeai"} or
+//    codex ... model_instructions_file="<tmp>/openhack-subscription-<random>/instructions.txt" once per model turn.
+//  - v0.x (PyPI openhack 0.2.4, tag v0.2.4 8fdfdddf): python <venv>/bin/openhack hack|plan|agent|scan, which runs
+//    nmap -sV -Pn -T4, sqlmap -u <url> --batch --disable-coloring, nuclei -silent -jsonl -target and the model's shell
+//    commands, and talks to api.openhack.com and oob.openhack.com.
+//  - Both write ~/.openhack/ (v2: credentials.json, projects/<hash>/scans/<id>.json; v0.x: config, auth.json, scans/).
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Entry = dynamic(["/bin/openhack ", @"\Scripts\openhack.exe ", " -m openhack ", "src/cli/index.ts "]);
+let Sub = dynamic([" scan", " hack ", " plan ", " resume ", " dashboard", "--claude-code", "--codex", "--anthropic", "--openai"]);
+let OpenHackProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where (ProcessCommandLine has " dashboard --port " and ProcessCommandLine has " --home " and ProcessCommandLine has " --no-open")
+        or ((ProcessCommandLine has_any (Entry) or FolderPath endswith "/openhack" or FileName =~ "openhack.exe") and ProcessCommandLine has_any (Sub));
+union isfuzzy=true
+    (OpenHackProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="OpenHack command line", Detail=tostring(Commands)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "--safe-mode" and ProcessCommandLine has "disableAllHooks" and ProcessCommandLine has "forceLoginMethod")
+            or ProcessCommandLine has "openhack-subscription-"
+            or ProcessCommandLine has "source-review worker inside OpenHack"
+        | summarize Timestamp=min(Timestamp), Turns=count(), Children=make_set(FileName, 5) by DeviceName
+        | project Timestamp, DeviceName, Signal="Claude Code or Codex started by OpenHack v2", Detail=strcat(tostring(Turns), " runs of ", tostring(Children))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessCommandLine has_any ("/bin/openhack", " -m openhack", "openhack/__main__.py")
+        | where ProcessCommandLine has "nmap -sV -Pn -T4 " or (ProcessCommandLine has "sqlmap -u " and ProcessCommandLine has " --batch --disable-coloring")
+            or ProcessCommandLine has "nuclei -silent -jsonl -target " or ProcessCommandLine has "httpx -silent -json -status-code -title -tech-detect -web-server -no-color"
+            or ProcessCommandLine has "subfinder -silent -d "
+        | summarize Timestamp=min(Timestamp), Commands=make_set(substring(ProcessCommandLine, 0, 200), 10) by DeviceName
+        | project Timestamp, DeviceName, Signal="Scanners started by the OpenHack v0.x agent", Detail=tostring(Commands)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where RemoteUrl has_any ("api.openhack.com", "app.openhack.com", "oob.openhack.com", "install.openhack.com")
+        | summarize Timestamp=min(Timestamp), Hosts=make_set(RemoteUrl, 10), Processes=make_set(InitiatingProcessFileName, 5) by DeviceName
+        | project Timestamp, DeviceName, Signal="OpenHack vendor hosts contacted", Detail=strcat(tostring(Hosts), " by ", tostring(Processes))),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort == 6969 and InitiatingProcessFileName has "openhack"
+        | summarize Timestamp=min(Timestamp) by DeviceName, LocalIP
+        | project Timestamp, DeviceName, Signal="OpenHack v2 dashboard listening", Detail=strcat(LocalIP, ":6969")),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/.openhack/" or FolderPath has @"\.openhack\" or FolderPath has "openhack-subscription-"
+            or FolderPath has "/.openhack-evidence/" or FileName startswith ".openhack-sandbox-override-"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="OpenHack workspace, temporary or evidence files", Detail=tostring(Files))
+| order by Timestamp desc

@@ -1,0 +1,4 @@
+# Pensar Apex CLI or Kali Container Started
+# Sigma id 9f74677f-b4b2-5b01-bcac-dcce0e24b46f, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "pensar pentest " or ProcessCommandLine contains "pensar targeted-pentest " or ProcessCommandLine contains "pensar threat-model" or ProcessCommandLine contains "pensar agent-runs worker" or ProcessCommandLine contains "pensar.js pentest " or ProcessCommandLine contains "pensar.js targeted-pentest ") or (ProcessCommandLine contains "@pensar/apex" or ProcessCommandLine contains "pensarai.com/install.sh" or ProcessCommandLine contains "pensarai.com/apex.ps1" or ProcessCommandLine contains "brew install apex") or (ProcessCommandLine contains "exec kali-apex" or ProcessCommandLine contains "kali-apex:latest")

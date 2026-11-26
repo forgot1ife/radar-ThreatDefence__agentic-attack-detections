@@ -1,0 +1,2 @@
+HackerX WebRequestFramework/1.0
+LocalScraper/1.0

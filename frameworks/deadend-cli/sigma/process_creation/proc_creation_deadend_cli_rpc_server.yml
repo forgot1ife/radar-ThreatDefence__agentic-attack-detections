@@ -1,0 +1,33 @@
+title: Deadend CLI Agent Backend or Launcher Started
+id: dbdc81db-59be-504a-b89a-ca0857eb1628
+status: experimental
+description: |
+    Detects Deadend CLI, an autonomous web application penetration testing agent. The Bun terminal UI (deadend) starts
+    its Python JSON-RPC backend as a child process, either the installed PyOxidizer build through the wrapper
+    ~/.cache/deadend/bin/deadend.sh (or ~/.cache/deadend/server/deadend.sh from install.sh) with
+    --log-file ~/.cache/deadend/logs/rpc-server-<ms>.log, or from source with uv run python -m deadend_cli.jsonrpc_server.
+    The PyPI package also installs a deadend-jsonrpc-server entry point.
+references:
+    - https://github.com/straylabs-ai/deadend-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+detection:
+    selection_installed:
+        CommandLine|contains|all:
+            - 'deadend'
+            - '--log-file'
+            - 'rpc-server-'
+    selection_source:
+        CommandLine|contains:
+            - 'deadend_cli.jsonrpc_server'
+            - 'deadend-jsonrpc-server'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized penetration testers or researchers running Deadend CLI
+level: medium

@@ -1,0 +1,31 @@
+title: KaliGPT Tool User Agent in Web Server Logs
+id: aae705ac-c538-5883-8a33-4cafc5aa96f4
+status: experimental
+description: |
+    Detects KaliGPT, a CLI AI pentest agent, requesting a page on your web server through its own HTTP tools.
+    "HackerX WebRequestFramework/1.0" comes from web_request_analysis and get_raw_response: one request per call, any
+    method and body the model chooses, redirects followed. "LocalScraper/1.0" comes from get_local_server_content, a
+    GET that extracts the page text. Scans run through the shell tool (nmap, curl, gau) carry those tools' own user
+    agents.
+references:
+    - https://github.com/SudoHopeX/KaliGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.t1594
+logsource:
+    category: webserver
+detection:
+    selection:
+        # agents/utils/tools/web_request_framework.py:63,276 and agents/utils/tools/locals.py:35 at b15b8d48
+        cs-user-agent:
+            - 'HackerX WebRequestFramework/1.0'
+            - 'LocalScraper/1.0'
+    condition: selection
+falsepositives:
+    - Authorized tests, CTF and lab work with KaliGPT
+    - Another scraper that uses the user agent LocalScraper/1.0
+level: medium

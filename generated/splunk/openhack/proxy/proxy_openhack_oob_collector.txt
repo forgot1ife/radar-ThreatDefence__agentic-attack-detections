@@ -1,0 +1,3 @@
+# Request to the OpenHack Out-of-Band Collector
+# Sigma id c0cbd179-e825-5d0a-ba58-a0db518698ec, pipeline splunk_windows
+"cs-host" IN ("oob.openhack.com", "*.oob.openhack.com")

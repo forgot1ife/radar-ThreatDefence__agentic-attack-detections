@@ -1,0 +1,3 @@
+# CTF Agent Workspace or Solver Trace Written
+# Sigma id fabd1fe4-c3ff-5a98-bc70-740b8da12fbd, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/ctf-workspace-*" or TargetFilename like "*/logs/trace-*" and ends_with(TargetFilename, ".jsonl") and (TargetFilename like "*-claude-opus-4-6-*" or TargetFilename like "*-gpt-5.4-*" or TargetFilename like "*-gpt-5.4-mini-*" or TargetFilename like "*-gpt-5.3-codex-*" or TargetFilename like "*-us.anthropic.claude-opus-4-6-v1-*")

@@ -1,0 +1,4 @@
+# Ares Working Files on Its Attack Box
+# Sigma id 803df3dd-f368-5641-8c18-8866ecce2778, pipeline azure_monitor
+SecurityEvent
+| where ObjectName contains "/tmp/ares-tickets/" or ObjectName contains "/tmp/ares_relay_" or ObjectName contains "/ares_shadowcred_" or ObjectName contains "/ares-hive-" or ObjectName contains "/var/log/ares/" or ObjectName contains "/.ares/sessions/" or ObjectName contains "/.ares/reports/"

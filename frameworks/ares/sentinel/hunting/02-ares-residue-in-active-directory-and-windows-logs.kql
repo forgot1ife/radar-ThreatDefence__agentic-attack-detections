@@ -1,0 +1,54 @@
+// Ares residue in Active Directory, SQL Server and Windows logs
+// Agentic attack detections by ThreatDefence (Ares). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1136.002 (Create Account: Domain Account), T1558 (Steal or Forge Kerberos Tickets), T1484.001 (Domain or Tenant Policy Modification: Group Policy Modification), T1053.005 (Scheduled Task/Job: Scheduled Task), T1003.002 (OS Credential Dumping: Security Account Manager), T1059.001 (Command and Scripting Interpreter: PowerShell)
+// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test before alerting.
+// From the Ares source code (dreadnode/ares at 786b2987). These are the marks Ares' own code leaves on the target:
+//  - machine accounts named ARES-<8 uppercase hex>$ (event 4741), then used as the client of TGT and S4U requests
+//    (4768, 4769) in the RBCD chain (privesc/delegation.rs:362-378, templates/redteam/agents/privesc.md.tera:414-420)
+//  - a GPO immediate task named ARES_GPO_Probe_<8 hex> that runs cmd /c whoami on every computer the GPO applies to
+//    (event 4698 or DeviceEvents ScheduledTaskCreated; orchestrator/automation/gpo.rs:143-160)
+//  - on a SQL Server reached through a link: powershell -EncodedCommand JABFAHIAcgBv... started by xp_cmdshell, reg save
+//    of SAM, SYSTEM and SECURITY to %TEMP%\a.hive, b.hive, c.hive, and ___ARES_HIVE_ rows in PowerShell script block
+//    logs (event 4104; lateral/mssql.rs:345-385,480-497)
+// Event 4741 needs "Audit Computer Account Management"; 4698 needs "Audit Other Object Access Events".
+
+let Window = 30d;
+let Minted = @"^ARES-[0-9A-F]{8}\$$";
+let HivePayload = "JABFAHIAcgBvAHIAQQBjAHQAaQBvAG4AUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAUwB0AG8AcAAnAAoAJAB0AD0AJABlAG4AdgA6AFQARQBNAFAACgAkAGEAPQAiACQAdABcAGEALgBoAGkAdgBlACIA";
+union isfuzzy=true
+    (SecurityEvent
+        | where TimeGenerated > ago(Window)
+        | where EventID == 4741 and TargetUserName matches regex Minted
+        | project TimeGenerated, Computer, Signal="Ares machine account created",
+            Detail=strcat(TargetUserName, " created by ", SubjectDomainName, "\\", SubjectUserName)),
+    (SecurityEvent
+        | where TimeGenerated > ago(Window)
+        | where EventID in (4768, 4769) and (TargetUserName matches regex @"^ARES-[0-9A-F]{8}\$" or ServiceName matches regex Minted)
+        | summarize Requests=count(), Services=make_set(ServiceName, 10), Sources=make_set(IpAddress, 5), TimeGenerated=min(TimeGenerated)
+            by Computer, TargetUserName, EventID
+        | project TimeGenerated, Computer, Signal="Ares machine account in Kerberos",
+            Detail=strcat("event ", EventID, " ", TargetUserName, " x", Requests, " services ", tostring(Services), " from ", tostring(Sources))),
+    (SecurityEvent
+        | where TimeGenerated > ago(Window)
+        | where EventID == 4698 and EventData has "ARES_GPO_Probe_"
+        | extend TaskName = extract(@'TaskName">([^<]+)<', 1, EventData)
+        | project TimeGenerated, Computer, Signal="Ares GPO probe task", Detail=strcat(TaskName, " by ", SubjectUserName)),
+    (DeviceEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ScheduledTaskCreated" and AdditionalFields has "ARES_GPO_Probe_"
+        | project TimeGenerated=Timestamp, Computer=DeviceName, Signal="Ares GPO probe task", Detail=substring(tostring(AdditionalFields), 0, 300)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has HivePayload
+            or (FileName =~ "reg.exe" and ProcessCommandLine has "save"
+                and ((ProcessCommandLine has @"HKLM\SAM" and ProcessCommandLine has @"\a.hive")
+                  or (ProcessCommandLine has @"HKLM\SYSTEM" and ProcessCommandLine has @"\b.hive")
+                  or (ProcessCommandLine has @"HKLM\SECURITY" and ProcessCommandLine has @"\c.hive")))
+        | project TimeGenerated=Timestamp, Computer=DeviceName, Signal="Ares SQL Server hive dump",
+            Detail=strcat(substring(ProcessCommandLine, 0, 200), " <- ", InitiatingProcessFileName, " <- ", InitiatingProcessParentFileName)),
+    (Event
+        | where TimeGenerated > ago(Window)
+        | where Source == "Microsoft-Windows-PowerShell" and EventID == 4104
+        | where RenderedDescription has "___ARES_HIVE_" or EventData has "___ARES_HIVE_"
+        | project TimeGenerated, Computer, Signal="Ares hive dump script block", Detail=substring(RenderedDescription, 0, 300))
+| order by TimeGenerated desc

@@ -1,0 +1,6 @@
+{"name": "golden ticket written to the Ares ticket folder", "expected": true, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/tmp/ares-tickets/contoso_local__fabrikam_local__Administrator.ccache"}}
+{"name": "relay log in the Ares relay working folder", "expected": true, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/tmp/ares_relay_Xk3pQ9/relay.log"}}
+{"name": "Ares worker log", "expected": true, "event": {"Image": "/usr/lib/systemd/systemd", "TargetFilename": "/var/log/ares/recon.log"}}
+{"name": "an agent transcript", "expected": true, "event": {"Image": "/usr/local/bin/ares", "TargetFilename": "/root/.ares/sessions/op-20261126-101500/recon/task_0001.jsonl"}}
+{"name": "a ccache in the default location", "expected": false, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/tmp/krb5cc_1000"}}
+{"name": "an ntlmrelayx log in another folder", "expected": false, "event": {"Image": "/usr/bin/python3", "TargetFilename": "/tmp/relay/relay.log"}}

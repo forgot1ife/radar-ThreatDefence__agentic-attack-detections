@@ -1,0 +1,15 @@
+# Agentic attack detections by ThreatDefence: CTF Agent
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3813341-3813355.
+# CTF Agent has no web console. Its fixed network signals are the HTTP clients that talk to the CTFd platform it plays
+# against (verialabs/ctf-agent at 3366d569: backend/ctfd.py:14,40-46,49-76 and pull_challenges.py:35). Traffic from its
+# solver sandboxes to challenge services is whatever the models run (curl, nmap, pwntools) and has no fixed marker.
+
+# --- CTFd client of the agent: a Windows 7 user agent cut off after AppleWebKit/537.36, which no browser sends ---
+alert http any any -> any any (msg:"TD CTF Agent CTFd client user agent"; flow:established,to_server; http.user_agent; content:"Mozilla/5.0 (Windows NT 6.1|3b| WOW64) AppleWebKit/537.36"; fast_pattern; startswith; endswith; classtype:policy-violation; sid:3813341; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family CTF_Agent, mitre_tactic_id TA0009, mitre_tactic_name Collection, mitre_technique_id T1119, mitre_technique_name Automated_Collection;)
+
+# --- Same client logging in with its built-in default account admin/admin (used when no CTFd token is configured) ---
+alert http any any -> any any (msg:"TD CTF Agent CTFd login with default admin/admin account"; flow:established,to_server; http.method; content:"POST"; http.uri; content:"/login"; startswith; endswith; http.user_agent; content:"(Windows NT 6.1|3b| WOW64) AppleWebKit/537.36"; endswith; http.request_body; content:"name=admin&password=admin&_submit=Submit&nonce="; startswith; fast_pattern; classtype:attempted-user; sid:3813342; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family CTF_Agent, mitre_tactic_id TA0001, mitre_tactic_name Initial_Access, mitre_technique_id T1078.001, mitre_technique_name Default_Accounts;)
+
+# --- pull_challenges.py: the full Chrome 45 on Windows 7 string it took from es3n1n/Eruditus, which shares it ---
+alert http any any -> any any (msg:"TD CTF Agent pull_challenges CTFd API request (Chrome 45 user agent, shared with Eruditus)"; flow:established,to_server; http.uri; content:"/api/v1/"; startswith; http.user_agent; content:"Mozilla/5.0 (Windows NT 6.1|3b| WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36"; fast_pattern; startswith; endswith; classtype:policy-violation; sid:3813343; rev:1; metadata:created_at 2026_11_26, confidence Low, malware_family CTF_Agent, mitre_tactic_id TA0009, mitre_tactic_name Collection, mitre_technique_id T1119, mitre_technique_name Automated_Collection;)

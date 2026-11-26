@@ -1,0 +1,3 @@
+# Claude-Red Offensive Skills Installed for a Coding Agent
+# Sigma id 8818d933-0d08-5fd4-a553-e4bcf8f84118, pipeline ecs
+(TargetFilename:(*\/skills\/claude\-red\/* OR *\\skills\\claude\-red\\*)) OR ((TargetFilename:*\/skills\/* AND TargetFilename:*\/offensive\-*) AND TargetFilename:*\/SKILL.md) OR ((TargetFilename:*\\skills\\* AND TargetFilename:*\\offensive\-*) AND TargetFilename:*\\SKILL.md)

@@ -1,0 +1,4 @@
+# hackingBuddyGPT Web API Report, Generated Spec or Benchmark Trace Written
+# Sigma id 9421ba54-f030-5fcc-ac07-57e6029b8333, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/hackingBuddyGPT/usecases/web_api/reports/" or ObjectName contains "/hackingBuddyGPT/usecases/web_api/openapi_spec/" or ObjectName endswith "\\hackingBuddyGPT\\usecases\\web_api\\reports*" or ObjectName endswith "\\hackingBuddyGPT\\usecases\\web_api\\openapi_spec*") or ((ObjectName contains "/benchmark_results/" and ObjectName contains "/traces/") and (ObjectName endswith ".jsonl" or ObjectName endswith "/console.log"))

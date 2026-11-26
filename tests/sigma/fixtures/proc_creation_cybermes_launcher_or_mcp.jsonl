@@ -1,0 +1,7 @@
+{"name": "wrapper started from the clone", "expected": true, "event": {"Image": "/usr/bin/bash", "CommandLine": "bash ./cybermes Assess https://app.example.test", "ParentImage": "/usr/bin/zsh"}}
+{"name": "Hermes gateway inside the Cybermes image", "expected": true, "event": {"Image": "/opt/hermes-venv/bin/python3", "CommandLine": "/opt/hermes-venv/bin/python3 /opt/hermes-venv/bin/hermes gateway run", "ParentImage": "/usr/bin/bash"}}
+{"name": "AI client starting the MCP server through npx", "expected": true, "event": {"Image": "/usr/bin/node", "CommandLine": "npm exec cybermes-mcp@latest", "ParentImage": "/usr/bin/node"}}
+{"name": "cached native MCP binary", "expected": true, "event": {"Image": "/home/user/.cybermes/bin/cybermes-mcp-v3.5.1-linux-amd64", "CommandLine": "/home/user/.cybermes/bin/cybermes-mcp-v3.5.1-linux-amd64", "ParentImage": "/usr/bin/node"}}
+{"name": "smart_pipe in the container", "expected": true, "event": {"Image": "/usr/local/bin/smart_pipe", "CommandLine": "smart_pipe", "ParentImage": "/usr/bin/bash"}}
+{"name": "stock Hermes from a pip install", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "/home/user/.local/bin/hermes gateway run", "ParentImage": "/usr/bin/bash"}}
+{"name": "a file named cybermes.txt being read", "expected": false, "event": {"Image": "/usr/bin/cat", "CommandLine": "cat notes/cybermes.txt", "ParentImage": "/usr/bin/bash"}}

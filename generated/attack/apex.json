@@ -1,0 +1,79 @@
+{
+ "description": "17 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 8,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "apex",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Pensar Apex on a host you monitor; Sentinel analytics: Pensar Apex AI pentest agent commands on a host; Sigma: Pensar Apex Agent Command Markers",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "Suricata: 3813245 TD Pensar Apex callback listener answer; YARA: Pensar_Apex_Callback_Listener_Script",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Pensar Apex testing you: its user agents and sign-up test account in web and proxy logs; Suricata: 3813243 TD Pensar Apex sign-up test account from the registration prompt",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Pensar Apex on a host you monitor; Sigma: Pensar Apex CLI or Kali Container Started; Sigma: Pensar Apex Install, Update Check or Model Gateway; Sigma: Pensar Apex Session, Run Store or Callback Listener Files; YARA: Pensar_Apex_Code; YARA: Pensar_Apex_Session_Readme",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Sigma: Pensar Apex Install, Update Check or Model Gateway",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Pensar Apex testing you: its user agents and sign-up test account in web and proxy logs; Sentinel analytics: Pensar Apex AI pentest agent commands on a host; Sigma: Pensar Apex Agent Command Markers; Sigma: Pensar Apex User Agent in Web Server Logs; Suricata: 3813241 TD Pensar Apex default user agent pensar-apex; Suricata: 3813242 TD Pensar Apex get_page user agent PensarBot; Suricata: 3813243 TD Pensar Apex sign-up test account from the registration prompt",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "Suricata: 3813244 TD Pensar Apex example prompt injection marker",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1699"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

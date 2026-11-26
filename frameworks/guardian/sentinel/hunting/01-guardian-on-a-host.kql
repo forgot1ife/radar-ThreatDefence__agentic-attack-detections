@@ -1,0 +1,50 @@
+// Guardian running on a host you monitor
+// Agentic attack detections by ThreatDefence (Guardian). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1595.002 (Active Scanning: Vulnerability Scanning), T1552.001 (Unsecured Credentials: Credentials In Files)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the Guardian source code (zakirkun/guardian-cli at 51864a81):
+//  - Guardian is a Python CLI: the console script "guardian" or "python -m cli.main" (README, guardian.bat, and the
+//    entry point of the guardian-cli Docker image, container guardian-pentest, working folder /guardian).
+//    Engagement commands: workflow run --name <workflow> --target <t> [--resume <id>], scan --target, recon --target.
+//  - Each tool wrapper starts its tool directly (asyncio.create_subprocess_exec, no shell): nmap -sV -sC -T4 -oX -,
+//    nuclei -u ... -jsonl ... -silent -rate-limit, httpx -json, ffuf ... -json ... -s, sqlmap --batch --parse-errors
+//    ... --random-agent, wpscan, nikto, curl (prompt_fuzz, zap_api, burp_api, mobsf) and others.
+//  - Fixed values on tool command lines: ffuf -w /tmp/guardian_ffuf_wordlist.txt (written when no wordlist is
+//    installed), prowler ... -F guardian-prowler, dependency-check ... --project guardian.
+//  - Files: reports/session_<yyyymmdd_HHMMSS>.json (via reports/.session_<id>_*.tmp), reports/report_<id>.md/.html/
+//    .json/.sarif, reports/screenshots/<stamp>/*.png, logs/guardian.log, logs/ai_audit.log, ~/.guardian/guardian.yaml,
+//    ~/.guardian/.env (GOOGLE_API_KEY from "guardian init"), ~/.guardian/kb/kb.sqlite3, ~/.guardian/ranker.pkl.
+
+let Window = 30d;
+let GuardianCmd = (cmd:string) { cmd contains " -m cli.main " or cmd contains "/bin/guardian " or cmd contains "\\Scripts\\guardian.exe " };
+let Tools = dynamic(["nmap", "masscan", "httpx", "subfinder", "amass", "nuclei", "nikto", "sqlmap", "ffuf", "gobuster", "wpscan",
+    "whatweb", "wafw00f", "arjun", "xsstrike", "cmseek", "dnsrecon", "testssl", "testssl.sh", "sslyze", "kerbrute", "nxc",
+    "crackmapexec", "theHarvester", "schemathesis", "curl", "prowler", "trivy", "semgrep", "gitleaks"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where GuardianCmd(ProcessCommandLine)
+        | where ProcessCommandLine has_any ("workflow run", "scan --target", "scan -t ", "recon --target", "recon -t ", "--resume", "report --session")
+        | project Timestamp, DeviceName, AccountName, Signal="Guardian CLI engagement command",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ (Tools) and GuardianCmd(InitiatingProcessCommandLine)
+        | project Timestamp, DeviceName, AccountName, Signal="Tool started by Guardian",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=substring(InitiatingProcessCommandLine, 0, 150)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine contains "/tmp/guardian_ffuf_wordlist.txt" or ProcessCommandLine contains " -F guardian-prowler"
+            or (ProcessCommandLine contains "dependency-check" and ProcessCommandLine endswith " --project guardian")
+        | project Timestamp, DeviceName, AccountName, Signal="Guardian tool wrapper marker",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath endswith "/.guardian/guardian.yaml" or FolderPath endswith "/.guardian/.env"
+            or FolderPath endswith "/.guardian/kb/kb.sqlite3" or FolderPath endswith "/.guardian/ranker.pkl"
+            or FolderPath endswith "/tmp/guardian_ffuf_wordlist.txt" or FolderPath endswith "/logs/ai_audit.log"
+            or (FolderPath contains "/reports/" and FileName matches regex @"^\.?session_\d{8}_\d{6}(\.json|_.+\.tmp)$")
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, AccountName=InitiatingProcessAccountName, Signal="Guardian session, log or configuration files",
+            Detail=tostring(Files), Parent=InitiatingProcessFileName)
+| order by Timestamp desc

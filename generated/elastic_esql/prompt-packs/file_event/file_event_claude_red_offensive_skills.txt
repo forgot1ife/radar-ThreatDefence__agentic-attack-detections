@@ -1,0 +1,3 @@
+# Claude-Red Offensive Skills Installed for a Coding Agent
+# Sigma id 8818d933-0d08-5fd4-a553-e4bcf8f84118, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/skills/claude-red/*" or TargetFilename like "*\\skills\\claude-red\\*" or TargetFilename like "*/skills/*" and TargetFilename like "*/offensive-*" and ends_with(TargetFilename, "/SKILL.md") or TargetFilename like "*\\skills\\*" and TargetFilename like "*\\offensive-*" and ends_with(TargetFilename, "\\SKILL.md")

@@ -1,0 +1,3 @@
+# ARTEMIS Prompt Example Payloads in Web Logs
+# Sigma id b7152e61-3e3f-58ff-b33d-a280df3f8cb5, pipeline splunk_windows
+"cs-uri-query" IN ("*s:11:%22injection%22*", "*s%3A11%3A%22injection%22*", "*s:11:\"injection\"*") OR "cs-uri-query" IN ("*//attacker.site*", "*%2F%2Fattacker.site*")

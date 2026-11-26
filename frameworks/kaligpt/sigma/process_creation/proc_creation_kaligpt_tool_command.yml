@@ -1,0 +1,37 @@
+title: Command Run by the KaliGPT Agent
+id: 00c313a4-6e2b-5975-824f-35700f7b6cf1
+status: experimental
+description: |
+    Detects a program started by KaliGPT's execute_generic_linux_command tool. The model passes one command string;
+    KaliGPT splits it on spaces and starts the program directly with subprocess.Popen, without a shell, so the child's
+    parent is the Python provider process (python3 -m agents.gemini, agents.ollama, agents.openrouter, agents.chatgpt
+    or agents.litellm) and its working folder is /opt/KaliGPT. The system prompt asks for curl one-liners, gau,
+    waybackurls and nmap. Every command the model chooses runs without approval.
+references:
+    - https://github.com/SudoHopeX/KaliGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_parent:
+        # agents/utils/tools/locals.py:68-95 (Popen(command.split())), installers/installer.deb.sh:161-184 at b15b8d48
+        ParentCommandLine|contains:
+            - ' -m agents.gemini'
+            - ' -m agents.ollama'
+            - ' -m agents.openrouter'
+            - ' -m agents.chatgpt'
+            - ' -m agents.litellm'
+    selection_dir:
+        CurrentDirectory|contains: '/KaliGPT'
+    condition: selection_parent and selection_dir
+falsepositives:
+    - Authorized tests, CTF and lab work with KaliGPT
+level: medium

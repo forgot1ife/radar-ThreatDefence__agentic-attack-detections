@@ -1,0 +1,7 @@
+{"name": "session metadata", "expected": true, "event": {"Image": "/usr/local/bin/pensar", "TargetFilename": "/home/user/.pensar/sessions/ses_01/session.json"}}
+{"name": "run store", "expected": true, "event": {"Image": "/usr/local/bin/pensar", "TargetFilename": "/home/user/.pensar/runtime/runs.sqlite"}}
+{"name": "staged callback listener", "expected": true, "event": {"Image": "/usr/local/bin/pensar", "TargetFilename": "/home/user/app/callback-listeners/listener-0123456789abcdef0123456789abcdef.cjs"}}
+{"name": "prompt injection payload in a sandbox", "expected": true, "event": {"Image": "/usr/bin/base64", "TargetFilename": "/tmp/apex_payload_3f2c1a9e-1111-4222-8333-944455556666.txt"}}
+{"name": "Windows session folder", "expected": true, "event": {"Image": "C:\\Users\\user\\AppData\\Local\\pensar\\pensar.exe", "TargetFilename": "C:\\Users\\user\\.pensar\\sessions\\ses_01\\README.md"}}
+{"name": "near miss: only the config file", "expected": false, "event": {"Image": "/usr/local/bin/pensar", "TargetFilename": "/home/user/.pensar/config.json"}}
+{"name": "near miss: a .cjs file in another folder", "expected": false, "event": {"Image": "/usr/bin/node", "TargetFilename": "/home/user/app/dist/listener.cjs"}}

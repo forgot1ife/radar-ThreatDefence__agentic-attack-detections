@@ -1,0 +1,30 @@
+title: CTF Agent Claude Solver Command Redirected Into Its Sandbox
+id: 7511b526-3541-55af-9a2b-1f75039a7ad1
+status: experimental
+description: |
+    Detects the rewrite CTF Agent's Claude solver applies to every Bash command its model writes: a PreToolUse hook
+    replaces the command with docker exec -i <full 64-character container id> bash -c <command>, so the Claude Code CLI
+    starts the Docker CLI with the full container id and no -t (backend/agents/claude_solver.py:189-201). People and
+    scripts usually pass a short id or a name. Many such processes in a few minutes, from a shell under the claude CLI,
+    is the solver loop.
+references:
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/agents/claude_solver.py#L189-L201
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.t1609
+logsource:
+    category: process_creation
+detection:
+    selection:
+        CommandLine|contains|all:
+            - 'docker exec -i '
+            - ' bash -c '
+        CommandLine|re: 'docker exec -i [0-9a-f]{64} bash -c '
+    condition: selection
+falsepositives:
+    - Scripts and tools that run docker exec -i with a full container id and bash -c
+level: low

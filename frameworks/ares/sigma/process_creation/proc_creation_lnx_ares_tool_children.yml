@@ -1,0 +1,47 @@
+title: Ares Worker Starting Active Directory Attack Tools
+id: 4ab84c38-598f-5d0e-b311-fcce7d97a466
+status: experimental
+description: |
+    Detects an Ares (dreadnode/ares) worker process starting the attack tools it wraps. The worker is the single ares
+    binary (installed as /usr/local/bin/ares, run as "ares worker" or "ares orchestrator") and starts every tool as a
+    direct child with tokio Command, with no shell in between (ares-tools/src/executor.rs:348-370): impacket-*,
+    netexec or nxc, certipy, bloodyAD, pywhisker, Responder, coercer, hashcat under nice, and the others in its
+    dispatch table (ares-tools/src/lib.rs). The parent name ares is a common word, so the rule also needs one of the
+    tools.
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/executor.rs#L348-L370
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/lib.rs
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_parent:
+        ParentImage|endswith: '/ares'
+    selection_tool:
+        CommandLine|contains:
+            - 'impacket-'
+            - 'netexec'
+            - 'nxc '
+            - 'certipy'
+            - 'bloodyAD'
+            - 'pywhisker'
+            - 'pygpoabuse'
+            - 'responder'
+            - 'coercer'
+            - 'petitpotam'
+            - 'dfscoerce'
+            - 'bloodhound-python'
+            - 'hashcat'
+            - 'lsassy'
+            - 'evil-winrm'
+    condition: all of selection_*
+falsepositives:
+    - Authorized Ares operations
+    - Another program installed under the name ares that runs these tools
+level: medium

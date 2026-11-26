@@ -1,0 +1,39 @@
+title: Ares Working Files on Its Attack Box
+id: 803df3dd-f368-5641-8c18-8866ecce2778
+status: experimental
+description: |
+    Detects files Ares (dreadnode/ares) writes on the host that runs it: Kerberos tickets in /tmp/ares-tickets
+    (privesc/delegation.rs:166, privesc/trust.rs:133) and their <ticket>.krb5.conf, the relay working folder
+    /tmp/ares_relay_<random>/ with relay.log and coerce.log (coercion.rs:815-822), Shadow Credentials exports
+    <temp>/ares_shadowcred_* (acl.rs:270,409-418), the SQL hive folder <temp>/ares-hive-<uuid> (lateral/mssql.rs:558),
+    worker and orchestrator logs in /var/log/ares/ and transcripts in ~/.ares/sessions/ and reports in ~/.ares/reports/
+    (agent_loop/config.rs:319-345, orchestrator/blue/investigation.rs:555).
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/coercion.rs#L815-L822
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/privesc/delegation.rs#L166
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-llm/src/agent_loop/config.rs#L317-L345
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.credential-access
+    - attack.t1558
+    - attack.t1557.001
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection:
+        TargetFilename|contains:
+            - '/tmp/ares-tickets/'
+            - '/tmp/ares_relay_'
+            - '/ares_shadowcred_'
+            - '/ares-hive-'
+            - '/var/log/ares/'
+            - '/.ares/sessions/'
+            - '/.ares/reports/'
+    condition: selection
+falsepositives:
+    - Authorized Ares deployments
+    - Other software that uses an ares folder under /var/log or the home directory
+level: medium

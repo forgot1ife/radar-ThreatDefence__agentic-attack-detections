@@ -1,0 +1,24 @@
+// Ares markers in web and proxy logs
+// Agentic attack detections by ThreatDefence (Ares). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1046 (Network Service Discovery), T1649 (Steal or Forge Authentication Certificates)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Ares source code (dreadnode/ares at 786b2987). Ares has no web console and sends no fixed user agent. The
+// one HTTP request its own code makes to a target is the ESC8 probe: reqwest HEAD /certsrv/certfnsh.asp with no
+// User-Agent header, on port 80 unless told otherwise (privesc/adcs.rs:1356-1384). On the IIS server of an ADCS web
+// enrollment endpoint that shows up as a HEAD with csUserAgent "-". Its model traffic goes to api.openai.com,
+// api.anthropic.com or a local Ollama (ares-llm/src/provider/*.rs); the cross-framework hunt for model API calls from
+// servers in behaviors/ covers that.
+
+let Window = 30d;
+union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(Window)
+        | where csMethod == "HEAD" and csUriStem =~ "/certsrv/certfnsh.asp" and (isempty(csUserAgent) or csUserAgent == "-")
+        | summarize Probes=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by cIP, sIP, Computer
+        | project TimeGenerated=FirstSeen, Source="W3CIISLog", Detail=strcat(cIP, " -> ", Computer, " (", sIP, ") HEAD /certsrv/certfnsh.asp x", Probes, ", no user agent")),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where RequestMethod == "HEAD" and RequestURL has "/certsrv/certfnsh.asp" and isempty(RequestClientApplication)
+        | summarize Probes=count(), FirstSeen=min(TimeGenerated) by SourceIP, RequestURL
+        | project TimeGenerated=FirstSeen, Source="CommonSecurityLog", Detail=strcat(SourceIP, " HEAD ", RequestURL, " x", Probes, ", no user agent"))
+| order by TimeGenerated desc

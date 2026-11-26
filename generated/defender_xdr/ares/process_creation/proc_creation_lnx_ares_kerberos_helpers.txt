@@ -1,0 +1,4 @@
+# Ares Kerberos Ticket Helpers
+# Sigma id 7310d24c-036c-5a42-8cca-a94f21e26a69, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "cross_realm_tgs.py" and ProcessCommandLine contains "--in-ccache") or ProcessCommandLine contains "/tmp/ares-tickets/"

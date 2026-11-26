@@ -1,0 +1,4 @@
+{"name": "hashcat started by the Ares cracker", "expected": true, "event": {"Image": "/usr/bin/hashcat", "CommandLine": "hashcat -w 3 --potfile-disable -m 13100 -a 0 /tmp/.tmpAbC123 /usr/share/wordlists/rockyou.txt --session ares-hc-4242-0 --restore-disable --force", "ParentImage": "/usr/bin/nice"}}
+{"name": "john started by the Ares cracker", "expected": true, "event": {"Image": "/usr/sbin/john", "CommandLine": "john --format=krb5asrep --session=ares-jtr-4242-1 --wordlist=/usr/share/wordlists/rockyou.txt /tmp/.tmpXyZ789"}}
+{"name": "hashcat with its default session", "expected": false, "event": {"Image": "/usr/bin/hashcat", "CommandLine": "hashcat -m 1000 -a 0 hashes.txt /usr/share/wordlists/rockyou.txt"}}
+{"name": "hashcat with an operator session name", "expected": false, "event": {"Image": "/usr/bin/hashcat", "CommandLine": "hashcat -m 13100 --session audit-q4 tgs.txt rockyou.txt"}}

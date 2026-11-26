@@ -1,0 +1,32 @@
+id: b5ebf645-272b-52ed-a356-9dba60132084
+name: Deadend CLI pentest agent run on a host
+description: |
+  A host started the Deadend CLI backend (deadend.sh or the deadend binary with --log-file .../rpc-server-<ms>.log, or
+  python -m deadend_cli.jsonrpc_server) or wrote its test-credential wallet (~/.deadend/reusable_credentials.json, copied
+  on every start). Deadend CLI is an autonomous web application pentest agent that sends model-written HTTP requests
+  and shell commands to a target; in yolo mode no step needs approval. Check who ran it and against which target.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.006
+query: |
+  union isfuzzy=true
+      (DeviceProcessEvents
+          | where (ProcessCommandLine has "deadend" and ProcessCommandLine has "--log-file" and ProcessCommandLine has "rpc-server-")
+              or ProcessCommandLine has_any ("deadend_cli.jsonrpc_server", "deadend-jsonrpc-server")
+          | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine),
+      (DeviceFileEvents
+          | where FileName == "reusable_credentials.json" and (FolderPath has "/.deadend/" or FolderPath has "/.cache/deadend/memory/")
+          | project TimeGenerated, DeviceName, AccountName=InitiatingProcessAccountName, Detail=FolderPath)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

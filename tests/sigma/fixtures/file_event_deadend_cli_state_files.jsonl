@@ -1,0 +1,6 @@
+{"name": "wallet copied on start", "expected": true, "event": {"TargetFilename": "/home/user/.deadend/reusable_credentials.json", "Image": "/home/user/.cache/deadend/server/deadend"}}
+{"name": "wallet in the v0.1.15 location", "expected": true, "event": {"TargetFilename": "/home/user/.cache/deadend/memory/reusable_credentials.json"}}
+{"name": "requester responses log", "expected": true, "event": {"TargetFilename": "/home/user/.cache/deadend/logs/6f1c2a/9b7e44/requester.jsonl"}}
+{"name": "session cookie state", "expected": true, "event": {"TargetFilename": "/home/user/.deadend/agents/6f1c2a/9b7e44/auth_context/playwright_state.json"}}
+{"name": "near miss: a reusable_credentials.json elsewhere", "expected": false, "event": {"TargetFilename": "/home/user/projects/app/reusable_credentials.json"}}
+{"name": "near miss: playwright state outside the deadend folder", "expected": false, "event": {"TargetFilename": "/home/user/tests/auth_context/playwright_state.json"}}

@@ -1,0 +1,3 @@
+# Ares Worker Starting Active Directory Attack Tools
+# Sigma id 4ab84c38-598f-5d0e-b311-fcce7d97a466, pipeline splunk_windows
+ParentImage="*/ares" CommandLine IN ("*impacket-*", "*netexec*", "*nxc *", "*certipy*", "*bloodyAD*", "*pywhisker*", "*pygpoabuse*", "*responder*", "*coercer*", "*petitpotam*", "*dfscoerce*", "*bloodhound-python*", "*hashcat*", "*lsassy*", "*evil-winrm*")

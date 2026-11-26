@@ -1,0 +1,32 @@
+title: RedAI Run, Report or Validator Environment Files Written
+id: 9f30b245-12fd-50bf-8b2e-e580e4e7291d
+status: experimental
+description: |
+    Detects the files RedAI (kpolley/redai) writes under its home folder ~/.redai/: scan runs in runs/<runId>/ (run.json,
+    events.ndjson, state.json, report.md, report.json, report.html, agent transcripts and validation evidence under
+    artifacts/), the copied browser profile, and validator environments in validator-environments/<id>/environment.json.
+    REDAI_HOME moves the folder.
+references:
+    - https://github.com/kpolley/redai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection:
+        TargetFilename|contains:
+            - '/.redai/runs/'
+            - '/.redai/validator-environments/'
+            - '/.redai/artifacts/'
+            - '\.redai\runs\'
+            - '\.redai\validator-environments\'
+            - '\.redai\artifacts\'
+    condition: selection
+falsepositives:
+    - Authorized application security tests with RedAI
+    - Another program that keeps a folder named .redai in the home directory
+level: low

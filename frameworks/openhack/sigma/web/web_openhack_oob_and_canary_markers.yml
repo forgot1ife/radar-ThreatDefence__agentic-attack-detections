@@ -1,0 +1,31 @@
+title: OpenHack Collector or Canary Marker in Web Requests
+id: 6ca9ddde-7760-5bbb-850b-914c664cb0e8
+status: experimental
+description: |
+    Detects the OpenHack v0.x pentest agent (PyPI openhack 0.2.4) in web server logs: its out-of-band collector
+    oob.openhack.com placed in a URL parameter (an SSRF or callback probe), or its canary marker __openhack_test_ (rows
+    named __openhack_test_probe and __openhack_test_probe_updated, the email __openhack_test_@example.com) in the path
+    or query, as in GET /rest/v1/<table>?name=eq.__openhack_test_probe after a canary insert.
+references:
+    - https://github.com/openhackai/OpenHack/blob/8fdfdddffa1f493d21e3e6dd98d911e7c531b84b/openhack/prompts/validator.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection_query:
+        cs-uri-query|contains:
+            - '__openhack_test_'
+            - 'oob.openhack.com'
+    selection_stem:
+        cs-uri-stem|contains: '__openhack_test_'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with OpenHack
+level: high

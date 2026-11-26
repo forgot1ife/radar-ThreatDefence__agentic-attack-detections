@@ -1,0 +1,4 @@
+# Cain AI Pentest Agent Run
+# Sigma id 7d79dcb7-fe87-5b82-8c55-a598b82867c7, pipeline azure_monitor
+SecurityEvent
+| where CommandLine contains "cain-agent" and CommandLine contains " run " and CommandLine contains "--target"

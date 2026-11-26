@@ -1,0 +1,4 @@
+# Ares Kerberos Ticket Helpers
+# Sigma id 7310d24c-036c-5a42-8cca-a94f21e26a69, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "cross_realm_tgs.py" and CommandLine contains "--in-ccache") or CommandLine contains "/tmp/ares-tickets/"

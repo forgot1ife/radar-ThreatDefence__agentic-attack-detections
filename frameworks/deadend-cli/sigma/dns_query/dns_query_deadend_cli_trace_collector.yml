@@ -1,0 +1,24 @@
+title: Deadend CLI Default Trace Collector Lookup
+id: 6ba1858b-014d-5b36-8da2-b2c19f069896
+status: experimental
+description: |
+    Detects a lookup of crunch.straylabs.ai, the Phoenix OTLP collector Deadend CLI sends its traces to (prompts, model
+    output and tool results) when DEADEND_PHOENIX_OTEL_ENABLED is true and PHOENIX_COLLECTOR_ENDPOINT is unset.
+    Tracing is off by default, so this finds only hosts where the operator turned it on.
+references:
+    - https://github.com/straylabs-ai/deadend-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: dns_query
+detection:
+    selection:
+        QueryName: 'crunch.straylabs.ai'
+    condition: selection
+falsepositives:
+    - Staff of the vendor (Stray Labs) or other users of its Phoenix instance
+level: medium

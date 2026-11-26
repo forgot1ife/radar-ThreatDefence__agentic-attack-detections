@@ -1,0 +1,3 @@
+# KaliGPT Installer Download or Web Launcher URL in Proxy Logs
+# Sigma id d1a45ed6-a96a-5378-b873-9711a7efb1a0, pipeline splunk_windows
+("cs-host"="raw.githubusercontent.com" "c-uri"="/SudoHopeX/KaliGPT/*") OR ("cs-host"="github.com" "c-uri" IN ("/SudoHopeX/KaliGPT.git/*", "/SudoHopeX/OpenSearchAPI.git/*")) OR ("cs-host"="chatgpt.com" "c-uri"="/g/g-xouSQobsE-kaligpt*")

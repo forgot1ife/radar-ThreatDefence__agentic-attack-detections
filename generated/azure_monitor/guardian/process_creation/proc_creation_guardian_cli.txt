@@ -1,0 +1,4 @@
+# Guardian AI Pentest CLI Started
+# Sigma id cfccbdb0-bbdb-52ae-9c12-dc3aefe2866a, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains " -m cli.main " or CommandLine contains "/bin/guardian " or CommandLine contains "\\Scripts\\guardian.exe ") and (CommandLine contains " workflow run " or CommandLine contains " scan --target " or CommandLine contains " scan -t " or CommandLine contains " recon --target " or CommandLine contains " recon -t " or CommandLine contains " analyze " or CommandLine contains " report --session " or CommandLine contains " report -s " or CommandLine contains " --resume ")

@@ -1,0 +1,4 @@
+# Pensar Apex CLI or Kali Container Started
+# Sigma id 9f74677f-b4b2-5b01-bcac-dcce0e24b46f, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "pensar pentest " or TargetProcessCommandLine contains "pensar targeted-pentest " or TargetProcessCommandLine contains "pensar threat-model" or TargetProcessCommandLine contains "pensar agent-runs worker" or TargetProcessCommandLine contains "pensar.js pentest " or TargetProcessCommandLine contains "pensar.js targeted-pentest ") or (TargetProcessCommandLine contains "@pensar/apex" or TargetProcessCommandLine contains "pensarai.com/install.sh" or TargetProcessCommandLine contains "pensarai.com/apex.ps1" or TargetProcessCommandLine contains "brew install apex") or (TargetProcessCommandLine contains "exec kali-apex" or TargetProcessCommandLine contains "kali-apex:latest")

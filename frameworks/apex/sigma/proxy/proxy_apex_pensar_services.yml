@@ -1,0 +1,34 @@
+title: Pensar Apex Install, Update Check or Model Gateway
+id: d032640f-cb72-5b6d-8d1a-7aa4b4ec2055
+status: experimental
+description: |
+    Detects a host fetching the Pensar Apex installer or npm package, its update check
+    (https://registry.npmjs.org/@pensar/apex/latest, src/core/installation/index.ts:35), or the Pensar model gateway
+    gateway.pensar.dev, which Apex uses when the operator signs in to Pensar Console
+    (src/core/api/constants.ts:2, src/core/ai/providers/pensar.ts:255). Over HTTPS the path is visible only with TLS
+    inspection; the host name is in CONNECT and SNI logs.
+references:
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/installation/index.ts#L35
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/api/constants.ts#L1-L3
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.t1588.007
+logsource:
+    category: proxy
+detection:
+    selection_package:
+        c-uri|contains:
+            - '/@pensar/apex'
+            - '/@pensar%2fapex'
+            - 'pensarai.com/install.sh'
+            - 'pensarai.com/apex.ps1'
+    selection_gateway:
+        cs-host: 'gateway.pensar.dev'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers and security teams that use Pensar Apex or Pensar Console
+level: low

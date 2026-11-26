@@ -1,0 +1,79 @@
+{
+ "description": "19 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 9,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "deadend-cli",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Deadend CLI on a host you monitor; Sentinel analytics: Deadend CLI pentest agent run on a host; Sigma: Deadend CLI Agent Backend or Launcher Started; Sigma: Deadend CLI Credential Wallet or Session Logs Written",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: Deadend CLI testing you: its reflection marker in web logs, and its setup traffic in proxy and DNS logs; Sigma: Deadend CLI Default Trace Collector Lookup; Sigma: Deadend CLI Sandbox Image, Release Download or Trace Collector in Proxy Logs; Suricata: 3813427 TD Deadend CLI default Phoenix trace collector (TLS SNI); Suricata: 3813428 TD Deadend CLI default Phoenix trace collector (DNS)",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Sigma: Deadend CLI Sandbox Image, Release Download or Trace Collector in Proxy Logs; YARA: DeadendCLI_Source",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Deadend CLI testing you: its reflection marker in web logs, and its setup traffic in proxy and DNS logs; Sigma: Deadend CLI Reflection Probe Marker in Web Logs; Suricata: 3813421 TD Deadend CLI reflection probe marker in URI; Suricata: 3813422 TD Deadend CLI reflection probe marker in request body; Suricata: 3813423 TD Deadend CLI shipped test account password in request; Suricata: 3813424 TD Deadend CLI shipped test account e-mail in request; Suricata: 3813425 TD Deadend CLI unreplaced credential placeholder in request; Suricata: 3813426 TD Deadend CLI example header X-App deadend; YARA: DeadendCLI_Credential_Wallet",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "KQL hunt: Deadend CLI on a host you monitor",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1610"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

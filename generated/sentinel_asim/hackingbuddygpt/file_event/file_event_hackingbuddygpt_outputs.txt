@@ -1,0 +1,4 @@
+# hackingBuddyGPT Web API Report, Generated Spec or Benchmark Trace Written
+# Sigma id 9421ba54-f030-5fcc-ac07-57e6029b8333, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/hackingBuddyGPT/usecases/web_api/reports/" or TargetFileName contains "/hackingBuddyGPT/usecases/web_api/openapi_spec/" or TargetFileName contains "\\hackingBuddyGPT\\usecases\\web_api\\reports\\" or TargetFileName contains "\\hackingBuddyGPT\\usecases\\web_api\\openapi_spec\\") or ((TargetFileName contains "/benchmark_results/" and TargetFileName contains "/traces/") and (TargetFileName endswith ".jsonl" or TargetFileName endswith "/console.log"))

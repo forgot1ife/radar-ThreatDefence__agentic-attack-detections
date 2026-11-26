@@ -1,0 +1,47 @@
+title: CTF Agent Launcher or Its Model CLIs
+id: cd94c065-3444-5506-b867-660f8c4f47c3
+status: experimental
+description: |
+    Detects CTF Agent (verialabs/ctf-agent) starting on a host: its console script ctf-solve with one of its own options
+    (backend/cli.py:31-43), the codex app-server process it starts for each Codex solver and the Codex coordinator, with
+    ctf-solve in the parent command line (backend/agents/codex_solver.py:186-191), and the Claude Code CLI started by the
+    Claude Agent SDK with the agent's system prompt (backend/agents/claude_solver.py:97-104,
+    backend/agents/claude_coordinator.py:34-35). The prompt selection assumes the SDK passes the system prompt on the
+    command line of the claude process, which depends on the claude-agent-sdk version.
+references:
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/cli.py#L31-L43
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/agents/codex_solver.py#L186-L191
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/agents/claude_solver.py#L97-L104
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.resource-development
+    - attack.t1588.007
+logsource:
+    category: process_creation
+detection:
+    selection_cli:
+        CommandLine|contains: 'ctf-solve'
+    selection_cli_options:
+        CommandLine|contains:
+            - '--ctfd-url'
+            - '--ctfd-token'
+            - '--challenges-dir'
+            - '--coordinator'
+            - '--max-challenges'
+            - '--msg-port'
+            - '--no-submit'
+    selection_codex:
+        CommandLine|contains: 'codex app-server'
+        ParentCommandLine|contains: 'ctf-solve'
+    selection_prompt:
+        CommandLine|contains:
+            - 'IMPORTANT: You are running inside a Docker sandbox. All files are under /challenge/'
+            - 'You are a CTF competition coordinator running for the ENTIRE duration of a live competition'
+    condition: (selection_cli and selection_cli_options) or selection_codex or selection_prompt
+falsepositives:
+    - Authorized CTF play or research runs of CTF Agent
+level: medium

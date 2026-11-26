@@ -1,0 +1,4 @@
+# Deadend CLI Credential Wallet or Session Logs Written
+# Sigma id eff86319-406f-5534-b9ac-7ef50b199b05, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName endswith "/.deadend/reusable_credentials.json" or ObjectName endswith "/.cache/deadend/memory/reusable_credentials.json") or (ObjectName contains "/.cache/deadend/logs/" and (ObjectName endswith "/requester.jsonl" or ObjectName endswith "/python_interpreter.jsonl" or ObjectName endswith ".log")) or (ObjectName contains "/.deadend/agents/" and ObjectName endswith "/auth_context/playwright_state.json")

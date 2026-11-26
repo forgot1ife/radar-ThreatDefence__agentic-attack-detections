@@ -1,0 +1,43 @@
+title: Pensar Apex Agent Command Markers
+id: b406fa4b-5031-59e7-b5da-3d7408594f21
+status: experimental
+description: |
+    Detects commands that Pensar Apex (pensarai/apex) builds for its agent tools. Apex adds -H "User-Agent: pensar-apex"
+    (its default session header) to every curl, wget, nuclei, ffuf, gobuster, httpx, feroxbuster, dirb, wfuzz, wpscan,
+    sqlmap or nikto command the model writes against an in-scope host, and its get_page tool uses PensarBot/1.0. Its
+    callback listener starts as node -e "eval(Buffer.from('<base64>' ..." where the base64 always begins with the
+    encoded first line "use strict"; // Apex callback listener, and its readiness probe evaluates the APEX_CB_PROBE
+    variable. Its file, grep, glob and list helpers and its prompt injection payload writer pass APEX_* variables and
+    heredoc markers. All of these strings are in the code (src/core/http/targetHeaders.ts:242-316,
+    src/core/agents/offSecAgent/tools/callbackListener.ts:32-42, executeCommand.ts:244-257, grepImpl.ts:468,
+    globImpl.ts:97, listFilesImpl.ts:195, fileWorkspaceRemote.ts:221). The User-Agent value can be changed with
+    pensar config headers; the helper strings cannot without editing Apex.
+references:
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/http/targetHeaders.ts#L242-L316
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/agents/offSecAgent/tools/callbackListener.ts#L32-L42
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection:
+        CommandLine|contains:
+            - 'User-Agent: pensar-apex'
+            - 'PensarBot/1.0'
+            - 'InVzZSBzdHJpY3QiOwovLyBBcGV4IGNhbGxiYWNrIGxpc3RlbmVy'
+            - 'process.env.APEX_CB_PROBE'
+            - 'APEX_HIDDEN_PAYLOAD_COUNT'
+            - 'APEX_FILE_PAYLOAD_COUNT'
+            - '__APEX_GREP_EXIT_'
+            - "<<'APEX_GLOB_PY'"
+            - "<<'APEX_LIST_PY'"
+    condition: selection
+falsepositives:
+    - Authorized penetration tests run with Pensar Apex or Pensar Console
+level: high

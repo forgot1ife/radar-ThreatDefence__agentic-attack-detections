@@ -1,0 +1,24 @@
+// MCP for Security's own requests in proxy and web logs
+// Agentic attack detections by ThreatDefence (MCP for Security). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the MCP for Security source (cyproxio/mcp-for-security at 51dd537f). The wrappers mostly run stock tools, so
+// targets see those tools. The few requests the wrappers make themselves:
+//  - nuclei wrapper, get-nuclei-tags: GET raw.githubusercontent.com/projectdiscovery/nuclei-templates/refs/heads/main/TEMPLATES-STATS.json
+//  - MobSF wrapper: axios to the operator's MobSF, /api/v1/upload, /api/v1/scan, /api/v1/scan_logs, /api/v1/report_json,
+//    /api/v1/scans, with the key in both Authorization and X-Mobsf-Api-Key (headers are rarely logged; the user agent is)
+//  - HTTP header check: one GET with the axios default user agent (axios/1.8.4 in the lock file). Generic; context only.
+
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL contains "/projectdiscovery/nuclei-templates/refs/heads/main/TEMPLATES-STATS.json"
+            or (RequestURL has "/api/v1/" and RequestURL has_any ("/api/v1/upload", "/api/v1/scan_logs", "/api/v1/report_json", "/api/v1/scans")
+                and RequestClientApplication startswith "axios/")
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName,
+            Detail=strcat(RequestMethod, " ", RequestURL, " ", RequestClientApplication)),
+    (W3CIISLog | where TimeGenerated > ago(30d)
+        | where csUriStem in ("/api/v1/upload", "/api/v1/scan", "/api/v1/scan_logs", "/api/v1/report_json", "/api/v1/scans")
+            and csUserAgent startswith "axios/"
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=sSiteName, Detail=strcat(csMethod, " ", csUriStem, " ", csUserAgent))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10) by Source, Src, Target
+| order by FirstSeen asc

@@ -1,0 +1,4 @@
+# Claude Code or Codex CLI Started by OpenHack
+# Sigma id c04336d7-897c-5138-9198-8280c8a2f615, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "--safe-mode" and TargetProcessCommandLine contains "disableAllHooks" and TargetProcessCommandLine contains "forceLoginMethod") or TargetProcessCommandLine contains "openhack-subscription-" or TargetProcessCommandLine contains "source-review worker inside OpenHack"

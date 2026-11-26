@@ -1,0 +1,47 @@
+title: hackingBuddyGPT LLM Pentest Agent Started
+id: f71da8d8-9932-5d4a-8e22-f0e02cb96a55
+status: experimental
+description: |
+    Detects hackingBuddyGPT, an open-source framework that lets an LLM run commands on a target over SSH, psexec or
+    HTTP with no approval step: its wintermute (or hackingBuddyGPT) CLI started with one of its use-cases, the module
+    form python -m hackingBuddyGPT.cli.wintermute used by its benchmark launcher, the benchmark launcher itself, its log
+    tools, and its container image ghcr.io/ipa-lab/hackingbuddygpt.
+references:
+    - https://github.com/ipa-lab/hackingBuddyGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+detection:
+    selection_module:
+        CommandLine|contains:
+            - 'hackingBuddyGPT.cli.wintermute'
+            - 'hackingbuddygpt-log-view'
+            - 'hackingbuddygpt-log-analyze'
+            - 'benchmark_privesc.py'
+            - 'ghcr.io/ipa-lab/hackingbuddygpt'
+    selection_cli:
+        CommandLine|contains:
+            - 'wintermute'
+            - 'hackingBuddyGPT'
+    selection_usecase:
+        CommandLine|contains:
+            - ' MinimalPrivEscLinux'
+            - ' MinimalToolCallPrivEscLinux'
+            - ' PrivEscLinux'
+            - ' ExPrivEscLinuxLSE'
+            - ' PrivEscWindows'
+            - ' WebTestingWithExplanation'
+            - ' WebTestingWithShell'
+            - ' AdvancedWebTesting'
+            - ' WebAPITesting'
+            - ' AD --'
+    condition: selection_module or (selection_cli and selection_usecase)
+falsepositives:
+    - Researchers and security teams running hackingBuddyGPT against their own test machines
+    - A script named benchmark_privesc.py from another project
+level: medium

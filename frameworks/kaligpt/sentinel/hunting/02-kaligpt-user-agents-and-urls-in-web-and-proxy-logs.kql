@@ -1,0 +1,37 @@
+// KaliGPT probing your web servers, or running from your network: its tool user agents and URLs in web and proxy logs
+// Agentic attack detections by ThreatDefence (KaliGPT). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1594 (Search Victim-Owned Websites), T1105 (Ingress Tool Transfer)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the KaliGPT source code (SudoHopeX/KaliGPT at b15b8d48):
+//  - web_request_analysis and get_raw_response send "HackerX WebRequestFramework/1.0" unless the model passes its own
+//    User-Agent header. One request per call, any method and body, redirects followed. web_request_analysis checks the
+//    answer for missing security headers, cookie flags, CORS, caching, server banners and e-mail, SSN or API-key patterns.
+//  - get_local_server_content sends "LocalScraper/1.0" (GET, then extracts the page text).
+//  - Everything else the agent sends to a target comes from the programs its shell tool starts (curl, nmap, gau,
+//    waybackurls), with their own user agents: look at the same source address around a KaliGPT hit.
+//  - Install and web launcher URLs, HTTPS (proxy with TLS inspection): raw.githubusercontent.com/SudoHopeX/KaliGPT/...,
+//    github.com/SudoHopeX/OpenSearchAPI.git, chatgpt.com/g/g-xouSQobsE-kaligpt.
+// On a target, the source address is the operator's. In a proxy log, the source is a host of yours running KaliGPT.
+
+let UAs = dynamic(["HackerX WebRequestFramework/1.0", "LocalScraper/1.0"]);
+union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(30d)
+        | extend UA = replace_string(csUserAgent, "+", " ")
+        | where UA in (UAs)
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (AzureDiagnostics
+        | where TimeGenerated > ago(30d)
+        | where Category == "ApplicationGatewayAccessLog"
+        | where userAgent_s in (UAs)
+        | project TimeGenerated, Source=Category, Src=clientIP_s, Target=host_s, Detail=requestUri_s, UA=userAgent_s),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(30d)
+        | where RequestClientApplication in (UAs)
+            or RequestURL contains "raw.githubusercontent.com/SudoHopeX/KaliGPT/"
+            or RequestURL contains "github.com/SudoHopeX/OpenSearchAPI"
+            or RequestURL contains "chatgpt.com/g/g-xouSQobsE-kaligpt"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 3) by Source, Src, Target
+| order by FirstSeen asc

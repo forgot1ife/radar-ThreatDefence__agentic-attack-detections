@@ -1,0 +1,3 @@
+# Request to the OpenHack Out-of-Band Collector
+# Sigma id c0cbd179-e825-5d0a-ba58-a0db518698ec, pipeline ecs
+url.domain:/[oO][oO][bB]\.[oO][pP][eE][nN][hH][aA][cC][kK]\.[cC][oO][mM]/ OR url.domain:/.*\.[oO][oO][bB]\.[oO][pP][eE][nN][hH][aA][cC][kK]\.[cC][oO][mM]/

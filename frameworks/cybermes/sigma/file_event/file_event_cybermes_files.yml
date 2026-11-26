@@ -1,0 +1,53 @@
+title: Cybermes Files Written
+id: 54fb9bfe-a516-576d-9c82-2eb555f46f42
+status: experimental
+description: |
+    Detects files that Cybermes, a Hermes Agent based AI pentest framework (Zyrexnn/Cybermes at 149b9a66), writes: the
+    npm launcher's cache of the cybermes-mcp binary and its settings in ~/.cybermes/, Cybermes' auto-loaded skill
+    autonomous-godmode-hunter copied into the Hermes home (.hermes/skills/), the raw tool output the MCP server keeps
+    under recon/<target_slug>/ (katana.txt, nuclei_output.txt), and the per-target report folder layout
+    reports/<target_slug>/evidence/recon_notes.md and REPORT_<target_slug>.pdf.
+references:
+    - https://github.com/Zyrexnn/Cybermes
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.collection
+    - attack.t1005
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        # npm/src/utils/binary.js:130, npm/src/utils/updater.js:13, npm/src/utils/config-store.js:12-16
+        TargetFilename|contains:
+            - '/.cybermes/bin/cybermes-mcp-v'
+            - '\.cybermes\bin\cybermes-mcp-v'
+            - '/.cybermes/update_check.json'
+            - '\.cybermes\update_check.json'
+    selection_skill:
+        # .hermes/config.yaml.example:54-57, setup.sh:55, entrypoint.sh:49, Dockerfile:97
+        TargetFilename|contains:
+            - '/.hermes/skills/autonomous-godmode-hunter/'
+            - '\.hermes\skills\autonomous-godmode-hunter\'
+    selection_recon_dir:
+        TargetFilename|contains: '/recon/'
+    selection_recon_file:
+        # pkg/crawl/crawler.go:144, pkg/mcp/tools_nuclei.go:198
+        TargetFilename|endswith:
+            - '/katana.txt'
+            - '/nuclei_output.txt'
+    selection_reports_dir:
+        TargetFilename|contains: '/reports/'
+    selection_reports_file:
+        # pkg/report/aggregator.go:90, pkg/report/pdf.go:187, .hermes/config.yaml.example:27-29
+        - TargetFilename|endswith: '/evidence/recon_notes.md'
+        - TargetFilename|contains: '/REPORT_'
+          TargetFilename|endswith: '.pdf'
+    condition: selection_home or selection_skill or (selection_recon_dir and selection_recon_file) or (selection_reports_dir and selection_reports_file)
+falsepositives:
+    - Authorized security testers who run Cybermes
+    - Other tools that keep katana or nuclei output in a recon/ folder
+level: medium

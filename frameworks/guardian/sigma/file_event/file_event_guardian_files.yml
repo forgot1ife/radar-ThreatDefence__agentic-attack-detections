@@ -1,0 +1,50 @@
+title: Guardian Session, Log or Configuration Files Written
+id: ffbf7640-2e91-52dc-b0d5-4653db75db07
+status: experimental
+description: |
+    Detects files Guardian (zakirkun/guardian-cli), an AI pentest CLI, writes on the host that runs it. In its
+    working folder: reports/session_<yyyymmdd_HHMMSS>.json (the whole engagement: target, tool commands and output,
+    findings, model decisions and token costs), written through a temporary reports/.session_<id>_*.tmp, reports
+    report_<id>.md/.html/.json/.sarif, screenshots under reports/screenshots/<stamp>/, and logs/guardian.log with
+    logs/ai_audit.log (one JSON record per model decision). In the user's home: ~/.guardian/guardian.yaml and
+    ~/.guardian/.env (written by "guardian init" with GOOGLE_API_KEY), ~/.guardian/kb/kb.sqlite3 and
+    ~/.guardian/ranker.pkl. The ffuf fallback wordlist goes to /tmp/guardian_ffuf_wordlist.txt. The reports and logs
+    paths come from config/guardian.yaml and can be changed; the file names cannot.
+references:
+    - https://github.com/zakirkun/guardian-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.credential-access
+    - attack.t1552.001
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        # cli/commands/init.py:16,39-40,55-56, core/knowledge_base.py:56, core/learners/tool_ranker.py:37 at 51864a81
+        TargetFilename|endswith:
+            - '/.guardian/guardian.yaml'
+            - '/.guardian/.env'
+            - '/.guardian/kb/kb.sqlite3'
+            - '/.guardian/ranker.pkl'
+            - '/tmp/guardian_ffuf_wordlist.txt'
+    selection_ai_audit:
+        # utils/logger.py:49,60 at 51864a81
+        TargetFilename|endswith: '/logs/ai_audit.log'
+    selection_session_name:
+        # core/workflow.py:847-857, core/memory.py:90 at 51864a81
+        TargetFilename|contains:
+            - '/reports/session_'
+            - '/reports/.session_'
+    selection_session_ext:
+        TargetFilename|endswith:
+            - '.json'
+            - '.tmp'
+    condition: selection_home or selection_ai_audit or (selection_session_name and selection_session_ext)
+falsepositives:
+    - Authorized tests with Guardian
+    - Other software that writes logs/ai_audit.log or reports/session_*.json in its working folder
+level: low

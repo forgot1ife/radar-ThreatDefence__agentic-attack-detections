@@ -1,0 +1,6 @@
+{"name": "the v0.x model gateway", "expected": true, "event": {"cs-host": "api.openhack.com", "c-uri": "/v1/chat/completions", "c-useragent": "AsyncOpenAI/Python 1.99.0"}}
+{"name": "the v2 release download", "expected": true, "event": {"cs-host": "github.com", "c-uri": "/openhackai/OpenHack/releases/download/v2.0.0/openhack-2.0.0-linux-x64.tar.gz?download=1", "c-useragent": "curl/8.5.0"}}
+{"name": "the bare openhack user agent", "expected": true, "event": {"cs-host": "models.dev", "c-uri": "/api.json", "c-useragent": "openhack"}}
+{"name": "the web_fetch user agent", "expected": true, "event": {"cs-host": "nvd.nist.gov", "c-uri": "/vuln/detail/CVE-2026-0001", "c-useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"}}
+{"name": "near miss: a real Chrome 125", "expected": false, "event": {"cs-host": "nvd.nist.gov", "c-uri": "/", "c-useragent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"}}
+{"name": "near miss: a user agent that only contains openhack", "expected": false, "event": {"cs-host": "example.test", "c-uri": "/", "c-useragent": "openhack-fan-site-crawler/1.0"}}

@@ -1,0 +1,4 @@
+# Cain Pi Backend Bridge and Its Shell Commands
+# Sigma id 49b9fde8-9907-57fb-a6ab-863656728f4e, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ((FolderPath endswith "/node" or FolderPath endswith "\\node.exe") and (ProcessCommandLine endswith "/toolchain/pi/bridge.mjs" or ProcessCommandLine endswith "\\toolchain\\pi\\bridge.mjs")) or ((InitiatingProcessCommandLine endswith "/toolchain/pi/bridge.mjs" or InitiatingProcessCommandLine endswith "\\toolchain\\pi\\bridge.mjs") and ProcessCommandLine contains " -c ")

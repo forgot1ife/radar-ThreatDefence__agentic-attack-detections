@@ -1,0 +1,6 @@
+{"name": "install.sh download", "expected": true, "event": {"cs-host": "raw.githubusercontent.com", "c-uri": "/SudoHopeX/KaliGPT/refs/heads/hackerx/install.sh"}}
+{"name": "debian installer download", "expected": true, "event": {"cs-host": "raw.githubusercontent.com", "c-uri": "/SudoHopeX/KaliGPT/refs/heads/hackerx/installers/installer.deb.sh"}}
+{"name": "OpenSearchAPI clone", "expected": true, "event": {"cs-host": "github.com", "c-uri": "/SudoHopeX/OpenSearchAPI.git/info/refs?service=git-upload-pack"}}
+{"name": "custom GPT opened by kaligpt --web", "expected": true, "event": {"cs-host": "chatgpt.com", "c-uri": "/g/g-xouSQobsE-kaligpt/?prompt=hello"}}
+{"name": "another repository from the same author", "expected": false, "event": {"cs-host": "raw.githubusercontent.com", "c-uri": "/SudoHopeX/dotfiles/main/install.sh"}}
+{"name": "KaliGPT path on another host", "expected": false, "event": {"cs-host": "mirror.example", "c-uri": "/SudoHopeX/KaliGPT/install.sh"}}

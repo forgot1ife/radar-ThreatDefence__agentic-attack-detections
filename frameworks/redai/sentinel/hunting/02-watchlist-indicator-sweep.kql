@@ -1,0 +1,24 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (RedAI). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. RedAI has no addresses, domains or user agents of its own: its rows are file
+// paths, simulator names, its package name and prompt strings, so this sweep looks for them in process command lines and
+// file paths on hosts. RedAI hard-codes no host: its model traffic goes wherever the Claude and Codex SDKs send it.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "redai" | project value=tostring(SearchKey), type, confidence, actor, source;
+let Strings = toscalar(IOC | where type in ("string", "file_path", "file_name") and confidence in ("high", "medium")
+    | extend value=replace_string(value, "~/", "/") | summarize make_list(value));
+union isfuzzy=true
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has "redai"
+        | mv-apply s=Strings to typeof(string) on (where ProcessCommandLine contains s | take 1 | project Indicator=s)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator, Detail=strcat(DeviceName, " ", AccountName, " ", substring(ProcessCommandLine, 0, 200))),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has "redai"
+        | mv-apply s=Strings to typeof(string) on (where FolderPath contains s | take 1 | project Indicator=s)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator, Detail=strcat(DeviceName, " ", InitiatingProcessFileName, " ", FolderPath))
+| join kind=leftouter (IOC | extend value=replace_string(value, "~/", "/")) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

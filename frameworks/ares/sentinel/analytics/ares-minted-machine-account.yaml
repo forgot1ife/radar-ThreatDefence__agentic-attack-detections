@@ -1,0 +1,33 @@
+id: 5a51aa27-e6ce-5f3c-80e3-2df0d82a3dab
+name: Ares AI pentest agent machine account created in Active Directory
+description: |
+  A machine account named ARES- followed by eight uppercase hex digits was created (event 4741). Ares
+  (dreadnode/ares), an LLM-coordinated agent that runs Active Directory attacks end to end, ignores any name its model
+  asks for and mints every machine account it adds as ARES-<8 hex>$ with impacket-addcomputer, as the first step of
+  its resource-based constrained delegation chain (privesc/delegation.rs:362-378 at 786b2987). Ares deletes the account
+  at teardown only when the operation ends cleanly. Check who created it and whether an authorized test is running.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: SecurityEvents
+    dataTypes:
+      - SecurityEvent
+  - connectorId: WindowsSecurityEvents
+    dataTypes:
+      - SecurityEvent
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Persistence
+relevantTechniques:
+  - T1136.002
+query: |
+  SecurityEvent
+  | where EventID == 4741
+  | where TargetUserName matches regex @"^ARES-[0-9A-F]{8}\$$"
+  | project TimeGenerated, Computer, TargetUserName, TargetDomainName, SubjectUserName, SubjectDomainName, SubjectLogonId
+  | summarize Accounts=make_set(TargetUserName, 20), FirstSeen=min(TimeGenerated) by Computer, SubjectDomainName, SubjectUserName
+version: 1.0.0
+kind: Scheduled

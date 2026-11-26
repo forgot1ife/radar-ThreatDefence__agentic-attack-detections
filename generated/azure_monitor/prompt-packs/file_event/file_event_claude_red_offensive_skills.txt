@@ -1,0 +1,4 @@
+# Claude-Red Offensive Skills Installed for a Coding Agent
+# Sigma id 8818d933-0d08-5fd4-a553-e4bcf8f84118, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/skills/claude-red/" or ObjectName endswith "\\skills\\claude-red*") or ((ObjectName contains "/skills/" and ObjectName contains "/offensive-") and ObjectName endswith "/SKILL.md") or ((ObjectName endswith "\\skills*" and ObjectName contains "\\offensive-") and ObjectName endswith "\\SKILL.md")

@@ -1,0 +1,51 @@
+{
+ "description": "10 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 9,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "redai",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: RedAI running on a host you monitor; Sentinel analytics: RedAI AI vulnerability validation workbench on a host; Sigma: RedAI AI Vulnerability Validation Workbench Running or Installed",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Which applications RedAI's browser and agents talked to",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: RedAI running on a host you monitor; KQL hunt: Which applications RedAI's browser and agents talked to; Sigma: RedAI AI Vulnerability Validation Workbench Running or Installed; Sigma: RedAI Run, Report or Validator Environment Files Written; YARA: RedAI_Prompt_In_Agent_Session_Log; YARA: RedAI_Report; YARA: RedAI_Run_State; YARA: RedAI_Source_Or_Package",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

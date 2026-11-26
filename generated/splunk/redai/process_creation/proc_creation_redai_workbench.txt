@@ -1,0 +1,3 @@
+# RedAI AI Vulnerability Validation Workbench Running or Installed
+# Sigma id 76b101ba-b0a3-5471-a46b-29a2ac43c46a, pipeline splunk_windows
+(Image IN ("*/bun", "*\\bun.exe") CommandLine IN ("*/bin/redai", "*bun run redai")) OR CommandLine IN ("*@kpolley/redai*", "*github.com/kpolley/redai*") OR CommandLine IN ("*/.redai/validator-environments/*", "*/.redai/runs/*", "*\\.redai\\validator-environments\\*", "*\\.redai\\runs\\*") OR CommandLine="*simctl create redai-template-*" OR (CommandLine="*simctl clone *" CommandLine="* redai-*")

@@ -1,0 +1,4 @@
+{"name": "default session user agent", "expected": true, "event": {"cs-user-agent": "pensar-apex", "cs-uri-stem": "/api/users"}}
+{"name": "get_page user agent", "expected": true, "event": {"cs-user-agent": "Mozilla/5.0 (compatible; PensarBot/1.0; +https://pensar.dev)", "cs-uri-stem": "/"}}
+{"name": "near miss: browser user agent", "expected": false, "event": {"cs-user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36", "cs-uri-stem": "/"}}
+{"name": "near miss: path that names pensar-apex", "expected": false, "event": {"cs-user-agent": "curl/8.5.0", "cs-uri-stem": "/blog/pensar-apex"}}

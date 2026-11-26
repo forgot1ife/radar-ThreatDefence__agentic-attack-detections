@@ -1,0 +1,4 @@
+# OpenHack Workspace, Temporary or Evidence Files Written
+# Sigma id 8ea1c520-4655-5cd8-9c00-8353bd6a6e9f, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.openhack/" or FolderPath contains "\\.openhack\\") or (FolderPath contains "/openhack-subscription-" or FolderPath contains "/openhack-login-" or FolderPath contains "\\openhack-subscription-" or FolderPath contains "\\openhack-login-") or (FolderPath contains "/.openhack-evidence/" or FolderPath contains ".openhack-sandbox-override-")

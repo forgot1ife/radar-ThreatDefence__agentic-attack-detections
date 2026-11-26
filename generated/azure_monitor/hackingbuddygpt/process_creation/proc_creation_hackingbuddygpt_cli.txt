@@ -1,0 +1,4 @@
+# hackingBuddyGPT LLM Pentest Agent Started
+# Sigma id f71da8d8-9932-5d4a-8e22-f0e02cb96a55, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "hackingBuddyGPT.cli.wintermute" or CommandLine contains "hackingbuddygpt-log-view" or CommandLine contains "hackingbuddygpt-log-analyze" or CommandLine contains "benchmark_privesc.py" or CommandLine contains "ghcr.io/ipa-lab/hackingbuddygpt") or ((CommandLine contains "wintermute" or CommandLine contains "hackingBuddyGPT") and (CommandLine contains " MinimalPrivEscLinux" or CommandLine contains " MinimalToolCallPrivEscLinux" or CommandLine contains " PrivEscLinux" or CommandLine contains " ExPrivEscLinuxLSE" or CommandLine contains " PrivEscWindows" or CommandLine contains " WebTestingWithExplanation" or CommandLine contains " WebTestingWithShell" or CommandLine contains " AdvancedWebTesting" or CommandLine contains " WebAPITesting" or CommandLine contains " AD --"))

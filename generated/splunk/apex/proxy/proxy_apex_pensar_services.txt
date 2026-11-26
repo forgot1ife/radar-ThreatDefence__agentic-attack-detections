@@ -1,0 +1,3 @@
+# Pensar Apex Install, Update Check or Model Gateway
+# Sigma id d032640f-cb72-5b6d-8d1a-7aa4b4ec2055, pipeline splunk_windows
+"c-uri" IN ("*/@pensar/apex*", "*/@pensar%2fapex*", "*pensarai.com/install.sh*", "*pensarai.com/apex.ps1*") OR "cs-host"="gateway.pensar.dev"

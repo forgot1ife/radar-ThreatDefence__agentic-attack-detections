@@ -1,0 +1,4 @@
+# Deadend CLI Agent Backend or Launcher Started
+# Sigma id dbdc81db-59be-504a-b89a-ca0857eb1628, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "deadend" and TargetProcessCommandLine contains "--log-file" and TargetProcessCommandLine contains "rpc-server-") or (TargetProcessCommandLine contains "deadend_cli.jsonrpc_server" or TargetProcessCommandLine contains "deadend-jsonrpc-server")

@@ -1,0 +1,3 @@
+# Cain Pi Backend Bridge and Its Shell Commands
+# Sigma id 49b9fde8-9907-57fb-a6ab-863656728f4e, pipeline ecs
+from * metadata _id, _index, _version | where (ends_with(process.executable, "/node") or ends_with(process.executable, "\\node.exe")) and (ends_with(process.command_line, "/toolchain/pi/bridge.mjs") or ends_with(process.command_line, "\\toolchain\\pi\\bridge.mjs")) or (ends_with(process.parent.command_line, "/toolchain/pi/bridge.mjs") or ends_with(process.parent.command_line, "\\toolchain\\pi\\bridge.mjs")) and process.command_line like "* -c *"

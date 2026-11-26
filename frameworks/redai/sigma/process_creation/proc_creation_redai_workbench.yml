@@ -1,0 +1,49 @@
+title: RedAI AI Vulnerability Validation Workbench Running or Installed
+id: 76b101ba-b0a3-5471-a46b-29a2ac43c46a
+status: experimental
+description: |
+    Detects RedAI (kpolley/redai) on the host that runs it: the redai launcher run by Bun, its install, the Chrome
+    profile it creates under ~/.redai/ for its browser validator, the iOS simulators it creates and clones with names
+    starting redai-, and commands its agents run on files in its run folder ~/.redai/runs/<runId>/.
+references:
+    - https://github.com/kpolley/redai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+detection:
+    selection_launcher_image:
+        Image|endswith:
+            - '/bun'
+            - '\bun.exe'
+    selection_launcher_cmd:
+        CommandLine|endswith:
+            - '/bin/redai'
+            - 'bun run redai'
+    selection_install:
+        CommandLine|contains:
+            - '@kpolley/redai'
+            - 'github.com/kpolley/redai'
+    selection_home:
+        CommandLine|contains:
+            - '/.redai/validator-environments/'
+            - '/.redai/runs/'
+            - '\.redai\validator-environments\'
+            - '\.redai\runs\'
+    selection_simctl_create:
+        CommandLine|contains: 'simctl create redai-template-'
+    selection_simctl_clone:
+        CommandLine|contains|all:
+            - 'simctl clone '
+            - ' redai-'
+    condition: (selection_launcher_image and selection_launcher_cmd) or selection_install or selection_home or selection_simctl_create or selection_simctl_clone
+falsepositives:
+    - Authorized application security tests with RedAI
+    - Another program that keeps a folder named .redai in the home directory
+level: medium

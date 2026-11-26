@@ -1,0 +1,30 @@
+title: Ares Hashcat or John Session Name
+id: aaf24266-6bdd-5d9d-9df3-aa25f4747675
+status: experimental
+description: |
+    Detects the cracker role of Ares (dreadnode/ares). Every hashcat job runs as nice -n <adj> hashcat ... --session
+    ares-hc-<pid>-<seq> --restore-disable --potfile-disable, and every John job with --session=ares-jtr-<pid>-<seq>
+    (ares-tools/src/cracker.rs:18-30,100-108,854,1073).
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/cracker.rs#L18-L30
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/cracker.rs#L1073
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.credential-access
+    - attack.t1110.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        CommandLine|contains:
+            - '--session ares-hc-'
+            - '--session=ares-hc-'
+            - '--session=ares-jtr-'
+            - '--session ares-jtr-'
+    condition: selection
+falsepositives:
+    - Authorized Ares operations
+level: medium

@@ -1,0 +1,6 @@
+{"name": "the run event log", "expected": true, "event": {"TargetFilename": "/home/tester/.redai/runs/0f8e2c1a-5b7d-4e6f-9a3b-2c1d0e9f8a7b/events.ndjson", "Image": "/home/tester/.bun/bin/bun"}}
+{"name": "the HTML report", "expected": true, "event": {"TargetFilename": "/Users/tester/.redai/runs/0f8e2c1a-5b7d-4e6f-9a3b-2c1d0e9f8a7b/report.html", "Image": "/Users/tester/.bun/bin/bun"}}
+{"name": "a validator environment", "expected": true, "event": {"TargetFilename": "/Users/tester/.redai/validator-environments/2b9c7d10-1111-4a2b-8c3d-445566778899/environment.json", "Image": "/Users/tester/.bun/bin/bun"}}
+{"name": "the run folder on Windows", "expected": true, "event": {"TargetFilename": "C:\\Users\\tester\\.redai\\runs\\0f8e2c1a\\state.json", "Image": "C:\\Users\\tester\\.bun\\bin\\bun.exe"}}
+{"name": "a checkout of the RedAI source", "expected": false, "event": {"TargetFilename": "/home/tester/src/redai/src/pipeline/filesystem-run-store.ts", "Image": "/usr/bin/git"}}
+{"name": "another dot folder with runs", "expected": false, "event": {"TargetFilename": "/home/tester/.mlflow/runs/1/meta.yaml", "Image": "/usr/bin/python3"}}

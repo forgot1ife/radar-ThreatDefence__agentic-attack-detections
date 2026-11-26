@@ -1,0 +1,4 @@
+# hackingBuddyGPT Local Shell Command Markers Sent Through tmux
+# Sigma id 9acfd2b0-21a2-5d83-958c-7901906c161e, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessName endswith "/tmux" and TargetProcessCommandLine contains "send-keys") and (TargetProcessCommandLine contains "echo 'CMDSTART" or TargetProcessCommandLine contains "echo 'CMDEND" or TargetProcessCommandLine contains "echo \"__CLEAR_" or TargetProcessCommandLine contains "echo \"__END_")

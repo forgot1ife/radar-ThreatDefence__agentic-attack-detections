@@ -1,0 +1,4 @@
+# MAPTA Run Log, Usage or Sandbox Script Files Written
+# Sigma id 29b59224-90dd-5e78-b1a9-38819639bffb, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName endswith "/scan_usage.log" or TargetFileName endswith "\\scan_usage.log") or (TargetFileName contains "_usage_log_" and TargetFileName endswith ".json") or (TargetFileName startswith "/home/user/temp_script_" and TargetFileName endswith ".py")

@@ -1,0 +1,86 @@
+{
+ "description": "17 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 7,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "kaligpt",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: KaliGPT (HackerX) running on a host you monitor; Sentinel analytics: KaliGPT AI pentest agent on a host; Sigma: Command Run by the KaliGPT Agent; Sigma: KaliGPT AI Pentest Agent Started; YARA: KaliGPT_Launcher",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: KaliGPT probing your web servers, or running from your network: its tool user agents and URLs in web and proxy logs; Sigma: KaliGPT Installer Download or Web Launcher URL in Proxy Logs",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "KQL hunt: KaliGPT (HackerX) running on a host you monitor; Sigma: KaliGPT Installed or Configured; YARA: KaliGPT_Provider_Config",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1552.001"
+  },
+  {
+   "comment": "Sigma: KaliGPT Installed or Configured; Sigma: KaliGPT Installer Download or Web Launcher URL in Proxy Logs; YARA: KaliGPT_Source",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Sigma: KaliGPT Web Launcher Opens the KaliGPT Custom GPT",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "Suricata: 3813223 TD KaliGPT OpenSearchAPI search helper docs page",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1593.002"
+  },
+  {
+   "comment": "KQL hunt: KaliGPT probing your web servers, or running from your network: its tool user agents and URLs in web and proxy logs; Sigma: KaliGPT Tool User Agent in Proxy Logs; Sigma: KaliGPT Tool User Agent in Web Server Logs; Suricata: 3813221 TD KaliGPT web_request_framework user agent (target page analysis); Suricata: 3813222 TD KaliGPT get_local_server_content user agent",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1594"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: KaliGPT (HackerX) running on a host you monitor; KQL hunt: KaliGPT probing your web servers, or running from your network: its tool user agents and URLs in web and proxy logs; Sigma: Command Run by the KaliGPT Agent; Sigma: KaliGPT Tool User Agent in Proxy Logs; Sigma: KaliGPT Tool User Agent in Web Server Logs; Suricata: 3813221 TD KaliGPT web_request_framework user agent (target page analysis)",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

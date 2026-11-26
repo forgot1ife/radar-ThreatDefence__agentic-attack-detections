@@ -1,0 +1,4 @@
+# Cain AI Pentest Agent Run
+# Sigma id 7d79dcb7-fe87-5b82-8c55-a598b82867c7, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "cain-agent" and TargetProcessCommandLine contains " run " and TargetProcessCommandLine contains "--target"

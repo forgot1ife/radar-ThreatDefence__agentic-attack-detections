@@ -1,0 +1,4 @@
+# Pensar Apex Session, Run Store or Callback Listener Files
+# Sigma id c3503bd7-f892-5def-81b5-aea6a55e24fd, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.pensar/sessions/" or FolderPath contains "\\.pensar\\sessions\\" or FolderPath contains "/.pensar/runtime/runs.sqlite" or FolderPath contains "\\.pensar\\runtime\\runs.sqlite") or (FolderPath contains "callback-listeners" and FolderPath endswith ".cjs") or FolderPath contains "/tmp/apex_payload_"

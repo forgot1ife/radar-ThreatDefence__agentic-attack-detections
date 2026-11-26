@@ -1,0 +1,42 @@
+title: Cybermes User Agents in Web Server Logs
+id: ff52480b-902e-56a6-9b55-37319c1e1919
+status: experimental
+description: |
+    Detects Cybermes, a Hermes Agent based AI pentest framework (Zyrexnn/Cybermes at 149b9a66), testing your web
+    application. Its Go MCP server (cybermes-mcp) uses its own HTTP engines when katana, httpx or ffuf are missing, and
+    these send "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Cybermes/2.1 (Recon Crawler)" (crawl, up to 30 pages),
+    "... Cybermes/2.1 (Security Assessment)" (one probe) and "... Cybermes/3.2 (API Fuzzer)" (path fuzzing with
+    tools/wordlists/common.txt or a built-in list of 41 paths such as .env, .git/config, actuator and swagger). Its AI
+    gateway audit script sends Cybermes-AIGateway-Auditor/1.0 to / and /api/v1/models with Origin
+    https://audit-canary.example.com, and its exam audit script sends Cybermes-ExamAuditor/1.0. Cybermes-Security-Auditor/1.0
+    is the user agent its .cursorrules tells coding agents to put in proof-of-concept scripts. When the external tools are
+    installed, their own user agents appear instead.
+references:
+    - https://github.com/Zyrexnn/Cybermes
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1594
+    - attack.t1595.002
+    - attack.t1595.003
+logsource:
+    category: webserver
+detection:
+    selection_engines:
+        # pkg/crawl/crawler.go:84, pkg/probe/probe.go:82, pkg/fuzz/fuzzer.go:382
+        cs-user-agent|endswith:
+            - ' Cybermes/2.1 (Recon Crawler)'
+            - ' Cybermes/2.1 (Security Assessment)'
+            - ' Cybermes/3.2 (API Fuzzer)'
+    selection_scripts:
+        # scripts/audit_ai_gateway_config.py:28, scripts/audit_exam_state_machine.py:109, .cursorrules:8
+        cs-user-agent|startswith:
+            - 'Cybermes-AIGateway-Auditor/'
+            - 'Cybermes-ExamAuditor/'
+            - 'Cybermes-Security-Auditor/'
+    condition: 1 of selection_*
+falsepositives:
+    - Bug bounty hunters or contracted testers using Cybermes against your applications
+level: medium

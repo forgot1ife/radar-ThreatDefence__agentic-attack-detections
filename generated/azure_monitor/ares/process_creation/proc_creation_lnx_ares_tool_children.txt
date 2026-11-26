@@ -1,0 +1,4 @@
+# Ares Worker Starting Active Directory Attack Tools
+# Sigma id 4ab84c38-598f-5d0e-b311-fcce7d97a466, pipeline azure_monitor
+SecurityEvent
+| where ParentProcessName endswith "/ares" and (CommandLine contains "impacket-" or CommandLine contains "netexec" or CommandLine contains "nxc " or CommandLine contains "certipy" or CommandLine contains "bloodyAD" or CommandLine contains "pywhisker" or CommandLine contains "pygpoabuse" or CommandLine contains "responder" or CommandLine contains "coercer" or CommandLine contains "petitpotam" or CommandLine contains "dfscoerce" or CommandLine contains "bloodhound-python" or CommandLine contains "hashcat" or CommandLine contains "lsassy" or CommandLine contains "evil-winrm")

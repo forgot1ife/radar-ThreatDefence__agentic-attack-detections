@@ -1,0 +1,5 @@
+{"name": "sandbox image manifest pull", "expected": true, "event": {"cs-host": "registry-1.docker.io", "c-uri": "https://registry-1.docker.io/v2/xoxruns/sandboxed_kali/manifests/latest"}}
+{"name": "server release download", "expected": true, "event": {"cs-host": "github.com", "c-uri": "https://github.com/xoxruns/deadend-cli/releases/download/v0.1.15/deadend-linux-x86_64-unknown-linux-gnu.tar.gz"}}
+{"name": "trace collector", "expected": true, "event": {"cs-host": "crunch.straylabs.ai", "c-uri": "https://crunch.straylabs.ai/v1/traces"}}
+{"name": "near miss: the stock Kali image", "expected": false, "event": {"cs-host": "registry-1.docker.io", "c-uri": "https://registry-1.docker.io/v2/kalilinux/kali-rolling/manifests/latest"}}
+{"name": "near miss: another project's release archive", "expected": false, "event": {"cs-host": "github.com", "c-uri": "https://github.com/example/tool/releases/download/v1.0/tool-linux-x86_64.tar.gz"}}

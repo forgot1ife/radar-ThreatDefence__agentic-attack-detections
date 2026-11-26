@@ -1,0 +1,45 @@
+title: codex-redteam-mode Jailbreak Profile Installed into Codex
+id: 030c3184-f012-5ee8-95b6-e5b7c819745a
+status: experimental
+description: |
+    Detects codex-redteam-mode (chAng-L19/codex-redteam-mode at cd8db548, 2.1.0) being installed into a Codex home
+    (~/.codex, $CODEX_HOME, or <project>/.codex): jailbreak prompt profiles copied to prompts/Jailbreak.*.md, the
+    combined redteam-mode/system-instructions.md that config.toml loads through model_instructions_file, its launcher,
+    rewrite proxy and hook scripts, its install manifest, and its skill in ~/.agents/skills/redteam-boundary-policy/.
+    The installer also merges a block into AGENTS.md and adds the codex-redteam-runtime MCP server to config.toml;
+    those edits change existing files and are found by the YARA rule CodexRedteamMode_Installed_Files instead.
+references:
+    - https://github.com/chAng-L19/codex-redteam-mode
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.007
+logsource:
+    category: file_event
+detection:
+    selection_folders:
+        TargetFilename|contains:
+            - '/.codex/redteam-mode/'
+            - '\.codex\redteam-mode\'
+            - '/prompts/Jailbreak.'
+            - '\prompts\Jailbreak.'
+            - '/skills/redteam-boundary-policy/'
+            - '\skills\redteam-boundary-policy\'
+    selection_files:
+        TargetFilename|endswith:
+            - 'redteam-install-manifest.json'
+            - 'redteam-install-transaction.json'
+            - '/redteam-mode/system-instructions.md'
+            - '\redteam-mode\system-instructions.md'
+            - '/redteam-mode/rewrite_proxy.py'
+            - '\redteam-mode\rewrite_proxy.py'
+            - '/hooks/hook-security-context-hook.py'
+            - '\hooks\hook-security-context-hook.py'
+            - '/hooks/redteam_state.py'
+            - '\hooks\redteam_state.py'
+    condition: 1 of selection_*
+falsepositives:
+    - Security researchers who study this jailbreak pack
+level: medium

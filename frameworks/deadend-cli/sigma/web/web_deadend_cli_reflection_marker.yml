@@ -1,0 +1,28 @@
+title: Deadend CLI Reflection Probe Marker in Web Logs
+id: d7d4c728-e038-54b2-9563-9b344eec1df9
+status: experimental
+description: |
+    Detects the marker deadend7x7probe, which the Deadend CLI supervisor prompt tells the model to send to find where
+    input is reflected before choosing an XSS payload. The project's own benchmark runs show it in query strings such
+    as GET /page?test=deadend7x7probe. Request bodies, where the marker and the agent's shipped test account
+    (deadendtester, deadendpassword123!, hacker@straylabs.ai) also appear, are not in most web server logs; the
+    Suricata rules cover them.
+references:
+    - https://github.com/straylabs-ai/deadend-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-uri-query|contains: 'deadend7x7probe'
+    selection_stem:
+        cs-uri-stem|contains: 'deadend7x7probe'
+    condition: 1 of selection*
+falsepositives:
+    - Authorized tests with Deadend CLI
+level: high

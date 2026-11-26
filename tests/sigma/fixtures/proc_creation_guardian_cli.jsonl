@@ -1,0 +1,5 @@
+{"name": "workflow run through the console script", "expected": true, "event": {"Image": "/usr/bin/python3.12", "CommandLine": "/usr/bin/python3.12 /home/op/guardian-cli/.venv/bin/guardian workflow run --name web_pentest --target https://app.example.test"}}
+{"name": "scan through python -m cli.main", "expected": true, "event": {"Image": "/usr/local/bin/python", "CommandLine": "python -m cli.main scan --target app.example.test --ports top-1000"}}
+{"name": "resume a session in the container", "expected": true, "event": {"Image": "/usr/local/bin/python", "CommandLine": "python -m cli.main workflow run --name recon --target app.example.test --resume 20261126_101500"}}
+{"name": "help only", "expected": false, "event": {"Image": "/usr/local/bin/python", "CommandLine": "python -m cli.main --help"}}
+{"name": "another tool called guardian", "expected": false, "event": {"Image": "/usr/local/bin/guardian", "CommandLine": "/usr/local/bin/guardian --config /etc/guardian.conf"}}

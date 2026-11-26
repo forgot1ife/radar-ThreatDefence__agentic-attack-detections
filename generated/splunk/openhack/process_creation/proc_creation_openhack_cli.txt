@@ -1,0 +1,3 @@
+# OpenHack Scanner or Pentest Agent Command Line
+# Sigma id 391fd2eb-7a02-5ea7-8763-abe0399722aa, pipeline splunk_windows
+(CommandLine="* dashboard --port *" CommandLine="* --home *" CommandLine="* --no-open*") OR (Image IN ("*/openhack", "*\\openhack.exe") OR CommandLine IN ("*/bin/openhack *", "*\\Scripts\\openhack.exe *", "* -m openhack *", "*src/cli/index.ts *") CommandLine IN ("* scan*", "* hack *", "* plan *", "* resume *", "* dashboard*", "*--claude-code*", "*--codex*", "*--anthropic*", "*--openai*"))

@@ -1,0 +1,45 @@
+title: Cybermes User Agents in Proxy Logs
+id: 2512cdbf-c8d9-561a-944d-935f7511d5e1
+status: experimental
+description: |
+    Detects the user agents hard-coded in Cybermes, a Hermes Agent based AI pentest framework (Zyrexnn/Cybermes at
+    149b9a66), leaving through a forward proxy. Its Go MCP server (cybermes-mcp) sends "... Cybermes/2.1 (Recon Crawler)",
+    "... Cybermes/2.1 (Security Assessment)" and "... Cybermes/3.2 (API Fuzzer)" when katana, httpx or ffuf are not
+    installed, and "... Cybermes/3.2 (Subdomain Recon)" to crt.sh. Its bundled audit scripts send
+    Cybermes-AIGateway-Auditor/1.0 and Cybermes-ExamAuditor/1.0, its .cursorrules tells coding agents to use
+    Cybermes-Security-Auditor/1.0 in scripts, and the npm launcher checks for updates as cybermes-mcp-updater/<version>.
+    Most of this traffic is HTTPS, so a proxy sees the user agent only with TLS inspection.
+references:
+    - https://github.com/Zyrexnn/Cybermes
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1594
+    - attack.t1595.003
+    - attack.t1596.003
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection_engines:
+        # pkg/crawl/crawler.go:84, pkg/probe/probe.go:82, pkg/fuzz/fuzzer.go:382, pkg/subdomain/subdomain.go:183
+        c-useragent|endswith:
+            - ' Cybermes/2.1 (Recon Crawler)'
+            - ' Cybermes/2.1 (Security Assessment)'
+            - ' Cybermes/3.2 (API Fuzzer)'
+            - ' Cybermes/3.2 (Subdomain Recon)'
+    selection_scripts:
+        # scripts/audit_ai_gateway_config.py:28, scripts/audit_exam_state_machine.py:109, .cursorrules:8,
+        # npm/src/utils/updater.js:40
+        c-useragent|startswith:
+            - 'Cybermes-AIGateway-Auditor/'
+            - 'Cybermes-ExamAuditor/'
+            - 'Cybermes-Security-Auditor/'
+            - 'cybermes-mcp-updater/'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests and bug bounty work with Cybermes run from your network
+level: medium

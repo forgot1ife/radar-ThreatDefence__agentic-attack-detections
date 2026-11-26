@@ -1,0 +1,4 @@
+# ARTEMIS Codex Sub-Agent Started
+# Sigma id 2454e7c4-6eef-53a7-a1db-ad4c8ed4152f, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains " exec " and ProcessCommandLine contains "--wait-for-followup" and ProcessCommandLine contains "--instance-id" and ProcessCommandLine contains "--log-session-dir"

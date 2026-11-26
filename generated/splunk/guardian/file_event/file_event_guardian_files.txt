@@ -1,0 +1,3 @@
+# Guardian Session, Log or Configuration Files Written
+# Sigma id ffbf7640-2e91-52dc-b0d5-4653db75db07, pipeline splunk_windows
+TargetFilename IN ("*/.guardian/guardian.yaml", "*/.guardian/.env", "*/.guardian/kb/kb.sqlite3", "*/.guardian/ranker.pkl", "*/tmp/guardian_ffuf_wordlist.txt") OR TargetFilename="*/logs/ai_audit.log" OR (TargetFilename IN ("*/reports/session_*", "*/reports/.session_*") TargetFilename IN ("*.json", "*.tmp"))

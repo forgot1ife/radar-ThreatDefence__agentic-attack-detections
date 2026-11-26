@@ -1,0 +1,58 @@
+{
+ "description": "18 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 9,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "mcp-for-security",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: MCP for Security tool wrappers on a host you monitor; Sentinel analytics: MCP for Security tool wrapper started on a host; Sigma: MCP for Security Tool Wrapper Started; Sigma: Recon or Exploitation Tool Started by an MCP for Security Wrapper; YARA: MCPForSecurity_Tool_Wrapper",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1046"
+  },
+  {
+   "comment": "Suricata: 3813261 TD MCP for Security nmap wrapper description in a model request; Suricata: 3813262 TD MCP for Security masscan wrapper description in a model request; Suricata: 3813263 TD MCP for Security commix wrapper with the copied smuggler description in a model request; Suricata: 3813264 TD MCP for Security HTTP header check description in a model request; Suricata: 3813265 TD MCP for Security nuclei wrapper description in a model request; Suricata: 3813266 TD MCP for Security gowitness wrapper description in a model request; Suricata: 3813267 TD MCP for Security ScoutSuite wrapper description in a model request",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: MCP for Security tool wrappers on a host you monitor; KQL hunt: MCP for Security's own requests in proxy and web logs; Sigma: MCP for Security Nuclei Tag Lookup; Sigma: MCP for Security Tool Wrapper Started; Suricata: 3813268 TD MCP for Security MobSF client request with both API key headers; YARA: MCPForSecurity_MobSF_Client; YARA: MCPForSecurity_Setup_And_Config; YARA: MCPForSecurity_Tool_Wrapper",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: MCP for Security tool wrappers on a host you monitor; KQL hunt: MCP for Security's own requests in proxy and web logs; Sigma: Recon or Exploitation Tool Started by an MCP for Security Wrapper; YARA: MCPForSecurity_Tool_Wrapper",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

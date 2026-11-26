@@ -1,0 +1,2 @@
+Mozilla/5.0 (compatible; PensarBot/1.0; +https://pensar.dev)
+pensar-apex

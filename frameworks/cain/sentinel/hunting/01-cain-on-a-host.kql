@@ -1,0 +1,40 @@
+// Cain on a host you monitor: its command line, the pi backend bridge and the shell commands it runs, its workspace files
+// Agentic attack detections by ThreatDefence (Cain). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1059.004 (Command and Scripting Interpreter: Unix Shell), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Cain (cdxiaodong/cain-agent, reviewed at 2e3f4f1c) is a Python CLI that points a model with a shell at one target
+// through recon, test and report stages. No report of its use in a real intrusion was found on November 26, 2026,
+// so this hunt looks for the software itself, from its source code:
+//  - Command line: cain-agent run --target <host or URL> [--backend pi] [--total-budget <s>], or
+//    docker run ... -v <dir>:/workspaces/cain cain-agent:latest run --target ...
+//  - claude backend (default): the Claude Agent SDK runs the model and its Bash/Read/Grep/Glob tools.
+//  - pi backend: node <clone>/toolchain/pi/bridge.mjs, which runs each allowed command as bash -c <command>.
+//  - Workspace (./workspace by default): scope.yaml, assets.json, findings.json, state.json, recon/endpoints.json,
+//    recon/recon-output.txt, recon/gate.json, test/test-output.txt, report/report.md,
+//    report/aggregated-report.json, report/validation-summary.json.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Bridge = dynamic(["/toolchain/pi/bridge.mjs", @"\toolchain\pi\bridge.mjs"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "cain-agent" and ProcessCommandLine has " run " and ProcessCommandLine has "--target"
+        | project Timestamp, DeviceName, AccountName, Signal="Cain command line", Detail=substring(ProcessCommandLine, 0, 300)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (FileName in~ ("node", "node.exe") and ProcessCommandLine has_any (Bridge))
+            or (InitiatingProcessCommandLine has_any (Bridge) and ProcessCommandLine has " -c ")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 25), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Cain pi backend bridge and its shell commands", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath endswith "/recon/recon-output.txt" or FolderPath endswith @"\recon\recon-output.txt"
+            or FolderPath endswith "/test/test-output.txt" or FolderPath endswith @"\test\test-output.txt"
+            or FolderPath endswith "/recon/gate.json" or FolderPath endswith @"\recon\gate.json"
+            or FolderPath endswith "/report/aggregated-report.json" or FolderPath endswith @"\report\aggregated-report.json"
+            or (FileName startswith ".aggregated-report.json." and FileName endswith ".tmp")
+        | summarize Files=make_set(FolderPath, 20), Timestamp=min(Timestamp) by DeviceName, AccountName=InitiatingProcessAccountName
+        | where array_length(Files) >= 2
+        | project Timestamp, DeviceName, AccountName, Signal="Cain workspace stage files", Detail=tostring(Files))
+| order by Timestamp desc

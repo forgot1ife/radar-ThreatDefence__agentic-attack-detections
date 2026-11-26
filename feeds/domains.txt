@@ -1,6 +1,8 @@
 api.aliasrobotics.com
+api.openhack.com
 app.pentestai.xyz
 b8t.shop
+c.oast.fun
 c2.lazyown.org
 carbonato-proxy-drab.vercel.app
 carbonato-proxy-zeta-2.vercel.app
@@ -9,6 +11,7 @@ cdn.js-static.com
 cdn.netlfjs.com
 cloud.0.security
 code.newcli.com
+crunch.straylabs.ai
 dalfox-xss-test.com
 decepticon-telemetry-gateway.purpleailab.workers.dev
 down.zhzy999.net
@@ -18,7 +21,9 @@ evil-burp-ai.com
 fastcdn.bar
 ftp.vietnam852.com
 ftp.zhzy999.net
+gateway.pensar.dev
 harness-telemetry.deepseeksvc.com
+install.openhack.com
 js-static.com
 jsnetlify.com
 logs.aliasrobotics.com
@@ -27,6 +32,7 @@ media.fastcdn.bar
 netlifyjs.com
 newssjs.com
 nginxmysql.com
+oob.openhack.com
 packages.aliasrobotics.com
 r.pentestai.xyz
 redhatupdating432.dnsrd.com
@@ -41,4 +47,5 @@ traffic-analyzer.net
 update.pentagi.com
 www.ddduuuppp.com
 www.zhzy999.net
+x.oast.fun
 x1opay.co

@@ -1,0 +1,38 @@
+title: Deadend CLI Sandbox Image, Release Download or Trace Collector in Proxy Logs
+id: f58b3dd0-6f53-5478-8e47-23c1fef1341c
+status: experimental
+description: |
+    Detects a host setting up or running Deadend CLI: the Docker Hub pull of its Kali sandbox image
+    xoxruns/sandboxed_kali (registry path /v2/xoxruns/sandboxed_kali/), the release archives install.sh downloads
+    (deadend-linux-x86_64-unknown-linux-gnu.tar.gz, deadend-macos-aarch64-apple-darwin.tar.gz,
+    deadend-cli-linux-x86_64.tar.gz, deadend-cli-macos-aarch64.tar.gz), and the default Phoenix trace collector
+    crunch.straylabs.ai, used only when DEADEND_PHOENIX_OTEL_ENABLED is set without PHOENIX_COLLECTOR_ENDPOINT.
+    The paths are visible only with TLS inspection; the host name is visible in CONNECT requests.
+references:
+    - https://github.com/straylabs-ai/deadend-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_image:
+        c-uri|contains: '/xoxruns/sandboxed_kali/'
+    selection_release:
+        c-uri|contains: '/releases/download/'
+        c-uri|endswith:
+            - '/deadend-linux-x86_64-unknown-linux-gnu.tar.gz'
+            - '/deadend-macos-aarch64-apple-darwin.tar.gz'
+            - '/deadend-cli-linux-x86_64.tar.gz'
+            - '/deadend-cli-macos-aarch64.tar.gz'
+    selection_collector:
+        cs-host: 'crunch.straylabs.ai'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized penetration testers or researchers installing or running Deadend CLI
+level: medium

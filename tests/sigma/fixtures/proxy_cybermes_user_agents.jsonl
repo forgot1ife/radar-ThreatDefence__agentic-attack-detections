@@ -1,0 +1,6 @@
+{"name": "native crawler on a plain-HTTP target", "expected": true, "event": {"c-useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Cybermes/2.1 (Recon Crawler)", "cs-host": "app.example.test"}}
+{"name": "subdomain discovery on crt.sh", "expected": true, "event": {"c-useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Cybermes/3.2 (Subdomain Recon)", "cs-host": "crt.sh"}}
+{"name": "AI gateway audit script", "expected": true, "event": {"c-useragent": "Cybermes-AIGateway-Auditor/1.0", "cs-host": "gateway.example.test"}}
+{"name": "npm update check", "expected": true, "event": {"c-useragent": "cybermes-mcp-updater/3.5.1", "cs-host": "registry.npmjs.org"}}
+{"name": "a browser", "expected": false, "event": {"c-useragent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36", "cs-host": "crt.sh"}}
+{"name": "a user agent that only mentions the name later", "expected": false, "event": {"c-useragent": "Mozilla/5.0 (compatible; Cybermes-AIGateway-Auditor/1.0)", "cs-host": "gateway.example.test"}}

@@ -1,0 +1,6 @@
+{"name": "the console script started by uv run", "expected": true, "event": {"Image": "/home/user/cochise/.venv/bin/python3", "CommandLine": "/home/user/cochise/.venv/bin/python3 /home/user/cochise/.venv/bin/cochise", "ParentImage": "/usr/local/bin/uv"}}
+{"name": "uv run cochise from a shell", "expected": true, "event": {"Image": "/usr/local/bin/uv", "CommandLine": "uv run cochise", "ParentImage": "/bin/bash"}}
+{"name": "an older clone run as a script", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python src/cochise.py", "ParentImage": "/bin/bash"}}
+{"name": "a replay of a run log", "expected": true, "event": {"Image": "/home/user/cochise/.venv/bin/python3", "CommandLine": "/home/user/cochise/.venv/bin/python3 /home/user/cochise/.venv/bin/cochise-replay logs/run-20261126-101500.json", "ParentImage": "/usr/local/bin/uv"}}
+{"name": "near miss: a file about Cochise County opened in an editor", "expected": false, "event": {"Image": "/usr/bin/vim", "CommandLine": "vim notes/cochise-county.txt", "ParentImage": "/bin/bash"}}
+{"name": "near miss: another uv project", "expected": false, "event": {"Image": "/usr/local/bin/uv", "CommandLine": "uv run pytest", "ParentImage": "/bin/bash"}}

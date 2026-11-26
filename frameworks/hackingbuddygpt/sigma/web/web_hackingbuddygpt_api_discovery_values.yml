@@ -1,0 +1,30 @@
+title: hackingBuddyGPT Web API Discovery Values in Web Logs
+id: 623a5eb7-7763-5e41-babe-e11d2449f969
+status: experimental
+description: |
+    Detects requests from the discovery phase of hackingBuddyGPT's WebAPITesting use-case. In its query step the code
+    appends one parameter from a fixed table, including the placeholders api_key=YourAPIKeyHere and
+    access_token=YourAccessToken. Its list of common API paths has a missing comma that joins two entries, so it also
+    requests /products/1/users/profile. Requests carry Python requests' default user agent.
+references:
+    - https://github.com/ipa-lab/hackingBuddyGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.003
+logsource:
+    category: webserver
+detection:
+    selection_query:
+        cs-uri-query|contains:
+            - 'api_key=YourAPIKeyHere'
+            - 'access_token=YourAccessToken'
+    selection_path:
+        cs-uri-stem|contains: '/products/1/users/profile'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers testing an API with the same placeholder values copied from documentation
+    - An application that really has a /products/<id>/users/profile route
+level: medium

@@ -1,0 +1,31 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (MAPTA). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". MAPTA has no addresses or user agents of its own: its rows are file names, the sandbox command and prompt
+// text, so this sweep looks in process command lines, file paths and proxy URLs.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "mapta" | project value=tostring(SearchKey), type, confidence, actor, source;
+let Strings = toscalar(IOC | where type == "string" and confidence in ("high", "medium") | summarize make_list(value));
+let Paths = toscalar(IOC | where type in ("file_path", "file_name") | summarize make_list(value));
+let Hashes = toscalar(IOC | where type == "sha256" | summarize make_list(value));
+union isfuzzy=true
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Strings)
+        | mv-apply s=Strings to typeof(string) on (where ProcessCommandLine has s | take 1 | project Indicator=s)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator, Detail=strcat(DeviceName, " ", substring(ProcessCommandLine, 0, 200))),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (Paths)
+        | mv-apply p=Paths to typeof(string) on (where FolderPath has p | take 1 | project Indicator=p)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator, Detail=strcat(DeviceName, " ", FolderPath)),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where SHA256 in (Hashes)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents (hash)", Indicator=SHA256, Detail=strcat(DeviceName, " ", FolderPath)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (Strings)
+        | mv-apply s=Strings to typeof(string) on (where RequestURL has s | take 1 | project Indicator=s)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator, Detail=strcat(SourceIP, " ", RequestURL))
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

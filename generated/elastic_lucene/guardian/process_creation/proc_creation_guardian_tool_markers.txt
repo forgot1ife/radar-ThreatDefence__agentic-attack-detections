@@ -1,0 +1,3 @@
+# Guardian Tool Wrapper Markers in a Command Line
+# Sigma id 2ba5eb49-9713-5e7a-bb88-ddb8b80e0e90, pipeline ecs
+process.command_line:*\/tmp\/guardian_ffuf_wordlist.txt* OR process.command_line:*\ \-F\ guardian\-prowler* OR (process.command_line:*dependency\-check* AND process.command_line:*\ \-\-project\ guardian)

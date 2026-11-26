@@ -1,0 +1,3 @@
+# Cybermes User Agents in Web Server Logs
+# Sigma id ff52480b-902e-56a6-9b55-37319c1e1919, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(user_agent.original, " Cybermes/2.1 (Recon Crawler)") or ends_with(user_agent.original, " Cybermes/2.1 (Security Assessment)") or ends_with(user_agent.original, " Cybermes/3.2 (API Fuzzer)") or starts_with(user_agent.original, "Cybermes-AIGateway-Auditor/") or starts_with(user_agent.original, "Cybermes-ExamAuditor/") or starts_with(user_agent.original, "Cybermes-Security-Auditor/")

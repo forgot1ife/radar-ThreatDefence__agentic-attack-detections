@@ -1,0 +1,32 @@
+title: hackingBuddyGPT lse.sh Enumeration on a Linux Target
+id: 5529ebfe-0cb8-584d-b734-37634b572708
+status: experimental
+description: |
+    Detects the first step of the hackingBuddyGPT use-case ExPrivEscLinuxLSE on the target it reached over SSH: it
+    downloads linux-smart-enumeration with wget -q '<github release url>/lse.sh' -O lse.sh, makes it executable and runs
+    ./lse.sh -c -i -l 0, then asks the model for privilege escalation ideas from the output. Others run lse.sh too;
+    the exact download and flag combination is the code's.
+references:
+    - https://github.com/ipa-lab/hackingBuddyGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.discovery
+    - attack.t1082
+    - attack.command-and-control
+    - attack.t1105
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_download:
+        CommandLine|contains|all:
+            - 'linux-smart-enumeration/releases/latest/download/lse.sh'
+            - '-O lse.sh'
+    selection_run:
+        CommandLine|contains: 'lse.sh -c -i -l 0'
+    condition: 1 of selection_*
+falsepositives:
+    - An administrator or tester who downloads and runs lse.sh with the same flags
+level: medium

@@ -1,0 +1,4 @@
+# Ares Working Files on Its Attack Box
+# Sigma id 803df3dd-f368-5641-8c18-8866ecce2778, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath contains "/tmp/ares-tickets/" or FolderPath contains "/tmp/ares_relay_" or FolderPath contains "/ares_shadowcred_" or FolderPath contains "/ares-hive-" or FolderPath contains "/var/log/ares/" or FolderPath contains "/.ares/sessions/" or FolderPath contains "/.ares/reports/"

@@ -1,0 +1,3 @@
+# Scanner Started Directly by Guardian
+# Sigma id 5a1d3506-981e-5827-99c9-f33b28810c6c, pipeline splunk_windows
+Image IN ("*/nmap", "*/masscan", "*/httpx", "*/subfinder", "*/amass", "*/nuclei", "*/nikto", "*/sqlmap", "*/ffuf", "*/gobuster", "*/wpscan", "*/whatweb", "*/wafw00f", "*/arjun", "*/xsstrike", "*/cmseek", "*/dnsrecon", "*/testssl", "*/testssl.sh", "*/sslyze", "*/kerbrute", "*/crackmapexec", "*/nxc", "*/theHarvester", "*/schemathesis", "*/curl") ParentCommandLine IN ("* -m cli.main *", "*/bin/guardian *")

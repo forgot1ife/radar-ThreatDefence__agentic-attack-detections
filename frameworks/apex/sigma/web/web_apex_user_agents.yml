@@ -1,0 +1,29 @@
+title: Pensar Apex User Agent in Web Server Logs
+id: f181a426-daa5-50b4-9928-25087e51b8ba
+status: experimental
+description: |
+    Detects the two user agents Pensar Apex sends to the sites it tests: pensar-apex, the default session header on
+    its http_request tool and on the curl, wget and scanner commands it rewrites (src/core/config/config.ts:19,
+    src/core/session/index.ts:36-38, src/core/http/targetHeaders.ts:242-316), and
+    Mozilla/5.0 (compatible; PensarBot/1.0; +https://pensar.dev) from its get_page tool
+    (src/core/tools/backends/local.ts:83-84). Its browser uses an ordinary Chrome user agent and is not covered here.
+references:
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/config/config.ts#L19
+    - https://github.com/pensarai/apex/blob/6e3c5488d1dcdc63b1c37fd207e65919873489e6/src/core/tools/backends/local.ts#L83-L84
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection_default:
+        cs-user-agent|startswith: 'pensar-apex'
+    selection_getpage:
+        cs-user-agent|contains: 'PensarBot/1.0'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized penetration tests run with Pensar Apex or Pensar Console
+level: high

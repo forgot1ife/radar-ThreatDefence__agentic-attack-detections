@@ -1,0 +1,3 @@
+# OpenHack Collector or Canary Marker in Web Requests
+# Sigma id 6ca9ddde-7760-5bbb-850b-914c664cb0e8, pipeline splunk_windows
+"cs-uri-query" IN ("*__openhack_test_*", "*oob.openhack.com*") OR "cs-uri-stem"="*__openhack_test_*"

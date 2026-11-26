@@ -1,0 +1,8 @@
+{"name": "session checkpoint", "expected": true, "event": {"TargetFilename": "/home/op/guardian-cli/reports/session_20261126_101500.json"}}
+{"name": "session temporary file", "expected": true, "event": {"TargetFilename": "/guardian/reports/.session_20261126_101500_a1b2c3.tmp"}}
+{"name": "AI decision audit log", "expected": true, "event": {"TargetFilename": "/home/op/guardian-cli/logs/ai_audit.log"}}
+{"name": "init writes the key file", "expected": true, "event": {"TargetFilename": "/home/op/.guardian/.env"}}
+{"name": "knowledge base", "expected": true, "event": {"TargetFilename": "/home/op/.guardian/kb/kb.sqlite3"}}
+{"name": "ffuf fallback wordlist", "expected": true, "event": {"TargetFilename": "/tmp/guardian_ffuf_wordlist.txt"}}
+{"name": "a report that is not a session", "expected": false, "event": {"TargetFilename": "/home/op/guardian-cli/reports/report_20261126_101500.md"}}
+{"name": "an unrelated .env", "expected": false, "event": {"TargetFilename": "/home/op/project/.env"}}

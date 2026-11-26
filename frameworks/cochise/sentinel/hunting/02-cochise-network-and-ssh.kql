@@ -1,0 +1,36 @@
+// Cochise network shape: one Python process talking to a model API and holding an SSH session, and its asyncssh banner
+// Agentic attack detections by ThreatDefence (Cochise). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1021.004 (Remote Services: SSH), T1059.006 (Command and Scripting Interpreter: Python)
+// Example hunt for Microsoft Sentinel and Defender XDR. Test before alerting.
+// From the Cochise source code (andreashappe/cochise at 4db4fded). Cochise sends no fixed user agent or marker to a
+// target, so this hunt looks at two shapes instead:
+//  - On the Cochise host: the same Python process calls the model through litellm (common.py:49, OpenRouter in the
+//    README and in all 59 shipped run logs) and keeps one SSH connection to the Kali VM open for the whole run
+//    (ssh_connection.py:19). Other Python automation can do both; look at the command line.
+//  - On the Kali VM: asyncssh sends SSH-2.0-AsyncSSH_<version> because Cochise does not set client_version. sshd writes
+//    the client version only at LogLevel DEBUG ("remote software version AsyncSSH_..."). Any asyncssh client matches.
+
+let Window = 14d;
+let ModelHosts = dynamic(["openrouter.ai", "api.openai.com", "generativelanguage.googleapis.com", "api.deepseek.com"]);
+let ModelCalls = DeviceNetworkEvents
+    | where Timestamp > ago(Window)
+    | where InitiatingProcessFileName startswith "python" and RemoteUrl has_any (ModelHosts)
+    | summarize ModelHosts=make_set(RemoteUrl, 5), FirstModel=min(Timestamp) by DeviceId, DeviceName, InitiatingProcessId, InitiatingProcessCommandLine;
+let SshOut = DeviceNetworkEvents
+    | where Timestamp > ago(Window)
+    | where InitiatingProcessFileName startswith "python" and RemotePort == 22 and ActionType == "ConnectionSuccess"
+    | summarize SshTargets=make_set(RemoteIP, 5), FirstSsh=min(Timestamp) by DeviceId, InitiatingProcessId, InitiatingProcessCommandLine;
+union isfuzzy=true
+    (ModelCalls
+        | join kind=inner SshOut on DeviceId, InitiatingProcessId, InitiatingProcessCommandLine
+        | extend Cochise=InitiatingProcessCommandLine has "cochise"
+        | project TimeGenerated=min_of(FirstModel, FirstSsh), Source="DeviceNetworkEvents",
+            Signal=iff(Cochise, "Cochise process with model API and SSH sessions", "Python process with model API and SSH sessions (Cochise shape)"),
+            Host=DeviceName, Detail=strcat(substring(InitiatingProcessCommandLine, 0, 200), " | model: ", tostring(ModelHosts), " | ssh: ", tostring(SshTargets))),
+    (Syslog
+        | where TimeGenerated > ago(Window)
+        | where ProcessName in ("sshd", "sshd-session") and SyslogMessage has "remote software version AsyncSSH_"
+        | summarize Events=count(), TimeGenerated=min(TimeGenerated), Messages=make_set(substring(SyslogMessage, 0, 200), 5) by Computer
+        | project TimeGenerated, Source="Syslog", Signal="asyncssh client logged in (Cochise uses asyncssh)", Host=Computer,
+            Detail=strcat(Events, " events: ", tostring(Messages)))
+| order by TimeGenerated desc

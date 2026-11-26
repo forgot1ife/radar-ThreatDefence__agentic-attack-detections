@@ -1,0 +1,29 @@
+title: Ares Certipy Output File Names
+id: 837d52f9-8850-5555-b56c-4eea801d0878
+status: experimental
+description: |
+    Detects certipy runs started by Ares (dreadnode/ares). When the model gives no output name, Ares names the
+    certificate files cert_<template>_<token>, shadow_<account>_<token> or forged_<upn>_<token>.pfx, where the token is
+    <epoch milliseconds>-<pid>-<sequence> from unique_run_token (privesc/adcs.rs:51-54,229,340,450,490). Plain certipy
+    defaults to the account name, so the 13-digit millisecond stamp followed by a pid is the signal.
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/privesc/adcs.rs#L51-L54
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/privesc/adcs.rs#L227-L245
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.credential-access
+    - attack.t1649
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_tool:
+        CommandLine|contains: 'certipy'
+    selection_out:
+        CommandLine|re: '-out\s+\S*(cert_|shadow_|forged_|cert_retrieve_)\S+_[0-9]{13}-[0-9]+-[0-9]+'
+    condition: all of selection_*
+falsepositives:
+    - Authorized Ares operations
+level: medium

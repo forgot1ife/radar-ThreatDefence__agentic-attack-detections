@@ -1,0 +1,6 @@
+{"name": "headless pentest", "expected": true, "event": {"Image": "/usr/local/bin/pensar", "CommandLine": "pensar pentest --target https://app.example.test --extended-thinking", "ParentImage": "/bin/zsh"}}
+{"name": "detached run worker", "expected": true, "event": {"Image": "/usr/local/bin/bun", "CommandLine": "/usr/local/bin/pensar agent-runs worker --run run_01 --store /home/user/.pensar/runtime/runs.sqlite", "ParentImage": "/usr/local/bin/pensar"}}
+{"name": "npm install of the package", "expected": true, "event": {"Image": "/usr/bin/npm", "CommandLine": "npm install -g @pensar/apex", "ParentImage": "/bin/bash"}}
+{"name": "shell in the kali-apex container", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker compose exec kali-apex bash", "ParentImage": "/bin/bash"}}
+{"name": "near miss: TUI launch with no subcommand", "expected": false, "event": {"Image": "/usr/local/bin/pensar", "CommandLine": "pensar", "ParentImage": "/bin/zsh"}}
+{"name": "near miss: another apex package", "expected": false, "event": {"Image": "/usr/bin/npm", "CommandLine": "npm install -g @apex/cli", "ParentImage": "/bin/bash"}}

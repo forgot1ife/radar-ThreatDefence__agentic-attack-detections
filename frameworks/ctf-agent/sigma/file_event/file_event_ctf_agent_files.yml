@@ -1,0 +1,37 @@
+title: CTF Agent Workspace or Solver Trace Written
+id: fabd1fe4-c3ff-5a98-bc70-740b8da12fbd
+status: experimental
+description: |
+    Detects files CTF Agent writes on the host that runs it: the per-sandbox temporary folder ctf-workspace-<random>,
+    bind-mounted read-write on /challenge/workspace in the solver container (backend/sandbox.py:114,120), and the
+    per-solver JSONL trace logs/trace-<challenge>-<model>-<YYYYmmdd-HHMMSS>.jsonl in the working directory
+    (backend/tracing.py:18-23) for the default models (backend/models.py:21-27).
+references:
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/sandbox.py#L114-L124
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/tracing.py#L18-L23
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.007
+logsource:
+    category: file_event
+detection:
+    selection_workspace:
+        TargetFilename|contains: '/ctf-workspace-'
+    selection_trace:
+        TargetFilename|contains: '/logs/trace-'
+        TargetFilename|endswith: '.jsonl'
+    selection_trace_model:
+        TargetFilename|contains:
+            - '-claude-opus-4-6-'
+            - '-gpt-5.4-'
+            - '-gpt-5.4-mini-'
+            - '-gpt-5.3-codex-'
+            - '-us.anthropic.claude-opus-4-6-v1-'
+    condition: selection_workspace or (selection_trace and selection_trace_model)
+falsepositives:
+    - Authorized CTF play or research runs of CTF Agent
+    - Other tools that name a temporary folder ctf-workspace-
+level: low

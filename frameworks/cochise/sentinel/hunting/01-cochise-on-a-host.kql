@@ -1,0 +1,45 @@
+// Cochise running on a host you monitor, and the Kali VM it drives
+// Agentic attack detections by ThreatDefence (Cochise). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1110.003 (Brute Force: Password Spraying), T1021.004 (Remote Services: SSH)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the Cochise source code (andreashappe/cochise at 4db4fded). Cochise is a Python research agent with no web UI.
+// On the host that runs it:
+//  - uv run cochise, then <venv>/bin/cochise; python src/cochise.py in clones older than February 2026;
+//    cochise-replay and cochise-analyze-* for its logs (pyproject.toml:21-25)
+//  - logs/run-<YYYYmmdd-HHMMSS>.json in the working directory, written by Python (logger.py:33-48)
+// On the Kali VM it drives over SSH (ssh_connection.py:19,27):
+//  - every command is an SSH exec request with no PTY, so it runs as <shell> -c <command> under sshd
+//  - the scenario prompt names /osint_users.txt as the user list for spraying (templates/scenario.md:31)
+// The VM side needs an EDR sensor on the attack VM, which is often not the case.
+
+let Window = 30d;
+let ToolBurst = 10;   // AD attack commands from sshd exec sessions on one device in an hour
+let AdTools = dynamic(["nxc ", "netexec ", "impacket-", "GetNPUsers", "GetUserSPNs", "secretsdump", "certipy-ad ", "ntpdate "]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine endswith "/bin/cochise"
+            or ProcessCommandLine has_any ("uv run cochise", "src/cochise.py", "cochise.cli.cochise", "/bin/cochise-replay ", "/bin/cochise-analyze-")
+        | project Timestamp, DeviceName, Signal="Cochise launcher", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "FileCreated" and FolderPath matches regex @"[/\\]logs[/\\]run-\d{8}-\d{6}\.json$"
+            and InitiatingProcessFileName startswith "python"
+        | project Timestamp, DeviceName, Signal="Cochise run log", Detail=FolderPath,
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine matches regex @"[\s=""'<]/osint_users\.txt"
+        | project Timestamp, DeviceName, Signal="Cochise user list /osint_users.txt", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessFileName in~ ("sshd", "sshd-session") and FileName in~ ("bash", "zsh", "sh", "dash")
+            and ProcessCommandLine has " -c " and ProcessCommandLine has_any (AdTools)
+        | summarize Commands=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp)
+            by DeviceName, AccountName, Hour=bin(Timestamp, 1h)
+        | where Commands >= ToolBurst
+        | project Timestamp, DeviceName, Signal="AD attack tools from SSH exec sessions (Cochise executor shape)",
+            Detail=strcat(AccountName, ": ", Commands, " commands: ", tostring(Examples)), Parent="")
+| order by Timestamp desc

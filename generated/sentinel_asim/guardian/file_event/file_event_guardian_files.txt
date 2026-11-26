@@ -1,0 +1,4 @@
+# Guardian Session, Log or Configuration Files Written
+# Sigma id ffbf7640-2e91-52dc-b0d5-4653db75db07, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName endswith "/.guardian/guardian.yaml" or TargetFileName endswith "/.guardian/.env" or TargetFileName endswith "/.guardian/kb/kb.sqlite3" or TargetFileName endswith "/.guardian/ranker.pkl" or TargetFileName endswith "/tmp/guardian_ffuf_wordlist.txt") or TargetFileName endswith "/logs/ai_audit.log" or ((TargetFileName contains "/reports/session_" or TargetFileName contains "/reports/.session_") and (TargetFileName endswith ".json" or TargetFileName endswith ".tmp"))

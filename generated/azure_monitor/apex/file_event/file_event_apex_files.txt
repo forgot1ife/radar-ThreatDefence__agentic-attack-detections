@@ -1,0 +1,4 @@
+# Pensar Apex Session, Run Store or Callback Listener Files
+# Sigma id c3503bd7-f892-5def-81b5-aea6a55e24fd, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.pensar/sessions/" or ObjectName endswith "\\.pensar\\sessions*" or ObjectName contains "/.pensar/runtime/runs.sqlite" or ObjectName contains "\\.pensar\\runtime\\runs.sqlite") or (ObjectName contains "callback-listeners" and ObjectName endswith ".cjs") or ObjectName contains "/tmp/apex_payload_"

@@ -1,0 +1,4 @@
+# Cochise AI Pentest Agent Run Log Created
+# Sigma id 3cf82d57-e000-53fc-81da-ab752c10313e, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/logs/run-20" and ObjectName endswith ".json") and ObjectName matches regex "/logs/run-\\d{8}-\\d{6}\\.json$" and NewProcessName contains "python"

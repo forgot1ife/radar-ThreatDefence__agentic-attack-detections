@@ -1,0 +1,29 @@
+id: dfa7dde4-7efb-5912-805b-6a339add9633
+name: Cain AI pentest agent run on a host
+description: |
+  A host ran the Cain agent (cdxiaodong/cain-agent): cain-agent run --target <host or URL>, from a pip install or its
+  Docker image (cain-agent:latest), or started its pi backend bridge (node <clone>/toolchain/pi/bridge.mjs).
+  Cain gives a model a shell and points it at the target through recon, test and report stages; its scope list is
+  the target the operator types. Check who ran it, against which target, and whether the test was agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - Reconnaissance
+relevantTechniques:
+  - T1059.006
+  - T1595.002
+query: |
+  DeviceProcessEvents
+  | where (ProcessCommandLine has "cain-agent" and ProcessCommandLine has " run " and ProcessCommandLine has "--target")
+      or (FileName in~ ("node", "node.exe") and (ProcessCommandLine endswith "/toolchain/pi/bridge.mjs" or ProcessCommandLine endswith @"\toolchain\pi\bridge.mjs"))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

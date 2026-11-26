@@ -1,0 +1,114 @@
+{
+ "description": "24 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 9,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "cybermes",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Sigma: Cybermes Files Written",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1005"
+  },
+  {
+   "comment": "Sigma: Scanners Started With Cybermes MCP Argument Order",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1046"
+  },
+  {
+   "comment": "Sentinel analytics: Cybermes AI pentest framework on a host; Sigma: Cybermes Launcher, MCP Server or Go Tools Started",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059"
+  },
+  {
+   "comment": "KQL hunt: Cybermes running on a host you monitor",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "Suricata: 3813312 TD Cybermes MCP native binary download from GitHub releases (decrypted)",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "KQL hunt: Cybermes running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Cybermes Files Written; Sigma: Cybermes Launcher, MCP Server or Go Tools Started; Sigma: Cybermes User Agents in Proxy Logs; Suricata: 3813309 TD Cybermes MCP npm update check (decrypted); Suricata: 3813312 TD Cybermes MCP native binary download from GitHub releases (decrypted); YARA: Cybermes_Code_Or_MCP_Binary",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3813310 TD Cybermes persona in model request; Suricata: 3813311 TD Cybermes MCP tool definitions in model request; YARA: Cybermes_Persona_Or_Config",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "Suricata: 3813302 TD Cybermes HTTP probe user agent",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1592.002"
+  },
+  {
+   "comment": "KQL hunt: Cybermes user agents and audit canary in web and proxy logs; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Cybermes User Agents in Proxy Logs; Sigma: Cybermes User Agents in Web Server Logs; Suricata: 3813301 TD Cybermes recon crawler user agent",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1594"
+  },
+  {
+   "comment": "KQL hunt: Cybermes running on a host you monitor; KQL hunt: Cybermes user agents and audit canary in web and proxy logs; Sigma: Cybermes User Agents in Web Server Logs; Sigma: Scanners Started With Cybermes MCP Argument Order; Suricata: 3813305 TD Cybermes AI gateway auditor user agent; Suricata: 3813306 TD Cybermes AI gateway auditor CORS canary origin; Suricata: 3813307 TD Cybermes exam state machine auditor user agent; Suricata: 3813308 TD Cybermes security auditor user agent from model-written scripts; YARA: Cybermes_Assessment_Report",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "KQL hunt: Cybermes user agents and audit canary in web and proxy logs; Sigma: Cybermes User Agents in Proxy Logs; Sigma: Cybermes User Agents in Web Server Logs; Sigma: Scanners Started With Cybermes MCP Argument Order; Suricata: 3813303 TD Cybermes endpoint fuzzer user agent",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  },
+  {
+   "comment": "Sigma: Cybermes User Agents in Proxy Logs; Suricata: 3813304 TD Cybermes subdomain discovery query to crt.sh (decrypted)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1596.003"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

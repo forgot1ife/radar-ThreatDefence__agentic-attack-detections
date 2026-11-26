@@ -1,0 +1,39 @@
+id: 874ce9b1-f5c9-56b3-8b21-f8c50b57f197
+name: Guardian AI pentest CLI screenshot user agent reached a web server
+description: |
+  A web server, application gateway or proxy logged a request with the user agent "Guardian-CLI/4 (security testing;
+  +authorized engagement)". Guardian (zakirkun/guardian-cli, reviewed at 51864a81) is an open-source AI pentest CLI;
+  its playwright_screenshot tool opens every live URL it found in headless Chromium with this user agent and passes
+  the screenshot to a vision model (tools/playwright_screenshot.py:152-161). The same source address usually runs
+  httpx, whatweb and nuclei against the site in the same workflow. The user agent says the test is authorized; confirm
+  with the application owner that it was agreed and came from the declared source, then review what else the same
+  address sent.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+relevantTechniques:
+  - T1595.002
+query: |
+  let GuardianUA = "Guardian-CLI/4 (security testing; +authorized engagement)";
+  union isfuzzy=true
+      (W3CIISLog
+          | extend UA=replace_string(csUserAgent, "+", " ")
+          | where UA == GuardianUA or csUserAgent == GuardianUA
+          | project TimeGenerated, Source="W3CIISLog", IPAddress=cIP, Target=csHost, Url=strcat(csUriStem, "?", csUriQuery), UserAgent=csUserAgent),
+      (CommonSecurityLog
+          | where RequestClientApplication == GuardianUA
+          | project TimeGenerated, Source="CommonSecurityLog", IPAddress=SourceIP, Target=DestinationHostName, Url=RequestURL, UserAgent=RequestClientApplication)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), SampleURLs=make_set(Url, 10),
+      UserAgents=make_set(UserAgent, 5), Sources=make_set(Source) by IPAddress, Target
+version: 1.0.0
+kind: Scheduled

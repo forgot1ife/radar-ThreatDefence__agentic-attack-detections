@@ -1,0 +1,4 @@
+# Deadend CLI Agent Backend or Launcher Started
+# Sigma id dbdc81db-59be-504a-b89a-ca0857eb1628, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "deadend" and CommandLine contains "--log-file" and CommandLine contains "rpc-server-") or (CommandLine contains "deadend_cli.jsonrpc_server" or CommandLine contains "deadend-jsonrpc-server")

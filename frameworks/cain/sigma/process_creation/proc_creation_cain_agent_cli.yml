@@ -1,0 +1,31 @@
+title: Cain AI Pentest Agent Run
+id: 7d79dcb7-fe87-5b82-8c55-a598b82867c7
+status: experimental
+description: |
+    Detects the Cain command line (cdxiaodong/cain-agent): cain-agent run --target <host or URL>, from a pip install
+    (the console script cain-agent, pyproject.toml:27) or from its Docker image, whose ENTRYPOINT is cain-agent
+    (docker run ... cain-agent:latest run --target ..., Dockerfile:44, docs/docker.md:34-49). The run writes
+    scope.yaml and drives the recon, test and report stages with a model that has a shell (Bash, Read, Grep, Glob;
+    src/cain_agent/cli.py:43,113,133-238 at 2e3f4f1c).
+references:
+    - https://github.com/cdxiaodong/cain-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection:
+        CommandLine|contains|all:
+            - 'cain-agent'
+            - ' run '
+            - '--target'
+    condition: selection
+falsepositives:
+    - Authorized tests and research with Cain
+level: medium

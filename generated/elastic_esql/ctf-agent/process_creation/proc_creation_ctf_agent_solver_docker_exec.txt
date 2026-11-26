@@ -1,0 +1,3 @@
+# CTF Agent Claude Solver Command Redirected Into Its Sandbox
+# Sigma id 7511b526-3541-55af-9a2b-1f75039a7ad1, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*docker exec -i *" and process.command_line like "* bash -c *" and process.command_line rlike ".*docker exec -i [0-9a-f]{64} bash -c .*"

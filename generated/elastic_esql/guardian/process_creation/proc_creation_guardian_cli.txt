@@ -1,0 +1,3 @@
+# Guardian AI Pentest CLI Started
+# Sigma id cfccbdb0-bbdb-52ae-9c12-dc3aefe2866a, pipeline ecs
+from * metadata _id, _index, _version | where (process.command_line like "* -m cli.main *" or process.command_line like "*/bin/guardian *" or process.command_line like "*\\Scripts\\guardian.exe *") and (process.command_line like "* workflow run *" or process.command_line like "* scan --target *" or process.command_line like "* scan -t *" or process.command_line like "* recon --target *" or process.command_line like "* recon -t *" or process.command_line like "* analyze *" or process.command_line like "* report --session *" or process.command_line like "* report -s *" or process.command_line like "* --resume *")

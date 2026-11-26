@@ -150,3 +150,6 @@ zerosecurity,console response header,,"""X-0-Request-ID"" -http.title:""Sign in 
 zerosecurity,favicon,,"http.favicon.hash:221077541"
 pentestcode,page title,PentestCode,"http.title:""PentestCode"""
 pentestcode,favicon and page title,PentestCode,"http.favicon.hash:-196523122 http.title:""PentestCode"""
+kaligpt,OpenSearchAPI helper docs page title (only if an operator exposes it),OpenSearchAPI API | Docs,"http.title:""OpenSearchAPI API | Docs"""
+openhack,dashboard host check answer (only behind a port forward; about zero hits expected),,"http.html:""This dashboard only accepts requests addressed to localhost."""
+ares,"NATS server name (loopback by default, probable)",,"""ares-nats"" port:4222,8222"

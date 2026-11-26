@@ -1,0 +1,5 @@
+{"name": "the web API report", "expected": true, "event": {"TargetFilename": "/home/user/hackingBuddyGPT/src/hackingBuddyGPT/usecases/web_api/reports/shop/report_2026-11-26_10-15-00.md", "Image": "/usr/bin/python3"}}
+{"name": "the generated OpenAPI document", "expected": true, "event": {"TargetFilename": "/home/user/.venv/lib/python3.13/site-packages/hackingBuddyGPT/usecases/web_api/openapi_spec/cot/shop/2026-11-26_10-15-00/shop_spec.yaml", "Image": "/usr/bin/python3"}}
+{"name": "a benchmark run trace", "expected": true, "event": {"TargetFilename": "/home/user/hackingBuddyGPT/benchmark_results/20261126-101500/traces/privesc_01_suid-t1/log-20261126-101502.jsonl", "Image": "/usr/bin/python3"}}
+{"name": "near miss: a run log in the working folder", "expected": false, "event": {"TargetFilename": "/home/user/work/logs/log-20261126-101502.jsonl", "Image": "/usr/bin/python3"}}
+{"name": "near miss: another tool's report folder", "expected": false, "event": {"TargetFilename": "/home/user/scanner/reports/shop/report_2026-11-26_10-15-00.md", "Image": "/usr/bin/python3"}}

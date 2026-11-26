@@ -1,0 +1,47 @@
+title: Ares SQL Server Hive Dump Through xp_cmdshell
+id: b080ca37-185c-5b9a-9f15-025bd2ae6b23
+status: experimental
+description: |
+    Detects the far-host hive dump of Ares (dreadnode/ares) on a SQL Server it reached over a linked server. Ares runs
+    a fixed PowerShell script through xp_cmdshell as powershell -NoProfile -ExecutionPolicy Bypass -EncodedCommand
+    JABFAHIAcgBv... (always the same base64, since the script has no variables), and the script runs reg save HKLM\SAM,
+    HKLM\SYSTEM and HKLM\SECURITY to %TEMP%\a.hive, b.hive and c.hive (lateral/mssql.rs:345-385,480-497).
+references:
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/lateral/mssql.rs#L345-L385
+    - https://github.com/dreadnode/ares/blob/786b2987bfeb08284b93802c3f533c54738e1e48/ares-tools/src/lateral/mssql.rs#L480-L497
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.credential-access
+    - attack.t1003.002
+    - attack.execution
+    - attack.t1059.001
+    - attack.persistence
+    - attack.t1505.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_encoded:
+        CommandLine|contains: 'JABFAHIAcgBvAHIAQQBjAHQAaQBvAG4AUAByAGUAZgBlAHIAZQBuAGMAZQA9ACcAUwB0AG8AcAAnAAoAJAB0AD0AJABlAG4AdgA6AFQARQBNAFAACgAkAGEAPQAiACQAdABcAGEALgBoAGkAdgBlACIA'
+    selection_reg_sam:
+        CommandLine|contains|all:
+            - 'save'
+            - 'HKLM\SAM'
+            - '\a.hive'
+    selection_reg_system:
+        CommandLine|contains|all:
+            - 'save'
+            - 'HKLM\SYSTEM'
+            - '\b.hive'
+    selection_reg_security:
+        CommandLine|contains|all:
+            - 'save'
+            - 'HKLM\SECURITY'
+            - '\c.hive'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized Ares operations
+    - An administrator who saves registry hives to files named a.hive, b.hive or c.hive
+level: high

@@ -1,0 +1,3 @@
+# Pensar Apex Agent Command Markers
+# Sigma id b406fa4b-5031-59e7-b5da-3d7408594f21, pipeline splunk_windows
+CommandLine IN ("*User-Agent: pensar-apex*", "*PensarBot/1.0*", "*InVzZSBzdHJpY3QiOwovLyBBcGV4IGNhbGxiYWNrIGxpc3RlbmVy*", "*process.env.APEX_CB_PROBE*", "*APEX_HIDDEN_PAYLOAD_COUNT*", "*APEX_FILE_PAYLOAD_COUNT*", "*__APEX_GREP_EXIT_*", "*<<'APEX_GLOB_PY'*", "*<<'APEX_LIST_PY'*")

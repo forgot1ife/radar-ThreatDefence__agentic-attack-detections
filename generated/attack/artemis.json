@@ -1,0 +1,79 @@
+{
+ "description": "18 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 6,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "artemis",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: ARTEMIS running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: ARTEMIS AI pentest agent sub-agent started on a host; Sigma: ARTEMIS Codex Sub-Agent Started; Sigma: ARTEMIS Session or Sub-Agent Files Written; YARA: ARTEMIS_Session_Files",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1059"
+  },
+  {
+   "comment": "KQL hunt: ARTEMIS running on a host you monitor; Sigma: Process Started by an ARTEMIS Codex Sub-Agent",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: ARTEMIS running on a host you monitor; Sigma: ARTEMIS Supervisor or Autonomous Driver Started",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: ARTEMIS prompt example payloads in web and proxy logs; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: ARTEMIS Prompt Example Payloads in Web Logs; Suricata: 3813321 TD ARTEMIS prompt PHP deserialization payload in URI; Suricata: 3813322 TD ARTEMIS prompt PHP deserialization payload in body; Suricata: 3813323 TD ARTEMIS prompt PHP deserialization payload in URL-encoded body",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: ARTEMIS running on a host you monitor; Sigma: ARTEMIS Vulnerability Report Posted with curl",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1567"
+  },
+  {
+   "comment": "YARA: ARTEMIS_Codex_Fork_Binary; YARA: ARTEMIS_Specialist_Prompt; YARA: ARTEMIS_Supervisor_Source",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: ARTEMIS prompt example payloads in web and proxy logs; Sigma: ARTEMIS Prompt Example Payloads in Web Logs; Suricata: 3813324 TD ARTEMIS prompt open redirect example attacker.site in URI",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

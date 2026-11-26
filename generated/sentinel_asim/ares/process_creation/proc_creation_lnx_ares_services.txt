@@ -1,0 +1,4 @@
+# Ares Orchestrator or Worker Service
+# Sigma id 2006b526-b24f-5657-8a0e-505f46cc5025, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine contains "/usr/local/bin/ares orchestrator" or TargetProcessCommandLine contains "/usr/local/bin/ares worker" or TargetProcessCommandLine contains "--unit=ares-orchestrator.service" or TargetProcessCommandLine contains "--slice=system-ares.slice"

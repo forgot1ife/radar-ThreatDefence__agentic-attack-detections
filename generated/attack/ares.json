@@ -1,0 +1,135 @@
+{
+ "description": "26 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 8,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "ares",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Ares residue in Active Directory, SQL Server and Windows logs; Sigma: Ares SQL Server Hive Dump Through xp_cmdshell; Suricata: 3813444 TD Ares SQL Server hive dump, fixed EncodedCommand payload in xp_cmdshell; Suricata: 3813445 TD Ares SQL Server hive dump, ___ARES_HIVE_ delimiter in a result set; YARA: Ares_MSSQL_Hive_Dump_Script",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1003.002"
+  },
+  {
+   "comment": "Suricata: 3813445 TD Ares SQL Server hive dump, ___ARES_HIVE_ delimiter in a result set",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1041"
+  },
+  {
+   "comment": "KQL hunt: Ares markers in web and proxy logs; Suricata: 3813446 TD Ares ESC8 probe, HEAD /certsrv/certfnsh.asp with no User-Agent",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1046"
+  },
+  {
+   "comment": "KQL hunt: Ares residue in Active Directory, SQL Server and Windows logs; Suricata: 3813443 TD Ares GPO abuse probe task ARES_GPO_Probe_ written over SMB",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1053.005"
+  },
+  {
+   "comment": "KQL hunt: Ares residue in Active Directory, SQL Server and Windows logs; Sigma: Ares SQL Server Hive Dump Through xp_cmdshell; YARA: Ares_MSSQL_Hive_Dump_Script",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.001"
+  },
+  {
+   "comment": "KQL hunt: Ares running on a host you monitor; Sigma: Ares Hashcat or John Session Name",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.002"
+  },
+  {
+   "comment": "KQL hunt: Ares residue in Active Directory, SQL Server and Windows logs; KQL hunt: Ares running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: Ares AI pentest agent machine account created in Active Directory; Sigma: Ares Minted Machine Account Created With impacket-addcomputer; Suricata: 3813441 TD Ares minted machine account name ARES-<8 hex>$ in SMB (SAMR create)",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1136.002"
+  },
+  {
+   "comment": "KQL hunt: Ares residue in Active Directory, SQL Server and Windows logs; Suricata: 3813443 TD Ares GPO abuse probe task ARES_GPO_Probe_ written over SMB",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1484.001"
+  },
+  {
+   "comment": "Sigma: Ares SQL Server Hive Dump Through xp_cmdshell; Suricata: 3813444 TD Ares SQL Server hive dump, fixed EncodedCommand payload in xp_cmdshell",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1505.001"
+  },
+  {
+   "comment": "Sigma: Ares Kerberos Ticket Helpers; YARA: Ares_Cross_Realm_TGS_Helper",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1550.003"
+  },
+  {
+   "comment": "Sigma: Ares Working Files on Its Attack Box",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1557.001"
+  },
+  {
+   "comment": "KQL hunt: Ares residue in Active Directory, SQL Server and Windows logs; Sigma: Ares Working Files on Its Attack Box; Suricata: 3813442 TD Ares minted machine account ARES-<8 hex>$ in a Kerberos request",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1558"
+  },
+  {
+   "comment": "KQL hunt: Ares running on a host you monitor; Sigma: Ares Kerberos Ticket Helpers; YARA: Ares_Cross_Realm_TGS_Helper",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1558.001"
+  },
+  {
+   "comment": "KQL hunt: Ares running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Ares Orchestrator or Worker Service; Sigma: Ares Worker Starting Active Directory Attack Tools; YARA: Ares_Binary; YARA: Ares_Config; YARA: Ares_Kerberos_Skew_Shim; YARA: Ares_Source",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Ares markers in web and proxy logs; KQL hunt: Ares running on a host you monitor; Sigma: Ares Certipy Output File Names; Sigma: Ares Shadow Credentials Passphrase or PFX Name",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1649"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

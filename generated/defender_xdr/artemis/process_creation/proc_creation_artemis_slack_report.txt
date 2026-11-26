@@ -1,0 +1,4 @@
+# ARTEMIS Vulnerability Report Posted with curl
+# Sigma id 910ecb7b-4321-58e1-bcae-8019123166af, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/curl" or FolderPath endswith "\\curl.exe") and (ProcessCommandLine contains "vuln_type" and ProcessCommandLine contains "repro_steps" and ProcessCommandLine contains "cleanup" and ProcessCommandLine contains "application/json")

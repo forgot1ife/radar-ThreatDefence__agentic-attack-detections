@@ -1,0 +1,4 @@
+# Cybermes Files Written
+# Sigma id 54fb9bfe-a516-576d-9c82-2eb555f46f42, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.cybermes/bin/cybermes-mcp-v" or FolderPath contains "\\.cybermes\\bin\\cybermes-mcp-v" or FolderPath contains "/.cybermes/update_check.json" or FolderPath contains "\\.cybermes\\update_check.json") or (FolderPath contains "/.hermes/skills/autonomous-godmode-hunter/" or FolderPath contains "\\.hermes\\skills\\autonomous-godmode-hunter\\") or (FolderPath contains "/recon/" and (FolderPath endswith "/katana.txt" or FolderPath endswith "/nuclei_output.txt")) or (FolderPath contains "/reports/" and (FolderPath endswith "/evidence/recon_notes.md" or (FolderPath contains "/REPORT_" and FolderPath endswith ".pdf")))

@@ -1,0 +1,25 @@
+// Pensar Apex testing you: its user agents and sign-up test account in web and proxy logs
+// Agentic attack detections by ThreatDefence (Pensar Apex). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Pensar Apex source code (pensarai/apex, reviewed at 6e3c5488):
+//  - pensar-apex is the default User-Agent of every session. Apex sends it on its http_request tool and adds it to the
+//    curl, wget, nuclei, ffuf, gobuster, httpx, feroxbuster, dirb, wfuzz, wpscan, sqlmap and nikto commands the model
+//    writes, for in-scope hosts only. The operator can change or remove it (pensar config headers, --no-global-headers).
+//  - Mozilla/5.0 (compatible; PensarBot/1.0; +https://pensar.dev) is the get_page tool's user agent.
+//  - The registration prompt makes accounts named testuser-<13-digit millisecond time> with
+//    test-<same digits>@example.com and the password TestPassword123!@#. The model types these, so they can vary.
+// Its browser sends an ordinary Chrome 131 user agent and is not matched here.
+
+let Markers = @"testuser-\d{13}|test-\d{13}(@|%40)example\.com";
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA startswith "pensar-apex" or UA has "PensarBot/1.0" or csUriQuery matches regex Markers
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog | where RequestClientApplication startswith "pensar-apex" or RequestClientApplication has "PensarBot/1.0"
+            or RequestURL matches regex Markers
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

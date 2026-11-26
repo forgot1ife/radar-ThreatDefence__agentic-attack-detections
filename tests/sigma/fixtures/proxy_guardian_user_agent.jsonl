@@ -1,0 +1,2 @@
+{"name": "screenshot tool through the proxy", "expected": true, "event": {"c-useragent": "Guardian-CLI/4 (security testing; +authorized engagement)", "cs-host": "app.example.test"}}
+{"name": "another security tool user agent", "expected": false, "event": {"c-useragent": "Guardian/1.0 (security scanner)", "cs-host": "app.example.test"}}

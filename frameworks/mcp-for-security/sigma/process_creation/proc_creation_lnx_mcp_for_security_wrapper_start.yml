@@ -1,0 +1,59 @@
+title: MCP for Security Tool Wrapper Started
+id: 2a614feb-dea9-5a99-bf12-7a923a485af9
+status: experimental
+description: |
+    Detects Node.js starting one of the 23 MCP servers of MCP for Security (cyproxio/mcp-for-security), each of which
+    lets an AI assistant run one offensive or recon tool: node <dir>/<tool>-mcp/build/index.js <tool binary>, as
+    written by the project's build.sh scripts and READMEs, and the published image cyprox/mcp-for-security. The folder
+    names are the project's layout; unrelated MCP projects use some of the same names (nmap-mcp, sqlmap-mcp), so check
+    the folder and the generated mcp-config.json beside it.
+references:
+    - https://github.com/cyproxio/mcp-for-security/blob/51dd537f5829470ebe508afd33186bd1a0459256/nmap-mcp/build.sh#L16
+    - https://github.com/cyproxio/mcp-for-security/blob/51dd537f5829470ebe508afd33186bd1a0459256/.github/workflows/docker.yml#L24
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.discovery
+    - attack.t1046
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_node:
+        Image|endswith: '/node'
+    selection_wrapper:
+        CommandLine|contains:
+            - '/alterx-mcp/build/index.js'
+            - '/amass-mcp/build/index.js'
+            - '/arjun-mcp/build/index.js'
+            - '/assetfinder-mcp/build/index.js'
+            - '/cero/build/index.js'
+            - '/cero-mcp/build/index.js'
+            - '/commix-mcp/build/index.js'
+            - '/crtsh-mcp/build/index.js'
+            - '/ffuf-mcp/build/index.js'
+            - '/gowitness-mcp/build/index.js'
+            - '/http-headers-security-mcp/build/index.js'
+            - '/httpx-mcp/build/index.js'
+            - '/katana-mcp/build/index.js'
+            - '/masscan-mcp/build/index.js'
+            - '/mobsf-mcp/build/index.js'
+            - '/nmap-mcp/build/index.js'
+            - '/nuclei-mcp/build/index.js'
+            - '/scoutsuite-mcp/build/index.js'
+            - '/shuffledns-mcp/build/index.js'
+            - '/smuggler-mcp/build/index.js'
+            - '/sqlmap-mcp/build/index.js'
+            - '/sslscan-mcp/build/index.js'
+            - '/waybackurls-mcp/build/index.js'
+            - '/wpscan-mcp/build/index.js'
+    selection_image:
+        CommandLine|contains: 'cyprox/mcp-for-security'
+    condition: (selection_node and selection_wrapper) or selection_image
+falsepositives:
+    - Other MCP projects that use the same folder names (for example a different nmap-mcp)
+    - Authorized tests driven through MCP for Security
+level: medium

@@ -1,0 +1,3 @@
+# CTF Agent Workspace or Solver Trace Written
+# Sigma id fabd1fe4-c3ff-5a98-bc70-740b8da12fbd, pipeline ecs
+TargetFilename:*\/ctf\-workspace\-* OR ((TargetFilename:*\/logs\/trace\-* AND TargetFilename:*.jsonl) AND (TargetFilename:(*\-claude\-opus\-4\-6\-* OR *\-gpt\-5.4\-* OR *\-gpt\-5.4\-mini\-* OR *\-gpt\-5.3\-codex\-* OR *\-us.anthropic.claude\-opus\-4\-6\-v1\-*)))

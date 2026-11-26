@@ -1,0 +1,4 @@
+# Cochise AI Pentest Agent Launcher
+# Sigma id a9ef7e9d-8998-55d6-961a-ed7197d6524d, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine endswith "/bin/cochise" or CommandLine endswith "\\Scripts\\cochise.exe") or (CommandLine contains "uv run cochise" or CommandLine contains "src/cochise.py" or CommandLine contains "cochise.cli.cochise" or CommandLine contains "/bin/cochise-replay " or CommandLine contains "/bin/cochise-analyze-" or CommandLine contains "uv run cochise-")

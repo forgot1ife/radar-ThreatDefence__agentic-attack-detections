@@ -1,0 +1,30 @@
+id: 07e816ad-9482-5cfd-b3a6-380b7343eee2
+name: KaliGPT AI pentest agent on a host
+description: |
+  A host ran KaliGPT (HackerX), a command-line AI agent that gives a model (Gemini, OpenAI, OpenRouter, Ollama or
+  LiteLLM) a tool that runs any command it chooses, without approval, plus HTTP tools that probe target sites. Seen as
+  its search helper (python /opt/KaliGPT/OpenSearchAPI/app.py), its launcher (/usr/local/bin/kaligpt), or a provider
+  module (python3 -m agents.gemini and the like) running from its install folder /opt/KaliGPT. Strings from
+  SudoHopeX/KaliGPT at b15b8d48.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.006
+query: |
+  DeviceProcessEvents
+  | where (ProcessCommandLine contains "/OpenSearchAPI/app.py" and ProcessCommandLine contains "KaliGPT")
+      or ProcessCommandLine contains "/bin/kaligpt"
+      or (ProcessCommandLine matches regex @"\s-m agents\.(gemini|ollama|openrouter|chatgpt|litellm)\b" and (ProcessCommandLine contains "KaliGPT" or InitiatingProcessCommandLine contains "KaliGPT"))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10)
+      by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

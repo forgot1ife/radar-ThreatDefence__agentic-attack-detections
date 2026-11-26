@@ -1,0 +1,31 @@
+title: ARTEMIS Codex Sub-Agent Started
+id: 2454e7c4-6eef-53a7-a1db-ad4c8ed4152f
+status: experimental
+description: |
+    Detects a sub-agent of the ARTEMIS pentest agent: the forked Codex CLI started by the ARTEMIS supervisor as
+    codex exec --dangerously-bypass-approvals-and-sandbox --skip-git-repo-check --log-session-dir <dir> --instance-id <id>
+    --wait-for-followup -C <dir> --mode <specialist> <task> (supervisor/orchestration/instance_manager.py:77-105).
+    --wait-for-followup and --instance-id exist only in the ARTEMIS fork of Codex (codex-rs/exec/src/cli.rs:66-80).
+    Each sub-agent runs model-written shell commands with no sandbox and no approval.
+references:
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/supervisor/orchestration/instance_manager.py#L77-L105
+    - https://github.com/Stanford-Trinity/ARTEMIS/blob/f309242d2a74493cd41aa3f8b02cec4d3fdd479d/codex-rs/exec/src/cli.rs#L66-L80
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059
+logsource:
+    category: process_creation
+detection:
+    selection:
+        CommandLine|contains|all:
+            - ' exec '
+            - '--wait-for-followup'
+            - '--instance-id'
+            - '--log-session-dir'
+    condition: selection
+falsepositives:
+    - Authorized research or test runs of ARTEMIS
+level: high

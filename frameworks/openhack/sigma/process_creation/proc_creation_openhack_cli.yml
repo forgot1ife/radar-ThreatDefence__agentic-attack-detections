@@ -1,0 +1,54 @@
+title: OpenHack Scanner or Pentest Agent Command Line
+id: 391fd2eb-7a02-5ea7-8763-abe0399722aa
+status: experimental
+description: |
+    Detects the OpenHack command line (openhackai/OpenHack). v2 is a source-code scanner shipped as one executable,
+    usually ~/.local/bin/openhack, that starts its dashboard as a detached copy of itself with
+    "dashboard --port <port> --home <folder> --no-open". v0.x (the PyPI package openhack, 0.2.4) is a terminal pentest
+    agent with the subcommands hack, plan, agent and scan that runs nmap, sqlmap, nuclei and shell commands and makes
+    targets call back to oob.openhack.com.
+references:
+    - https://github.com/openhackai/OpenHack
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_dashboard:
+        CommandLine|contains|all:
+            - ' dashboard --port '
+            - ' --home '
+            - ' --no-open'
+    selection_image:
+        Image|endswith:
+            - '/openhack'
+            - '\openhack.exe'
+    selection_entry:
+        CommandLine|contains:
+            - '/bin/openhack '
+            - '\Scripts\openhack.exe '
+            - ' -m openhack '
+            - 'src/cli/index.ts '
+    selection_subcommand:
+        CommandLine|contains:
+            - ' scan'
+            - ' hack '
+            - ' plan '
+            - ' resume '
+            - ' dashboard'
+            - '--claude-code'
+            - '--codex'
+            - '--anthropic'
+            - '--openai'
+    condition: selection_dashboard or ((selection_image or selection_entry) and selection_subcommand)
+falsepositives:
+    - Developers and security teams scanning their own code with OpenHack v2
+    - Authorized tests with the OpenHack v0.x agent
+    - Another program named openhack
+level: low

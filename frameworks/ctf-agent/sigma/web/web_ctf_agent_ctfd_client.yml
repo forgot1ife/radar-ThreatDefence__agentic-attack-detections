@@ -1,0 +1,26 @@
+title: CTF Agent CTFd Client User Agent in Web Server Logs
+id: aac966b2-6a0c-50cf-9aec-06d25d80eb99
+status: experimental
+description: |
+    Detects CTF Agent playing against a CTFd platform you run: its CTFd client sends exactly
+    Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 on every request (backend/ctfd.py:14,40-46), polls
+    /api/v1/challenges?per_page=500 and the solves endpoint every 5 seconds (backend/poller.py:24,122-125,
+    backend/ctfd.py:127,173-189) and submits flags to /api/v1/challenges/attempt (backend/ctfd.py:142-149). With no
+    token configured it logs in as admin with the password admin (backend/config.py:10-12, backend/ctfd.py:49-76).
+references:
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/ctfd.py#L14-L46
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.collection
+    - attack.t1119
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-user-agent: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36'
+    condition: selection
+falsepositives:
+    - Authorized CTF play with CTF Agent; whether automated solvers are allowed is the event's rule
+level: medium

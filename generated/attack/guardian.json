@@ -1,0 +1,93 @@
+{
+ "description": "18 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 8,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "guardian",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Guardian running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Guardian AI Pentest CLI Started; Sigma: Guardian Session, Log or Configuration Files Written",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "Suricata: 3813282 TD Guardian prompt_fuzz default payload sent with curl",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Guardian running on a host you monitor; Sigma: Guardian Session, Log or Configuration Files Written",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1552.001"
+  },
+  {
+   "comment": "Sigma: Guardian Tool Wrapper Markers in a Command Line",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1580"
+  },
+  {
+   "comment": "YARA: Guardian_Source",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3813283 TD Guardian OpenRouter or Requesty attribution headers (decrypted); Suricata: 3813284 TD Guardian agent system prompt in model request (decrypted)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "KQL hunt: Guardian loading your web pages, or running from your network: its screenshot user agent in web and proxy logs; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Guardian Screenshot User Agent in Proxy Logs; Sigma: Guardian Screenshot User Agent in Web Logs; Suricata: 3813281 TD Guardian playwright_screenshot user agent",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1594"
+  },
+  {
+   "comment": "KQL hunt: Guardian loading your web pages, or running from your network: its screenshot user agent in web and proxy logs; KQL hunt: Guardian running on a host you monitor; Sentinel analytics: Guardian AI pentest CLI screenshot user agent reached a web server; Sigma: Guardian AI Pentest CLI Started; Sigma: Scanner Started Directly by Guardian; YARA: Guardian_AI_Audit_Log; YARA: Guardian_Report; YARA: Guardian_Session_File",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "Sigma: Guardian Tool Wrapper Markers in a Command Line",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

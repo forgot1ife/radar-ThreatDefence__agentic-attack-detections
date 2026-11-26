@@ -1,0 +1,4 @@
+# RedAI AI Vulnerability Validation Workbench Running or Installed
+# Sigma id 76b101ba-b0a3-5471-a46b-29a2ac43c46a, pipeline azure_monitor
+SecurityEvent
+| where ((NewProcessName endswith "/bun" or NewProcessName endswith "\\bun.exe") and (CommandLine endswith "/bin/redai" or CommandLine endswith "bun run redai")) or (CommandLine contains "@kpolley/redai" or CommandLine contains "github.com/kpolley/redai") or (CommandLine contains "/.redai/validator-environments/" or CommandLine contains "/.redai/runs/" or CommandLine contains "\\.redai\\validator-environments\\" or CommandLine contains "\\.redai\\runs\\") or CommandLine contains "simctl create redai-template-" or (CommandLine contains "simctl clone " and CommandLine contains " redai-")

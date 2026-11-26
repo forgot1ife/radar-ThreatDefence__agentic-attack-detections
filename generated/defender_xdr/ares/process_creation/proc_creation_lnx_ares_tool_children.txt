@@ -1,0 +1,4 @@
+# Ares Worker Starting Active Directory Attack Tools
+# Sigma id 4ab84c38-598f-5d0e-b311-fcce7d97a466, pipeline microsoft_xdr
+DeviceProcessEvents
+| where InitiatingProcessFolderPath endswith "/ares" and (ProcessCommandLine contains "impacket-" or ProcessCommandLine contains "netexec" or ProcessCommandLine contains "nxc " or ProcessCommandLine contains "certipy" or ProcessCommandLine contains "bloodyAD" or ProcessCommandLine contains "pywhisker" or ProcessCommandLine contains "pygpoabuse" or ProcessCommandLine contains "responder" or ProcessCommandLine contains "coercer" or ProcessCommandLine contains "petitpotam" or ProcessCommandLine contains "dfscoerce" or ProcessCommandLine contains "bloodhound-python" or ProcessCommandLine contains "hashcat" or ProcessCommandLine contains "lsassy" or ProcessCommandLine contains "evil-winrm")

@@ -1,0 +1,39 @@
+title: hackingBuddyGPT Web API Report, Generated Spec or Benchmark Trace Written
+id: 9421ba54-f030-5fcc-ac07-57e6029b8333
+status: experimental
+description: |
+    Detects files hackingBuddyGPT writes: the WebAPITesting report (reports/<name>/report_<timestamp>.md) and the
+    OpenAPI document it builds from a target (openapi_spec/<strategy>/<name>/<timestamp>/<name>_spec.yaml), both inside
+    the installed hackingBuddyGPT/usecases/web_api package folder, and the per-run traces of its benchmark launcher under
+    benchmark_results/<timestamp>/traces/.
+references:
+    - https://github.com/ipa-lab/hackingBuddyGPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.reconnaissance
+    - attack.t1595.003
+logsource:
+    category: file_event
+detection:
+    selection_webapi:
+        TargetFilename|contains:
+            - '/hackingBuddyGPT/usecases/web_api/reports/'
+            - '/hackingBuddyGPT/usecases/web_api/openapi_spec/'
+            - '\hackingBuddyGPT\usecases\web_api\reports\'
+            - '\hackingBuddyGPT\usecases\web_api\openapi_spec\'
+    selection_bench:
+        TargetFilename|contains|all:
+            - '/benchmark_results/'
+            - '/traces/'
+        TargetFilename|endswith:
+            - '.jsonl'
+            - '/console.log'
+    condition: 1 of selection_*
+falsepositives:
+    - Researchers running hackingBuddyGPT
+    - Another project with a benchmark_results/<run>/traces/ layout
+level: medium

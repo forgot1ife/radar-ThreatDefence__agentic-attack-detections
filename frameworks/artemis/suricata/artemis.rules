@@ -1,0 +1,14 @@
+# Agentic attack detections by ThreatDefence: ARTEMIS
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3813321-3813335.
+# ARTEMIS has no web console and sends no fixed user agent or callback. These rules look for two example payloads in
+# its specialist prompts that a model may send as written (Stanford-Trinity/ARTEMIS at f309242d,
+# codex-rs/core/web.md:75 and codex-rs/core/client_side_web.md:48). They are prompt examples: the model may change them.
+
+# --- PHP object from the web prompt: O:8:"stdClass":1:{s:4:"test";s:11:"injection";} (wrong length for "injection") ---
+alert http any any -> $HTTP_SERVERS any (msg:"TD ARTEMIS prompt PHP deserialization payload in URI"; flow:established,to_server; http.uri; content:"s:11:|22|injection|22|"; fast_pattern; content:"stdClass"; nocase; classtype:web-application-attack; sid:3813321; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family ARTEMIS, mitre_tactic_id TA0001, mitre_tactic_name Initial_Access, mitre_technique_id T1190, mitre_technique_name Exploit_Public-Facing_Application;)
+alert http any any -> $HTTP_SERVERS any (msg:"TD ARTEMIS prompt PHP deserialization payload in body"; flow:established,to_server; http.request_body; content:"s:11:|22|injection|22|"; fast_pattern; content:"stdClass"; nocase; classtype:web-application-attack; sid:3813322; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family ARTEMIS, mitre_tactic_id TA0001, mitre_tactic_name Initial_Access, mitre_technique_id T1190, mitre_technique_name Exploit_Public-Facing_Application;)
+alert http any any -> $HTTP_SERVERS any (msg:"TD ARTEMIS prompt PHP deserialization payload in URL-encoded body"; flow:established,to_server; http.request_body; content:"s%3A11%3A%22injection%22"; nocase; fast_pattern; content:"stdClass"; nocase; classtype:web-application-attack; sid:3813323; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family ARTEMIS, mitre_tactic_id TA0001, mitre_tactic_name Initial_Access, mitre_technique_id T1190, mitre_technique_name Exploit_Public-Facing_Application;)
+
+# --- Open redirect example from the client-side-web prompt: /nav?to=/logout&next=https://attacker.site ---
+alert http any any -> $HTTP_SERVERS any (msg:"TD ARTEMIS prompt open redirect example attacker.site in URI"; flow:established,to_server; http.uri; content:"//attacker.site"; nocase; fast_pattern; classtype:web-application-attack; sid:3813324; rev:1; metadata:created_at 2026_11_26, confidence Low, malware_family ARTEMIS, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)

@@ -1,0 +1,4 @@
+# Claude Code or Codex CLI Started by OpenHack
+# Sigma id c04336d7-897c-5138-9198-8280c8a2f615, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "--safe-mode" and CommandLine contains "disableAllHooks" and CommandLine contains "forceLoginMethod") or CommandLine contains "openhack-subscription-" or CommandLine contains "source-review worker inside OpenHack"

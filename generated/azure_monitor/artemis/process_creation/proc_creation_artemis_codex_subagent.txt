@@ -1,0 +1,4 @@
+# ARTEMIS Codex Sub-Agent Started
+# Sigma id 2454e7c4-6eef-53a7-a1db-ad4c8ed4152f, pipeline azure_monitor
+SecurityEvent
+| where CommandLine contains " exec " and CommandLine contains "--wait-for-followup" and CommandLine contains "--instance-id" and CommandLine contains "--log-session-dir"

@@ -1,0 +1,3 @@
+# Ares Minted Machine Account Created With impacket-addcomputer
+# Sigma id 3677dece-25bf-5667-92bc-36b7951a6616, pipeline ecs
+process.command_line:*addcomputer* AND process.command_line:/.*-computer-name[ ]+ARES-[0-9A-F]{8}(([ ]).*)?/

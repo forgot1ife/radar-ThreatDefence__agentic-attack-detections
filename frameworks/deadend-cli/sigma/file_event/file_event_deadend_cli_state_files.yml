@@ -1,0 +1,37 @@
+title: Deadend CLI Credential Wallet or Session Logs Written
+id: eff86319-406f-5534-b9ac-7ef50b199b05
+status: experimental
+description: |
+    Detects files Deadend CLI writes on the host that runs it: the test-credential wallet copied on every start
+    (~/.deadend/reusable_credentials.json; ~/.cache/deadend/memory/reusable_credentials.json in v0.1.15 and earlier),
+    the raw target responses of its requester tool (requester.jsonl) and the Python tool results
+    (python_interpreter.jsonl) under ~/.cache/deadend/logs/, the backend log rpc-server-<ms>.log, and the
+    Playwright cookie state of each session (~/.deadend/agents/<agent>/<session>/auth_context/playwright_state.json).
+references:
+    - https://github.com/straylabs-ai/deadend-cli
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: file_event
+detection:
+    selection_wallet:
+        TargetFilename|endswith:
+            - '/.deadend/reusable_credentials.json'
+            - '/.cache/deadend/memory/reusable_credentials.json'
+    selection_logs:
+        TargetFilename|contains: '/.cache/deadend/logs/'
+        TargetFilename|endswith:
+            - '/requester.jsonl'
+            - '/python_interpreter.jsonl'
+            - '.log'
+    selection_auth_state:
+        TargetFilename|contains: '/.deadend/agents/'
+        TargetFilename|endswith: '/auth_context/playwright_state.json'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized penetration testers or researchers running Deadend CLI
+level: medium

@@ -1,0 +1,4 @@
+# Cybermes Files Written
+# Sigma id 54fb9bfe-a516-576d-9c82-2eb555f46f42, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.cybermes/bin/cybermes-mcp-v" or ObjectName contains "\\.cybermes\\bin\\cybermes-mcp-v" or ObjectName contains "/.cybermes/update_check.json" or ObjectName contains "\\.cybermes\\update_check.json") or (ObjectName contains "/.hermes/skills/autonomous-godmode-hunter/" or ObjectName endswith "\\.hermes\\skills\\autonomous-godmode-hunter*") or (ObjectName contains "/recon/" and (ObjectName endswith "/katana.txt" or ObjectName endswith "/nuclei_output.txt")) or (ObjectName contains "/reports/" and (ObjectName endswith "/evidence/recon_notes.md" or (ObjectName contains "/REPORT_" and ObjectName endswith ".pdf")))

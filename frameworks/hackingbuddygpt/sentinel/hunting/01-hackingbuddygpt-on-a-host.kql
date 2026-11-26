@@ -1,0 +1,42 @@
+// hackingBuddyGPT on a host you monitor
+// Agentic attack detections by ThreatDefence (hackingBuddyGPT). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// hackingBuddyGPT (ipa-lab/hackingBuddyGPT) is an open-source framework that lets an LLM run commands on a target over
+// SSH, psexec or HTTP with no approval step. It has no listener. From its source code at e23d9185:
+//  - The CLI: wintermute <UseCase> (or hackingBuddyGPT <UseCase>), python -m hackingBuddyGPT.cli.wintermute from its
+//    benchmark_privesc.py launcher, the log tools hackingbuddygpt-log-view and -log-analyze, and the container image
+//    ghcr.io/ipa-lab/hackingbuddygpt.
+//  - Local shell mode: tmux send-keys typing echo 'CMDSTART<hex>' / echo 'CMDEND<hex>' around each model command.
+//  - Files: the web-API report and generated OpenAPI document inside hackingBuddyGPT/usecases/web_api/, and
+//    benchmark_results/<run>/traces/. Each run also writes logs/log-<YYYYMMDD-HHMMSS>.jsonl (a generic name; scan it
+//    with the YARA rule HackingBuddyGPT_Run_Log).
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let UseCases = dynamic([" MinimalPrivEscLinux", " MinimalToolCallPrivEscLinux", " PrivEscLinux", " ExPrivEscLinuxLSE",
+    " PrivEscWindows", " WebTestingWithExplanation", " WebTestingWithShell", " AdvancedWebTesting", " WebAPITesting", " AD --"]);
+let Cli = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where ProcessCommandLine has_any ("hackingBuddyGPT.cli.wintermute", "hackingbuddygpt-log-view", "hackingbuddygpt-log-analyze",
+            "benchmark_privesc.py", "ghcr.io/ipa-lab/hackingbuddygpt")
+        or ((ProcessCommandLine contains "wintermute" or ProcessCommandLine contains "hackingBuddyGPT") and ProcessCommandLine has_any (UseCases));
+let Tmux = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where FileName == "tmux" and ProcessCommandLine has "send-keys"
+    | where ProcessCommandLine has_any ("echo 'CMDSTART", "echo 'CMDEND", "echo \"__CLEAR_", "echo \"__END_");
+union isfuzzy=true
+    (Cli
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 300), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="hackingBuddyGPT CLI, benchmark or image", Detail=tostring(Commands)),
+    (Tmux
+        | summarize Commands=make_set(ProcessCommandLine, 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="hackingBuddyGPT local shell markers sent through tmux", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has_any (@"hackingBuddyGPT/usecases/web_api/reports/", @"hackingBuddyGPT/usecases/web_api/openapi_spec/",
+                @"hackingBuddyGPT\usecases\web_api\reports\", @"hackingBuddyGPT\usecases\web_api\openapi_spec\")
+            or (FolderPath has "/benchmark_results/" and FolderPath has "/traces/" and ((FileName startswith "log-" and FileName endswith ".jsonl") or FileName == "console.log"))
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, AccountName=InitiatingProcessAccountName
+        | project Timestamp, DeviceName, AccountName, Signal="hackingBuddyGPT report, generated spec or benchmark trace", Detail=tostring(Files))
+| order by Timestamp desc

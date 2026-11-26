@@ -1,0 +1,35 @@
+title: Cochise AI Pentest Agent Launcher
+id: a9ef7e9d-8998-55d6-961a-ed7197d6524d
+status: experimental
+description: |
+    Detects the Cochise launchers: uv run cochise, the cochise console script in a virtual environment, python
+    src/cochise.py from clones older than February 2026, and the cochise-replay and cochise-analyze-* scripts that read
+    its run logs (pyproject.toml:21-25, README.md:103,116). Cochise drives a Kali VM over SSH with a model choosing the
+    commands, against Active Directory networks.
+references:
+    - https://github.com/andreashappe/cochise/blob/4db4fded894305083366b83e5cdba5fb68fcebc3/pyproject.toml#L21-L25
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+detection:
+    selection_script:
+        CommandLine|endswith:
+            - '/bin/cochise'
+            - '\Scripts\cochise.exe'
+    selection_cli:
+        CommandLine|contains:
+            - 'uv run cochise'
+            - 'src/cochise.py'
+            - 'cochise.cli.cochise'
+            - '/bin/cochise-replay '
+            - '/bin/cochise-analyze-'
+            - 'uv run cochise-'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized research runs of Cochise and replays of its logs
+level: low

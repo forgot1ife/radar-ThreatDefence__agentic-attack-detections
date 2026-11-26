@@ -1,0 +1,4 @@
+# OpenHack Scanner or Pentest Agent Command Line
+# Sigma id 391fd2eb-7a02-5ea7-8763-abe0399722aa, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains " dashboard --port " and CommandLine contains " --home " and CommandLine contains " --no-open") or (((NewProcessName endswith "/openhack" or NewProcessName endswith "\\openhack.exe") or (CommandLine contains "/bin/openhack " or CommandLine contains "\\Scripts\\openhack.exe " or CommandLine contains " -m openhack " or CommandLine contains "src/cli/index.ts ")) and (CommandLine contains " scan" or CommandLine contains " hack " or CommandLine contains " plan " or CommandLine contains " resume " or CommandLine contains " dashboard" or CommandLine contains "--claude-code" or CommandLine contains "--codex" or CommandLine contains "--anthropic" or CommandLine contains "--openai"))

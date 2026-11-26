@@ -1,0 +1,4 @@
+# MAPTA Sandbox Python Runner
+# Sigma id 713ada5c-0f44-56fa-b2a1-d2f3a4deacfc, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "python3 /home/user/temp_script_" and ProcessCommandLine contains ".py"

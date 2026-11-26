@@ -1,0 +1,4 @@
+# Scanners Started With Cybermes MCP Argument Order
+# Sigma id 9cc640fd-512b-506a-ae60-87d3ff395ce4, pipeline azure_monitor
+SecurityEvent
+| where ((ParentProcessName endswith "/cybermes-mcp" or ParentProcessName endswith "\\cybermes-mcp.exe") or ParentProcessName contains "cybermes-mcp-v") or (CommandLine contains "-sT --open -T3 --max-rate " and CommandLine contains " -oN - ") or CommandLine contains " -silent -jsonl -timeout 10 -duc" or CommandLine contains " -silent -status-code -title -tech-detect -json -timeout " or CommandLine contains " -jc -silent -ct " or (CommandLine contains "/FUZZ -w " and CommandLine contains " -timeout 5 -s -json")

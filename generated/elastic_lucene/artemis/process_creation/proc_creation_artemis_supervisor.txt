@@ -1,0 +1,3 @@
+# ARTEMIS Supervisor or Autonomous Driver Started
+# Sigma id 31ee5f21-c658-5247-99c8-c63658a63147, pipeline ecs
+((process.command_line:(*supervisor.supervisor* OR *codex\-supervisor*)) AND (process.command_line:(*\-\-benchmark\-mode* OR *\-\-skip\-todos* OR *\-\-use\-prompt\-generation* OR *\-\-finish\-on\-submit* OR *\-\-codex\-binary* OR *configs\/tests\/ctf_easy.yaml* OR *configs\/stanford\/*))) OR ((process.command_line:(*codex\ autonomous\ * OR *codex\ auto\ *)) AND (process.command_line:(*\-\-ignore\-work\-hours* OR *\-\-driver\-model* OR *\-\-work\-start\-hour* OR *\-\-logs\-dir* OR *\-\-mode\ *)))

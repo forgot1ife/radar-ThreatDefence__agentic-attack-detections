@@ -1,0 +1,31 @@
+title: CTF Agent CTFd Client User Agent in Proxy Logs
+id: 4a24d504-eed6-5ae1-beef-d4049823d2e6
+status: experimental
+description: |
+    Detects CTF Agent's CTFd client leaving through a proxy: every request it makes to the CTFd platform (challenge list
+    every 5 seconds, solves, challenge details, file downloads, flag submissions, login) carries exactly
+    Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36, a Windows 7 string cut off before (KHTML, like Gecko) that no
+    browser sends (backend/ctfd.py:14,40-46). Also its pull_challenges.py helper, which sends a full Chrome 45 on
+    Windows 7 string to /api/v1/ paths (pull_challenges.py:35); es3n1n/Eruditus, which it was taken from, sends the same.
+references:
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/backend/ctfd.py#L14
+    - https://github.com/verialabs/ctf-agent/blob/3366d569557c4fda3fd153040632de65e255396d/pull_challenges.py#L35
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.collection
+    - attack.t1119
+logsource:
+    category: proxy
+detection:
+    selection_client:
+        c-useragent: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36'
+    selection_pull:
+        c-useragent: 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36'
+        c-uri|contains: '/api/v1/'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized CTF play with CTF Agent
+    - Eruditus or other tools built from it (the pull_challenges selection only)
+level: medium

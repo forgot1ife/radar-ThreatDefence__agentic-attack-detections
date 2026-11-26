@@ -1,0 +1,3 @@
+# OpenHack Scanner or Pentest Agent Command Line
+# Sigma id 391fd2eb-7a02-5ea7-8763-abe0399722aa, pipeline ecs
+(process.command_line:*\ dashboard\ \-\-port\ * AND process.command_line:*\ \-\-home\ * AND process.command_line:*\ \-\-no\-open*) OR (((process.executable:(*\/openhack OR *\\openhack.exe)) OR (process.command_line:(*\/bin\/openhack\ * OR *\\Scripts\\openhack.exe\ * OR *\ \-m\ openhack\ * OR *src\/cli\/index.ts\ *))) AND (process.command_line:(*\ scan* OR *\ hack\ * OR *\ plan\ * OR *\ resume\ * OR *\ dashboard* OR *\-\-claude\-code* OR *\-\-codex* OR *\-\-anthropic* OR *\-\-openai*)))

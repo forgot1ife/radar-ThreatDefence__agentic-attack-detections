@@ -1,0 +1,3 @@
+# Ares Orchestrator or Worker Service
+# Sigma id 2006b526-b24f-5657-8a0e-505f46cc5025, pipeline splunk_windows
+CommandLine IN ("*/usr/local/bin/ares orchestrator*", "*/usr/local/bin/ares worker*", "*--unit=ares-orchestrator.service*", "*--slice=system-ares.slice*")
