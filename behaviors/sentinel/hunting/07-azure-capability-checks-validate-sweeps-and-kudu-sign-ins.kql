@@ -1,0 +1,39 @@
+// Azure capability checks, validate sweeps and Kudu sign-ins
+// Agentic attack detections by ThreatDefence (AI agent behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// ATT&CK: T1526 (Cloud Service Discovery), T1580 (Cloud Infrastructure Discovery), T1078.004 (Valid Accounts: Cloud Accounts)
+// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.
+// Normal backup and deployment tools also write and delete test blobs, so start with callers you cannot name.
+
+// Example: Sentinel StorageBlobLogs, a blob written and deleted by the same caller within two seconds
+let Writes = StorageBlobLogs
+    | where TimeGenerated > ago(30d)
+    | where OperationName in ("PutBlob", "PutBlockList") and StatusCode in (200, 201)
+    | project WriteTime=TimeGenerated, AccountName, ObjectKey, CallerIpAddress, WriteAgent=UserAgentHeader;
+StorageBlobLogs
+| where TimeGenerated > ago(30d)
+| where OperationName == "DeleteBlob" and StatusCode in (200, 202)
+| project DeleteTime=TimeGenerated, AccountName, ObjectKey, CallerIpAddress
+| join kind=inner Writes on AccountName, ObjectKey, CallerIpAddress
+| where DeleteTime between (WriteTime .. WriteTime + 2s)
+| summarize Tests=count(), Accounts=dcount(AccountName), FirstSeen=min(WriteTime), Agents=make_set(WriteAgent, 5)
+    by CallerIpAddress
+| order by Tests desc
+
+// Example: Sentinel AzureActivity, deployment validation dry runs across several resource types in one minute
+AzureActivity
+| where TimeGenerated > ago(30d)
+| where OperationNameValue =~ "Microsoft.Resources/deployments/validate/action"
+| summarize Validations=count(), ResourceGroups=dcount(ResourceGroup), FirstSeen=min(TimeGenerated)
+    by Caller, CallerIpAddress, bin(TimeGenerated, 1m)
+| where Validations >= 5
+| order by Validations desc
+
+// Example: Sentinel AppServiceAuditLogs, publishing sign-ins through Kudu or FTP from addresses not used before
+let Known = AppServiceAuditLogs
+    | where TimeGenerated between (ago(90d) .. ago(7d))
+    | distinct _ResourceId, UserAddress;
+AppServiceAuditLogs
+| where TimeGenerated > ago(7d)
+| join kind=leftanti Known on _ResourceId, UserAddress
+| project TimeGenerated, _ResourceId, User, UserDisplayName, UserAddress, Protocol
+| order by TimeGenerated asc

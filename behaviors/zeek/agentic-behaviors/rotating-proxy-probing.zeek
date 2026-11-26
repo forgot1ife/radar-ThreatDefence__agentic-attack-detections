@@ -1,4 +1,4 @@
-##! One site probed through hundreds of rotating proxy addresses (behaviors hunt 04)
+##! One site probed through hundreds of rotating proxy addresses (general hunt 01)
 ##!
 ##! Agent operators send their tools through residential proxy services (IPRoyal, 711proxy and 1024proxy in Gambit's
 ##! case). Cyber Security Cloud saw one agent rotate through 326 addresses in about 40 minutes for more than 1,200

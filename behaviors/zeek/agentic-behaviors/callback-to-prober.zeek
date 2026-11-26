@@ -1,4 +1,4 @@
-##! A server calls back to the address that was probing it (behaviors hunt 07)
+##! A server calls back to the address that was probing it (general hunt 04)
 ##!
 ##! Agentic frameworks catch reverse shells and out-of-band callbacks on the machine that runs the attack. PentAGI
 ##! publishes two listener ports per engagement from 28000 on its host, and Cairn's guide tells its agents to call back

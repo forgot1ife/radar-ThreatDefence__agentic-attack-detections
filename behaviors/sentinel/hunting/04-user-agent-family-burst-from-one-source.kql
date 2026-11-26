@@ -1,0 +1,31 @@
+// User agent family burst from one source
+// Agentic attack detections by ThreatDefence (AI agent behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// ARTEX runs several workers per task (scanners such as nuclei, httpx, katana, ffuf and sqlmap, plus Python, curl and
+// AWS SDK clients) from the same host, so one source address shows several unrelated user agent families inside a minute.
+// Logic after Elastic Security Labs (November 13, 2026): three or more families and twenty or more requests per minute.
+// Point it at the web, WAF or proxy table you collect. CommonSecurityLog and W3CIISLog are shown.
+
+let Families = (ua:string) { case(
+    ua startswith "Boto3" or ua startswith "aws-cli" or ua startswith "aws-sdk", "aws",
+    ua has "python-requests" or ua has "Python-urllib" or ua has "aiohttp" or ua has "httpx", "python",
+    ua startswith "curl/", "curl",
+    ua startswith "norma", "norma",
+    ua startswith "Go-http-client", "go",
+    ua has_any ("nuclei", "sqlmap", "ffuf", "katana", "gobuster", "nikto"), "scanner",
+    ua startswith "Mozilla/5.0", "browser",
+    "other") };
+union isfuzzy=true
+    (CommonSecurityLog | where isnotempty(RequestClientApplication)
+        | project TimeGenerated, Src=SourceIP, UA=RequestClientApplication),
+    (W3CIISLog | project TimeGenerated, Src=cIP, UA=csUserAgent)
+| where TimeGenerated > ago(14d)
+| where not(ipv4_is_private(Src)) and not(ipv4_is_in_range(Src, "100.64.0.0/10")) and Src != "127.0.0.1"
+| extend Family = Families(UA)
+| summarize Requests=count(), Families=dcount(Family), FamilyList=make_set(Family), SampleUAs=make_set(UA, 10)
+    by Src, bin(TimeGenerated, 1m)
+| where Families >= 3 and Requests >= 20
+| summarize Minutes=count(), TotalRequests=sum(Requests), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated),
+    FamilyList=make_set(FamilyList), SampleUAs=make_set(SampleUAs, 20) by Src
+| order by Minutes desc

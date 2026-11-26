@@ -36,10 +36,10 @@ See [`CHANGELOG.md`](../../CHANGELOG.md) for the full list.
 |---|---|
 | [`iocs/indicators.csv`](../../iocs/indicators.csv) | 215 indicators: user agents, request artifacts, host artifacts, strings from the ARTEX source code, hashes, favicon hashes, domains, URLs and addresses. Each row has its source, confidence and a review date for addresses. This file is the single source for every feed |
 | [`feeds/`](../../feeds) | Generated from the CSV: STIX 2.1 bundle, Sentinel watchlist and plain lists of addresses, domains, URLs, user agents and hashes |
-| [`sigma/`](sigma) | 16 Sigma rules for web, proxy, process, file, DNS, AWS, Entra ID and Okta logs. The general ones moved to [`behaviors/`](#moved-to-shared-behaviors) |
+| [`sigma/`](sigma) | 16 Sigma rules for web, proxy, process, file, DNS, AWS, Entra ID and Okta logs. The general ones moved out ([where to](#moved-out-of-the-artex-folder)) |
 | [`generated/`](../../generated) | The Sigma rules converted to Splunk SPL, Sentinel ASIM KQL and Elastic ES\|QL and Lucene. [`SUMMARY.md`](../../generated/SUMMARY.md) shows which rule converted to which backend |
 | [`sentinel/hunting/`](sentinel/hunting) | 15 KQL hunts for Microsoft Sentinel and Defender XDR advanced hunting. Hunts 23 to 30 come from a review of the ARTEX source code ([`docs/source-code-signals.md`](source-code-signals.md)) |
-| [`sentinel/analytics/`](sentinel/analytics) | 3 scheduled analytics rules in the Sentinel template format. Four more moved to [`behaviors/`](#moved-to-shared-behaviors) |
+| [`sentinel/analytics/`](sentinel/analytics) | 3 scheduled analytics rules in the Sentinel template format. Four more moved out ([where to](#moved-out-of-the-artex-folder)) |
 | [`splunk/`](splunk) | The hand-written ARTEX Splunk searches and macros. They ship in the [Splunk app](../../deploy/splunk) with the searches for every other framework |
 | [`elastic/`](elastic) | 9 ES\|QL hunts and 5 detection rules in the Elastic detection-rules TOML format |
 | [`zeek/`](zeek) | A detection script that raises notices for ARTEX traffic, and an Intel framework file |
@@ -50,44 +50,45 @@ See [`CHANGELOG.md`](../../CHANGELOG.md) for the full list.
 | [`tools/`](../../tools) | Feed builder, Sigma converter and validator |
 | [`tests/`](tests) | A synthetic pcap and the Zeek and Suricata tests |
 
-## Moved to shared behaviors
+## Moved out of the ARTEX folder
 
-Many of the ARTEX rules never looked for ARTEX itself. They look for things any agent does with stolen access: password sprays, cloud permission sweeps, web services starting shells, Kerberoasting. They now sit in [`behaviors/`](../../behaviors), so they run for every framework, and they keep their ids, so a redeploy updates them in place. This folder keeps the rules that need ARTEX's own names, files, traffic or code.
+Many of the ARTEX rules never looked for ARTEX itself. They look for things any agent does with stolen access: password sprays, cloud permission sweeps, web services starting shells, Kerberoasting. They now run for every framework. Those whose speed or spread points at an AI agent sit in [`behaviors/`](../../behaviors). The rest are steps any attacker takes and sit in [`general/`](../../general). All keep their ids, so a redeploy updates them in place. This folder keeps the rules that need ARTEX's own names, files, traffic or code.
 
 | Was here | Now |
 |---|---|
-| Hunt 02, `02-password-spray-at-a-fixed-rhythm.kql` | [Hunt 10](../../behaviors/sentinel/hunting/10-password-spray-at-a-fixed-rhythm.kql) |
-| Hunt 03, `03-a-spray-that-ends-in-a-successful-sign-in.kql` | [Hunt 11](../../behaviors/sentinel/hunting/11-a-spray-that-ends-in-a-successful-sign-in.kql) |
-| Hunt 05, `05-applications-changing-their-own-access.kql` | [Hunt 13](../../behaviors/sentinel/hunting/13-applications-changing-their-own-access.kql) |
-| Hunt 06, `06-scripted-microsoft-graph-bursts-by-an-application.kql` | [Hunt 25](../../behaviors/sentinel/hunting/25-scripted-microsoft-graph-bursts-by-an-application.kql) |
-| Hunt 07, `07-bulk-key-vault-secret-reads.kql` | [Hunt 15](../../behaviors/sentinel/hunting/15-bulk-key-vault-secret-reads.kql) |
-| Hunt 08, `08-cloudwatch-log-searches-with-a-stolen-aws-key.kql` | [Hunt 18](../../behaviors/sentinel/hunting/18-cloudwatch-log-searches-with-a-stolen-aws-key.kql) |
-| Hunt 09, `09-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql` | [Hunt 19](../../behaviors/sentinel/hunting/19-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql) |
-| Hunt 11, `11-web-and-database-services-starting-shells-and-download-tools.kql` | [Hunt 21](../../behaviors/sentinel/hunting/21-web-and-database-services-starting-shells-and-download-tools.kql) |
-| Hunt 12, `12-servers-calling-webhook-and-tunnel-services-or-downloading-f.kql` | [Hunt 23](../../behaviors/sentinel/hunting/23-servers-calling-webhook-and-tunnel-services.kql) |
-| Hunt 13, `13-scripts-written-into-web-directories.kql` | [Hunt 22](../../behaviors/sentinel/hunting/22-scripts-written-into-web-directories.kql) |
-| Hunt 14, `14-aws-permission-testing-and-the-foothold-that-follows.kql` | [Hunt 17](../../behaviors/sentinel/hunting/17-aws-permission-testing-and-the-foothold-that-follows.kql) |
-| Hunt 15, `15-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql` | [Hunt 16](../../behaviors/sentinel/hunting/16-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql) |
-| Hunt 16, `16-kerberoasting-dcsync-and-winrm-fan-out.kql` | [Hunt 24](../../behaviors/sentinel/hunting/24-kerberoasting-dcsync-and-winrm-fan-out.kql) |
-| Hunt 17, `17-user-agent-family-burst-from-one-source.kql` | [Hunt 20](../../behaviors/sentinel/hunting/20-user-agent-family-burst-from-one-source.kql) |
-| Hunt 18, `18-service-principal-secret-failures-then-success.kql` | [Hunt 12](../../behaviors/sentinel/hunting/12-service-principal-secret-failures-then-success.kql) |
-| Hunt 19, `19-one-application-hitting-many-resources.kql` | [Hunt 14](../../behaviors/sentinel/hunting/14-one-application-hitting-many-resources.kql) |
-| Analytics rule `artex-cloudwatch-secret-search.yaml` | [`cloudwatch-secret-search.yaml`](../../behaviors/sentinel/analytics/cloudwatch-secret-search.yaml) |
-| Analytics rule `artex-ec2-dryrun-burst.yaml` | [`ec2-dryrun-burst.yaml`](../../behaviors/sentinel/analytics/ec2-dryrun-burst.yaml) |
-| Analytics rule `artex-fixed-rhythm-password-spray.yaml` | [`fixed-rhythm-password-spray.yaml`](../../behaviors/sentinel/analytics/fixed-rhythm-password-spray.yaml) |
-| Analytics rule `artex-service-principal-self-role-assignment.yaml` | [`service-principal-self-role-assignment.yaml`](../../behaviors/sentinel/analytics/service-principal-self-role-assignment.yaml) |
-| Sigma: the 5 correlations (AWS access denied sweep, EC2 DryRun burst, Azure validate sweep, Entra ID password spray, remote tasklist fan-out) | [`behaviors/sigma/correlations/`](../../behaviors/sigma/correlations) |
-| Sigma: AWS access denied, EC2 DryRun, CloudWatch secret search | [`behaviors/sigma/cloud/aws/`](../../behaviors/sigma/cloud/aws) |
-| Sigma: Azure validate, application credential added, role assigned to a service principal, Entra ID sign-in failure | [`behaviors/sigma/cloud/azure/`](../../behaviors/sigma/cloud/azure) |
-| Sigma: web or database service starts a shell (Linux, Windows, SQL Server), remote tasklist, svchost and system binaries in the wrong folder | [`behaviors/sigma/process_creation/`](../../behaviors/sigma/process_creation) |
-| Sigma: callback services in DNS | [`behaviors/sigma/dns_query/`](../../behaviors/sigma/dns_query) |
-| Sigma: unsigned (alg none) token probe | [`behaviors/sigma/web/`](../../behaviors/sigma/web) |
+| Hunt 02, `02-password-spray-at-a-fixed-rhythm.kql` | [AI agent hunt 05](../../behaviors/sentinel/hunting/05-password-spray-at-a-fixed-rhythm.kql) |
+| Hunt 03, `03-a-spray-that-ends-in-a-successful-sign-in.kql` | [General hunt 06](../../general/sentinel/hunting/06-a-spray-that-ends-in-a-successful-sign-in.kql) |
+| Hunt 05, `05-applications-changing-their-own-access.kql` | [General hunt 08](../../general/sentinel/hunting/08-applications-changing-their-own-access.kql) |
+| Hunt 06, `06-scripted-microsoft-graph-bursts-by-an-application.kql` | [General hunt 16](../../general/sentinel/hunting/16-scripted-microsoft-graph-bursts-by-an-application.kql) |
+| Hunt 07, `07-bulk-key-vault-secret-reads.kql` | [General hunt 09](../../general/sentinel/hunting/09-bulk-key-vault-secret-reads.kql) |
+| Hunt 08, `08-cloudwatch-log-searches-with-a-stolen-aws-key.kql` | [General hunt 10](../../general/sentinel/hunting/10-cloudwatch-log-searches-with-a-stolen-aws-key.kql) |
+| Hunt 09, `09-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql` | [General hunt 11](../../general/sentinel/hunting/11-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql) |
+| Hunt 11, `11-web-and-database-services-starting-shells-and-download-tools.kql` | [General hunt 12](../../general/sentinel/hunting/12-web-and-database-services-starting-shells-and-download-tools.kql) |
+| Hunt 12, `12-servers-calling-webhook-and-tunnel-services-or-downloading-f.kql` | [General hunt 14](../../general/sentinel/hunting/14-servers-calling-webhook-and-tunnel-services.kql) |
+| Hunt 13, `13-scripts-written-into-web-directories.kql` | [General hunt 13](../../general/sentinel/hunting/13-scripts-written-into-web-directories.kql) |
+| Hunt 14, `14-aws-permission-testing-and-the-foothold-that-follows.kql` | [AI agent hunt 09](../../behaviors/sentinel/hunting/09-aws-permission-testing-and-the-foothold-that-follows.kql) |
+| Hunt 15, `15-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql` | [AI agent hunt 07](../../behaviors/sentinel/hunting/07-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql) |
+| Hunt 16, `16-kerberoasting-dcsync-and-winrm-fan-out.kql` | [General hunt 15](../../general/sentinel/hunting/15-kerberoasting-dcsync-and-winrm-fan-out.kql) |
+| Hunt 17, `17-user-agent-family-burst-from-one-source.kql` | [AI agent hunt 04](../../behaviors/sentinel/hunting/04-user-agent-family-burst-from-one-source.kql) |
+| Hunt 18, `18-service-principal-secret-failures-then-success.kql` | [General hunt 07](../../general/sentinel/hunting/07-service-principal-secret-failures-then-success.kql) |
+| Hunt 19, `19-one-application-hitting-many-resources.kql` | [AI agent hunt 06](../../behaviors/sentinel/hunting/06-one-application-hitting-many-resources.kql) |
+| Analytics rule `artex-cloudwatch-secret-search.yaml` | [General: `cloudwatch-secret-search.yaml`](../../general/sentinel/analytics/cloudwatch-secret-search.yaml) |
+| Analytics rule `artex-ec2-dryrun-burst.yaml` | [AI agent: `ec2-dryrun-burst.yaml`](../../behaviors/sentinel/analytics/ec2-dryrun-burst.yaml) |
+| Analytics rule `artex-fixed-rhythm-password-spray.yaml` | [AI agent: `fixed-rhythm-password-spray.yaml`](../../behaviors/sentinel/analytics/fixed-rhythm-password-spray.yaml) |
+| Analytics rule `artex-service-principal-self-role-assignment.yaml` | [General: `service-principal-self-role-assignment.yaml`](../../general/sentinel/analytics/service-principal-self-role-assignment.yaml) |
+| Sigma: AWS access denied sweep and EC2 DryRun burst correlations, with their base rules | AI agent: [`behaviors/sigma/correlations/`](../../behaviors/sigma/correlations), [`behaviors/sigma/cloud/aws/`](../../behaviors/sigma/cloud/aws) |
+| Sigma: Azure validate sweep correlation and its base rule | AI agent: [`behaviors/sigma/correlations/`](../../behaviors/sigma/correlations), [`behaviors/sigma/cloud/azure/`](../../behaviors/sigma/cloud/azure) |
+| Sigma: Entra ID password spray and remote tasklist fan-out correlations, with their base rules | General: [`general/sigma/correlations/`](../../general/sigma/correlations) |
+| Sigma: CloudWatch secret search, application credential added, role assigned to a service principal | General: [`general/sigma/cloud/`](../../general/sigma/cloud) |
+| Sigma: web or database service starts a shell (Linux, Windows, SQL Server), svchost and system binaries in the wrong folder | General: [`general/sigma/process_creation/`](../../general/sigma/process_creation) |
+| Sigma: callback services in DNS | General: [`general/sigma/dns_query/`](../../general/sigma/dns_query) |
+| Sigma: unsigned (alg none) token probe | General: [`general/sigma/web/`](../../general/sigma/web) |
 
 The ARTEX hunts that stayed keep their numbers, so the gaps in the numbering are the hunts that moved.
 
 ## Quick start
 
-**Microsoft Sentinel.** Upload `feeds/sentinel-watchlist.csv` as a watchlist with the alias `AGENTIC_IOCs` and the search key `value`, then run `sentinel/hunting/21-watchlist-indicator-sweep.kql` (it filters the watchlist to ARTEX rows). Import the analytics rules from `sentinel/analytics/` and the shared behaviors from [`behaviors/sentinel/`](../../behaviors/sentinel), or deploy both with the [Sentinel templates](../../deploy/sentinel). The hunts also run in Defender XDR advanced hunting where the tables exist.
+**Microsoft Sentinel.** Upload `feeds/sentinel-watchlist.csv` as a watchlist with the alias `AGENTIC_IOCs` and the search key `value`, then run `sentinel/hunting/21-watchlist-indicator-sweep.kql` (it filters the watchlist to ARTEX rows). Import the analytics rules from `sentinel/analytics/` and the rules that moved out from [`behaviors/sentinel/`](../../behaviors/sentinel) and [`general/sentinel/`](../../general/sentinel), or deploy them all with the [Sentinel templates](../../deploy/sentinel). The hunts also run in Defender XDR advanced hunting where the tables exist.
 
 **Splunk.** Install the [Splunk app](../../deploy/splunk) from the latest release. It has the ARTEX searches, every other framework's, and the indicator lookups. Point the `aad_indexes` macro at your indexes, run each saved search over 30 days, then enable it.
 

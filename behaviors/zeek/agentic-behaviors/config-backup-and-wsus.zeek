@@ -1,4 +1,4 @@
-##! Configuration and backup file theft, and probes of WSUS administration services (behaviors hunt 05)
+##! Configuration and backup file theft, and probes of WSUS administration services (general hunt 02)
 ##!
 ##! JPCERT/CC's Case E describes Cairn, CyberStrikeAI and ARTEX stealing configuration and backup files and attacking
 ##! internet-facing WSUS servers. Scutum saw the agents request .git/HEAD, .env, .env.bak, backup.zip and database dumps

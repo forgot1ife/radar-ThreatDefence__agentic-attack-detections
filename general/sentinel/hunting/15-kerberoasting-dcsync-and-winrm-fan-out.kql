@@ -1,0 +1,36 @@
+// Kerberoasting, DCSync and WinRM fan-out
+// Agentic attack detections by ThreatDefence (general intrusion behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// ATT&CK: T1558.003 (Steal or Forge Kerberos Tickets: Kerberoasting), T1003.006 (OS Credential Dumping: DCSync), T1021.006 (Remote Services: Windows Remote Management)
+// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.
+// Event 4662 is only written where directory service access auditing is turned on. Add your directory synchronization accounts to the exclusion in the second query.
+
+// Example: Sentinel SecurityEvent, one account requesting RC4 service tickets for many services
+SecurityEvent
+| where TimeGenerated > ago(30d)
+| where EventID == 4769
+// TicketEncryptionType is not a SecurityEvent column: read it from the event XML
+| extend TicketEncryptionType = extract(@'TicketEncryptionType">([^<]+)<', 1, EventData)
+| where TicketEncryptionType =~ "0x17" and ServiceName !endswith "$" and TargetUserName !has "$@"
+| summarize Tickets=count(), Services=dcount(ServiceName), Sample=make_set(ServiceName, 15)
+    by TargetUserName, IpAddress, bin(TimeGenerated, 10m)
+| where Services >= 10
+| order by Services desc
+
+// Example: Sentinel SecurityEvent, directory replication rights used by an account that is not a domain controller
+SecurityEvent
+| where TimeGenerated > ago(30d)
+| where EventID == 4662
+| where Properties has_any ("1131f6aa-9c07-11d1-f79f-00c04fc2dcd2", "1131f6ad-9c07-11d1-f79f-00c04fc2dcd2",
+                            "89e95b76-444d-4c62-991a-0facbeda640c")
+| where SubjectUserName !endswith "$" and SubjectUserName !startswith "MSOL_"
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by SubjectUserName, Computer
+| order by FirstSeen asc
+
+// Example: Defender for Endpoint, one host opening WinRM to many machines in ten minutes
+DeviceNetworkEvents
+| where Timestamp > ago(30d)
+| where RemotePort in (5985, 5986) and ActionType == "ConnectionSuccess"
+| summarize Targets=dcount(RemoteIP), Sample=make_set(RemoteIP, 20), Processes=make_set(InitiatingProcessFileName, 5)
+    by DeviceName, bin(Timestamp, 10m)
+| where Targets >= 10
+| order by Targets desc

@@ -2,7 +2,7 @@ id: df5b6ef7-3f87-5a5b-b617-f9262eed71b5
 name: Burst of EC2 DryRun permission tests
 description: |
   Ten or more EC2 calls with the DryRun flag from one identity in five minutes, the capability check ARTEX agents run with a stolen AWS key.
-  Agentic attack detections by ThreatDefence (cross-framework behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+  Agentic attack detections by ThreatDefence (AI agent behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
 severity: Medium
 requiredDataConnectors:
   - connectorId: AWS

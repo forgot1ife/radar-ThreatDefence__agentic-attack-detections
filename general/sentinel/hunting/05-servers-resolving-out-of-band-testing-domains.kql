@@ -1,0 +1,38 @@
+// Servers resolving out-of-band testing domains: blind bugs being confirmed against you
+// Agentic attack detections by ThreatDefence (general intrusion behavior). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1190 (Exploit Public-Facing Application), T1071.004 (Application Layer Protocol: DNS)
+// Example hunt for Defender XDR advanced hunting and Microsoft Sentinel DNS logs. Test and baseline before alerting.
+// Agents confirm blind SQL injection, SSRF, XXE, command injection and log4j-style bugs by making the target look up or
+// fetch a unique name under a callback service, then checking the service for the hit. Strix's sandbox ships
+// interactsh-client and its skills tell the agent to use *.oast.fun; nuclei uses the same interactsh servers; CyberStrikeAI's
+// operators used dnslog.cn; Burp uses oastify.com. When one of YOUR servers resolves or contacts one of these names, a
+// payload ran on it, and the process that did it is the vulnerable one. Pentests and bug bounty hunters do this too.
+// Burp Suite polls polling.oastify.com and polling.burpcollaborator.net for results from the tester's own machine. That is
+// not a payload firing, so those two names are left out. Only the exact names: a payload name can carry a polling. label
+// in front and still reach the callback service.
+
+let Window = 14d;
+let BurpPolling = dynamic(["polling.oastify.com", "polling.burpcollaborator.net"]);
+let OOB = dynamic(["oast.fun", "oast.pro", "oast.live", "oast.site", "oast.online", "oast.me", "interact.sh", "oastify.com", "burpcollaborator.net", "dnslog.cn", "ceye.io", "requestrepo.com"]);
+union isfuzzy=true
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where RemoteUrl has_any (OOB) and trim_end(@"\.", tolower(RemoteUrl)) !in (BurpPolling)
+        | project Timestamp, DeviceName, Source="DeviceNetworkEvents", Name=RemoteUrl,
+            Process=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 200))),
+    (DeviceEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "DnsQueryResponse"
+        | extend Name = tostring(parse_json(AdditionalFields).DnsQueryString)
+        | where Name has_any (OOB) and trim_end(@"\.", tolower(Name)) !in (BurpPolling)
+        | project Timestamp, DeviceName, Source="DeviceEvents DNS", Name,
+            Process=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 200))),
+    (DnsEvents
+        | where TimeGenerated > ago(Window)
+        | where Name has_any (OOB) and trim_end(@"\.", tolower(Name)) !in (BurpPolling)
+        | project Timestamp=TimeGenerated, DeviceName=Computer, Source="DnsEvents", Name, Process=ClientIP)
+// The unique label in front of the service name ties a lookup to one payload
+| extend Service = extract(@"([a-z0-9-]+\.[a-z]+)$", 1, tolower(Name))
+| summarize Lookups=count(), Names=make_set(Name, 10), Processes=make_set(Process, 10), FirstSeen=min(Timestamp), LastSeen=max(Timestamp)
+    by DeviceName, Service
+| order by FirstSeen desc

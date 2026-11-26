@@ -1,0 +1,29 @@
+id: 8c6d799b-6820-582b-847e-357c9c56b749
+name: Service principal assigned a role by itself
+description: |
+  A service principal added a directory role or app role assignment to itself, as compromised applications did in the Storm-0940 ARTEX campaign.
+  Agentic attack detections by ThreatDefence (general intrusion behavior, first written for ARTEX): https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+severity: High
+requiredDataConnectors:
+  - connectorId: AzureActiveDirectory
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - PrivilegeEscalation
+  - Persistence
+relevantTechniques:
+  - T1098
+query: |
+  AuditLogs
+  | where OperationName in ("Add member to role", "Add app role assignment to service principal", "Add app role assignment grant to user")
+  | extend InitiatorId = tostring(InitiatedBy.app.servicePrincipalId), InitiatorName = tostring(InitiatedBy.app.displayName)
+  | where isnotempty(InitiatorId)
+  | mv-expand Target = TargetResources
+  | extend TargetId = tostring(Target.id), TargetName = tostring(Target.displayName)
+  | where TargetId == InitiatorId
+  | project TimeGenerated, OperationName, InitiatorName, InitiatorId, TargetName, Result, CorrelationId
+version: 1.0.0
+kind: Scheduled

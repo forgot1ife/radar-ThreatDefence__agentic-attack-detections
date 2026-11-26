@@ -1,0 +1,17 @@
+// CloudWatch log searches with a stolen AWS key
+// Agentic attack detections by ThreatDefence (general intrusion behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// ATT&CK: T1078.004 (Valid Accounts: Cloud Accounts), T1213 (Data from Information Repositories)
+// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.
+// Read the search patterns in the result. Company names combined with words like Fund, Invoice, Billing and LLC match what Datadog saw.
+
+// Example: FilterLogEvents with the fixed limit of 1000 or secret-hunting search terms
+AWSCloudTrail
+| where TimeGenerated > ago(30d)
+| where EventName == "FilterLogEvents"
+| extend Params = parse_json(RequestParameters)
+| extend Limit = toint(Params.limit), Pattern = tostring(Params.filterPattern), LogGroup = tostring(Params.logGroupName)
+| where Limit == 1000 or Pattern has_any ("AKIA", "password", "presigned", "mongo") or Pattern has "s3://"
+| summarize Calls=count(), LogGroups=dcount(LogGroup), Patterns=make_set(Pattern, 50)
+    by UserIdentityArn, UserIdentityAccessKeyId, SourceIpAddress, bin(TimeGenerated, 1h)
+| where Calls >= 20
+| order by Calls desc

@@ -1,0 +1,31 @@
+// Kerberos user enumeration and SMB or WinRM fan-out from one address
+// Agentic attack detections by ThreatDefence (general intrusion behavior, first written for Cairn). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1087.002 (Account Discovery: Domain Account), T1110.003 (Brute Force: Password Spraying), T1021.002 (Remote Services: SMB/Windows Admin Shares), T1021.006 (Remote Services: Windows Remote Management)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Cairn source code. The worker image ships kerbrute 1.0.3, netexec, bloodyAD, coercer, enum4linux-ng,
+// Impacket and chisel, and the workspace guide tells the agent that "level 4" targets are Active Directory networks
+// and to use the impacket-* tools, chisel and proxychains (container/Dockerfile, container/AGENTS.md). Kerbrute sends
+// bare Kerberos AS-REQs: unknown names fail with 0x6 and real names without pre-authentication return a ticket, so user
+// enumeration shows as many 4768 events from one address in minutes. Its password spray shows as 4771 with 0x18.
+// Netexec then fans out over SMB and WinRM. Domain controller security events need Kerberos authentication service
+// auditing turned on.
+
+let Window = 14d;
+union isfuzzy=true
+    (SecurityEvent
+        | where TimeGenerated > ago(Window)
+        | where EventID in (4768, 4771)
+        | extend Code = tostring(Status), Src = trim_start(@"::ffff:", IpAddress)
+        | summarize Events=count(), Accounts=dcount(TargetUserName), Unknown=countif(EventID == 4768 and Code =~ "0x6"),
+            BadPassword=countif(EventID == 4771 and Code =~ "0x18"), Sample=make_set(TargetUserName, 15)
+            by Src, Window10m=bin(TimeGenerated, 10m)
+        | where Accounts >= 25 and (Unknown >= 10 or BadPassword >= 10)
+        | project Window10m, Src, Signal="Kerberos enumeration or spray", Events, Targets=Accounts, Sample),
+    (SecurityEvent
+        | where TimeGenerated > ago(Window)
+        | where EventID == 4624 and LogonType == 3 and AuthenticationPackageName in ("NTLM", "Kerberos")
+        | extend Src = IpAddress
+        | summarize Events=count(), Hosts=dcount(Computer), Sample=make_set(Computer, 15) by Src, Window10m=bin(TimeGenerated, 10m)
+        | where Hosts >= 10
+        | project Window10m, Src, Signal="network logons to many hosts", Events, Targets=Hosts, Sample)
+| order by Window10m desc

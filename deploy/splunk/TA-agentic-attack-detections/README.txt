@@ -74,7 +74,8 @@ Searches per framework:
   Deadend CLI: 5
   Ares: 9
   Offensive prompt packs: 4
-  Shared behaviors: 21
+  AI agent behaviors: 7
+  General intrusion: 14
   Indicator searches: 4 (addresses, domains, file hashes, user agents)
 
 Lookups: aad_indicators.csv has all 1838 rows of iocs/indicators.csv. aad_ioc_ip, aad_ioc_domain,

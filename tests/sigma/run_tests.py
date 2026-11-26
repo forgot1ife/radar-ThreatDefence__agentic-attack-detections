@@ -40,7 +40,7 @@ def fail(msg):
 
 
 def rule_files():
-    folders = list(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma"]
+    folders = list(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma", ROOT / "general" / "sigma"]
     return sorted(p for d in folders for p in d.rglob("*.yml"))
 
 

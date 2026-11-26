@@ -4,7 +4,7 @@
     docker run -d --name kusto -e ACCEPT_EULA=Y -p 8080:8080 mcr.microsoft.com/azuredataexplorer/kustainer-linux:latest
     python3 tests/kql/run_tests.py
 
-Test cases live in tests/kql/fixtures/<behaviors or framework>/<hunting or analytics>/<query file name>.jsonl,
+Test cases live in tests/kql/fixtures/<behaviors, general or framework>/<hunting or analytics>/<query file name>.jsonl,
 one JSON object per line:
 
     {"name": "what this case shows", "expected": true,
@@ -81,7 +81,7 @@ def emulator_ready(wait):
 def query_for(fixture):
     """The query a fixture file tests, found by its path under fixtures/."""
     scope, kind = fixture.parent.parent.name, fixture.parent.name
-    base = ROOT / "behaviors" if scope == "behaviors" else ROOT / "frameworks" / scope
+    base = ROOT / scope if scope in ("behaviors", "general") else ROOT / "frameworks" / scope
     if kind == "analytics":
         path = base / "sentinel" / "analytics" / (fixture.stem + ".yaml")
         return path, (yaml.safe_load(path.read_text(encoding="utf-8"))["query"] if path.exists() else None)

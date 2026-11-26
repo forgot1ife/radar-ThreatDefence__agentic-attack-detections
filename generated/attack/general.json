@@ -1,0 +1,324 @@
+{
+ "description": "35 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 7,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "general",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Kerberoasting, DCSync and WinRM fan-out",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1003.006"
+  },
+  {
+   "comment": "KQL hunt: Kerberos user enumeration and SMB or WinRM fan-out from one address",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1021.002"
+  },
+  {
+   "comment": "KQL hunt: Kerberoasting, DCSync and WinRM fan-out; KQL hunt: Kerberos user enumeration and SMB or WinRM fan-out from one address",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1021.006"
+  },
+  {
+   "comment": "Sigma: Svchost Running Outside the Windows System Folder; Sigma: Windows System Binary Name Running From the Wrong Folder",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1036.005"
+  },
+  {
+   "comment": "Sigma: Remote Process Listing With tasklist; Sigma: Remote tasklist Fan-Out From One Host",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1057"
+  },
+  {
+   "comment": "KQL hunt: Web and database services starting shells and download tools",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059"
+  },
+  {
+   "comment": "Sigma: Web or Database Service Spawns a Shell or Download Tool on Windows",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.001"
+  },
+  {
+   "comment": "Sigma: SQL Server Spawns a Shell Through xp_cmdshell; Sigma: Web or Database Service Spawns a Shell or Download Tool on Windows",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.003"
+  },
+  {
+   "comment": "Sigma: Web or Database Service Spawns a Shell or Download Tool on Linux",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Scripted Microsoft Graph bursts by an application",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1069.003"
+  },
+  {
+   "comment": "KQL hunt: A server calls back to the address that was probing it",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: Servers resolving out-of-band testing domains: blind bugs being confirmed against you",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "KQL hunt: A spray that ends in a successful sign-in; KQL hunt: CloudWatch log searches with a stolen AWS key; KQL hunt: Service principal secret guessing followed by a success",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1078.004"
+  },
+  {
+   "comment": "KQL hunt: Kerberos user enumeration and SMB or WinRM fan-out from one address",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1087.002"
+  },
+  {
+   "comment": "KQL hunt: Scripted Microsoft Graph bursts by an application",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1087.004"
+  },
+  {
+   "comment": "KQL hunt: One site probed through hundreds of rotating proxy addresses",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1090.002"
+  },
+  {
+   "comment": "Sentinel analytics: Service principal assigned a role by itself",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1098"
+  },
+  {
+   "comment": "KQL hunt: Applications changing their own access; Sigma: Credential Added to an Entra ID Application",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1098.001"
+  },
+  {
+   "comment": "KQL hunt: Applications changing their own access; Sigma: App Role or Directory Role Assigned to a Service Principal",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1098.003"
+  },
+  {
+   "comment": "Sigma: DNS Query to Request Collection or DNS Callback Services",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1102"
+  },
+  {
+   "comment": "KQL hunt: Servers calling webhook and tunnel services, or downloading from a bare address",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "KQL hunt: Service principal secret guessing followed by a success",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.001"
+  },
+  {
+   "comment": "KQL hunt: A spray that ends in a successful sign-in; KQL hunt: Kerberos user enumeration and SMB or WinRM fan-out from one address; Sigma: Entra ID Sign-In Failure; Sigma: Password Spray Against Many Entra ID Accounts From One Address",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.003"
+  },
+  {
+   "comment": "KQL hunt: Cognito sign-up abuse and the discovery sweep after it",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1136.003"
+  },
+  {
+   "comment": "KQL hunt: A server calls back to the address that was probing it; KQL hunt: Configuration and backup file theft, and probes of internet-facing WSUS servers; KQL hunt: Servers resolving out-of-band testing domains: blind bugs being confirmed against you; KQL hunt: Web and database services starting shells and download tools; Sigma: DNS Query for an Out-of-Band Testing Domain; Sigma: Unsigned JWT With alg none Sent to a Web Application; Sigma: WSUS Administration or Sync API Requested",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: CloudWatch log searches with a stolen AWS key; Sentinel analytics: Configuration or backup file served to an external address during probing",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1213"
+  },
+  {
+   "comment": "Sigma: SQL Server Spawns a Shell Through xp_cmdshell",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1505.001"
+  },
+  {
+   "comment": "KQL hunt: Scripts written into web directories; KQL hunt: Web and database services starting shells and download tools; Sigma: Web or Database Service Spawns a Shell or Download Tool on Linux; Sigma: Web or Database Service Spawns a Shell or Download Tool on Windows",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1505.003"
+  },
+  {
+   "comment": "Sigma: Remote Process Listing With tasklist; Sigma: Remote tasklist Fan-Out From One Host",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1518.001"
+  },
+  {
+   "comment": "KQL hunt: Cognito sign-up abuse and the discovery sweep after it",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1530"
+  },
+  {
+   "comment": "Sentinel analytics: CloudWatch logs searched for secrets; Sigma: CloudWatch Logs Searched for Secrets",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1552"
+  },
+  {
+   "comment": "KQL hunt: Configuration and backup file theft, and probes of internet-facing WSUS servers; Sentinel analytics: Configuration or backup file served to an external address during probing",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1552.001"
+  },
+  {
+   "comment": "KQL hunt: Bulk Key Vault secret reads",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1555.006"
+  },
+  {
+   "comment": "KQL hunt: Kerberoasting, DCSync and WinRM fan-out",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1558.003"
+  },
+  {
+   "comment": "Sigma: DNS Query to Request Collection or DNS Callback Services",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1567"
+  },
+  {
+   "comment": "KQL hunt: Servers calling webhook and tunnel services, or downloading from a bare address",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1567.004"
+  },
+  {
+   "comment": "KQL hunt: Servers calling webhook and tunnel services, or downloading from a bare address",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1572"
+  },
+  {
+   "comment": "Sigma: Svchost Running Outside the Windows System Folder",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1574.001"
+  },
+  {
+   "comment": "KQL hunt: Cognito sign-up abuse and the discovery sweep after it",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1580"
+  },
+  {
+   "comment": "KQL hunt: One site probed through hundreds of rotating proxy addresses",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "KQL hunt: Configuration and backup file theft, and probes of internet-facing WSUS servers",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  },
+  {
+   "comment": "Sigma: Unsigned JWT With alg none Sent to a Web Application",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1606.001"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

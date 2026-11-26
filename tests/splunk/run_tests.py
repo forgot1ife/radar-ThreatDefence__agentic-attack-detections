@@ -209,7 +209,7 @@ def main():
     # Sigma rules: which saved search each one became.
     from sigma.collection import SigmaCollection
     from sigma.correlations import SigmaCorrelationRule
-    dirs = sorted(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma"]
+    dirs = sorted(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma", ROOT / "general" / "sigma"]
     rules = SigmaCollection.load_ruleset([str(p) for d in dirs for p in sorted(d.rglob("*.yml"))])
     by_id = {}
     for _, name, s in build_splunk.sigma_searches():

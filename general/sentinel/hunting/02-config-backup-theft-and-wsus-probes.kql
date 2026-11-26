@@ -1,0 +1,30 @@
+// Configuration and backup file theft, and probes of internet-facing WSUS servers
+// Agentic attack detections by ThreatDefence (general intrusion behavior, first written for Cairn). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.003 (Active Scanning: Wordlist Scanning), T1552.001 (Unsecured Credentials: Credentials In Files), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From public research. JPCERT/CC's Case E (October 23, 2026) describes attacks with Cairn, CyberStrikeAI and ARTEX on
+// Japanese organizations: probing web applications for known flaws, stealing configuration and backup files, and
+// attacking internet-facing WSUS servers. Scutum's WAF saw the AI agents in the same wave check robots.txt and the
+// sitemap, then request .git/HEAD, .env, .env.bak, backup.zip and database backups across hundreds of directories at
+// about 44 a minute, some with a Range header that returns 206.
+// A 200 or 206 answer to any of these paths is the row to look at first: that file has left your network.
+
+let Window = 30d;
+let BackupPath = @"(?i)(/\.git/(HEAD|config)|/\.env(\.bak|\.old|\.backup|\.local)?$|/\.hg/|/\.svn/|backup\.(zip|tar|tar\.gz|sql)|db_back|database\.sql|dump\.sql|wp-config\.php\.(bak|old|save)|web\.config\.(bak|old))";
+let WsusAdmin = @"(?i)/(ApiRemoting30/WebService\.asmx|ServerSyncWebService/ServerSyncWebService\.asmx|ReportingWebService/ReportingWebService\.asmx)";
+let WsusClient = @"(?i)/(ClientWebService/client\.asmx|SimpleAuthWebService/SimpleAuth\.asmx|selfupdate/)";
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(Window) and isnotempty(RequestURL)
+        | project TimeGenerated, Src=SourceIP, Host=DestinationHostName, Port=DestinationPort, Url=RequestURL,
+            Status=toint(extract(@"\b([1-5]\d\d)\b", 1, tostring(EventOutcome))), UA=RequestClientApplication),
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | project TimeGenerated, Src=cIP, Host=csHost, Port=sPort, Url=csUriStem, Status=toint(scStatus), UA=csUserAgent)
+| where not(ipv4_is_private(Src))
+// Remote WSUS clients use the client endpoints legitimately; the admin and sync APIs have no business answering the internet.
+| extend Kind = case(Url matches regex WsusAdmin, "WSUS admin or sync API", Url matches regex WsusClient or Port in (8530, 8531), "WSUS client endpoint",
+    Url matches regex BackupPath, "config or backup file", "")
+| where isnotempty(Kind)
+| summarize Requests=count(), Served=countif(Status in (200, 206)), Paths=dcount(Url), SampleURLs=make_set(Url, 15),
+    UAs=make_set(UA, 8), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated) by Src, Host, Kind
+| where Paths >= 5 or Served > 0 or Kind == "WSUS admin or sync API"
+| order by Served desc, Paths desc

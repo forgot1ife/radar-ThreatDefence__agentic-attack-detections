@@ -22,6 +22,6 @@ Detection rules, hunting queries and indicators for **Custom AI Agent**, formerl
 | [`yara/`](yara) | Rules for the extension JAR and its source or unpacked classes |
 | Docs | [What it leaves behind](source-code-signals.md), [where to start](hunting-order.md) and the [coverage matrix](coverage.md) |
 
-The extension sends target traffic through Burp, so it has no user agent, TLS fingerprint or address of its own. Its active scanners use a fixed payload table with its own markers (`XSS-BURP-AI-1337`, `burp-ai-test`, `evil-burp-ai*.com`), and those carry the target-side detection. Requests an outside model sends through its MCP tools carry no marker; the cross-framework rules in [`behaviors/`](../../behaviors) cover those, and Burp Collaborator lookups are in behaviors hunt 09.
+The extension sends target traffic through Burp, so it has no user agent, TLS fingerprint or address of its own. Its active scanners use a fixed payload table with its own markers (`XSS-BURP-AI-1337`, `burp-ai-test`, `evil-burp-ai*.com`), and those carry the target-side detection. Requests an outside model sends through its MCP tools carry no marker; the cross-framework rules in [`behaviors/`](../../behaviors) cover those, and Burp Collaborator lookups are in general hunt 05.
 
 Indicators are in [`../../iocs/indicators.csv`](../../iocs/indicators.csv) with `framework` set to `burp-ai-agent`.

@@ -5,7 +5,7 @@
     python3 tools/build_elastic.py --check         # rebuild in memory, fail if the committed files differ
 
 Reads:
-    frameworks/*/sigma/, behaviors/sigma/     every Sigma rule as a Lucene query rule, and every Sigma correlation
+    frameworks/*/sigma/, behaviors/sigma/, general/sigma/   every Sigma rule as a Lucene query rule, and every Sigma correlation
                                               as an ES|QL rule, both on ECS field names (tools/convert.py ecs())
     frameworks/artex/elastic/rules/           the hand-written ARTEX rules, read as Kibana rule objects
     iocs/indicators.csv                       the indicators for the indicator match rule

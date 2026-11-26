@@ -1,0 +1,34 @@
+// One site probed through hundreds of rotating proxy addresses
+// Agentic attack detections by ThreatDefence (general intrusion behavior, first written for Cairn). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1090.002 (Proxy: External Proxy), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From public research. Gambit's operator told its agents to "run these, use the proxy, high severity only" and used
+// the residential proxy services IPRoyal, 711proxy and 1024proxy. In the Japanese breach wave, Cyber Security Cloud saw
+// one attacker rotate through 326 addresses in about 40 minutes for more than 1,200 requests, few per address, then
+// return to the same site days later, and judged it to be an AI agent because it changed tactics after each response.
+// Per-address thresholds miss this. Count distinct addresses per target host instead, and keep the ones whose requests
+// carry attack payloads or hit login and admin paths. Exclude your CDN, uptime monitoring and partner integrations.
+
+let Window = 7d;
+let Payload = @"(?i)(union(\s|\+|%20)+select|sleep\(|extractvalue|\.\./|%2e%2e|/etc/passwd|<script|%3cscript|\$\{|\{\{|/\.git/|/\.env|wp-config|phpinfo)";
+let Sensitive = @"(?i)/(login|signin|admin|wp-admin|wp-login|api/auth|user/login|account|checkout|upload)";
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(Window) and isnotempty(RequestURL)
+        | project TimeGenerated, Src=SourceIP, Host=DestinationHostName, Url=RequestURL, UA=RequestClientApplication),
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | project TimeGenerated, Src=cIP, Host=csHost, Url=strcat(csUriStem, "?", csUriQuery), UA=csUserAgent)
+| where not(ipv4_is_private(Src))
+| extend Hit = Url matches regex Payload or Url matches regex Sensitive
+| where Hit
+| summarize Requests=count(), Sources=dcount(Src), UAs=dcount(UA), SampleUAs=make_set(UA, 10), SampleURLs=make_set(Url, 10)
+    by Host, Window40m=bin(TimeGenerated, 40m)
+| join kind=inner (
+    union isfuzzy=true
+        (CommonSecurityLog | where TimeGenerated > ago(Window) | project TimeGenerated, Src=SourceIP, Host=DestinationHostName),
+        (W3CIISLog | where TimeGenerated > ago(Window) | project TimeGenerated, Src=cIP, Host=csHost)
+    | summarize PerSource=count() by Host, Window40m=bin(TimeGenerated, 40m), Src
+    | summarize MedianPerSource=percentile(PerSource, 50) by Host, Window40m) on Host, Window40m
+// Many addresses, few requests each, one host
+| where Sources >= 50 and MedianPerSource <= 10
+| project Window40m, Host, Sources, Requests, MedianPerSource, UAs, SampleUAs, SampleURLs
+| order by Sources desc

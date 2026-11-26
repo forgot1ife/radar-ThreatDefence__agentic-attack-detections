@@ -19,7 +19,8 @@ The image counts every agent found since 21 October 2026, across 25 public frame
 ## What is here
 
 - **Framework folders.** ARTEX and its AntiFox fork, Cairn, PentAGI, HexStrike, CyberStrikeAI, Strix, Hermes Agent, Agent Zero, RedAmon, Xalgorix, Pentest Swarm AI, Decepticon, Shannon, PentestGPT, Cyber-AutoAgent, CAI, HackSynth, VulnBot, AutoPT, PentestAgent (the paper's and GH05TCREW's), Dark Moon, NyxStrike, sapper-v2, NeuroSploit, Vigilo, Pentest Copilot, cyber-harness, CHYing-agent, Hexstrike-redteam, pentest-ai, LazyOwn, H-Pentest, Incalmo, Virga, MCP Kali Server, ARIA-X, Mitsu, burp-ai-agent, RAPTOR, Blitz Strike, Nebula, Clearwing, BreachWeave, numasec, Pentest Harness, Agentic Bug Hunter, 0security, Sage (Mythic), PentestCode, hackingBuddyGPT, AutoPentester, MAPTA, PentesterFlow, Pentest Agent Suite, Cain, KaliGPT, Pensar Apex, MCP for Security, Guardian, Cybermes, ARTEMIS, CTF Agent, OpenHack, RedAI, Cochise, Deadend CLI and Ares, plus four offensive prompt packs. Each folder is built from a review of the framework's source code and the public reporting on its use. Fourteen more frameworks whose consoles were found on the internet have smaller folders that say what the console and the tool look like, with the code behind each signal: AutoCVE, CyberStrike, Vulnerator AI, Decepticon, AIDA, BugTraceAI, Z3r0, AIRecon, LuaN1aoAgent, open-kritt, REDCELL, T3MP3ST, WormXGPT and Chufeng Agent Core.
-- **Shared behaviors.** Rules for what these frameworks have in common, whatever the tool or the model behind it.
+- **AI agent behaviors.** Rules that point at an AI agent, whatever the framework or model behind it, in [`behaviors/`](behaviors).
+- **General intrusion rules.** Steps seen in agent attacks that any attacker also takes, labelled as such, in [`general/`](general).
 - **Indicators and feeds.** One CSV of 580 sourced indicators, and the feeds generated from it.
 - **Exposed consoles.** A dated list of addresses where one of these consoles answers on the internet, in [`exposure/`](exposure), with a [count per framework](#exposed-consoles). It is a record of what is exposed, not a detection feed.
 
@@ -56,9 +57,9 @@ The capture is test traffic written from the framework source code and published
 | Suricata | Add the `.rules` files from `frameworks/*/suricata/` and `behaviors/suricata/`. HTTP rules need cleartext or decrypted traffic. DNS and TLS SNI rules work on encrypted traffic |
 | Zeek | Install the behaviors package with `zkg install https://github.com/ThreatDefence/agentic-attack-detections` (or load `behaviors/zeek/agentic-behaviors/` by path), set `server_nets` to your server ranges ([setup](behaviors/zeek/README.md)), load the framework scripts `frameworks/artex/zeek/artex/`, `frameworks/cyberstrikeai/zeek/cyberstrikeai/`, `frameworks/hexstrike/zeek/hexstrike/`, `frameworks/autocve/zeek/autocve/` and `frameworks/luan1aoagent/zeek/luan1aoagent/`, and feed `frameworks/*/zeek/intel/*.intel` to the Intel framework |
 | YARA | Scan container layers, home folders, `/tmp` and web roots with `frameworks/*/yara/` |
-| Any SIEM with Sigma | Convert `frameworks/*/sigma/` and `behaviors/sigma/` with `sigma convert`, or take the conversions in [`generated/`](generated) |
+| Any SIEM with Sigma | Convert `frameworks/*/sigma/`, `behaviors/sigma/` and `general/sigma/` with `sigma convert`, or take the conversions in [`generated/`](generated) |
 | Splunk | Install [`agentic-attack-detections-splunk.tgz`](https://github.com/ThreatDefence/agentic-attack-detections/releases/latest/download/agentic-attack-detections-splunk.tgz) from the latest release (Apps > Install app from file). One app has the searches for every framework, the indicator lookups and a dashboard with a card per framework. Point the `aad_indexes` macro at your indexes. [Setup](deploy/splunk) |
-| Elastic | Import [`agentic-attack-detections.ndjson`](https://github.com/ThreatDefence/agentic-attack-detections/releases/latest/download/agentic-attack-detections.ndjson) through Security > Rules > Import, or post it to `/api/detection_engine/rules/_import`. One file carries every framework and the shared behaviors, all disabled: the Sigma rules as query rules, the correlations as ES\|QL rules, the hand-written ARTEX rules, and an indicator match rule. For that one, load [`agentic-attack-indicators.ndjson`](https://github.com/ThreatDefence/agentic-attack-detections/releases/latest/download/agentic-attack-indicators.ndjson) with `POST logs-ti_agentic_attacks-default/_bulk`. Point the index patterns at your own data before you enable them. [Details](generated/elastic_ndjson) |
+| Elastic | Import [`agentic-attack-detections.ndjson`](https://github.com/ThreatDefence/agentic-attack-detections/releases/latest/download/agentic-attack-detections.ndjson) through Security > Rules > Import, or post it to `/api/detection_engine/rules/_import`. One file carries every framework, the AI agent behaviors and the general intrusion rules, all disabled: the Sigma rules as query rules, the correlations as ES\|QL rules, the hand-written ARTEX rules, and an indicator match rule. For that one, load [`agentic-attack-indicators.ndjson`](https://github.com/ThreatDefence/agentic-attack-detections/releases/latest/download/agentic-attack-indicators.ndjson) with `POST logs-ti_agentic_attacks-default/_bulk`. Point the index patterns at your own data before you enable them. [Details](generated/elastic_ndjson) |
 | A WAF: Cloudflare, AWS WAF or Azure WAF | Deploy the rules in [`waf/`](waf): framework user agents, probe markers and unsigned JWT probes to block, and reported addresses to challenge. A WAF is optional. It adds blocking at the edge to the detections, it doesn't replace them |
 | A threat intelligence platform | Import `feeds/stix2.1-bundle.json`, or the per-framework lists in `feeds/by-framework/`. Steps for MISP and OpenCTI, and which fields arrive: [docs/threat-intelligence-platforms.md](docs/threat-intelligence-platforms.md) |
 
@@ -137,7 +138,8 @@ The capture is test traffic written from the framework source code and published
 | [Offensive prompt packs](frameworks/prompt-packs) |  |  | 4 |  | 8 | intel | 25 |
 | [AutoCVE](frameworks/autocve) | | | | 2 | | script | |
 | [LuaN1aoAgent](frameworks/luan1aoagent) | | | | 4 | | script | |
-| [Shared behaviors](behaviors) | 25 | 6 | 26 | 18 | | package | |
+| [AI agent behaviors](behaviors) | 9 | 3 | 10 | 18 | | package | |
+| [General intrusion](general) | 16 | 3 | 16 | | | | |
 
 Every rule names its MITRE ATT&CK techniques. [docs/attack-coverage.md](docs/attack-coverage.md) lists them per framework with links to the rules, and [`generated/attack/`](generated/attack) has an ATT&CK Navigator layer per framework and one for everything.
 
@@ -286,34 +288,41 @@ An active host is one seen in the seven days to November 25, 2026. Hosts the sca
 
 The addresses, with the port and the fingerprint that found each one, are in [`exposure/consoles.csv`](exposure/consoles.csv). The counts of every snapshot are kept in [`exposure/history.csv`](exposure/history.csv), so the numbers can be followed over time.
 
-## Behaviors shared by agentic frameworks
+## AI agent behaviors
 
-[`behaviors/`](behaviors) holds rules that do not depend on any one framework.
+[`behaviors/`](behaviors) holds rules that point at an AI agent, whatever the framework or model behind it: agent tools on the host, model API traffic, and speed or spread that no person shows.
 
 | Behavior | Rules |
 |---|---|
 | An attack tool started under an AI agent CLI (Claude Code, Qwen Code, Kimi CLI, Codex, opencode, Hermes, Cairn's workers), found from the process tree | KQL hunt, Sentinel analytics rule, Sigma |
 | Servers calling AI model APIs: Chinese models (DeepSeek, Qwen, GLM, Kimi, MiniMax, Doubao), gateways such as OpenRouter, and Western APIs | KQL hunt, Sigma, Zeek |
 | An AI agent's page reader on your application next to attack traffic from the same address | KQL hunt, Sigma, Suricata, Zeek |
+| An attack agent proving it can write to a container registry: a push to a repository named after the agent (`artex-i<id>`, `hermes-h<id>-writecheck`, `csai-push-probe`) or after a write test | Sigma, Suricata |
+| Several unrelated user agent families from one address inside a minute | KQL hunt |
+| Password spray at a fixed rhythm of about one attempt a second | KQL hunt, Sentinel analytics rule |
+| One application asking for tokens to many resources in minutes, and Azure validate sweeps across many resource types in seconds | KQL hunt, Sigma |
+| AWS credentials used at machine speed: several identities checked in the same second, DryRun bursts and denied sweeps across many APIs | KQL hunt, Sentinel analytics rule, Sigma |
+
+## General intrusion rules
+
+[`general/`](general) holds rules for intrusion steps seen in agent attacks that any attacker, person or agent, also takes. They are useful, but a hit says nothing about AI on its own. Read them next to the AI agent behaviors above and the framework folders.
+
+| Behavior | Rules |
+|---|---|
 | One site probed through hundreds of rotating proxy addresses | KQL hunt, Zeek |
 | Configuration and backup file theft, and probes of WSUS administration services | KQL hunt, Sentinel analytics rule, Sigma, Suricata, Zeek |
-| An attack agent proving it can write to a container registry: a push to a repository named after the agent (`artex-i<id>`, `hermes-h<id>-writecheck`, `csai-push-probe`) or after a write test | Sigma, Suricata |
-| Kerberos user enumeration and SMB or WinRM fan-out from one address | KQL hunt, Zeek |
+| Kerberos user enumeration, Kerberoasting, DCSync, and SMB, WinRM or remote tasklist fan-out | KQL hunt, Sigma, Zeek |
 | A server calling back to the address that was probing it | KQL hunt, Suricata (PentAGI worker ports), Zeek |
-| AWS credentials used at machine speed from one outside address | KQL hunt |
 | Servers looking up out-of-band testing domains (interactsh, Burp Collaborator, dnslog.cn), which means a blind payload ran on them | KQL hunt, Sigma, Suricata, Zeek |
-| Password spray at a fixed rhythm, and a spray that ends in a successful sign-in | KQL hunt, Sentinel analytics rule, Sigma |
-| Applications that guess secrets, change their own access, ask for tokens to many resources in minutes or call Microsoft Graph in scripted bursts | KQL hunt, Sentinel analytics rule, Sigma |
-| Bulk Key Vault secret reads, Azure validate sweeps and Kudu sign-ins | KQL hunt, Sigma |
-| AWS permission testing: DryRun bursts, denied sweeps, CloudWatch searches for secrets and Cognito sign-up abuse | KQL hunt, Sentinel analytics rule, Sigma |
-| Several unrelated user agent families from one address inside a minute | KQL hunt |
+| Password spray from one address, and a spray that ends in a successful sign-in | KQL hunt, Sigma |
+| Applications that guess secrets, change their own access or call Microsoft Graph in scripted bursts | KQL hunt, Sentinel analytics rule, Sigma |
+| Bulk Key Vault secret reads, CloudWatch searches for secrets and Cognito sign-up abuse | KQL hunt, Sentinel analytics rule, Sigma |
 | Web or database services starting shells or download tools, and scripts written into web folders | KQL hunt, Sigma |
 | Servers calling webhook, callback and tunnel services, or downloading from a bare address | KQL hunt, Sigma |
-| Kerberoasting, DCSync, WinRM fan-out and remote tasklist fan-out | KQL hunt, Sigma |
 | Windows system binary names such as svchost.exe running from the wrong folder | Sigma |
 | Unsigned (alg none) tokens sent to a web application | Sigma |
 
-The rows from the password spray down were first written for ARTEX. Nothing in them depends on ARTEX, so they now sit here and run for every framework. [`frameworks/artex/README.md`](frameworks/artex/README.md#moved-to-shared-behaviors) lists where each one went.
+Many of these were first written for ARTEX ([where each one went](frameworks/artex/README.md#moved-out-of-the-artex-folder)). The Suricata rules and the Zeek package for both groups stay in [`behaviors/`](behaviors), so `zkg install` keeps working.
 
 ## Indicators and feeds
 

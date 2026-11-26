@@ -41,7 +41,7 @@ def check_sigma():
     from sigma.validators.core import validators
     from sigma.validation import SigmaValidator
 
-    files = sorted(p for d in list(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma"] for p in d.rglob("*.yml"))
+    files = sorted(p for d in list(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma", ROOT / "general" / "sigma"] for p in d.rglob("*.yml"))
     coll = SigmaCollection.load_ruleset([str(p) for p in files])
     ids = [str(r.id) for r in coll.rules]
     if len(ids) != len(set(ids)):

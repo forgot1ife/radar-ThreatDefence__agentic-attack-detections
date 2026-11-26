@@ -1,0 +1,17 @@
+// Scripts written into web directories
+// Agentic attack detections by ThreatDefence (general intrusion behavior, first written for ARTEX). Source: https://threatdefence.com/article/artex-agentic-attack-framework-detection-hunting
+// ATT&CK: T1505.003 (Server Software Component: Web Shell)
+// Example hunt for Microsoft Sentinel and Defender XDR advanced hunting. Test and baseline before alerting.
+// A script file created by `mysqld`, `sqlservr.exe`, `java` or `w3wp.exe` itself deserves attention first. In MySQL, also check whether `general_log_file` or `slow_query_log_file` points into a web directory.
+
+// Example: Defender for Endpoint, server-side script files created in web roots by something other than a deployment tool
+let Deployers = dynamic(["msdeploy.exe", "git.exe", "git", "rsync", "dpkg", "rpm", "apt", "yum", "dotnet.exe", "octopus.tentacle.exe"]);
+DeviceFileEvents
+| where Timestamp > ago(30d)
+| where ActionType in ("FileCreated", "FileModified")
+| where FileName endswith ".jsp" or FileName endswith ".jspx" or FileName endswith ".php" or FileName endswith ".aspx" or FileName endswith ".ashx"
+| where FolderPath has_any (@"\inetpub\", @"\webapps\", @"\htdocs\", "/var/www/", "/webapps/", "/usr/share/nginx/")
+| where InitiatingProcessFileName !in~ (Deployers)
+| project Timestamp, DeviceName, FolderPath, InitiatingProcessFileName, InitiatingProcessAccountName,
+          InitiatingProcessCommandLine, SHA256
+| order by Timestamp asc

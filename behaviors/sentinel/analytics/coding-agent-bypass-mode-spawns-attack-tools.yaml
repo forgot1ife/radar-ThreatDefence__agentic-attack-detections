@@ -8,7 +8,7 @@ description: |
   The agent is found from the process tree or its command line, not from an auto-approve flag: staff use those flags
   too, and an agent can run an attack tool without one. Tools are read from the last hour, agent processes from the
   last day. Whatever model is behind it, this is agentic AI running an attack tool: check who ran it and the target.
-  Agentic attack detections by ThreatDefence (cross-framework behavior): https://github.com/ThreatDefence/agentic-attack-detections
+  Agentic attack detections by ThreatDefence (AI agent behavior): https://github.com/ThreatDefence/agentic-attack-detections
 severity: Medium
 requiredDataConnectors:
   - connectorId: MicrosoftThreatProtection

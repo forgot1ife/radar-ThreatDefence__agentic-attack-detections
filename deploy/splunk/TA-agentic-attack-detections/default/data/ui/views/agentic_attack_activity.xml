@@ -8472,7 +8472,7 @@
     "name_behaviors": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "**Shared behaviors**",
+        "markdown": "**AI agent behaviors**",
         "fontColor": "#E8EAED",
         "fontSize": "large"
       }
@@ -8480,7 +8480,7 @@
     "desc_behaviors": {
       "type": "splunk.markdown",
       "options": {
-        "markdown": "What every agentic framework does: coding agents with approvals off, agent tooling, callbacks.",
+        "markdown": "What points at an AI agent whatever the framework: agent CLIs running attack tools, model APIs, machine-speed bursts.",
         "fontColor": "#9AA0A6",
         "fontSize": "small"
       }
@@ -8561,6 +8561,128 @@
       }
     },
     "port_behaviors": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "**any**  \nframework",
+        "fontColor": "#9AA0A6",
+        "fontSize": "small"
+      }
+    },
+    "bg_general": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#1A1C20",
+        "strokeColor": "#2A2E35",
+        "rx": 8
+      }
+    },
+    "bar_general": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#AEB6C2",
+        "strokeColor": "#AEB6C2"
+      }
+    },
+    "dot_general": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#AEB6C2",
+        "strokeColor": "#AEB6C2",
+        "rx": 2
+      }
+    },
+    "name_general": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "**General intrusion**",
+        "fontColor": "#E8EAED",
+        "fontSize": "large"
+      }
+    },
+    "desc_general": {
+      "type": "splunk.markdown",
+      "options": {
+        "markdown": "Intrusion steps seen in agent attacks that any attacker takes: sprays, web shells, Kerberoasting, callbacks.",
+        "fontColor": "#9AA0A6",
+        "fontSize": "small"
+      }
+    },
+    "big_general": {
+      "type": "splunk.singlevalue",
+      "dataSources": {
+        "primary": "t_general"
+      },
+      "options": {
+        "majorValue": "> primary | seriesByName('sources') | lastPoint()",
+        "sparklineValues": "> primary | seriesByName('hits')",
+        "trendDisplay": "off",
+        "sparklineDisplay": "below",
+        "showSparklineAreaGraph": true,
+        "sparklineStrokeColor": "#AEB6C2",
+        "sparklineAreaColor": "#AEB6C2",
+        "majorColor": "#E8EAED",
+        "underLabel": "hosts and addresses",
+        "underLabelFontSize": 12,
+        "backgroundColor": "#1A1C20",
+        "majorFontSize": 40
+      }
+    },
+    "rule_general": {
+      "type": "splunk.rectangle",
+      "options": {
+        "fillColor": "#2A2E35",
+        "strokeColor": "#2A2E35"
+      }
+    },
+    "hits_general": {
+      "type": "splunk.singlevalue",
+      "dataSources": {
+        "primary": "t_general"
+      },
+      "options": {
+        "majorValue": "> primary | seriesByName('total_hits') | lastPoint()",
+        "trendDisplay": "off",
+        "sparklineDisplay": "off",
+        "majorColor": "#E8EAED",
+        "majorFontSize": 18,
+        "backgroundColor": "#1A1C20",
+        "underLabel": "results",
+        "underLabelFontSize": 12
+      }
+    },
+    "new_general": {
+      "type": "splunk.singlevalue",
+      "dataSources": {
+        "primary": "a_general"
+      },
+      "options": {
+        "majorValue": "> primary | seriesByName('new') | lastPoint()",
+        "trendDisplay": "off",
+        "sparklineDisplay": "off",
+        "majorColor": "#E8EAED",
+        "majorFontSize": 18,
+        "backgroundColor": "#1A1C20",
+        "underLabel": "new, 7 days",
+        "underLabelFontSize": 12
+      }
+    },
+    "all_general": {
+      "type": "splunk.singlevalue",
+      "dataSources": {
+        "primary": "a_general"
+      },
+      "options": {
+        "majorValue": "> primary | seriesByName('all_time') | lastPoint()",
+        "trendDisplay": "off",
+        "sparklineDisplay": "off",
+        "majorColor": "#E8EAED",
+        "majorFontSize": 18,
+        "backgroundColor": "#1A1C20",
+        "underLabel": "all time",
+        "underLabelFontSize": 12
+      }
+    },
+    "port_general": {
       "type": "splunk.markdown",
       "options": {
         "markdown": "**any**  \nframework",
@@ -9586,6 +9708,20 @@
       "options": {
         "extend": "alltime",
         "query": "| search aad_framework=\"behaviors\"\n| append [| makeresults | eval all_time=0, new=0]\n| stats max(all_time) AS all_time max(new) AS new"
+      }
+    },
+    "t_general": {
+      "type": "ds.chain",
+      "options": {
+        "extend": "base",
+        "query": "| eval h=if(aad_framework=\"general\", 1, 0), e=if(aad_framework=\"general\", aad_entity, null())\n| eventstats dc(e) AS sources\n| timechart span=1d sum(h) AS hits max(sources) AS sources\n| fillnull value=0 hits\n| eventstats max(sources) AS sources sum(hits) AS total_hits\n| fillnull value=0 sources total_hits"
+      }
+    },
+    "a_general": {
+      "type": "ds.chain",
+      "options": {
+        "extend": "alltime",
+        "query": "| search aad_framework=\"general\"\n| append [| makeresults | eval all_time=0, new=0]\n| stats max(all_time) AS all_time max(new) AS new"
       }
     },
     "latest": {
@@ -17304,6 +17440,116 @@
         "type": "block",
         "position": {
           "x": 640,
+          "y": 5670,
+          "w": 76,
+          "h": 48
+        }
+      },
+      {
+        "item": "bg_general",
+        "type": "block",
+        "position": {
+          "x": 738,
+          "y": 5424,
+          "w": 342,
+          "h": 300
+        }
+      },
+      {
+        "item": "bar_general",
+        "type": "block",
+        "position": {
+          "x": 744,
+          "y": 5424,
+          "w": 330,
+          "h": 3
+        }
+      },
+      {
+        "item": "dot_general",
+        "type": "block",
+        "position": {
+          "x": 758,
+          "y": 5448,
+          "w": 10,
+          "h": 10
+        }
+      },
+      {
+        "item": "name_general",
+        "type": "block",
+        "position": {
+          "x": 776,
+          "y": 5438,
+          "w": 292,
+          "h": 30
+        }
+      },
+      {
+        "item": "desc_general",
+        "type": "block",
+        "position": {
+          "x": 758,
+          "y": 5470,
+          "w": 306,
+          "h": 48
+        }
+      },
+      {
+        "item": "big_general",
+        "type": "block",
+        "position": {
+          "x": 752,
+          "y": 5520,
+          "w": 314,
+          "h": 130
+        }
+      },
+      {
+        "item": "rule_general",
+        "type": "block",
+        "position": {
+          "x": 758,
+          "y": 5658,
+          "w": 302,
+          "h": 1
+        }
+      },
+      {
+        "item": "hits_general",
+        "type": "block",
+        "position": {
+          "x": 752,
+          "y": 5664,
+          "w": 80,
+          "h": 54
+        }
+      },
+      {
+        "item": "new_general",
+        "type": "block",
+        "position": {
+          "x": 834,
+          "y": 5664,
+          "w": 84,
+          "h": 54
+        }
+      },
+      {
+        "item": "all_general",
+        "type": "block",
+        "position": {
+          "x": 920,
+          "y": 5664,
+          "w": 76,
+          "h": 54
+        }
+      },
+      {
+        "item": "port_general",
+        "type": "block",
+        "position": {
+          "x": 1000,
           "y": 5670,
           "w": 76,
           "h": 48

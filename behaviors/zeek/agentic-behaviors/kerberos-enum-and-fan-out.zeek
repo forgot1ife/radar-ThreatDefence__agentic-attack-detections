@@ -1,4 +1,4 @@
-##! Kerberos user enumeration and SMB or WinRM fan-out from one address (behaviors hunt 06)
+##! Kerberos user enumeration and SMB or WinRM fan-out from one address (general hunt 03)
 ##!
 ##! Agent workers ship kerbrute, netexec and Impacket. Kerbrute sends bare AS-REQs: unknown names fail with
 ##! KDC_ERR_C_PRINCIPAL_UNKNOWN (6) and its password spray fails with KDC_ERR_PREAUTH_FAILED (24). Netexec then fans out

@@ -5,7 +5,7 @@
     python3 tools/build_attack.py --check     # rebuild in memory; fail if the committed files differ, a rule names
                                               # no technique, or a rule names one that is not in the pinned release
 
-Reads, for every framework folder and for behaviors/:
+Reads, for every framework folder and for behaviors/ and general/:
     sigma/**/*.yml                attack.tNNNN and attack.<tactic> tags
     sentinel/analytics/*.yaml     relevantTechniques and tactics
     sentinel/hunting/*.kql        the `// ATT&CK:` line in the header comment
@@ -39,8 +39,8 @@ TECHNIQUE = attack.TECHNIQUE
 
 
 def folders():
-    """[(framework, folder)]: behaviors, then the frameworks in name order."""
-    return [("behaviors", ROOT / "behaviors")] + [(p.name, p) for p in sorted((ROOT / "frameworks").iterdir())
+    """[(framework, folder)]: AI agent behaviors, general intrusion, then the frameworks in name order."""
+    return [("behaviors", ROOT / "behaviors"), ("general", ROOT / "general")] + [(p.name, p) for p in sorted((ROOT / "frameworks").iterdir())
                                                   if p.is_dir()]
 
 

@@ -13,7 +13,7 @@ Without an emulator the test is skipped. `--require` makes that a failure, and `
 
 ## Adding cases for a query
 
-Create `fixtures/<behaviors or framework>/<hunting or analytics>/<query file name>.jsonl`. For `behaviors/sentinel/hunting/09-servers-resolving-out-of-band-testing-domains.kql` that is `fixtures/behaviors/hunting/09-servers-resolving-out-of-band-testing-domains.jsonl`. One JSON object per line:
+Create `fixtures/<behaviors, general or framework>/<hunting or analytics>/<query file name>.jsonl`. For `general/sentinel/hunting/05-servers-resolving-out-of-band-testing-domains.kql` that is `fixtures/general/hunting/05-servers-resolving-out-of-band-testing-domains.jsonl`. One JSON object per line:
 
 ```json
 {"name": "what this case shows", "expected": true, "rows": {"DnsEvents": [{"Computer": "{case}", "Name": "abc123.oast.fun"}]}}

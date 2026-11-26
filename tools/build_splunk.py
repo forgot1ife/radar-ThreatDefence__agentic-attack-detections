@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the Splunk app with the searches for every framework and the shared behaviors.
+"""Build the Splunk app with the searches for every framework, the AI agent behaviors and the general intrusion rules.
 
     python3 tools/build_splunk.py                  # write deploy/splunk/TA-agentic-attack-detections/
     python3 tools/build_splunk.py --check          # rebuild in memory, fail if deploy/splunk/ differs
@@ -7,7 +7,7 @@
     python3 tools/build_splunk.py --appinspect-result report.json   # fail on any failure in a splunk-appinspect report
 
 Reads:
-    frameworks/*/sigma/, behaviors/sigma/      every Sigma rule, converted with pySigma to SPL on CIM field names
+    frameworks/*/sigma/, behaviors/sigma/, general/sigma/   every Sigma rule, converted with pySigma to SPL on CIM field names
     frameworks/artex/splunk/                   the hand-written ARTEX searches and macros
     iocs/indicators.csv                        the indicator lookups and the searches that use them
 
@@ -109,7 +109,8 @@ FRAMEWORKS = {
     "deadend-cli": ("Deadend CLI", "#2A38BF", "", "Black-box web pentest agent: a Bun terminal UI driving a Python agent with sandboxed tools."),
     "ares": ("Ares", "#1769D0", "", "Dreadnode's Rust multi-agent platform that chains impacket, NetExec and certipy to attack Active Directory."),
     "prompt-packs": ("Offensive prompt packs", "#B0A8B9", "", "Skill files, subagents and jailbreak prompts that turn a coding agent into an attack tool."),
-    "behaviors": ("Shared behaviors", "#D9DEE5", "", "What every agentic framework does: coding agents with approvals off, agent tooling, callbacks."),
+    "behaviors": ("AI agent behaviors", "#D9DEE5", "", "What points at an AI agent whatever the framework: agent CLIs running attack tools, model APIs, machine-speed bursts."),
+    "general": ("General intrusion", "#AEB6C2", "", "Intrusion steps seen in agent attacks that any attacker takes: sprays, web shells, Kerberoasting, callbacks."),
 }
 
 # Sigma field -> CIM field, per log source category. Cloud log sources keep their own JSON field names, as the Splunk
@@ -324,7 +325,7 @@ def sigma_searches():
         ProcessingItem(identifier=f"cim_{cat}", transformation=FieldMappingTransformation(fields),
                        rule_conditions=[LogsourceCondition(category=cat)]) for cat, fields in CIM_FIELDS.items()] + [
         ProcessingItem(identifier="literal_asterisk", transformation=LiteralAsterisk())])
-    dirs = sorted(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma"]
+    dirs = sorted(ROOT.glob("frameworks/*/sigma")) + [ROOT / "behaviors" / "sigma", ROOT / "general" / "sigma"]
     files = sorted(p for d in dirs for p in d.rglob("*.yml"))
     rules = SigmaCollection.load_ruleset([str(p) for p in files])
     searches = []
@@ -333,7 +334,8 @@ def sigma_searches():
         if id(rule) in referenced:
             continue  # converted as part of the correlation rule that uses it
         path = Path(str(rule.source.path))
-        fw = "behaviors" if "behaviors" in path.relative_to(ROOT).parts[:1] else path.relative_to(ROOT).parts[1]
+        top = path.relative_to(ROOT).parts[0]
+        fw = top if top in ("behaviors", "general") else path.relative_to(ROOT).parts[1]
         if isinstance(rule, SigmaCorrelationRule):
             base = rule.rules[0].rule
             coll = copy.deepcopy(SigmaCollection([r.rule for r in rule.rules] + [rule]))
@@ -354,7 +356,7 @@ def sigma_searches():
         title = re.sub(r"\s+", " ", rule.title).strip()
         display = FRAMEWORKS[fw][0]
         for prefix in (display, display.split()[0]):
-            if title.lower().startswith(prefix.lower() + " ") and fw != "behaviors":
+            if title.lower().startswith(prefix.lower() + " ") and fw not in ("behaviors", "general"):
                 title = title[len(prefix):].strip()
                 title = title[0].upper() + title[1:]
                 break

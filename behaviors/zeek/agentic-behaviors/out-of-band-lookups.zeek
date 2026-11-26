@@ -1,4 +1,4 @@
-##! Servers resolving out-of-band testing domains (behaviors hunt 09)
+##! Servers resolving out-of-band testing domains (general hunt 05)
 ##!
 ##! Agents confirm blind injection, SSRF and XXE by making the target look up a unique name under a callback service.
 ##! Strix's sandbox ships interactsh-client and its skills use *.oast.fun; nuclei uses the same interactsh servers;

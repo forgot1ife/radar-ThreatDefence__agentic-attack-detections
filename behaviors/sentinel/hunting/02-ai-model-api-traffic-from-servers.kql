@@ -1,5 +1,5 @@
 // AI model API traffic from servers: an agentic attack tool running on your infrastructure
-// Agentic attack detections by ThreatDefence (cross-framework behavior). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// Agentic attack detections by ThreatDefence (AI agent behavior). Source: https://github.com/ThreatDefence/agentic-attack-detections
 // ATT&CK: T1588.007 (Obtain Capabilities: Artificial Intelligence), T1071.001 (Application Layer Protocol: Web Protocols)
 // Example hunt for Microsoft Sentinel. Needs an outbound proxy that records the host and user agent. Test before alerting.
 // Every agentic attack framework needs a model, and the ones seen in real intrusions mostly use Chinese models and

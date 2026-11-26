@@ -2,7 +2,7 @@
 
 Which behavior each platform covers. S = Sigma rule (converted in `generated/`), N = hand-written native query or rule, I = indicator feed.
 
-A row marked shared has its rules in [`behaviors/`](../../behaviors), where they cover every framework and still cover ARTEX ([where each one went](README.md#moved-to-shared-behaviors)).
+A row marked shared has its rules in [`behaviors/`](../../behaviors) (AI agent behaviors) or [`general/`](../../general) (general intrusion), where they cover every framework and still cover ARTEX ([where each one went](README.md#moved-out-of-the-artex-folder)).
 
 | Behavior | Data source | Sigma | Sentinel / Defender | Splunk | Elastic | Zeek | Suricata |
 |---|---|---|---|---|---|---|---|

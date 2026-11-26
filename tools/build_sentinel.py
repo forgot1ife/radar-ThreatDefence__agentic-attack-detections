@@ -4,7 +4,7 @@
     python3 tools/build_sentinel.py            # write deploy/sentinel/*.json
     python3 tools/build_sentinel.py --check    # rebuild in memory, validate, fail if deploy/sentinel/ differs
 
-Reads frameworks/*/sentinel/ and behaviors/sentinel/:
+Reads frameworks/*/sentinel/, behaviors/sentinel/ and general/sentinel/:
     analytics/*.yaml   -> Microsoft.SecurityInsights/alertRules (kind Scheduled): query, frequency, period,
                           threshold, severity, tactics, techniques and entity mappings when the file has them
     hunting/*.kql      -> Microsoft.OperationalInsights/workspaces/savedSearches in the "Hunting Queries" category,
@@ -12,7 +12,7 @@ Reads frameworks/*/sentinel/ and behaviors/sentinel/:
     feeds/sentinel-watchlist.csv -> Microsoft.SecurityInsights/watchlists, alias AGENTIC_IOCs, search key "value"
 
 Writes deploy/sentinel/agentic-attack-detections.json (everything) and one template per framework (plus
-behaviors.json for the cross-framework rules). Every template carries the whole watchlist under the same alias,
+behaviors.json for the AI agent behaviors and general.json for the general intrusion rules). Every template carries the whole watchlist under the same alias,
 so deploying several of them leaves one complete watchlist. Parameters: workspace (name of the Log Analytics
 workspace with Microsoft Sentinel on, in the resource group you deploy to) and enableRules (false by default).
 
@@ -94,8 +94,8 @@ def iso_duration(value):
 
 
 def sources():
-    """[(framework, folder)], behaviors first, then frameworks in name order."""
-    out = [("behaviors", ROOT / "behaviors" / "sentinel")] if (ROOT / "behaviors" / "sentinel").is_dir() else []
+    """[(framework, folder)], AI agent behaviors and general intrusion first, then frameworks in name order."""
+    out = [(s, ROOT / s / "sentinel") for s in ("behaviors", "general") if (ROOT / s / "sentinel").is_dir()]
     out += [(p.parent.name, p) for p in sorted(ROOT.glob("frameworks/*/sentinel")) if p.is_dir()]
     return out
 
@@ -170,25 +170,50 @@ def analytics_rule(path, framework):
 
 # Hunts that moved keep the id they were first deployed with, so a redeploy updates the saved search in place instead
 # of adding a second copy. New path -> the path its id was made from. Add a line here when a hunt file moves.
-_A, _B = "frameworks/artex/sentinel/hunting/", "behaviors/sentinel/hunting/"
-MOVED_HUNTS = {_B + new: _A + old for new, old in [
-    ("10-password-spray-at-a-fixed-rhythm.kql", "02-password-spray-at-a-fixed-rhythm.kql"),
-    ("11-a-spray-that-ends-in-a-successful-sign-in.kql", "03-a-spray-that-ends-in-a-successful-sign-in.kql"),
-    ("12-service-principal-secret-failures-then-success.kql", "18-service-principal-secret-failures-then-success.kql"),
-    ("13-applications-changing-their-own-access.kql", "05-applications-changing-their-own-access.kql"),
-    ("14-one-application-hitting-many-resources.kql", "19-one-application-hitting-many-resources.kql"),
-    ("15-bulk-key-vault-secret-reads.kql", "07-bulk-key-vault-secret-reads.kql"),
-    ("16-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql", "15-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql"),
-    ("17-aws-permission-testing-and-the-foothold-that-follows.kql", "14-aws-permission-testing-and-the-foothold-that-follows.kql"),
-    ("18-cloudwatch-log-searches-with-a-stolen-aws-key.kql", "08-cloudwatch-log-searches-with-a-stolen-aws-key.kql"),
-    ("19-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql", "09-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql"),
-    ("20-user-agent-family-burst-from-one-source.kql", "17-user-agent-family-burst-from-one-source.kql"),
-    ("21-web-and-database-services-starting-shells-and-download-tools.kql", "11-web-and-database-services-starting-shells-and-download-tools.kql"),
-    ("22-scripts-written-into-web-directories.kql", "13-scripts-written-into-web-directories.kql"),
-    ("23-servers-calling-webhook-and-tunnel-services.kql", "12-servers-calling-webhook-and-tunnel-services-or-downloading-f.kql"),
-    ("24-kerberoasting-dcsync-and-winrm-fan-out.kql", "16-kerberoasting-dcsync-and-winrm-fan-out.kql"),
-    ("25-scripted-microsoft-graph-bursts-by-an-application.kql", "06-scripted-microsoft-graph-bursts-by-an-application.kql"),
-]}
+MOVED_HUNTS = {
+    "behaviors/sentinel/hunting/04-user-agent-family-burst-from-one-source.kql":
+        "frameworks/artex/sentinel/hunting/17-user-agent-family-burst-from-one-source.kql",
+    "behaviors/sentinel/hunting/05-password-spray-at-a-fixed-rhythm.kql":
+        "frameworks/artex/sentinel/hunting/02-password-spray-at-a-fixed-rhythm.kql",
+    "behaviors/sentinel/hunting/06-one-application-hitting-many-resources.kql":
+        "frameworks/artex/sentinel/hunting/19-one-application-hitting-many-resources.kql",
+    "behaviors/sentinel/hunting/07-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql":
+        "frameworks/artex/sentinel/hunting/15-azure-capability-checks-validate-sweeps-and-kudu-sign-ins.kql",
+    "behaviors/sentinel/hunting/09-aws-permission-testing-and-the-foothold-that-follows.kql":
+        "frameworks/artex/sentinel/hunting/14-aws-permission-testing-and-the-foothold-that-follows.kql",
+    "general/sentinel/hunting/01-one-site-probed-through-rotating-proxies.kql":
+        "behaviors/sentinel/hunting/04-one-site-probed-through-rotating-proxies.kql",
+    "general/sentinel/hunting/02-config-backup-theft-and-wsus-probes.kql":
+        "behaviors/sentinel/hunting/05-config-backup-theft-and-wsus-probes.kql",
+    "general/sentinel/hunting/03-kerbrute-enumeration-and-netexec-fan-out.kql":
+        "behaviors/sentinel/hunting/06-kerbrute-enumeration-and-netexec-fan-out.kql",
+    "general/sentinel/hunting/04-server-calls-back-to-the-address-that-probed-it.kql":
+        "behaviors/sentinel/hunting/07-server-calls-back-to-the-address-that-probed-it.kql",
+    "general/sentinel/hunting/05-servers-resolving-out-of-band-testing-domains.kql":
+        "behaviors/sentinel/hunting/09-servers-resolving-out-of-band-testing-domains.kql",
+    "general/sentinel/hunting/06-a-spray-that-ends-in-a-successful-sign-in.kql":
+        "frameworks/artex/sentinel/hunting/03-a-spray-that-ends-in-a-successful-sign-in.kql",
+    "general/sentinel/hunting/07-service-principal-secret-failures-then-success.kql":
+        "frameworks/artex/sentinel/hunting/18-service-principal-secret-failures-then-success.kql",
+    "general/sentinel/hunting/08-applications-changing-their-own-access.kql":
+        "frameworks/artex/sentinel/hunting/05-applications-changing-their-own-access.kql",
+    "general/sentinel/hunting/09-bulk-key-vault-secret-reads.kql":
+        "frameworks/artex/sentinel/hunting/07-bulk-key-vault-secret-reads.kql",
+    "general/sentinel/hunting/10-cloudwatch-log-searches-with-a-stolen-aws-key.kql":
+        "frameworks/artex/sentinel/hunting/08-cloudwatch-log-searches-with-a-stolen-aws-key.kql",
+    "general/sentinel/hunting/11-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql":
+        "frameworks/artex/sentinel/hunting/09-cognito-sign-up-abuse-and-the-discovery-sweep-after-it.kql",
+    "general/sentinel/hunting/12-web-and-database-services-starting-shells-and-download-tools.kql":
+        "frameworks/artex/sentinel/hunting/11-web-and-database-services-starting-shells-and-download-tools.kql",
+    "general/sentinel/hunting/13-scripts-written-into-web-directories.kql":
+        "frameworks/artex/sentinel/hunting/13-scripts-written-into-web-directories.kql",
+    "general/sentinel/hunting/14-servers-calling-webhook-and-tunnel-services.kql":
+        "frameworks/artex/sentinel/hunting/12-servers-calling-webhook-and-tunnel-services-or-downloading-f.kql",
+    "general/sentinel/hunting/15-kerberoasting-dcsync-and-winrm-fan-out.kql":
+        "frameworks/artex/sentinel/hunting/16-kerberoasting-dcsync-and-winrm-fan-out.kql",
+    "general/sentinel/hunting/16-scripted-microsoft-graph-bursts-by-an-application.kql":
+        "frameworks/artex/sentinel/hunting/06-scripted-microsoft-graph-bursts-by-an-application.kql",
+}
 
 
 EXAMPLE = re.compile(r"^// Example: *(.+)$")
