@@ -1,0 +1,3 @@
+# AutoPT Console API or Vulhub PoC Fetch in Proxy Logs
+# Sigma id 16e9d7d8-0441-52da-9e2e-c2e3f9d7e9e7, pipeline ecs
+(url.original:(*\/api\/task\/start* OR *\/api\/system\/info* OR *\/api\/docker\/envs*)) OR user_agent.original:AutoPT\/* OR (url.original:*\/vulhub\/vulhub\/master\/* AND user_agent.original:"Mozilla\/5.0 \(Windows NT 10.0; Win64; x64\) AppleWebKit\/537.36")

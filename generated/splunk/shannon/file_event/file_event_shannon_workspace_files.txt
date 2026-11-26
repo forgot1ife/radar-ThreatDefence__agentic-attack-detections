@@ -1,0 +1,10 @@
+# Shannon Workspace, Deliverable or Browser Files Written
+# Sigma id 82a9276f-09b9-544e-990b-d9f327daa1cc, pipeline splunk_windows
+
+| rex field=TargetFilename "(?<TargetFilenameMatch>[/\\\\]\\.shannon[/\\\\](session\\.json|workflow\\.log|startup-error\\.json)$)"
+| eval TargetFilenameCondition=if(isnotnull(TargetFilenameMatch), "true", "false")
+| rex field=TargetFilename "(?<TargetFilenameMatch2>[/\\\\]\\.shannon[/\\\\]deliverables[/\\\\][a-z_]+_(deliverable\\.md|exploitation_queue\\.json|exploitation_evidence\\.md)$)"
+| eval TargetFilenameCondition2=if(isnotnull(TargetFilenameMatch2), "true", "false")
+| rex field=TargetFilename "(?<TargetFilenameMatch3>[/\\\\]\\.shannon[/\\\\]\\.playwright[/\\\\](cli\\.config\\.json|scripts[/\\\\]stealth\\.js)$)"
+| eval TargetFilenameCondition3=if(isnotnull(TargetFilenameMatch3), "true", "false")
+| search TargetFilenameCondition="true" OR TargetFilenameCondition2="true" OR TargetFilenameCondition3="true" OR TargetFilename IN ("*/.shannon/config.toml", "*\\.shannon\\config.toml")

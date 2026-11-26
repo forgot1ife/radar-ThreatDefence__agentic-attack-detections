@@ -1,0 +1,4 @@
+# HackSynth Agent Command Wrapper in a Container
+# Sigma id 94fad7a0-f8b9-56de-af95-58b1ad11ef2e, pipeline azure_monitor
+SecurityEvent
+| where NewProcessName endswith "/timeout" and CommandLine matches regex "^(\\S*/)?timeout \\d+s /bin/bash -c " and (ParentProcessName endswith "/containerd-shim" or ParentProcessName endswith "/containerd-shim-runc-v2" or ParentProcessName endswith "/runc")

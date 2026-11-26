@@ -1,0 +1,48 @@
+// HackSynth running on a host you monitor
+// Agentic attack detections by ThreatDefence (HackSynth). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1610 (Deploy Container), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the HackSynth source code (aielte-research/HackSynth at 48a41f79). HackSynth is a Python research agent with no
+// web UI. It runs:
+//  - python run_bench.py -b <benchmark>.json -c <config>.json [-k] (run_bench.py:132-134)
+//  - a kalilinux/kali-rolling container named attackbox_kali_pico, attackbox_kali_overthewire or attackbox, created
+//    through the Docker API with NET_ADMIN, SYS_PTRACE and /dev/net/tun (docker_setup.py:20-32)
+//  - once per new container: apt -y install kali-linux-headless sshpass curl, then ssh-keyscan -p 2220
+//    bandit.labs.overthewire.org, -p 2231 krypton..., -p 2223 leviathan... (docker_setup.py:34-40)
+//  - every model command as timeout 10s /bin/bash -c <command> through docker exec (pentest_agent.py:81)
+// It writes no report or log file; the clone itself (pentest_agent.py, run_bench.py, docker_setup.py) is the file signal.
+// Container processes show up only where the EDR sensor sees inside containers (Defender for Endpoint on the Linux host).
+
+let Window = 30d;
+let WrapperBurst = 10;   // wrapper processes from one device in an hour before it is worth a look
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "kali-linux-headless sshpass curl"
+            or ProcessCommandLine has_any ("ssh-keyscan -p 2220 bandit.labs.overthewire.org", "ssh-keyscan -p 2231 krypton.labs.overthewire.org",
+                "ssh-keyscan -p 2223 leviathan.labs.overthewire.org")
+        | project Timestamp, DeviceName, Signal="HackSynth attackbox setup", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "run_bench.py" and ProcessCommandLine matches regex @"\s(-b|--benchmark)\s"
+            and ProcessCommandLine has_any ("benchmark_solved.json", "combined_solved.json", "bandit_solved.json", "natas_solved.json",
+                "configs/pico_bench/", "configs/overthewire_bench/")
+        | project Timestamp, DeviceName, Signal="HackSynth launcher", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName == "timeout" and ProcessCommandLine matches regex @"^(\S*/)?timeout \d+s /bin/bash -c "
+            and InitiatingProcessFileName in~ ("containerd-shim", "containerd-shim-runc-v2", "runc")
+        | summarize Commands=count(), Examples=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp)
+            by DeviceName, Hour=bin(Timestamp, 1h)
+        | where Commands >= WrapperBurst
+        | project Timestamp, DeviceName, Signal="HackSynth command wrapper burst", Detail=strcat(Commands, " commands: ", tostring(Examples)), Parent=""),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ ("pentest_agent.py", "run_bench.py", "docker_setup.py")
+        | extend Folder=tostring(parse_path(FolderPath).DirectoryPath)
+        | summarize Files=make_set(FileName, 5), Timestamp=min(Timestamp) by DeviceName, Folder
+        | where array_length(Files) == 3
+        | project Timestamp, DeviceName, Signal="HackSynth clone on disk", Detail=strcat(Folder, " ", tostring(Files)), Parent="")
+| order by Timestamp desc

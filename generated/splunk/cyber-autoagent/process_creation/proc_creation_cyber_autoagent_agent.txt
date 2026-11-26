@@ -1,0 +1,3 @@
+# Cyber-AutoAgent AI Pentest Agent Started
+# Sigma id 8951bac6-de2e-5ab6-87f0-c6cd8af00f7e, pipeline splunk_windows
+(CommandLine="*cyberautoagent.py*" CommandLine IN ("*--target*", "*--service-mode*")) OR CommandLine="*--objective via environment*" OR CommandLine="*/interfaces/react/dist/index.js*" OR CommandLine="*cyber-autoagent:latest*"

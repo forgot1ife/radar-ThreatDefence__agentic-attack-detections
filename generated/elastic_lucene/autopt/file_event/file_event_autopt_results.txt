@@ -1,0 +1,3 @@
+# AutoPT Run Result Written
+# Sigma id 4dc01358-f0f5-56d4-a9a5-b1eab1185598, pipeline ecs
+(TargetFilename:(*\/result\/* OR *\\result\\*)) AND TargetFilename:*_FSM.jsonl

@@ -1,0 +1,3 @@
+# VulnBot Shell Setup on the Kali Host It Drives
+# Sigma id dafb4a3d-5699-5044-8028-771509ffa732, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(process.executable, "/touch") and ends_with(process.command_line, " /etc/legal") or ends_with(process.executable, "/chmod") and process.command_line like "* 644 *" and process.command_line like "*/etc/legal*" or ends_with(process.executable, "/sudo") and (process.command_line like "*touch /etc/legal*" or process.command_line like "*chmod 644 /etc/legal*")

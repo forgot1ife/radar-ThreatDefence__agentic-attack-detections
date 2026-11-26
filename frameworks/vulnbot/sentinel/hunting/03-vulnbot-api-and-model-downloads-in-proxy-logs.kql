@@ -1,0 +1,28 @@
+// VulnBot in web and proxy logs: its open knowledge base API and the models it downloads
+// Agentic attack detections by ThreatDefence (VulnBot). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// VulnBot sends no marker of its own to the targets it tests: its traffic is the Kali tools the model picks. What
+// does show in web and proxy logs, from the source code (KHenryAegis/VulnBot, reviewed at 9a12effa):
+//  - Its knowledge base API (FastAPI, port 7861, bound to 0.0.0.0, no authentication) under /knowledge_base/:
+//    list_knowledge_bases, create_knowledge_base, upload_docs, search_docs, download_doc and others. The Streamlit page
+//    on 8501 calls it. Langchain-Chatchat, which this code comes from, has the same paths, so check the host.
+//  - Hugging Face downloads of maidalun1020/bce-embedding-base_v1 and maidalun1020/bce-reranker-base_v1, its default
+//    embedding and reranking models (other RAG tools use them too: context only).
+// Its prompts appear only in model traffic you can read (AI gateway logs, TLS inspection); see the Suricata rules.
+
+let ApiPaths = dynamic(["/knowledge_base/list_knowledge_bases", "/knowledge_base/create_knowledge_base", "/knowledge_base/upload_docs",
+    "/knowledge_base/search_docs", "/knowledge_base/download_doc", "/knowledge_base/delete_knowledge_base"]);
+let Models = dynamic(["maidalun1020/bce-embedding-base_v1", "maidalun1020/bce-reranker-base_v1"]);
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (ApiPaths) or (DestinationHostName has "huggingface.co" and RequestURL has_any (Models))
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=coalesce(DestinationHostName, DestinationIP),
+            Port=DestinationPort, Detail=RequestURL),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriStem has_any (ApiPaths)
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Port=sPort, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery))
+| extend Signal=iff(Detail has "maidalun1020", "VulnBot default RAG model download (context only)", "VulnBot knowledge base API path")
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10), Ports=make_set(Port, 5)
+    by Source, Signal, Src, Target
+| order by FirstSeen asc

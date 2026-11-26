@@ -1,0 +1,3 @@
+# NyxStrike User Agent or Probe Marker in Web Logs
+# Sigma id d5a3cdd4-f7ef-5aac-9e9c-e5c4192c5c1f, pipeline ecs
+(user_agent.original:(NyxStrike\/* OR Security\-HTTP\-Framework\/* OR Security\-BrowserAgent\/* OR commonhuman\-core\/openapi\-discover*)) OR (url.query:(*xssTest123* OR *StingXSS_* OR *BreachSQL_* OR *stingxss_redir_marker* OR *stingxss_jsonp_probe* OR *stingxss\-crlf\-detected*))

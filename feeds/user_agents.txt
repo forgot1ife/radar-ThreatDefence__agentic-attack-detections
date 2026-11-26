@@ -1,10 +1,12 @@
 ARTEX-worker/1.0
 ArtEx/1.0
+AutoPT/1.0
 Claude-User (claude-code/2.1.98; +https://support.anthropic.com/)
 CyberStrikeAI-Docker-build
 CyberStrikeAI/1.0
 CyberStrikeAI/1.7.11
 CyberStrikeAI/1.7.4
+Decepticon/1.0
 HexStrike-BrowserAgent/1.0
 HexStrike-BrowserAgent/1.0 (Security Testing)
 HexStrike-HTTP-Framework/1.0
@@ -12,18 +14,25 @@ HexStrike-HTTP-Framework/1.0 (Advanced Security Testing)
 Mozilla/5.0 (ARTEX)
 Mozilla/5.0 (Compatible Exploit)
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) ARTeX-authorized-pentest
+Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36
 Mozilla/5.0 (X11; Linux x86_64) artex-verify/1.0
 Mozilla/5.0 (compatible; ArtEx/1.0)
 Mozilla/5.0 (compatible; ArtExVerify/1.0)
 Mozilla/5.0 (compatible; CyberStrikeAI-WebShell/1.0)
+Mozilla/5.0 (compatible; Decepticon/1.0)
+Mozilla/5.0 (compatible; NeuroSploit-WebShell/1.0)
 Mozilla/5.0 (compatible; RedAmon-JsRecon/1.0)
 Mozilla/5.0 (compatible; RedAmon/4.7)
 Mozilla/5.0 (spa-api-recon spider)
 Mozilla/5.0 (spa-api-recon)
 Mozilla/5.0 ARTeX
+NeuroSploit/4.4.3
+NyxStrike/1.0
 ReconProbe/1.0
 RedAmon-AISurfaceRecon/1.0
 RedAmon-CachePoison/1.0
+Security-BrowserAgent/1.0 (Security Testing)
+Security-HTTP-Framework/1.0 (Advanced Security Testing)
 antifox-enrich/1.0
 antifox-selfupdate
 artex-agent
@@ -37,6 +46,13 @@ artex-spawn/1
 artex-update-check
 artex-verify/1.0
 azure-toolkit/1.0
+codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown
+commonhuman-core/openapi-discover
+decepticon-http-sandbox/1
+decepticon-roe/1
+decepticon-telemetry/1.0
+dm-edge
+neurosploit-logship/4.4
 norma/0.4
 pentestswarm-cli
 pentestswarm-webhook/1.0

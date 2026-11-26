@@ -1,0 +1,41 @@
+title: sapper-v2 Engagement Graph or Run Files Written
+id: c7f134df-fb75-5194-bc67-c8870c97a51c
+status: experimental
+description: |
+    Detects the files sapper-v2 writes: its engagement graph store (.sapper/ with project.json, facts/, intents/,
+    hints/, arena.json and ai-channel.txt), the sapper-graph.html board snapshot, and in its contest image the run folder
+    under /work/runs (commander-state.md, pane-env/*.env, rotated.env) and the commander scripts under /opt/sapper/.
+references:
+    - https://github.com/N1nEmAn/sapper-v2
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_graph_dir:
+        TargetFilename|contains:
+            - '/.sapper/facts/'
+            - '/.sapper/intents/'
+            - '/.sapper/hints/'
+            - '/opt/sapper/docker/commander/'
+            - '/work/runs/pane-env/'
+    selection_graph_file:
+        TargetFilename|endswith:
+            - '/.sapper/project.json'
+            - '/.sapper/arena.json'
+            - '/.sapper/ai-channel.txt'
+            - '/.sapper/ai-peers.json'
+            - '/sapper-graph.html'
+            - '/work/runs/commander-state.md'
+            - '/work/runs/rotated.env'
+            - '/.claude/skills/sapper-setup'
+    condition: 1 of selection_*
+falsepositives:
+    - Contest teams and testers running sapper-v2 or a fork of it
+    - The Svelte Sapper framework uses __sapper__ and @sapper, not .sapper/, and should not match
+level: low

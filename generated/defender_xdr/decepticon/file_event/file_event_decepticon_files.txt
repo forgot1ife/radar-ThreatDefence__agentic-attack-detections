@@ -1,0 +1,4 @@
+# Decepticon Configuration, Telemetry ID or C2 Operator Config Written
+# Sigma id 71e35d20-e85d-56e2-a3ba-bce5e6bd840c, pipeline microsoft_xdr
+DeviceFileEvents
+| where ((FolderPath contains "/.decepticon/" or FolderPath contains "\\.decepticon\\") and (FolderPath endswith ".env" or FolderPath endswith "docker-compose.yml" or FolderPath endswith "install_id" or FolderPath endswith "litellm.yaml" or FolderPath endswith ".version")) or (FolderPath endswith "/.sliver-configs/decepticon.cfg" or FolderPath endswith "\\.sliver-configs\\decepticon.cfg") or ((FolderPath contains "/.decepticon/workspace/" or FolderPath contains "\\.decepticon\\workspace\\") and (FolderPath endswith "/plan/roe.json" or FolderPath endswith "/plan/opplan.json" or FolderPath endswith "\\plan\\roe.json" or FolderPath endswith "\\plan\\opplan.json" or FolderPath endswith "/timeline.jsonl" or FolderPath endswith "\\timeline.jsonl"))

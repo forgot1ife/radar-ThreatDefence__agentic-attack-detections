@@ -1,0 +1,3 @@
+# NeuroSploit User Agents in Proxy Logs
+# Sigma id cbd0a114-3ee0-5143-9749-0e260001c4e2, pipeline ecs
+(user_agent.original:(NeuroSploit\/* OR neurosploit\-logship\/*)) OR user_agent.original:*NeuroSploit\-WebShell\/* OR user_agent.original:NeuroSploit

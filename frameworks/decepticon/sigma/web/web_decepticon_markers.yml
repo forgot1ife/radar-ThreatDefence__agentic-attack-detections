@@ -1,0 +1,31 @@
+title: Decepticon Markers in Web Server Logs
+id: 7b117342-950a-5245-9fb1-7421d4b987df
+status: experimental
+description: |
+    Detects Decepticon traffic in the logs of a web server it tests or exposes: a user agent with the Decepticon/
+    token, a user agent template from its opsec skill sent with the placeholder unfilled (<CHROME_VER>, <FIREFOX_VER>,
+    <CURRENT_VER>), and requests to its LangGraph server routes under /_decepticon/. Most of Decepticon's target
+    traffic comes from ordinary tools and impersonated browsers, so absence of a match means little.
+references:
+    - https://github.com/BitterSecurity/Decepticon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: webserver
+detection:
+    selection_ua:
+        cs-user-agent|contains:
+            - 'Decepticon/'
+            - '<CHROME_VER>'
+            - '<FIREFOX_VER>'
+            - '<CURRENT_VER>'
+    selection_path:
+        cs-uri-stem|startswith: '/_decepticon/'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Decepticon
+level: medium

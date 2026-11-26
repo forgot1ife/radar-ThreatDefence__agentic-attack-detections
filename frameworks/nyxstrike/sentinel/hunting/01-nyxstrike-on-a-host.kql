@@ -1,0 +1,48 @@
+// NyxStrike server, MCP client or local model on a host you monitor
+// Agentic attack detections by ThreatDefence (NyxStrike). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// From the NyxStrike source code (CommonHuman-Lab/nyxstrike, reviewed at 3ac7449, version 1.9.0):
+//  - The server is nyxstrike_server.py, run from the virtual environment nyxstrike-env by nyxstrike.sh, on
+//    127.0.0.1:8888 by default (NYXSTRIKE_HOST, NYXSTRIKE_PORT). Since 1.8.0 it refuses any other address unless
+//    NYXSTRIKE_API_TOKEN is set. The Docker image runs it from /opt/nyxstrike in a container named nyxstrike.
+//  - Every tool runs through /bin/sh -c with the Python server as parent, prefixed with "nice -n 10" when CPU is above 85%.
+//  - When its tool list is older than an hour, /health or /web-dashboard runs "which <tool>" (no shell) for about 150
+//    tools, 20 at a time.
+//  - At start-up it fetches raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/master/config.py (version check).
+//  - With -ai or -ai-small, nyxstrike.sh pulls huihui_ai/gemma-4-abliterated:e4b or huihui_ai/qwen3.5-abliterated:2B into
+//    Ollama and creates the model nyxstrike-ai.
+//  - Files: .nyxstrike_data/ (nyxstrike.db, sessions/, run_history.json, config/cred_key, config/config_local.json),
+//    nyxstrike.log, /tmp/security_screenshot_<epoch>.png.
+// HexStrike hunt 03 looks for "sh -c which"; NyxStrike runs which directly, so use this hunt for NyxStrike.
+
+let Window = 30d;
+let Names = dynamic(["nyxstrike_server.py", "nyxstrike_mcp.py", "nyxstrike.sh", "/nyxstrike-env/"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (Names) or InitiatingProcessCommandLine has "nyxstrike_server.py"
+        | summarize Events=count(), Children=make_set(FileName, 30), Commands=make_set(substring(ProcessCommandLine, 0, 200), 15),
+            Timestamp=min(Timestamp) by DeviceName, Parent=InitiatingProcessCommandLine
+        | project Timestamp, DeviceName, Signal="NyxStrike process or a tool it started", Detail=strcat(tostring(Children), " ", tostring(Commands)), Parent),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName == "which" and InitiatingProcessFileName startswith "python"
+        | summarize Lookups=dcount(ProcessCommandLine), Sample=make_set(ProcessCommandLine, 10), Timestamp=min(Timestamp)
+            by DeviceName, Parent=InitiatingProcessCommandLine, Minute=bin(Timestamp, 1m)
+        | where Lookups >= 40
+        | project Timestamp, DeviceName, Signal="which burst from a Python server (NyxStrike tool availability check)", Detail=strcat(Lookups, " tools: ", tostring(Sample)), Parent),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "ollama" and ProcessCommandLine has_any ("nyxstrike-ai", "gemma-4-abliterated", "qwen3.5-abliterated")
+        | project Timestamp, DeviceName, Signal="Ollama model used by NyxStrike", Detail=substring(ProcessCommandLine, 0, 300), Parent=InitiatingProcessCommandLine),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort == 8888 and InitiatingProcessCommandLine has "nyxstrike_server.py"
+        | project Timestamp, DeviceName, Signal="NyxStrike server listening", Detail=LocalIP, Parent=InitiatingProcessCommandLine),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/.nyxstrike_data/" or FileName == "nyxstrike.log" or FolderPath startswith "/tmp/security_screenshot_"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName, Parent=InitiatingProcessCommandLine
+        | project Timestamp, DeviceName, Signal="NyxStrike data, log or screenshot", Detail=tostring(Files), Parent)
+| order by Timestamp desc

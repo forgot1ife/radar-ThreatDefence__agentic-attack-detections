@@ -1,0 +1,5 @@
+Mozilla/5.0 (Compatible Exploit)
+NyxStrike/1.0
+Security-BrowserAgent/1.0 (Security Testing)
+Security-HTTP-Framework/1.0 (Advanced Security Testing)
+commonhuman-core/openapi-discover

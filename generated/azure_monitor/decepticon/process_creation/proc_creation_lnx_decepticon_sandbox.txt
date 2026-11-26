@@ -1,0 +1,4 @@
+# Decepticon Sandbox, Agent Server or C2 Container Process
+# Sigma id 83265ac6-f94e-588e-9b1b-74fa1ece484d, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "decepticon_sandbox.server" or CommandLine contains "decepticon_sandbox.web" or CommandLine contains "decepticon_sandbox.browser" or CommandLine contains "@dcptn_completion") or (CommandLine contains "decepticon.cli time-window-resume" or CommandLine contains "/app/litellm_startup.py") or (CommandLine contains "sliver-server operator" and CommandLine contains "--name decepticon") or (CommandLine contains "teamserver server" and CommandLine contains "/opt/havoc/profiles/havoc.yaotl")

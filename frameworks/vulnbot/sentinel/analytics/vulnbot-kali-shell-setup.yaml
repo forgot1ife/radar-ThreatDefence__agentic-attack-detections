@@ -1,0 +1,41 @@
+id: a170e0c9-cc03-563d-ab9d-047a225f1332
+name: VulnBot AI pentest agent opened its shell on a host
+description: |
+  Within two minutes one account on one Linux host created /etc/legal and removed /etc/motd or the files in
+  /etc/update-motd.d, the shell setup VulnBot (KHenryAegis/VulnBot) runs over SSH on the Kali host its agents use for
+  every command. The model's scanning and exploitation commands follow in the same session. VulnBot is a research
+  framework (arXiv 2501.13411); check who runs it and whether the test was agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where (FileName in~ ("touch", "chmod", "sudo") and ProcessCommandLine has "/etc/legal")
+      or (FileName in~ ("rm", "sudo") and ProcessCommandLine has "-f" and ProcessCommandLine has_any ("/etc/motd", "/etc/update-motd.d/"))
+  | where InitiatingProcessFileName !in~ ("dpkg", "apt", "apt-get", "unattended-upgrade")
+  | extend Step=iff(ProcessCommandLine has "/etc/legal", "legal", "motd")
+  | summarize Steps=dcount(Step), Commands=make_set(ProcessCommandLine, 10), TimeGenerated=min(TimeGenerated),
+      Parents=make_set(InitiatingProcessCommandLine, 5) by DeviceId, DeviceName, AccountName, Bucket=bin(Timestamp, 2m)
+  | where Steps == 2
+  | project TimeGenerated, DeviceId, DeviceName, AccountName, Commands, Parents
+entityMappings:
+  - entityType: Host
+    fieldMappings:
+      - identifier: HostName
+        columnName: DeviceName
+  - entityType: Account
+    fieldMappings:
+      - identifier: Name
+        columnName: AccountName
+version: 1.0.0
+kind: Scheduled

@@ -1,0 +1,3 @@
+# HackSynth Attackbox Setup Command
+# Sigma id fe2a721e-a4db-599d-b25e-b76a9973e97f, pipeline splunk_windows
+CommandLine="*install kali-linux-headless sshpass curl*" OR CommandLine IN ("*ssh-keyscan -p 2220 bandit.labs.overthewire.org*", "*ssh-keyscan -p 2231 krypton.labs.overthewire.org*", "*ssh-keyscan -p 2223 leviathan.labs.overthewire.org*")

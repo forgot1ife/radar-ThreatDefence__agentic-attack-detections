@@ -1,0 +1,35 @@
+title: DarkMoon Configuration, Campaign or Report Files Written
+id: 9cf90f83-0222-59dc-84a6-9dc5cec46bfd
+status: experimental
+description: |
+    Detects files the DarkMoon stack writes: the GPU state file and MCP boot log in its containers, the toolbox
+    workflow output folder, the campaign store under darkmoon-settings, and the Markdown report
+    pentest_report_<host>_<date>-<time>.md.
+references:
+    - https://github.com/ASCIT31/Dark-Moon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_exact:
+        TargetFilename:
+            - '/run/darkmoon-gpu.env'
+            - '/tmp/darkmoon-mcp-boot.log'
+    selection_out:
+        TargetFilename|startswith: '/opt/darkmoon/out/'
+    selection_campaign:
+        TargetFilename|contains: '/darkmoon-settings/campaigns/camp_'
+    selection_report:
+        TargetFilename|contains: '/reports/pentest_report_'
+        TargetFilename|endswith: '.md'
+    condition: selection_exact or selection_out or selection_campaign or selection_report
+falsepositives:
+    - Security teams running DarkMoon
+    - Other tools that name reports pentest_report_<something>.md (the report selection alone is weaker)
+level: low

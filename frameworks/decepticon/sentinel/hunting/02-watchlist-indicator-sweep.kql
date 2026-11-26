@@ -1,0 +1,40 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (Decepticon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595 (Active Scanning), T1071 (Application Layer Protocol)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. Addresses are reassigned, so check the reported date and review_by. The
+// Decepticon rows are its telemetry gateway, its own user agents and the addresses of exposed consoles.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "decepticon" | project value=tostring(SearchKey), type, confidence, actor, source;
+let IPList = toscalar(IOC | where type in ("ipv4", "ipv6") | summarize make_list(value));
+let UAs = toscalar(IOC | where type == "user_agent" and confidence in ("high", "medium") | summarize make_list(value));
+let Domains = toscalar(IOC | where type == "domain" | summarize make_list(value));
+let MD5s = toscalar(IOC | where type == "md5" | summarize make_list(value));
+union isfuzzy=true
+    (SigninLogs | where TimeGenerated > ago(90d)
+        | where IPAddress in (IPList) or UserAgent has_any (UAs)
+        | project TimeGenerated, Source="SigninLogs", Indicator=coalesce(IPAddress, UserAgent), Detail=UserPrincipalName),
+    (AWSCloudTrail | where TimeGenerated > ago(90d)
+        | where SourceIpAddress in (IPList) or UserAgent has_any (UAs)
+        | project TimeGenerated, Source="AWSCloudTrail", Indicator=SourceIpAddress, Detail=strcat(EventName, " ", UserIdentityArn)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where SourceIP in (IPList) or DestinationIP in (IPList) or RequestClientApplication has_any (UAs) or DestinationHostName has_any (Domains)
+        | project TimeGenerated, Source="CommonSecurityLog", Detail=RequestURL,
+            Indicator=case(SourceIP in (IPList), SourceIP, DestinationIP in (IPList), DestinationIP, DestinationHostName)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where cIP in (IPList) or replace_string(csUserAgent, "+", " ") has_any (UAs)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=cIP, Detail=csUriStem),
+    (DeviceNetworkEvents | where Timestamp > ago(30d)
+        | where RemoteIP in (IPList) or RemoteUrl has_any (Domains)
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Indicator=iff(RemoteIP in (IPList), RemoteIP, RemoteUrl),
+            Detail=strcat(DeviceName, " ", InitiatingProcessFileName)),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where MD5 in~ (MD5s)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=tolower(MD5), Detail=strcat(DeviceName, " ", FolderPath)),
+    (DnsEvents | where TimeGenerated > ago(90d)
+        | where Name has_any (Domains)
+        | project TimeGenerated, Source="DnsEvents", Indicator=Name, Detail=ClientIP)
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

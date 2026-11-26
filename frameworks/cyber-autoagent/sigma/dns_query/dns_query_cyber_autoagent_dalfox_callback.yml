@@ -1,0 +1,27 @@
+title: Cyber-AutoAgent Dalfox Blind XSS Callback DNS Query
+id: 4f00c370-3800-5551-81ed-ff487e16c2bb
+status: experimental
+description: |
+    Detects lookups of dalfox-xss-test.com, the blind XSS callback Cyber-AutoAgent's general module gives dalfox. A
+    lookup from a browser or server you own means a stored payload ran there.
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/general/tools/advanced_payload_coordinator.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: dns_query
+detection:
+    selection:
+        # The name itself or a subdomain of it
+        - QueryName:
+              - 'dalfox-xss-test.com'
+        - QueryName|endswith:
+              - '.dalfox-xss-test.com'
+    condition: selection
+falsepositives:
+    - Authorized tests with Cyber-AutoAgent
+level: medium

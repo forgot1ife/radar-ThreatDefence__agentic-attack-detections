@@ -1,0 +1,35 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (Cyber-AutoAgent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595 (Active Scanning), T1071 (Application Layer Protocol)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. Cyber-AutoAgent has no published addresses: its rows are its dalfox callback
+// name, its default Langfuse key and its file and string markers, all from the source code.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "cyber-autoagent" | project value=tostring(SearchKey), type, confidence, actor, source;
+let Domains = toscalar(IOC | where type == "domain" | summarize make_list(value));
+let Strings = toscalar(IOC | where type in ("string", "uri_string") and confidence in ("high", "medium") | summarize make_list(value));
+let Files = toscalar(IOC | where type in ("file_name", "file_path") | summarize make_list(value));
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where DestinationHostName has_any (Domains) or RequestURL has_any (Domains) or RequestURL has_any (Strings)
+        | project TimeGenerated, Source="CommonSecurityLog", Detail=RequestURL,
+            Indicator=iff(DestinationHostName has_any (Domains), DestinationHostName, RequestURL)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriQuery has_any (Domains) or csUriStem has_any (Strings) or csUriQuery has_any (Strings)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=cIP, Detail=strcat(csUriStem, "?", csUriQuery)),
+    (DeviceNetworkEvents | where Timestamp > ago(30d)
+        | where RemoteUrl has_any (Domains)
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Indicator=RemoteUrl, Detail=strcat(DeviceName, " ", InitiatingProcessFileName)),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Strings) or ProcessCommandLine has_any (Domains)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator=DeviceName, Detail=substring(ProcessCommandLine, 0, 300)),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FileName in~ (Files) or FolderPath has_any (Files)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FileName, Detail=strcat(DeviceName, " ", FolderPath)),
+    (DnsEvents | where TimeGenerated > ago(90d)
+        | where Name has_any (Domains)
+        | project TimeGenerated, Source="DnsEvents", Indicator=Name, Detail=ClientIP)
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

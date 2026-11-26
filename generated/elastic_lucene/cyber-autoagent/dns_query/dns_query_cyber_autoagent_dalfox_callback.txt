@@ -1,0 +1,3 @@
+# Cyber-AutoAgent Dalfox Blind XSS Callback DNS Query
+# Sigma id 4f00c370-3800-5551-81ed-ff487e16c2bb, pipeline ecs
+dns.question.name:/[dD][aA][lL][fF][oO][xX]-[xX][sS][sS]-[tT][eE][sS][tT]\.[cC][oO][mM]/ OR dns.question.name:/.*\.[dD][aA][lL][fF][oO][xX]-[xX][sS][sS]-[tT][eE][sS][tT]\.[cC][oO][mM]/

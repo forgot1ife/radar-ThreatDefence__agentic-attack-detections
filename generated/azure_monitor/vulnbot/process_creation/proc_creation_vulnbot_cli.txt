@@ -1,0 +1,4 @@
+# VulnBot CLI Started
+# Sigma id e65e9d4a-1178-56b9-bc1f-7c920e1baf70, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "cli.py" and CommandLine contains "vulnbot") and (CommandLine contains "cli.py vulnbot" or CommandLine contains "cli.py pentestgpt" or CommandLine contains "cli.py start -a" or CommandLine contains "cli.py init" or CommandLine contains "cli.py base")

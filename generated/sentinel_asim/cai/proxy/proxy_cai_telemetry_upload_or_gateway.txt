@@ -1,0 +1,4 @@
+# CAI Telemetry Upload or Alias Gateway in Proxy Logs
+# Sigma id 0dc46137-563f-5997-8001-72e433acc6a0, pipeline sentinel_asim
+imWebSession
+| where HttpHost =~ "logs.aliasrobotics.com" or (HttpHost =~ "api.aliasrobotics.com" and Url contains "/key/info") or HttpHost =~ "packages.aliasrobotics.com"

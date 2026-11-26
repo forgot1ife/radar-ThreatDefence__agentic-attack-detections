@@ -1,0 +1,4 @@
+# AutoPT Console API or Vulhub PoC Fetch in Proxy Logs
+# Sigma id 16e9d7d8-0441-52da-9e2e-c2e3f9d7e9e7, pipeline sentinel_asim
+imWebSession
+| where (Url contains "/api/task/start" or Url contains "/api/system/info" or Url contains "/api/docker/envs") or HttpUserAgent startswith "AutoPT/" or (Url contains "/vulhub/vulhub/master/" and HttpUserAgent =~ "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")

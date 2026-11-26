@@ -1,0 +1,4 @@
+# VulnBot Shell Setup on the Kali Host It Drives
+# Sigma id dafb4a3d-5699-5044-8028-771509ffa732, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessName endswith "/touch" and TargetProcessCommandLine endswith " /etc/legal") or (TargetProcessName endswith "/chmod" and (TargetProcessCommandLine contains " 644 " and TargetProcessCommandLine contains "/etc/legal")) or (TargetProcessName endswith "/sudo" and (TargetProcessCommandLine contains "touch /etc/legal" or TargetProcessCommandLine contains "chmod 644 /etc/legal"))

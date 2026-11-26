@@ -1,0 +1,4 @@
+# NyxStrike Server, MCP Client or Tool Started by the Server
+# Sigma id 4f28ea68-b9bd-58b4-accb-a62b492dd7fe, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "nyxstrike_server.py" or TargetProcessCommandLine contains "nyxstrike_mcp.py" or TargetProcessCommandLine contains "nyxstrike.sh" or TargetProcessCommandLine contains "/nyxstrike-env/bin/python") or ActingProcessCommandLine contains "nyxstrike_server.py"

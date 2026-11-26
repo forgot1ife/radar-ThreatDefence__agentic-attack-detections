@@ -1,0 +1,4 @@
+# NeuroSploit User Agents in Proxy Logs
+# Sigma id cbd0a114-3ee0-5143-9749-0e260001c4e2, pipeline sentinel_asim
+imWebSession
+| where (HttpUserAgent startswith "NeuroSploit/" or HttpUserAgent startswith "neurosploit-logship/") or HttpUserAgent contains "NeuroSploit-WebShell/" or HttpUserAgent =~ "NeuroSploit"

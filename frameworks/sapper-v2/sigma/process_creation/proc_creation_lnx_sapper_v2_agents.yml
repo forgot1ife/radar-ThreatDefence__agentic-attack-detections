@@ -1,0 +1,41 @@
+title: sapper-v2 Agent Orchestration on a Host
+id: 6729ae36-bb67-5361-a363-e5b0b2edbbd2
+status: experimental
+description: |
+    Detects sapper-v2 driving coding-agent sessions against contest or pentest targets: its tmux sessions (sapper-cmd,
+    sapper-tui, sapper-fleet), the window command it gives every agent (ending echo DRIVE_PANE_EXITED; exec sleep
+    infinity), the missions it types into Claude Code with tmux send-keys, the executor system prompt it passes to
+    claude -p, and its own CLI starting the autonomy loop, the contest loop or the web board. The agents run with
+    --dangerously-skip-permissions.
+references:
+    - https://github.com/N1nEmAn/sapper-v2
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_pane:
+        CommandLine|contains: 'echo DRIVE_PANE_EXITED; exec sleep infinity'
+    selection_tmux:
+        CommandLine|contains: 'tmux'
+        CommandLine|re: '\s-[st]\s+[''"]?sapper-(cmd|tui|fleet)\b'
+    selection_prompt:
+        CommandLine|contains:
+            - 'You are an autonomous executor in a penetration-testing fact-graph agent system'
+            - 'You are the autonomous field commander of a pentest campaign (TSecBench)'
+            - 'You are an autonomous pentest operator in a CTF benchmark'
+            - 'You are a GENERAL (senior operator) on challenge'
+            - '/opt/sapper/docker/commander/'
+    selection_cli:
+        CommandLine|re: '(^|[/\s])sapper(\.py)?\s(.*\s)?(auto\s(.*\s)?--(minutes|skip-permissions)|bench\s(.*\s)?--(root|minutes)|view\s(.*\s)?--serve)\b'
+    condition: 1 of selection_*
+falsepositives:
+    - Contest teams and testers running sapper-v2 or a fork of it
+level: medium

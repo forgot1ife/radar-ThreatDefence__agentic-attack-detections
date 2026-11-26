@@ -1,0 +1,4 @@
+# Cyber-AutoAgent Langfuse Prompt Fetch or Project Page in Proxy Logs
+# Sigma id 3cca7c8b-035c-5a46-97fe-01a4375f48bd, pipeline sentinel_asim
+imWebSession
+| where (Url contains "/api/public/v2/prompts/cyber/system/" or Url contains "/api/public/v2/prompts/cyber/report/") or Url contains "/project/cyber-project-id"

@@ -1,0 +1,35 @@
+title: Cyber-AutoAgent Operation Files Written
+id: 2dbb915f-15f8-5498-bf43-527bcf704946
+status: experimental
+description: |
+    Detects the files Cyber-AutoAgent writes on the host that runs it: the operation log and report in
+    outputs/<target>/OP_<timestamp>/, the optimized execution prompt, and the front end's settings file
+    ~/.cyber-autoagent/config.json, which can hold model provider keys.
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_opdir:
+        TargetFilename|contains:
+            - '/OP_'
+            - '\OP_'
+    selection_opfile:
+        TargetFilename|endswith:
+            - 'cyber_operations.log'
+            - 'security_assessment_report.md'
+            - 'execution_prompt_optimized.txt'
+    selection_config:
+        TargetFilename|contains:
+            - '/.cyber-autoagent/config.json'
+            - '\.cyber-autoagent\config.json'
+    condition: (selection_opdir and selection_opfile) or selection_config
+falsepositives:
+    - Authorized tests with Cyber-AutoAgent
+level: low

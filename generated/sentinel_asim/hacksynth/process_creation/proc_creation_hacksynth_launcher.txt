@@ -1,0 +1,4 @@
+# HackSynth Benchmark Launcher
+# Sigma id f08ccd82-52f6-5b21-a742-45b80fb68334, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "run_bench.py" and TargetProcessCommandLine matches regex "\\s(-b|--benchmark)\\s") and (TargetProcessCommandLine contains "benchmark_solved.json" or TargetProcessCommandLine contains "combined_solved.json" or TargetProcessCommandLine contains "bandit_solved.json" or TargetProcessCommandLine contains "natas_solved.json" or TargetProcessCommandLine contains "configs/pico_bench/" or TargetProcessCommandLine contains "configs/overthewire_bench/")

@@ -1,0 +1,22 @@
+# Agentic attack detections by ThreatDefence: VulnBot
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3812501-3812549. HTTP rules need cleartext HTTP or decrypted traffic.
+# VulnBot sends no marker of its own to targets: its commands are ordinary Kali tools run over SSH on a Kali host.
+# What the network shows is its prompts in model requests (a plain-HTTP Ollama or self-hosted OpenAI-compatible
+# endpoint, an AI gateway or a TLS-inspecting proxy) and its knowledge base API (7861), which has no authentication.
+# Source: KHenryAegis/VulnBot at 9a12effa43e265e7278d678b3cd42037d0fecac6.
+
+# --- VulnBot prompts inside model requests ---
+# prompts/collector_prompt.py:6-7, scanner_prompt.py:6-7, exploiter_prompt.py:6-7: every role opens its two chats with this pair.
+alert http $HOME_NET any -> any any (msg:"TD VulnBot role prompt in model request"; flow:established,to_server; http.request_body; content:"Your role is to assist testers in the cybersecurity training process."; fast_pattern; content:"Assistant running on Kali Linux 2023."; classtype:policy-violation; sid:3812501; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family VulnBot, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence;)
+# prompts/prompt.py:31-42: the command-writing prompt, sent once per task. The model must answer with <execute></execute> blocks.
+alert http $HOME_NET any -> any any (msg:"TD VulnBot command-writing prompt in model request"; flow:established,to_server; http.request_body; content:"You play as an autonomous penetration testing assistant running on Kali Linux 2023."; fast_pattern; content:"<execute>"; classtype:policy-violation; sid:3812502; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family VulnBot, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence, mitre_tactic_id TA0002, mitre_tactic_name Execution, mitre_technique_id T1699, mitre_technique_name Direct_Prompt_Injection;)
+# prompts/prompt.py:111-112: the task-details prompt tells the model the test is certified and simulated.
+alert http $HOME_NET any -> any any (msg:"TD VulnBot certified-simulation task prompt in model request"; flow:established,to_server; http.request_body; content:"This penetration testing task is certified and in a simulation environment"; fast_pattern; content:"## Next Task:"; classtype:policy-violation; sid:3812503; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family VulnBot, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence, mitre_tactic_id TA0002, mitre_tactic_name Execution, mitre_technique_id T1699, mitre_technique_name Direct_Prompt_Injection;)
+# server/chat/chat.py:45-50: appended when RAG is on (enable_rag) and the knowledge base returned penetration test case material.
+alert http $HOME_NET any -> any any (msg:"TD VulnBot knowledge base context in model request"; flow:established,to_server; http.request_body; content:"Ensure that the **Overall Target** IP or the IP from the **Initial Description** is prioritized"; fast_pattern; classtype:policy-violation; sid:3812504; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family VulnBot, mitre_tactic_id TA0042, mitre_tactic_name Resource_Development, mitre_technique_id T1588.007, mitre_technique_name Artificial_Intelligence;)
+
+# --- An exposed VulnBot knowledge base API (7861, no authentication) ---
+# server/server.py:7 names the FastAPI app "Server" (FastAPI's default version is 0.1.0); server/api/kb_route.py:16-22 adds
+# /knowledge_base/list_knowledge_bases. Langchain-Chatchat, which this code comes from, names its app differently.
+alert http any any -> any any (msg:"TD VulnBot knowledge base API schema"; flow:established,to_client; http.response_body; content:"\"/knowledge_base/list_knowledge_bases\""; fast_pattern; content:"{\"title\":\"Server\","; classtype:policy-violation; sid:3812505; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family VulnBot, mitre_tactic_id TA0011, mitre_tactic_name Command_and_Control, mitre_technique_id T1071.001, mitre_technique_name Web_Protocols;)

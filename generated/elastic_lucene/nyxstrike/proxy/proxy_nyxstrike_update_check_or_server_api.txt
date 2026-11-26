@@ -1,0 +1,3 @@
+# NyxStrike Update Check or Server API Requested Through a Proxy
+# Sigma id d152dfea-0dba-5e37-a6e4-4b1cc8f1cc42, pipeline ecs
+url.original:*raw.githubusercontent.com\/CommonHuman\-Lab\/nyxstrike\/* OR (url.original:(*\:8888\/web\-dashboard* OR *\:8888\/api\/intelligence\/ai\-recon\-session* OR *\:8888\/api\/intelligence\/ai\-vuln\-session* OR *\:8888\/api\/intelligence\/ai\-osint\-session* OR *\:8888\/api\/intelligence\/ai\-profiling\-session* OR *\:8888\/api\/intelligence\/ai\-followup\-session*))

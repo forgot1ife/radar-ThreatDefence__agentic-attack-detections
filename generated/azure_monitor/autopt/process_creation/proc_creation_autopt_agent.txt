@@ -1,0 +1,4 @@
+# AutoPT Agent Started or Running Its Scan Steps
+# Sigma id 090f97a6-0e7e-5ebb-90cf-9e9a28e40656, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "main.py" and CommandLine contains "--name " and CommandLine contains "--ip_addr ") or (CommandLine contains "autopt" and CommandLine contains "--benchmark-name" and CommandLine contains "--ip-addr") or CommandLine contains "nmap -sS -p- --min-rate 3000 -T4 "

@@ -1,0 +1,3 @@
+https://api.aliasrobotics.com:666/
+https://api.aliasrobotics.com:666/key/info
+https://logs.aliasrobotics.com/upload

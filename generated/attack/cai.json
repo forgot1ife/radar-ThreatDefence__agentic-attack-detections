@@ -1,0 +1,86 @@
+{
+ "description": "28 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 13,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "cai",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: CAI (Cybersecurity AI) running on a host you monitor",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "Sentinel analytics: CAI AI pentest framework on a host or reporting from your network; Sigma: CAI Cybersecurity AI CLI, Install, Continuous Ops Worker or Kali Container",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: CAI telemetry, Alias gateway, its API backend and its fetch_url user agent in network, proxy and web logs; Sentinel analytics: CAI AI pentest framework on a host or reporting from your network; Sigma: CAI Telemetry Upload or Alias Gateway in Proxy Logs; Suricata: 3816002 TD CAI telemetry TLS (logs.aliasrobotics.com); Suricata: 3816003 TD CAI telemetry session log upload; Suricata: 3816004 TD CAI session log file in a multipart upload; Suricata: 3816011 TD CAI Alias model and licence gateway TLS (api.aliasrobotics.com); Suricata: 3816014 TD CAI licence check (GET /key/info on api.aliasrobotics.com); Suricata: 3816030 TD CAI API tag discovery response; Suricata: 3816031 TD CAI API OpenAPI description; Suricata: 3816032 TD CAI API key header; Suricata: 3816033 TD CAI API device pairing (POST /api/v1/auth/add-ip); YARA: CAI_Telemetry_Endpoint_Module",
+   "enabled": true,
+   "score": 13,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Sigma: CAI Telemetry, Alias Gateway or Private Package Index DNS Query; Suricata: 3816001 TD CAI telemetry DNS query (logs.aliasrobotics.com); Suricata: 3816010 TD CAI Alias model and licence gateway DNS query (api.aliasrobotics.com)",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "KQL hunt: CAI (Cybersecurity AI) running on a host you monitor; Sigma: CAI Continuous Ops Systemd User Unit Written; YARA: CAI_Continuous_Ops_Systemd_Unit",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1543.002"
+  },
+  {
+   "comment": "KQL hunt: CAI (Cybersecurity AI) running on a host you monitor; Sigma: CAI Cybersecurity AI CLI, Install, Continuous Ops Worker or Kali Container; Sigma: CAI Session Log, API Auth Database or Workspace Written; Suricata: 3816012 TD CAI private package index DNS query (packages.aliasrobotics.com); Suricata: 3816013 TD CAI private package index TLS (packages.aliasrobotics.com); YARA: CAI_Package; YARA: CAI_Session_Log",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: CAI telemetry, Alias gateway, its API backend and its fetch_url user agent in network, proxy and web logs; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: CAI fetch_url User Agent in Web Logs; Suricata: 3816020 TD CAI fetch_url user agent (two-part Chrome/124.0 version)",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1594"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

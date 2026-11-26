@@ -1,0 +1,4 @@
+# AutoPT Run Result Written
+# Sigma id 4dc01358-f0f5-56d4-a9a5-b1eab1185598, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/result/" or FolderPath contains "\\result\\") and FolderPath endswith "_FSM.jsonl"

@@ -1,0 +1,4 @@
+# NeuroSploit Project Store, Vault or C2 Files Written
+# Sigma id e3bb33ff-a33c-55ff-8592-e7841eac06be, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.neurosploit/c2/" or ObjectName endswith "\\.neurosploit\\c2*" or ObjectName contains "/.neurosploit/vault/" or ObjectName endswith "\\.neurosploit\\vault*") or (ObjectName endswith "/.neurosploit/keys.json" or ObjectName endswith "\\.neurosploit\\keys.json") or ObjectName =~ "/tmp/ns_browser_prefetch.js"

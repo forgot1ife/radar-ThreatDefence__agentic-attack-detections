@@ -1,0 +1,34 @@
+// Cyber-AutoAgent running on a host you monitor
+// Agentic attack detections by ThreatDefence (Cyber-AutoAgent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// From the Cyber-AutoAgent source code (westonbrown/Cyber-AutoAgent at 54897ff9, archived). It is a Python agent on the
+// Strands SDK with a Node terminal front end, usually run in a Kali container built as cyber-autoagent:latest:
+//  - The front end starts python /app/src/cyberautoagent.py --module <m> --objective via environment --target <t>
+//    --iterations 100 --provider bedrock --output-dir /app/outputs --keep-memory (the objective goes in CYBER_OBJECTIVE).
+//    By hand it is cyberautoagent.py --target ... --objective ...; the idle compose container runs --service-mode.
+//  - Its general module runs dalfox -b https://dalfox-xss-test.com and feroxbuster -w /tmp/auth_wordlist.txt.
+//  - It writes outputs/<target>/OP_<YYYYMMDD_HHMMSS>/cyber_operations.log, security_assessment_report.md,
+//    execution_prompt_optimized.txt and ~/.cyber-autoagent/config.json.
+// Names need a code change, apart from the output folder (--output-dir) and the image tag.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "cyberautoagent.py" and ProcessCommandLine has_any ("--target", "--service-mode"))
+            or ProcessCommandLine has "--objective via environment"
+            or ProcessCommandLine has "/interfaces/react/dist/index.js"
+            or ProcessCommandLine has "cyber-autoagent:latest"
+            or (ProcessCommandLine has "dalfox" and ProcessCommandLine has "dalfox-xss-test.com")
+            or (ProcessCommandLine has "feroxbuster" and ProcessCommandLine has "/tmp/auth_wordlist.txt")
+        | project Timestamp, DeviceName, Signal="Cyber-AutoAgent command, front end, image or module tool",
+            Detail=substring(ProcessCommandLine, 0, 300), Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FolderPath matches regex @"[/\\]OP_\d{8}_\d{6}[/\\]"
+                and FileName in~ ("cyber_operations.log", "security_assessment_report.md", "execution_prompt_optimized.txt"))
+            or FolderPath has ".cyber-autoagent"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Cyber-AutoAgent operation folder or settings", Detail=tostring(Files), Parent="")
+| order by Timestamp desc

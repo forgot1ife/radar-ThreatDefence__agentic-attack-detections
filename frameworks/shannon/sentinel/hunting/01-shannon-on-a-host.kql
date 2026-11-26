@@ -1,0 +1,46 @@
+// Shannon running on a host you monitor
+// Agentic attack detections by ThreatDefence (Shannon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// From the Shannon source code (KeygraphHQ/shannon at 3760d2f9). Shannon is a Node.js CLI (npm @keygraph/shannon, or
+// ./shannon in a clone) that reads an application's source code and attacks the running application with model-driven
+// agents in a Docker worker container. It has no telemetry, so the host is where it shows:
+//  - The operator runs npx @keygraph/shannon start -u <url> -r <repo> (or ./shannon start ...).
+//  - The CLI starts Temporal (container shannon-temporal, image temporalio/temporal, ports 7233 and 8233 on 127.0.0.1)
+//    and one worker per scan: docker run --name shannon-worker-<8 hex> --network shannon-net with the labels
+//    shannon.workspace, shannon.task-queue and shannon.workflow-id, image keygraph/shannon:<version> (or shannon-worker),
+//    running node apps/worker/dist/temporal/worker.js <url> <repo> --task-queue shannon-<hex> --workflow-id ...
+//  - Inside it the agents drive Chromium with playwright-cli -s=agent1 to agent5, and the report is rendered with
+//    typst compile ... --input brand=Shannon | AI Pentester by Keygraph.
+//  - Files: <workspaces>/<host>_shannon-<ms>/.shannon/ (session.json, workflow.log, agents/*.log, deliverables/),
+//    Security-Assessment-Report.pdf and .md at the run root, and ~/.shannon/config.toml in npx mode.
+//  - --exp-php2shell runs a PHP crash probe from the CLI alone, without Docker.
+// Container processes show on a Linux Docker host with Defender for Endpoint; on macOS and Windows only the CLI and
+// docker commands do. What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Markers = dynamic(["@keygraph/shannon", "keygraph/shannon:", "--name shannon-worker-", "shannon.workspace=", "shannon.workflow-id=",
+    "TEMPORAL_ADDRESS=shannon-temporal:7233", "brand=Shannon | AI Pentester by Keygraph"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (Markers)
+            or ProcessCommandLine matches regex @"(^|[/\\\s])shannon[""']?\s+start\s(.*\s)?(-u|--url)[\s=]"
+            or (ProcessCommandLine has "temporal/worker.js" and ProcessCommandLine has "--task-queue" and ProcessCommandLine has "--workflow-id")
+            or ProcessCommandLine matches regex @"playwright-cli\s+(.*\s)?-s=agent[1-6](\s|$)"
+        | extend Signal = iff(ProcessCommandLine has "--exp-php2shell", "Shannon php2shell crash probe", "Shannon CLI, worker container, browser or report renderer")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 300), 10), Timestamp=min(Timestamp) by DeviceName, Signal
+        | project Timestamp, DeviceName, Signal, Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath matches regex @"[/\\]\.shannon[/\\]"
+        | where FileName in~ ("session.json", "workflow.log", "startup-error.json", "cli.config.json", "stealth.js", "config.toml")
+            or FileName matches regex @"^[a-z_]+_(deliverable\.md|exploitation_queue\.json|exploitation_evidence\.md)$"
+        | summarize Files=make_set(FileName, 15), Timestamp=min(Timestamp) by DeviceName, Folder=tostring(split(FolderPath, ".shannon")[0])
+        | project Timestamp, DeviceName, Signal="Shannon workspace files", Detail=strcat(Folder, ".shannon ", tostring(Files))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ ("Security-Assessment-Report.pdf", "Security-Assessment-Report.md", "php2shell-report.json")
+        | where FolderPath matches regex @"_shannon-\d+" or FileName =~ "php2shell-report.json"
+        | project Timestamp, DeviceName, Signal="Shannon report", Detail=FolderPath)
+| order by Timestamp desc

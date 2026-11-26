@@ -1,0 +1,4 @@
+# VulnBot CLI Started
+# Sigma id e65e9d4a-1178-56b9-bc1f-7c920e1baf70, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "cli.py" and TargetProcessCommandLine contains "vulnbot") and (TargetProcessCommandLine contains "cli.py vulnbot" or TargetProcessCommandLine contains "cli.py pentestgpt" or TargetProcessCommandLine contains "cli.py start -a" or TargetProcessCommandLine contains "cli.py init" or TargetProcessCommandLine contains "cli.py base")

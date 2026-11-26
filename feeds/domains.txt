@@ -1,3 +1,4 @@
+api.aliasrobotics.com
 b8t.shop
 carbonato-proxy-drab.vercel.app
 carbonato-proxy-zeta-2.vercel.app
@@ -5,17 +6,21 @@ carbonato-proxy-zeta.vercel.app
 cdn.js-static.com
 cdn.netlfjs.com
 code.newcli.com
+dalfox-xss-test.com
+decepticon-telemetry-gateway.purpleailab.workers.dev
 down.zhzy999.net
 fastcdn.bar
 ftp.vietnam852.com
 ftp.zhzy999.net
 js-static.com
 jsnetlify.com
+logs.aliasrobotics.com
 medbooksource.com
 media.fastcdn.bar
 netlifyjs.com
 newssjs.com
 nginxmysql.com
+packages.aliasrobotics.com
 redhatupdating432.dnsrd.com
 server.vietnam852.com
 site.jiancai008.com

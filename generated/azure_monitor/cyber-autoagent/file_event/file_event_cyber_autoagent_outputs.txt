@@ -1,0 +1,4 @@
+# Cyber-AutoAgent Operation Files Written
+# Sigma id 2dbb915f-15f8-5498-bf43-527bcf704946, pipeline azure_monitor
+SecurityEvent
+| where ((ObjectName contains "/OP_" or ObjectName contains "\\OP_") and (ObjectName endswith "cyber_operations.log" or ObjectName endswith "security_assessment_report.md" or ObjectName endswith "execution_prompt_optimized.txt")) or (ObjectName contains "/.cyber-autoagent/config.json" or ObjectName contains "\\.cyber-autoagent\\config.json")

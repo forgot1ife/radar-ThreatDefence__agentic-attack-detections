@@ -1,0 +1,31 @@
+id: 4b0a994d-9e73-5680-9cea-e6d341ba8d3f
+name: DarkMoon AI pentest agent running on a host
+description: |
+  A host pulled or ran the DarkMoon containers (ascit/darkmoon, ascit/opencode-darkmoon), started a DarkMoon campaign
+  (opencode run --agent pentest with a TARGET line, through darkmoon.sh), or ran the DarkMoon MCP server wrapper.
+  DarkMoon is an open-source autonomous penetration testing stack whose agents run every command, with no approval,
+  as root in a toolbox container that holds the host's Docker socket.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - Execution
+relevantTechniques:
+  - T1595.002
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where (ProcessCommandLine has "opencode" and ProcessCommandLine contains "--agent pentest" and ProcessCommandLine contains "TARGET:")
+      or ProcessCommandLine matches regex @"(^|[/\s])darkmoon\.sh(\s|$)"
+      or ProcessCommandLine contains "ascit/darkmoon" or ProcessCommandLine contains "ascit/opencode-darkmoon"
+      or ProcessCommandLine contains "docker exec -i darkmoon darkmoon-mcp"
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

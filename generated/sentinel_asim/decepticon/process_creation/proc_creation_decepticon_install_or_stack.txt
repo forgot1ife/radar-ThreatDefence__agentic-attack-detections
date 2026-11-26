@@ -1,0 +1,4 @@
+# Decepticon AI Red Team Agent Installed or Started
+# Sigma id b2cc9abb-091b-552c-9671-43932c67be6d, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "decepticon.red/install" or TargetProcessCommandLine contains "raw.githubusercontent.com/BitterSecurity/Decepticon/") or TargetProcessCommandLine matches regex "(^|[/\\\\\\s])decepticon(\\.exe)?[\"']?\\s+(onboard|start|stop|status|doctor|update|attach|resume|mcp\\s+serve)(\\s|$)" or TargetProcessCommandLine contains "ghcr.io/bittersecurity/decepticon-" or ((TargetProcessCommandLine contains "decepticon-sandbox" or TargetProcessCommandLine contains "decepticon-langgraph" or TargetProcessCommandLine contains "decepticon-c2-sliver" or TargetProcessCommandLine contains "decepticon-c2-havoc") and TargetProcessCommandLine contains "docker")

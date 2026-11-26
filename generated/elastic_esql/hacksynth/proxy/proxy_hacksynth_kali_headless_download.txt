@@ -1,0 +1,3 @@
+# Kali Headless Metapackage Download, as in HackSynth Attackbox Setup
+# Sigma id 4cdca422-1dbf-5385-a8ef-1ad419e23052, pipeline ecs
+from * metadata _id, _index, _version | where url.original like "*kali-linux-headless*"

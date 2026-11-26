@@ -1,0 +1,27 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (HackSynth). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1588.002 (Obtain Capabilities: Tool)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". HackSynth has no addresses, domains or user agents of its own: its rows are command strings, container and
+// folder names and prompt text, so this sweep looks in process command lines, file paths and proxy URLs.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "hacksynth" | project value=tostring(SearchKey), type, confidence, actor, source;
+let Strings = toscalar(IOC | where type in ("string", "docker_image") and confidence in ("high", "medium") | summarize make_list(value));
+let Paths = toscalar(IOC | where type in ("file_path", "file_name") and confidence in ("high", "medium") | summarize make_list(value));
+union isfuzzy=true
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Strings)
+        | mv-apply s=Strings to typeof(string) on (where ProcessCommandLine has s | take 1 | project Indicator=s)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator, Detail=strcat(DeviceName, " ", substring(ProcessCommandLine, 0, 200))),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (Paths)
+        | mv-apply p=Paths to typeof(string) on (where FolderPath has p | take 1 | project Indicator=p)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator, Detail=strcat(DeviceName, " ", FolderPath)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (Strings)
+        | mv-apply s=Strings to typeof(string) on (where RequestURL has s | take 1 | project Indicator=s)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator, Detail=strcat(SourceIP, " ", RequestURL))
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

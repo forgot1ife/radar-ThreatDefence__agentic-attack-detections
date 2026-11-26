@@ -1,0 +1,3 @@
+# DarkMoon AI Pentest Agent Launcher, Containers or MCP Server
+# Sigma id 1900dd4a-afed-5b22-bcbb-9affa37ca0ab, pipeline ecs
+(process.command_line:*opencode* AND process.command_line:*\-\-agent\ pentest* AND process.command_line:*TARGET\:*) OR process.command_line:/(.*([\/ ]))?darkmoon\.sh(([ ]).*)?/ OR (process.command_line:(*ascit\/darkmoon* OR *ascit\/opencode\-darkmoon*)) OR (process.command_line:(*darkmoon\-mcp* OR *darkmoon\-cli*))

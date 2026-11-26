@@ -1,0 +1,46 @@
+title: Decepticon Sandbox, Agent Server or C2 Container Process
+id: 83265ac6-f94e-588e-9b1b-74fa1ece484d
+status: experimental
+description: |
+    Detects processes that only Decepticon's containers start: the sandbox command daemon (python3 -m
+    decepticon_sandbox.server on port 9999), its web and browser runners (python3 -I -m decepticon_sandbox.web or
+    .browser), the prompt hook that reports each command's exit status to tmux (@dcptn_completion), the LangGraph agent
+    server and time-window resumer, and the Sliver operator config the c2-sliver container creates for the decepticon
+    operator. Needs process telemetry from inside containers (Linux EDR, auditd, Falco).
+references:
+    - https://github.com/BitterSecurity/Decepticon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.command-and-control
+    - attack.t1219
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_sandbox:
+        CommandLine|contains:
+            - 'decepticon_sandbox.server'
+            - 'decepticon_sandbox.web'
+            - 'decepticon_sandbox.browser'
+            - '@dcptn_completion'
+    selection_langgraph:
+        CommandLine|contains:
+            - 'decepticon.cli time-window-resume'
+            - '/app/litellm_startup.py'
+    selection_sliver:
+        CommandLine|contains|all:
+            - 'sliver-server operator'
+            - '--name decepticon'
+    selection_havoc:
+        CommandLine|contains|all:
+            - 'teamserver server'
+            - '/opt/havoc/profiles/havoc.yaotl'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests and research with Decepticon
+    - selection_havoc matches any Havoc teamserver started with that profile path, not only Decepticon's
+level: high

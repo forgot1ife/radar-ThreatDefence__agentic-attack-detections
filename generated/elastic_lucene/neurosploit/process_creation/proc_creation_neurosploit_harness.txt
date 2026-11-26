@@ -1,0 +1,3 @@
+# NeuroSploit Harness on a Host
+# Sigma id ec1e9ac1-280c-5e4f-a77c-2b8ceb295512, pipeline ecs
+(process.executable:(*\/neurosploit OR *\\neurosploit.exe)) OR (process.command_line:(*c2\ daemon\ \-\-port\ 0\ \-\-dir* OR *neurosploit\-kali* OR *neurosploit\-neo4j* OR *ns_browser_prefetch.js* OR *neurosploit\-mcp*)) OR ((process.parent.executable:(*\/neurosploit OR *\\neurosploit.exe)) AND (process.command_line:(*\-\-dangerously\-skip\-permissions* OR *\-\-dangerously\-bypass\-approvals\-and\-sandbox*)))

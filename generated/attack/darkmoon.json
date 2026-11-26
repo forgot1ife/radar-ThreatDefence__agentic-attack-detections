@@ -1,0 +1,93 @@
+{
+ "description": "24 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 9,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "darkmoon",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: DarkMoon's proof file /tmp/.dm_proof on your database and cache servers; Sentinel analytics: DarkMoon AI pentest agent running on a host; Sigma: DarkMoon AI Pentest Agent Launcher, Containers or MCP Server; Sigma: DarkMoon Proof File /tmp/.dm_proof Written on a Server",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "Suricata: 3812910 TD DarkMoon placeholder model API key darkmoon-local; Suricata: 3812911 TD DarkMoon MCP server initialize answer (Darkmoon CyberSecurity); Suricata: 3812912 TD DarkMoon MCP server tool list; Suricata: 3812913 TD DarkMoon MCP tool call pushing a finding",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Suricata: 3812908 TD DarkMoon SCIM write proof user darkmoon-test",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1136.003"
+  },
+  {
+   "comment": "KQL hunt: DarkMoon testing you: its probe strings in web and proxy logs; KQL hunt: DarkMoon's proof file /tmp/.dm_proof on your database and cache servers; Sigma: DarkMoon Probe Markers in Web Server Logs; Sigma: DarkMoon Proof File /tmp/.dm_proof Written on a Server; Suricata: 3812902 TD DarkMoon cache poisoning probe X-Forwarded-Host dm-poison.invalid",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: DarkMoon testing you: its probe strings in web and proxy logs; Suricata: 3812907 TD DarkMoon container registry push proof tag darkmoon-proof-",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1525"
+  },
+  {
+   "comment": "KQL hunt: DarkMoon running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: DarkMoon Configuration, Campaign or Report Files Written; YARA: DarkMoon_Provider_Config; YARA: DarkMoon_Report; YARA: DarkMoon_Source_Or_Image",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3812905 TD DarkMoon email agent SMTP user enumeration VRFY dm-nosuchuser-9182",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1589.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: DarkMoon running on a host you monitor; KQL hunt: DarkMoon testing you: its probe strings in web and proxy logs; Sentinel analytics: DarkMoon AI pentest agent running on a host; Sigma: DarkMoon AI Pentest Agent Launcher, Containers or MCP Server; Sigma: DarkMoon Probe Markers in Web Server Logs; Suricata: 3812901 TD DarkMoon edge agent user agent dm-edge; Suricata: 3812903 TD DarkMoon cache buster dmcb=DM1; Suricata: 3812904 TD DarkMoon email agent SMTP greeting EHLO dm-test.local; Suricata: 3812906 TD DarkMoon email agent relay or spoofing test message",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

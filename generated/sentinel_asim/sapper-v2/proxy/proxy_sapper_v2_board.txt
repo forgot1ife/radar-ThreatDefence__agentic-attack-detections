@@ -1,0 +1,4 @@
+# sapper-v2 Engagement Graph Board in Proxy Logs
+# Sigma id 00648c66-4a8b-5d29-883f-12d2a8bb297b, pipeline sentinel_asim
+imWebSession
+| where Url contains "/__sapper_graph__/"

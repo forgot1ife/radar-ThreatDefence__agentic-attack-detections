@@ -1,0 +1,39 @@
+title: AutoPT Agent Started or Running Its Scan Steps
+id: 090f97a6-0e7e-5ebb-90cf-9e9a28e40656
+status: experimental
+description: |
+    Detects AutoPT, an LLM penetration testing agent from a research benchmark: its CLI (python main.py --name
+    <service/CVE> --ip_addr <IP>), the upstream engine's CLI (autopt run --benchmark-name ... --ip-addr ...), and the
+    full-port SYN scan its scan prompt tells the model to run (nmap -sS -p- --min-rate 3000 -T4). The nmap command line
+    is an example in the prompt, so the model may vary it.
+references:
+    - https://github.com/evenhu9/AutoPT
+    - https://github.com/Dizzy-K/AutoPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_cli:
+        CommandLine|contains|all:
+            - 'main.py'
+            - '--name '
+            - '--ip_addr '
+    selection_upstream:
+        CommandLine|contains|all:
+            - 'autopt'
+            - '--benchmark-name'
+            - '--ip-addr'
+    selection_scan:
+        CommandLine|contains: 'nmap -sS -p- --min-rate 3000 -T4 '
+    condition: 1 of selection_*
+falsepositives:
+    - Researchers running the AutoPT benchmark against its own vulhub targets
+    - Other scripts that take --name and --ip_addr arguments, or an administrator who types the same nmap command
+level: medium

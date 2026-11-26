@@ -1,0 +1,3 @@
+# NeuroSploit Out-of-Band Callback in Proxy Logs
+# Sigma id dba52ebb-fd29-5944-bacc-dbe86084082a, pipeline splunk_windows
+"cs-host"="neurosploit*" NOT "cs-host"="neurosploitai.*"

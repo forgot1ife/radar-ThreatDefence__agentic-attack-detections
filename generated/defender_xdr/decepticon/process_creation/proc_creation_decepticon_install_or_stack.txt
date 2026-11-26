@@ -1,0 +1,4 @@
+# Decepticon AI Red Team Agent Installed or Started
+# Sigma id b2cc9abb-091b-552c-9671-43932c67be6d, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "decepticon.red/install" or ProcessCommandLine contains "raw.githubusercontent.com/BitterSecurity/Decepticon/") or ProcessCommandLine matches regex "(^|[/\\\\\\s])decepticon(\\.exe)?[\"']?\\s+(onboard|start|stop|status|doctor|update|attach|resume|mcp\\s+serve)(\\s|$)" or ProcessCommandLine contains "ghcr.io/bittersecurity/decepticon-" or ((ProcessCommandLine contains "decepticon-sandbox" or ProcessCommandLine contains "decepticon-langgraph" or ProcessCommandLine contains "decepticon-c2-sliver" or ProcessCommandLine contains "decepticon-c2-havoc") and ProcessCommandLine contains "docker")

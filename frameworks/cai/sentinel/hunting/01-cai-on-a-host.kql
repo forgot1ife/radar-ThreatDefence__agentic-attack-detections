@@ -1,0 +1,48 @@
+// CAI (Cybersecurity AI) running on a host you monitor
+// Agentic attack detections by ThreatDefence (CAI). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell), T1543.002 (Create or Modify System Process: Systemd Service)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the CAI source code (aliasrobotics/cai at 6dc79257, v1.1.5, archived August 22, 2026). CAI is a Python CLI,
+// package cai-framework, whose agents run shell commands on the operator's machine, in Docker or over SSH:
+//  - The operator runs: cai, cai --tui, cai --api [--api-host 0.0.0.0], cai --yaml <file>, cai --yolo, cai --unrestricted.
+//    Version 1.x installs from Alias's private index: pip install --index-url https://packages.aliasrobotics.com:664/<key>/.
+//  - Every agent command is /bin/sh -c <command> under the python .../bin/cai process, in ~/.cai/workspace.
+//  - /virtualization starts docker run -d --name kali-security --network=host ... --security-opt=seccomp=unconfined
+//    kalilinux/kali-rolling tail -f /dev/null, then docker exec -w /workspace <id> sh -c <command>.
+//  - Session logs: ~/.cai/logs/cai_<uuid>_<time>_<user>_<os>_<ip>.jsonl; API users: ~/.cai/api_auth.json.
+//  - The continuous-ops wizard installs ~/.config/systemd/user/cai-cops-run_<hex>.service running
+//    python -m cai.continuous_ops.loop_runner --run-dir ~/.cai/continuous_ops/run_<hex>, Restart=always.
+//  - Network: logs.aliasrobotics.com (telemetry upload), api.aliasrobotics.com on TCP 666/665, packages.aliasrobotics.com on 664.
+// A bare "cai" command line is too short to match on its own; the child-process branch catches it by its children.
+
+let Window = 30d;
+let CaiCli = @"(^|[/\\\s])cai(\.exe)?[""']?\s(.*\s)?(--api|--api-host|--api-port|--tui|--yaml|--prompt|--yolo|--unrestricted)([\s=]|$)";
+let CaiInstall = @"((pip|pip3|pipx)\s+install|uv\s+(tool\s+install|tool\s+run|pip\s+install|add)|uvx)\s(.*\s)?[""']?cai-framework";
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine matches regex CaiCli or ProcessCommandLine matches regex CaiInstall
+            or ProcessCommandLine has "packages.aliasrobotics.com" or ProcessCommandLine has "cai.continuous_ops.loop_runner"
+            or (ProcessCommandLine has "--name kali-security" and ProcessCommandLine has "seccomp=unconfined")
+        | project Timestamp, DeviceName, Signal="CAI command, install, loop runner or Kali container", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessCommandLine matches regex @"[/\\]bin[/\\]cai([""'\s]|$)" and FileName in~ ("sh", "bash", "dash", "docker")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 15), Timestamp=min(Timestamp), N=count()
+            by DeviceName, Parent=substring(InitiatingProcessCommandLine, 0, 150)
+        | project Timestamp, DeviceName, Signal="Shell commands run by the cai process", Detail=strcat("x", N, " ", tostring(Commands)), Parent),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath matches regex @"[/\\]\.cai[/\\]logs[/\\]([A-Za-z0-9_-]+_)?cai_[0-9a-f-]{36}_\d{8}_\d{6}_"
+            or FolderPath matches regex @"[/\\]\.cai[/\\](api_auth\.json|continuous_ops[/\\]run_)"
+            or (FolderPath has "/systemd/user/" and FileName startswith "cai-cops-")
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, Folder=tostring(split(FolderPath, ".cai")[0])
+        | project Timestamp, DeviceName, Signal="CAI files under ~/.cai or its systemd unit", Detail=strcat(Folder, " ", tostring(Files)), Parent=""),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where RemoteUrl has_any ("logs.aliasrobotics.com", "api.aliasrobotics.com", "packages.aliasrobotics.com")
+            or (RemotePort in (664, 665, 666) and InitiatingProcessCommandLine has "cai")
+        | project Timestamp, DeviceName, Signal="CAI telemetry, Alias gateway or package index", Detail=strcat(RemoteUrl, " ", RemoteIP, ":", RemotePort),
+            Parent=InitiatingProcessCommandLine)
+| order by Timestamp desc

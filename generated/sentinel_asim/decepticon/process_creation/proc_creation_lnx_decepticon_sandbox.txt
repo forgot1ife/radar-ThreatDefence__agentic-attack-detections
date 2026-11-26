@@ -1,0 +1,4 @@
+# Decepticon Sandbox, Agent Server or C2 Container Process
+# Sigma id 83265ac6-f94e-588e-9b1b-74fa1ece484d, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "decepticon_sandbox.server" or TargetProcessCommandLine contains "decepticon_sandbox.web" or TargetProcessCommandLine contains "decepticon_sandbox.browser" or TargetProcessCommandLine contains "@dcptn_completion") or (TargetProcessCommandLine contains "decepticon.cli time-window-resume" or TargetProcessCommandLine contains "/app/litellm_startup.py") or (TargetProcessCommandLine contains "sliver-server operator" and TargetProcessCommandLine contains "--name decepticon") or (TargetProcessCommandLine contains "teamserver server" and TargetProcessCommandLine contains "/opt/havoc/profiles/havoc.yaotl")

@@ -1,0 +1,3 @@
+# DarkMoon Probe Markers in Web Server Logs
+# Sigma id 54477369-6333-5558-bb79-74cb818ca5fc, pipeline ecs
+from * metadata _id, _index, _version | where user_agent.original=="dm-edge" or url.query like "*dmcb=DM1*" or url.path like "*/manifests/darkmoon-proof-*"

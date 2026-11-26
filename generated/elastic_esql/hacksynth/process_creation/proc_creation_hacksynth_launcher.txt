@@ -1,0 +1,3 @@
+# HackSynth Benchmark Launcher
+# Sigma id f08ccd82-52f6-5b21-a742-45b80fb68334, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*run_bench.py*" and process.command_line rlike ".*[ ](-b|--benchmark)[ ].*" and (process.command_line like "*benchmark_solved.json*" or process.command_line like "*combined_solved.json*" or process.command_line like "*bandit_solved.json*" or process.command_line like "*natas_solved.json*" or process.command_line like "*configs/pico_bench/*" or process.command_line like "*configs/overthewire_bench/*")

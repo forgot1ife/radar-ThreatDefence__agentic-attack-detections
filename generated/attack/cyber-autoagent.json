@@ -1,0 +1,114 @@
+{
+ "description": "25 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 7,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "cyber-autoagent",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Cyber-AutoAgent threat emulation markers on hosts it reached; Sigma: Cyber-AutoAgent Threat Emulation Marker File",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059"
+  },
+  {
+   "comment": "Sentinel analytics: Cyber-AutoAgent AI pentest agent on a host",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: Cyber-AutoAgent in web and proxy logs: its dalfox callback, its Langfuse prompts and its seeded Langfuse project; Sigma: Cyber-AutoAgent Langfuse Prompt Fetch or Project Page in Proxy Logs; Suricata: 3815010 TD Cyber-AutoAgent default Langfuse API key (cyber-public:cyber-secret); Suricata: 3815011 TD Cyber-AutoAgent prompt fetch from Langfuse (cyber/system, cyber/report); Suricata: 3815012 TD Cyber-AutoAgent trace export to Langfuse; Suricata: 3815014 TD Cyber-AutoAgent Langfuse project page (cyber-project-id); Suricata: 3815015 TD Cyber-AutoAgent Langfuse answer naming its seeded project",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Suricata: 3815010 TD Cyber-AutoAgent default Langfuse API key (cyber-public:cyber-secret); Suricata: 3815013 TD Cyber-AutoAgent Langfuse default admin login (admin@cyber-autoagent.com); YARA: CyberAutoAgent_Compose_Stack",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1078.001"
+  },
+  {
+   "comment": "KQL hunt: Cyber-AutoAgent threat emulation markers on hosts it reached; Sigma: Cyber-AutoAgent Threat Emulation Marker Registry Key",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1112"
+  },
+  {
+   "comment": "KQL hunt: Cyber-AutoAgent in web and proxy logs: its dalfox callback, its Langfuse prompts and its seeded Langfuse project; Sigma: Cyber-AutoAgent Dalfox Blind XSS Callback DNS Query; Sigma: Cyber-AutoAgent Dalfox Blind XSS Callback in Web Logs; Suricata: 3815001 TD Cyber-AutoAgent dalfox blind XSS callback in request; Suricata: 3815002 TD Cyber-AutoAgent dalfox blind XSS callback lookup (payload ran)",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "YARA: CyberAutoAgent_Frontend_Config",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1552.001"
+  },
+  {
+   "comment": "KQL hunt: Cyber-AutoAgent running on a host you monitor; Sigma: Cyber-AutoAgent Operation Files Written; YARA: CyberAutoAgent_Source; YARA: CyberAutoAgent_System_Prompt",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Cyber-AutoAgent in web and proxy logs: its dalfox callback, its Langfuse prompts and its seeded Langfuse project; KQL hunt: Cyber-AutoAgent running on a host you monitor; Sentinel analytics: Cyber-AutoAgent AI pentest agent on a host; Sigma: Cyber-AutoAgent AI Pentest Agent Started; Sigma: Cyber-AutoAgent Dalfox Blind XSS Callback in Web Logs; Sigma: Cyber-AutoAgent General Module Tool Command Lines; Suricata: 3815001 TD Cyber-AutoAgent dalfox blind XSS callback in request",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "Sigma: Cyber-AutoAgent General Module Tool Command Lines",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

@@ -1,0 +1,24 @@
+title: Kali Headless Metapackage Download, as in HackSynth Attackbox Setup
+id: 4cdca422-1dbf-5385-a8ef-1ad419e23052
+status: experimental
+description: |
+    Detects a download of the kali-linux-headless metapackage, which HackSynth installs in every new attackbox
+    (docker_setup.py:36). The kalilinux/kali-rolling image fetches packages over plain HTTP from http.kali.org, so the
+    package name is in the proxy log. Anyone installing the same metapackage in a Kali system or container matches too.
+references:
+    - https://github.com/aielte-research/HackSynth/blob/48a41f795dda186df66561c4fd2b58ae84e3e4f8/docker_setup.py#L36
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection:
+        c-uri|contains: 'kali-linux-headless'
+    condition: selection
+falsepositives:
+    - Kali installs and container builds that use the kali-linux-headless metapackage
+level: low

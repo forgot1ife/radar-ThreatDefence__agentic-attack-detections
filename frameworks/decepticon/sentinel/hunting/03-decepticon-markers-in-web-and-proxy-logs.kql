@@ -1,0 +1,27 @@
+// Decepticon in web and proxy logs: its own user agents, unfilled user agent templates and its API routes
+// Agentic attack detections by ThreatDefence (Decepticon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1071.001 (Application Layer Protocol: Web Protocols), T1596.003 (Search Open Technical Databases: Digital Certificates)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Decepticon source code (BitterSecurity/Decepticon, reviewed at 6b15092d):
+//  - Proxy logs from the host that runs it (TLS inspection needed): decepticon-telemetry/1.0 to its telemetry gateway,
+//    decepticon-roe/1 to crt.sh when an engagement is created, decepticon-http-sandbox/1 to a remote sandbox daemon,
+//    and codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown when it uses a ChatGPT subscription.
+//  - Web logs of a target: the Decepticon/ token (helper code and one model gateway entry, not bound to an agent at
+//    6b15092d), user agent templates from its opsec skill sent with <CHROME_VER>, <FIREFOX_VER> or <CURRENT_VER> unfilled,
+//    and requests to /_decepticon/ on an exposed LangGraph server.
+// Most of what Decepticon sends to a target comes from Kali tools and impersonated browsers, so this hunt finds little
+// target traffic; the proxy rows are the stronger part.
+
+let OwnUAs = dynamic(["decepticon-telemetry/1.0", "decepticon-roe/1", "decepticon-http-sandbox/1", "codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown"]);
+let Markers = @"Decepticon/|<CHROME_VER>|<FIREFOX_VER>|<CURRENT_VER>";
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA in (OwnUAs) or UA matches regex Markers or csUriStem startswith "/_decepticon/"
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog | where RequestClientApplication in (OwnUAs) or RequestClientApplication matches regex Markers
+            or RequestURL has "/_decepticon/" or DestinationHostName has "decepticon-telemetry-gateway.purpleailab.workers.dev"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

@@ -1,0 +1,34 @@
+title: CAI Session Log, API Auth Database or Workspace Written
+id: 0abc86e5-02e5-5fd2-9c2c-03489e14a6b9
+status: experimental
+description: |
+    Detects the files CAI (Cybersecurity AI, aliasrobotics/cai) writes under ~/.cai: the per-session log
+    cai_<uuid>_<time>_<user>_<os>_<ip>.jsonl in ~/.cai/logs (uploaded to logs.aliasrobotics.com by its telemetry),
+    the API backend's user database api_auth.json and its key, and the continuous-ops run folders.
+references:
+    - https://github.com/aliasrobotics/cai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_log:
+        TargetFilename|re: '[/\\]\.cai[/\\]logs[/\\]([A-Za-z0-9_-]+_)?cai_[0-9a-f-]{36}_\d{8}_\d{6}_.*\.jsonl$'
+    selection_auth:
+        TargetFilename|endswith:
+            - '/.cai/api_auth.json'
+            - '/.cai/api_auth.json.key'
+            - '\.cai\api_auth.json'
+            - '\.cai\api_auth.json.key'
+    selection_cops:
+        TargetFilename|contains:
+            - '/.cai/continuous_ops/run_'
+            - '\.cai\continuous_ops\run_'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and researchers running CAI
+level: low

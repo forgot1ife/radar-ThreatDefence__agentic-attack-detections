@@ -1,0 +1,4 @@
+# AutoPT Agent Started or Running Its Scan Steps
+# Sigma id 090f97a6-0e7e-5ebb-90cf-9e9a28e40656, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "main.py" and TargetProcessCommandLine contains "--name " and TargetProcessCommandLine contains "--ip_addr ") or (TargetProcessCommandLine contains "autopt" and TargetProcessCommandLine contains "--benchmark-name" and TargetProcessCommandLine contains "--ip-addr") or TargetProcessCommandLine contains "nmap -sS -p- --min-rate 3000 -T4 "

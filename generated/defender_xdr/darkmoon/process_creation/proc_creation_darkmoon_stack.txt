@@ -1,0 +1,4 @@
+# DarkMoon AI Pentest Agent Launcher, Containers or MCP Server
+# Sigma id 1900dd4a-afed-5b22-bcbb-9affa37ca0ab, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "opencode" and ProcessCommandLine contains "--agent pentest" and ProcessCommandLine contains "TARGET:") or ProcessCommandLine matches regex "(^|[/\\s])darkmoon\\.sh(\\s|$)" or (ProcessCommandLine contains "ascit/darkmoon" or ProcessCommandLine contains "ascit/opencode-darkmoon") or (ProcessCommandLine contains "darkmoon-mcp" or ProcessCommandLine contains "darkmoon-cli")

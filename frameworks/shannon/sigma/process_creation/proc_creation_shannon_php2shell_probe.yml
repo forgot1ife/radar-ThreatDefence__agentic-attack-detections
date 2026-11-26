@@ -1,0 +1,27 @@
+title: Shannon Experimental php2shell Crash Probe Started
+id: 54ad49ab-c349-522e-a532-11e7aee8c79c
+status: experimental
+description: |
+    Detects the Shannon CLI started with --exp-php2shell. The probe sends a control request and up to two multipart
+    bodies of about 1 MiB and 7.4 MiB, flooded with MIME headers, to one URL. It is designed to crash a PHP worker on an
+    unpatched runtime (CVE-2026-109618 as the Shannon source names it) and runs from the CLI, without Docker.
+references:
+    - https://github.com/KeygraphHQ/shannon/blob/3760d2f9df9f3afa374a8eb2473adadfbf9ed991/docs/exp-php2shell.md
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.impact
+    - attack.t1499.004
+logsource:
+    category: process_creation
+detection:
+    selection_flag:
+        CommandLine|contains: '--exp-php2shell'
+    selection_shannon:
+        # node ./shannon start ... or node .../@keygraph/shannon/dist/index.mjs start ...
+        CommandLine|contains: 'shannon'
+    condition: all of selection_*
+falsepositives:
+    - Administrators checking their own PHP servers after the php2shell fixes
+level: medium

@@ -1,0 +1,2 @@
+{"name": "postgres writing the proof file", "expected": true, "event": {"TargetFilename": "/tmp/.dm_proof", "Image": "/usr/lib/postgresql/16/bin/postgres"}}
+{"name": "near miss: another hidden file in /tmp", "expected": false, "event": {"TargetFilename": "/tmp/.dm_proof.bak"}}

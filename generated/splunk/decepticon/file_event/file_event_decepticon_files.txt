@@ -1,0 +1,3 @@
+# Decepticon Configuration, Telemetry ID or C2 Operator Config Written
+# Sigma id 71e35d20-e85d-56e2-a3ba-bce5e6bd840c, pipeline splunk_windows
+(TargetFilename IN ("*/.decepticon/*", "*\\.decepticon\\*") TargetFilename IN ("*.env", "*docker-compose.yml", "*install_id", "*litellm.yaml", "*.version")) OR TargetFilename IN ("*/.sliver-configs/decepticon.cfg", "*\\.sliver-configs\\decepticon.cfg") OR (TargetFilename IN ("*/.decepticon/workspace/*", "*\\.decepticon\\workspace\\*") TargetFilename IN ("*/plan/roe.json", "*/plan/opplan.json", "*\\plan\\roe.json", "*\\plan\\opplan.json", "*/timeline.jsonl", "*\\timeline.jsonl"))

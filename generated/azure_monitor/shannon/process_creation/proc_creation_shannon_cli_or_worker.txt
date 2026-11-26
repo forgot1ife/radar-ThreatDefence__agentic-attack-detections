@@ -1,0 +1,4 @@
+# Shannon AI Pentest Agent CLI, Worker Container or Report Renderer
+# Sigma id a1390b62-ad0b-5a7a-9ac7-dfef102a8dbf, pipeline azure_monitor
+SecurityEvent
+| where CommandLine contains "@keygraph/shannon" or CommandLine matches regex "(^|[/\\\\\\s])shannon[\"']?\\s+start\\s(.*\\s)?(-u|--url)[\\s=]" or (CommandLine contains "keygraph/shannon:" or CommandLine contains "--name shannon-worker-" or CommandLine contains "shannon.workspace=" or CommandLine contains "shannon.workflow-id=" or CommandLine contains "TEMPORAL_ADDRESS=shannon-temporal:7233") or (CommandLine contains "temporal/worker.js" and CommandLine contains "--task-queue" and CommandLine contains "--workflow-id") or CommandLine matches regex "playwright-cli\\s+(.*\\s)?-s=agent[1-6](\\s|$)" or CommandLine contains "brand=Shannon | AI Pentester by Keygraph"

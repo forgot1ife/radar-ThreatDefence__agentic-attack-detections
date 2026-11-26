@@ -1,0 +1,32 @@
+id: 2f0d9613-6aee-5828-b0b3-fbf2d778c844
+name: Cyber-AutoAgent AI pentest agent on a host
+description: |
+  A host started the Cyber-AutoAgent Python agent (cyberautoagent.py with --target or --service-mode, or the
+  --objective via environment placeholder its terminal front end passes for every run), ran a container from the
+  cyber-autoagent image, or ran the dalfox command its general module builds with the callback dalfox-xss-test.com.
+  Cyber-AutoAgent runs shell, HTTP and Python tools against a target without asking for approval by default.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - Execution
+relevantTechniques:
+  - T1595.002
+  - T1059.006
+query: |
+  DeviceProcessEvents
+  | where (ProcessCommandLine has "cyberautoagent.py" and ProcessCommandLine has_any ("--target", "--service-mode"))
+      or ProcessCommandLine has "--objective via environment"
+      or ProcessCommandLine has "cyber-autoagent:latest"
+      or (ProcessCommandLine has "dalfox" and ProcessCommandLine has "dalfox-xss-test.com")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Commands=make_set(substring(ProcessCommandLine, 0, 300), 10)
+      by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

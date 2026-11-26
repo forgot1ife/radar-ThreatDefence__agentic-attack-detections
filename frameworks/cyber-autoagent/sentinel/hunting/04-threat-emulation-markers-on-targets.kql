@@ -1,0 +1,29 @@
+// Cyber-AutoAgent threat emulation markers on hosts it reached
+// Agentic attack detections by ThreatDefence (Cyber-AutoAgent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059 (Command and Scripting Interpreter), T1112 (Modify Registry)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// Cyber-AutoAgent's threat_emulation module (operation_plugins/threat_emulation/execution_prompt.md:49-55) tells the
+// model to leave a marker for every technique it runs: a file .emulation_marker_<TTP_ID>, processes named
+// emulation_<name>, registry keys under HKLM\SOFTWARE\EmulationMarkers\ and accounts named emu_<username>. These come
+// from the prompt, so the model may vary them, and an operator can edit the prompt. A marker on a host you did not
+// schedule an emulation for means the agent ran commands there.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName startswith ".emulation_marker_"
+        | project Timestamp, DeviceName, Signal="Emulation marker file", Detail=FolderPath,
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceRegistryEvents
+        | where Timestamp > ago(Window)
+        | where RegistryKey has @"\SOFTWARE\EmulationMarkers"
+        | project Timestamp, DeviceName, Signal="Emulation marker registry key", Detail=strcat(RegistryKey, " ", RegistryValueName),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName startswith "emulation_" or ProcessCommandLine has_any ("EmulationMarkers", ".emulation_marker_")
+            or (FileName in~ ("net.exe", "net1.exe") and ProcessCommandLine has " /add" and ProcessCommandLine matches regex @"(?i)\semu_\w+")
+        | project Timestamp, DeviceName, Signal="Emulation marker process or account", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150)))
+| order by Timestamp desc

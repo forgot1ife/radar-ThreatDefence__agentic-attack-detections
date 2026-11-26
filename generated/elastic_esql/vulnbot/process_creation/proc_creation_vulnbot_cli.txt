@@ -1,0 +1,3 @@
+# VulnBot CLI Started
+# Sigma id e65e9d4a-1178-56b9-bc1f-7c920e1baf70, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*cli.py*" and process.command_line like "*vulnbot*" and (process.command_line like "*cli.py vulnbot*" or process.command_line like "*cli.py pentestgpt*" or process.command_line like "*cli.py start -a*" or process.command_line like "*cli.py init*" or process.command_line like "*cli.py base*")

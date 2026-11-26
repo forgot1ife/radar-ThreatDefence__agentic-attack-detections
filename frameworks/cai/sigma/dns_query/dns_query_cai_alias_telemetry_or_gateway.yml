@@ -1,0 +1,28 @@
+title: CAI Telemetry, Alias Gateway or Private Package Index DNS Query
+id: da4f089e-1e92-53fa-a781-fd97e5ee07dd
+status: experimental
+description: |
+    Detects lookups of logs.aliasrobotics.com, where CAI (Cybersecurity AI) uploads its session logs at the end of a
+    session and every 5 model interactions (the second even with CAI_TELEMETRY=false), and of api.aliasrobotics.com
+    (licence check and default alias1 model, TCP 666 and 665) and packages.aliasrobotics.com (private package index,
+    TCP 664). The api and packages names may also serve Alias's successor product, CSI.
+references:
+    - https://github.com/aliasrobotics/cai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.004
+logsource:
+    category: dns_query
+detection:
+    selection:
+        QueryName:
+            - 'logs.aliasrobotics.com'
+            - 'api.aliasrobotics.com'
+            - 'packages.aliasrobotics.com'
+    condition: selection
+falsepositives:
+    - Authorized use of CAI or other Alias Robotics products
+level: medium

@@ -1,0 +1,3 @@
+# sapper-v2 Engagement Graph Board in Proxy Logs
+# Sigma id 00648c66-4a8b-5d29-883f-12d2a8bb297b, pipeline ecs
+from * metadata _id, _index, _version | where url.original like "*/__sapper_graph__/*"

@@ -1,0 +1,4 @@
+# Decepticon Configuration, Telemetry ID or C2 Operator Config Written
+# Sigma id 71e35d20-e85d-56e2-a3ba-bce5e6bd840c, pipeline azure_monitor
+SecurityEvent
+| where ((ObjectName contains "/.decepticon/" or ObjectName endswith "\\.decepticon*") and (ObjectName endswith ".env" or ObjectName endswith "docker-compose.yml" or ObjectName endswith "install_id" or ObjectName endswith "litellm.yaml" or ObjectName endswith ".version")) or (ObjectName endswith "/.sliver-configs/decepticon.cfg" or ObjectName endswith "\\.sliver-configs\\decepticon.cfg") or ((ObjectName contains "/.decepticon/workspace/" or ObjectName endswith "\\.decepticon\\workspace*") and (ObjectName endswith "/plan/roe.json" or ObjectName endswith "/plan/opplan.json" or ObjectName endswith "\\plan\\roe.json" or ObjectName endswith "\\plan\\opplan.json" or ObjectName endswith "/timeline.jsonl" or ObjectName endswith "\\timeline.jsonl"))

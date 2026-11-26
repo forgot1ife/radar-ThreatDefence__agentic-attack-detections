@@ -1,0 +1,4 @@
+# Cyber-AutoAgent General Module Tool Command Lines
+# Sigma id f431fc1b-d3f2-5ee6-aace-b0034ce41036, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "dalfox" and ProcessCommandLine contains "dalfox-xss-test.com") or (ProcessCommandLine contains "feroxbuster" and ProcessCommandLine contains "/tmp/auth_wordlist.txt")

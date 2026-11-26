@@ -1,0 +1,4 @@
+# Cyber-AutoAgent Threat Emulation Marker Registry Key
+# Sigma id 63a9d992-50b1-5904-962f-f6c24c2d1594, pipeline azure_monitor
+SecurityEvent
+| where ObjectName endswith "\\SOFTWARE\\EmulationMarkers*"

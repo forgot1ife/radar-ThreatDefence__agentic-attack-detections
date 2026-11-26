@@ -1,0 +1,65 @@
+{
+ "description": "15 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 8,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "shannon",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Suricata: 3813010 TD Shannon scan workflows in a Temporal Web UI or API response",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Shannon testing you: the php2shell probe sizes and its browser user agent in web and proxy logs; Sigma: Shannon Experimental php2shell Crash Probe Started; Suricata: 3813001 TD Shannon php2shell crash probe multipart boundary; Suricata: 3813002 TD Shannon php2shell crash probe MIME header flood",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1499.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Shannon running on a host you monitor; YARA: Shannon_Package; YARA: Shannon_Playwright_Stealth_Files; YARA: Shannon_Session_Record",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Shannon running on a host you monitor; KQL hunt: Shannon testing you: the php2shell probe sizes and its browser user agent in web and proxy logs; Sentinel analytics: Shannon AI pentest agent on a host; Sigma: Shannon AI Pentest Agent CLI, Worker Container or Report Renderer; Sigma: Shannon Workspace, Deliverable or Browser Files Written; Suricata: 3813001 TD Shannon php2shell crash probe multipart boundary; YARA: Shannon_Report_Markdown; YARA: Shannon_Report_PDF",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

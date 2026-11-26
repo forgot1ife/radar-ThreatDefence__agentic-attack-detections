@@ -1,0 +1,3 @@
+# Decepticon Configuration, Telemetry ID or C2 Operator Config Written
+# Sigma id 71e35d20-e85d-56e2-a3ba-bce5e6bd840c, pipeline ecs
+((TargetFilename:(*\/.decepticon\/* OR *\\.decepticon\\*)) AND (TargetFilename:(*.env OR *docker\-compose.yml OR *install_id OR *litellm.yaml OR *.version))) OR (TargetFilename:(*\/.sliver\-configs\/decepticon.cfg OR *\\.sliver\-configs\\decepticon.cfg)) OR ((TargetFilename:(*\/.decepticon\/workspace\/* OR *\\.decepticon\\workspace\\*)) AND (TargetFilename:(*\/plan\/roe.json OR *\/plan\/opplan.json OR *\\plan\\roe.json OR *\\plan\\opplan.json OR *\/timeline.jsonl OR *\\timeline.jsonl)))

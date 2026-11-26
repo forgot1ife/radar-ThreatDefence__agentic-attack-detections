@@ -1,0 +1,38 @@
+// AutoPT on a host you monitor
+// Agentic attack detections by ThreatDefence (AutoPT). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// AutoPT (evenhu9/AutoPT, upstream Dizzy-K/AutoPT) is a research LLM agent that scans one IP with nmap and xray, pulls
+// a vulhub proof of concept from GitHub and runs it with shell commands, without approval. No report of its use in a
+// real intrusion was found on November 26, 2026, so this hunt looks for the software itself, from its source code:
+//  - The CLI: python main.py --name <service/CVE> --ip_addr <IP>, or upstream autopt run --benchmark-name ... --ip-addr ...
+//  - The web console: python app.py, listening on TCP 5000 on every interface, with no login.
+//  - Agent commands as children of Python: nmap -sS -p- --min-rate 3000 -T4 <IP> (a prompt example), and xray run from
+//    <repo>/xray/xray_linux_amd64 or xray_windows_amd64.exe with ws --url.
+//  - Result files: src/result/<model>/<service>_<CVE>_<model>_FSM.jsonl.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let AutoptProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where (ProcessCommandLine has "main.py" and ProcessCommandLine has "--ip_addr" and ProcessCommandLine has "--name")
+        or (ProcessCommandLine has "autopt" and ProcessCommandLine has "--benchmark-name" and ProcessCommandLine has "--ip-addr")
+        or (InitiatingProcessFileName startswith "python" and ProcessCommandLine has "nmap -sS -p- --min-rate 3000 -T4")
+        or (FileName in~ ("xray_linux_amd64", "xray_windows_amd64.exe", "xray_darwin_amd64") and ProcessCommandLine has " ws --url ");
+let ConsoleListeners = DeviceNetworkEvents
+    | where Timestamp > ago(Window)
+    | where ActionType == "ListeningConnectionCreated" and LocalPort == 5000
+    | where InitiatingProcessFileName startswith "python" and InitiatingProcessCommandLine has "app.py";
+union isfuzzy=true
+    (AutoptProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="AutoPT CLI, scan step or xray run", Detail=tostring(Commands)),
+    (ConsoleListeners
+        | summarize Timestamp=min(Timestamp), Commands=make_set(InitiatingProcessCommandLine, 5) by DeviceName
+        | project Timestamp, DeviceName, Signal="Python app.py listening on 5000 (possible AutoPT console; check for the page title)", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName endswith "_FSM.jsonl" and (FolderPath has "/result/" or FolderPath has @"\result\")
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="AutoPT run result written", Detail=tostring(Files))
+| order by Timestamp desc

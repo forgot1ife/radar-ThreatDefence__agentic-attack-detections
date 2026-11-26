@@ -1,6 +1,6 @@
 {
  "type": "bundle",
- "id": "bundle--26de81dc-ca13-5ea0-abb0-c37a8fbae706",
+ "id": "bundle--dfd5f1a0-dc11-59c0-80e6-e910a24dfe78",
  "objects": [
   {
    "type": "identity",
@@ -260,7 +260,7 @@
    "aliases": [
     "BitterSecurity/Decepticon"
    ],
-   "description": "Open-source autonomous red team agent (BitterSecurity/Decepticon, June 2025) built on LangGraph with a Kali sandbox, whose open web console on port 3000 was removed in November 2026 in favour of a hosted one; no public report of use in an intrusion.",
+   "description": "Open-source autonomous red team agent (BitterSecurity/Decepticon, June 2025) built on LangGraph with a Kali sandbox and on-demand Sliver and Havoc C2, whose installer turns on usage telemetry unless the operator declines; its open web console on port 3000 was removed in November 2026 in favour of a hosted one; no public report of use in an intrusion.",
    "tool_types": [
     "exploitation",
     "vulnerability-scanning"
@@ -428,6 +428,234 @@
     "楚锋 Agent Core"
    ],
    "description": "Self-hosted agent workspace titled 楚锋 Agent Core, seen on Chinese cloud hosts in November 2026, whose sign-in page offers CTF, digital forensics and authorised penetration testing tasks; no public source code or report found.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--be088cf4-480c-5034-ae56-a009e6761674",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "HackSynth",
+   "aliases": [
+    "aielte-research/HackSynth"
+   ],
+   "description": "Open-source Python research agent from ELTE (aielte-research/HackSynth, November 2024, arXiv 2412.01778) for autonomous penetration testing in CTF games: a Planner model writes one bash command per step, run in a Kali container through the Docker API, and a Summarizer model keeps the history; no web UI.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--7ce1678c-577b-5721-94ba-6e8bde9b632a",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "AutoPT",
+   "aliases": [
+    "evenhu9/AutoPT",
+    "Dizzy-K/AutoPT"
+   ],
+   "description": "Research LLM web penetration testing agent (Dizzy-K/AutoPT, September 2024, code of the AutoPT paper; evenhu9/AutoPT, December 2025, the same engine with a Flask console) that scans one IP with nmap and xray and runs public vulhub exploits for 20 benchmark CVEs, with an unauthenticated web console on port 5000; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--4fb6edaa-f65e-513a-9321-fcdedba6c0a1",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "PentestGPT",
+   "aliases": [
+    "GreyDGL/PentestGPT",
+    "pentestgpt-agent",
+    "pentestgpt-legacy"
+   ],
+   "description": "Open-source Python AI penetration testing agent from the USENIX Security 2024 paper (GreyDGL/PentestGPT, February 2023) that drives the Claude Code or Codex CLI with permission checks off; v1.0.0 sent Langfuse telemetry by default. No web console; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "CAI",
+   "aliases": [
+    "aliasrobotics/cai",
+    "cai-framework",
+    "Cybersecurity AI"
+   ],
+   "description": "Open-source Python AI security agent framework from Alias Robotics (aliasrobotics/cai, March 2025, archived August 2026) with red team, bug bounty and web pentest agents that run shell commands locally, in a Kali container or over SSH, default model alias1 through Alias's gateway, an optional HTTP API backend and session-log telemetry to logs.aliasrobotics.com.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--86927cfb-3024-52e3-a8d3-8cf035178584",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "Shannon",
+   "aliases": [
+    "KeygraphHQ/shannon",
+    "@keygraph/shannon",
+    "Shannon Lite",
+    "keygraph/shannon"
+   ],
+   "description": "Open-source white-box AI penetration testing agent from Keygraph (KeygraphHQ/shannon, September 2025, AGPL-3.0) that reads an application's source code and exploits the running web application with model-driven agents in a Docker worker orchestrated by Temporal; ships an experimental php2shell PHP crash probe.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--8ff707e4-aeb5-5c27-b4b2-9e2b065ce1b6",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "VulnBot",
+   "aliases": [
+    "KHenryAegis/VulnBot",
+    "DeepPentest"
+   ],
+   "description": "Open-source multi-agent autonomous penetration testing framework from an academic paper (KHenryAegis/VulnBot, arXiv 2501.13411, January 2025) whose reconnaissance, scanning and exploitation agents run Kali tools over SSH on a Kali host, with an optional unauthenticated knowledge base API on port 7861 and Streamlit page on 8501; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "Cyber-AutoAgent",
+   "aliases": [
+    "westonbrown/Cyber-AutoAgent",
+    "cyber-autoagent",
+    "Cyber AutoAgent"
+   ],
+   "description": "Open-source Python agent on the Strands SDK with a terminal front end (westonbrown/Cyber-AutoAgent, May 2025, archived) that runs a penetration test from a Kali container without approval steps and ships a Langfuse stack with a fixed login; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--46492424-edc5-5e86-b3f6-b9011a0505c7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "PentestAgent (paper code)",
+   "aliases": [
+    "nbshenxm/pentest-agent",
+    "pentest-agent",
+    "PentestAgent arXiv 2411.05185"
+   ],
+   "description": "Open-source research code of the PentestAgent paper (nbshenxm/pentest-agent, arXiv 2411.05185, February 2025) whose Python agents run nmap, look up CVEs and public exploits and run one against a target; no web interface; not GH05TCREW/pentestagent; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--600fcb03-35e4-530c-88cf-c99835248122",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "PentestAgent (GH05TCREW)",
+   "aliases": [
+    "GH05TCREW/pentestagent",
+    "gh05tcrew/pentestagent"
+   ],
+   "description": "Open-source Python AI agent framework for black-box testing (GH05TCREW/pentestagent, May 2025) with a terminal UI, a multi-agent crew mode, Kali sandbox images and an MCP server that listens on 0.0.0.0:8080 without authentication; not the nbshenxm/pentest-agent paper code; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "DarkMoon",
+   "aliases": [
+    "ASCIT31/Dark-Moon",
+    "Dark-Moon",
+    "Darkmoon",
+    "ascit/darkmoon"
+   ],
+   "description": "Open-source autonomous AI penetration testing stack from ASC IT (ASCIT31/Dark-Moon, November 2024) that runs about 50 OpenCode agents whose commands go through an MCP server into a root toolbox container; no web console in the open-source edition and no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "sapper-v2",
+   "aliases": [
+    "N1nEmAn/sapper-v2"
+   ],
+   "description": "Open-source contest kit (N1nEmAn/sapper-v2, October 2026) that runs several Claude Code and Codex sessions in tmux with approvals off against penetration-testing targets, sharing an engagement graph on disk, with an unauthenticated web board; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--818b1a09-32c2-5975-8346-ed961e1c1268",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "NyxStrike",
+   "aliases": [
+    "CommonHuman-Lab/nyxstrike",
+    "HexStrike AI Community Edition",
+    "CommonHuman-Lab/hexstrike-ai-community-edition"
+   ],
+   "description": "Open-source AGPL-3.0 derivative of HexStrike AI (CommonHuman-Lab/nyxstrike, renamed from HexStrike AI Community Edition in April 2026) that exposes about 200 offensive tools to any MCP client or its own LLM agents through a Flask server on port 8888, with a React dashboard, a decision engine and a hash-chained evidence log; no public report of use in an intrusion.",
+   "tool_types": [
+    "exploitation",
+    "vulnerability-scanning"
+   ]
+  },
+  {
+   "type": "tool",
+   "spec_version": "2.1",
+   "id": "tool--ada96aab-5ece-590b-8656-5f12e891c40b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "name": "NeuroSploit",
+   "aliases": [
+    "JoasASantos/NeuroSploit",
+    "neurosploit-rs"
+   ],
+   "description": "Open-source Rust harness with a Node.js web console (JoasASantos/NeuroSploit, August 2025) that runs reconnaissance, about 490 specialist agent prompts, replay and multi-model voting against a web target, with its own out-of-band listener and an opt-in C2 and web shell manager; it signs its requests with a NeuroSploit user agent and header by default; no public report of use in an intrusion.",
    "tool_types": [
     "exploitation",
     "vulnerability-scanning"
@@ -9459,7 +9687,7 @@
    "created": "2026-11-21T00:00:00.000Z",
    "modified": "2026-11-21T00:00:00.000Z",
    "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
-   "name": "HexStrike user_agent: Mozilla/5.0 (Compatible Exploit)",
+   "name": "HexStrike and NyxStrike user_agent: Mozilla/5.0 (Compatible Exploit)",
    "description": "User agent in the CVE exploit scripts HexStrike generates (hexstrike_server.py:7098). Reported by ThreatDefence review of the HexStrike source code.",
    "indicator_types": [
     "malicious-activity"
@@ -9470,6 +9698,7 @@
    "confidence": 60,
    "labels": [
     "hexstrike",
+    "nyxstrike",
     "medium"
    ],
    "external_references": [
@@ -9488,6 +9717,16 @@
    "relationship_type": "indicates",
    "source_ref": "indicator--c7947a52-9e6c-507a-898a-4736d8572e8d",
    "target_ref": "tool--e80d6769-dc7a-59ea-acb9-19fecf0b9dc9"
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--9006c3be-daac-500a-8369-2bcb1db56844",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--c7947a52-9e6c-507a-898a-4736d8572e8d",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
   },
   {
    "type": "indicator",
@@ -14202,6 +14441,4039 @@
    "relationship_type": "indicates",
    "source_ref": "indicator--97af5b23-530b-50c2-b935-1e18a551301c",
    "target_ref": "tool--666d3ef8-7359-5891-9d94-8ac80847885f"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--c55f1478-87ce-574c-a8aa-b4f235973748",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "HackSynth file_path: /data/cyberml_attackbox",
+   "description": "Host folder HackSynth bind-mounts on /data in the attackbox when it exists (docker_setup.py:9). Reported by ThreatDefence review of the HackSynth source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/data/cyberml_attackbox']",
+   "pattern_type": "stix",
+   "valid_from": "2025-06-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "hacksynth",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the HackSynth source code",
+     "url": "https://github.com/aielte-research/HackSynth/blob/48a41f795dda186df66561c4fd2b58ae84e3e4f8/docker_setup.py#L9"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--4fad9f7a-c624-59b1-98ec-91d3ac59a4bf",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--c55f1478-87ce-574c-a8aa-b4f235973748",
+   "target_ref": "tool--be088cf4-480c-5034-ae56-a009e6761674"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--f717e0d3-cb98-52ae-93b3-3100d012dd03",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "HackSynth file_name: pentest_agent.py",
+   "description": "HackSynth agent module, next to run_bench.py and docker_setup.py in a clone. A common file name: only the three together mean HackSynth. Reported by ThreatDefence review of the HackSynth source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[file:name LIKE 'pentest_agent.py%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-06-24T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "hacksynth",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the HackSynth source code",
+     "url": "https://github.com/aielte-research/HackSynth/blob/48a41f795dda186df66561c4fd2b58ae84e3e4f8/pentest_agent.py#L9"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--f2b4d593-338a-5ff4-a8e9-1833b40d97fe",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--f717e0d3-cb98-52ae-93b3-3100d012dd03",
+   "target_ref": "tool--be088cf4-480c-5034-ae56-a009e6761674"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--65d5bee5-7ab5-51bf-9cce-e66fc0a57c4e",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "AutoPT user_agent: AutoPT/1.0",
+   "description": "User agent of the ReadHTML page reader in the upstream AutoPT engine, sent with Python urllib on every page the agent reads (tools/web.py:38). Reported by ThreatDefence review of the AutoPT source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'AutoPT/1.0']",
+   "pattern_type": "stix",
+   "valid_from": "2026-06-01T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "autopt",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the AutoPT source code",
+     "url": "https://github.com/Dizzy-K/AutoPT/blob/fb26e0c47d47bd835e2164fe2b485df1c546d017/tools/web.py#L38"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1ba95316-15be-54b9-a39b-e20c70715f62",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--65d5bee5-7ab5-51bf-9cce-e66fc0a57c4e",
+   "target_ref": "tool--7ce1678c-577b-5721-94ba-6e8bde9b632a"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--b3100ebf-e1d8-5824-92b0-6e6cb4ea3b25",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "AutoPT file_name: *_FSM.jsonl",
+   "description": "Result file AutoPT writes after each run: src/result/<model>/<service>_<CVE>_<model>_FSM.jsonl, with the commands the agent ran (src/autopt.py:81-98). Reported by ThreatDefence review of the AutoPT source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE '*_FSM.jsonl%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-04-18T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "autopt",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the AutoPT source code",
+     "url": "https://github.com/evenhu9/AutoPT/blob/e38e208612e15bce94c828c2eb919ab1171332d6/src/autopt.py#L81-L98"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3122a4ba-643d-5667-85c9-2dc9451abbc3",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--b3100ebf-e1d8-5824-92b0-6e6cb4ea3b25",
+   "target_ref": "tool--7ce1678c-577b-5721-94ba-6e8bde9b632a"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--33edf504-5687-56e1-ac7a-ad1669716561",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "AutoPT domain: api.whatai.cc",
+   "description": "Third-party OpenAI-compatible relay set as openai_base in AutoPT's shipped config.yml (src/config/config.yml:3). A public service many tools use, so only context. Reported by ThreatDefence review of the AutoPT source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[domain-name:value = 'api.whatai.cc']",
+   "pattern_type": "stix",
+   "valid_from": "2026-04-18T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "autopt",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the AutoPT source code",
+     "url": "https://github.com/evenhu9/AutoPT/blob/e38e208612e15bce94c828c2eb919ab1171332d6/src/config/config.yml#L3"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--de2757f9-2abe-5918-b249-ee78c1377947",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--33edf504-5687-56e1-ac7a-ad1669716561",
+   "target_ref": "tool--7ce1678c-577b-5721-94ba-6e8bde9b632a"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--631a57f0-e341-52a6-aed4-68044f6f5f5b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestGPT domain: us.cloud.langfuse.com",
+   "description": "Langfuse US cloud, the PentestGPT v1.0.0 telemetry host (on by default; off with --no-telemetry or LANGFUSE_ENABLED=false). Shared with many LLM applications: a lead only, unless the process is pentestgpt or the PentestGPT key is seen. Main has no telemetry. Reported by ThreatDefence review of the PentestGPT source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[domain-name:value = 'us.cloud.langfuse.com']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-24T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "pentestgpt",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestGPT source code",
+     "url": "https://github.com/GreyDGL/PentestGPT/blob/83ae3647603de8c66229f0877faef77a53f5c8f6/pentestgpt/core/langfuse.py#L87"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--dbf2db1d-9e72-54b0-bcce-624d6df7235a",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--631a57f0-e341-52a6-aed4-68044f6f5f5b",
+   "target_ref": "tool--4fb6edaa-f65e-513a-9321-fcdedba6c0a1"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--660fb222-7d71-59f4-baac-cb60da2a13e8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestGPT file_name: trial-config.json",
+   "description": "First file pentestgpt-agent writes in runs/<run>/ (folder mode 0700), followed by state.sqlite3, traces/ and summary.json. The name alone is not unique. Reported by ThreatDefence review of the PentestGPT source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[file:name LIKE 'trial-config.json%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-07-14T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "pentestgpt",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestGPT source code",
+     "url": "https://github.com/GreyDGL/PentestGPT/blob/e8b1bb77d1ac00329675cec3b060aba971ec1ac8/pentestgpt_agent/src/pentestgpt_agent/trial.py#L146"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--9105cfff-ea2b-5247-8ba2-ab6c7a8d9b38",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--660fb222-7d71-59f4-baac-cb60da2a13e8",
+   "target_ref": "tool--4fb6edaa-f65e-513a-9321-fcdedba6c0a1"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--b841853b-ccf3-5446-8702-a9ecf54cc440",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestGPT file_path: /.pentestgpt/sessions/",
+   "description": "PentestGPT v1.0.0 session files, ~/.pentestgpt/sessions/<id>.json with target, flags_found and total_cost_usd. Reported by ThreatDefence review of the PentestGPT source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.pentestgpt/sessions/']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-24T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "pentestgpt",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestGPT source code",
+     "url": "https://github.com/GreyDGL/PentestGPT/blob/83ae3647603de8c66229f0877faef77a53f5c8f6/pentestgpt/core/session.py#L79"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--5c9bfa9a-b7c3-5167-a7a8-4fa7f35e13c4",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--b841853b-ccf3-5446-8702-a9ecf54cc440",
+   "target_ref": "tool--4fb6edaa-f65e-513a-9321-fcdedba6c0a1"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--39690f49-bfc4-5833-99cc-3e3ab339f070",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestGPT file_path: /.pentestgpt/user_id",
+   "description": "PentestGPT v1.0.0 telemetry user id (a UUID), written on first run unless telemetry is off. Reported by ThreatDefence review of the PentestGPT source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.pentestgpt/user_id']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-24T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "pentestgpt",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestGPT source code",
+     "url": "https://github.com/GreyDGL/PentestGPT/blob/83ae3647603de8c66229f0877faef77a53f5c8f6/pentestgpt/core/langfuse.py#L34"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--bed6b96d-9303-545e-ada4-3c393daebdd7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--39690f49-bfc4-5833-99cc-3e3ab339f070",
+   "target_ref": "tool--4fb6edaa-f65e-513a-9321-fcdedba6c0a1"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--43c6b187-1618-5456-ab7a-49e17c790128",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestGPT file_name: pentestgpt-debug.log",
+   "description": "PentestGPT v1.0.0 debug log, /workspace/pentestgpt-debug.log or /tmp/pentestgpt-debug.log. Reported by ThreatDefence review of the PentestGPT source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'pentestgpt-debug.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-24T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "pentestgpt",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestGPT source code",
+     "url": "https://github.com/GreyDGL/PentestGPT/blob/83ae3647603de8c66229f0877faef77a53f5c8f6/pentestgpt/core/agent.py#L24"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--81f46097-1fa8-5e87-8dda-2d13d2ae4058",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--43c6b187-1618-5456-ab7a-49e17c790128",
+   "target_ref": "tool--4fb6edaa-f65e-513a-9321-fcdedba6c0a1"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--240e481a-1dde-5c70-a4d8-e8abfab7f19b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestGPT file_name: pentestGPT.log",
+   "description": "Log of the legacy interactive PentestGPT in its log folder (default logs/). Reported by ThreatDefence review of the PentestGPT source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'pentestGPT.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-07-14T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "pentestgpt",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestGPT source code",
+     "url": "https://github.com/GreyDGL/PentestGPT/blob/e8b1bb77d1ac00329675cec3b060aba971ec1ac8/pentestgpt_legacy/utils/pentest_gpt.py#L68"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--c4e81a94-d500-51b7-bd6a-5534dbbf8971",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--240e481a-1dde-5c70-a4d8-e8abfab7f19b",
+   "target_ref": "tool--4fb6edaa-f65e-513a-9321-fcdedba6c0a1"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--657947c5-ecea-5bf2-a8ab-6cb26a41df81",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI domain: logs.aliasrobotics.com",
+   "description": "CAI telemetry: POST https://logs.aliasrobotics.com/upload with the whole session log (multipart field log) at the end of a session, and /upload/intermediate every 5 model interactions, which CAI_TELEMETRY=false does not stop. The URL is base64-obfuscated in three pieces (src/cai/internal/components/endpoints.py:21-23). Seen from your network, CAI ran there. Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[domain-name:value = 'logs.aliasrobotics.com']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "cai",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/internal/components/endpoints.py#L21-L23"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--79636ef8-b2f8-56fa-b17a-dd3701e864fa",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--657947c5-ecea-5bf2-a8ab-6cb26a41df81",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--f6334cf8-14c7-5bd5-82b3-8681db4f2f40",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI url: https://logs.aliasrobotics.com/upload",
+   "description": "CAI telemetry upload endpoint, assembled from base64 pieces; /intermediate is appended for the periodic upload (src/cai/internal/components/endpoints.py:21-23, metrics.py:84). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value = 'https://logs.aliasrobotics.com/upload']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "cai",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/internal/components/endpoints.py#L21-L23"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--94eaad0a-7e28-5a9c-a523-b3fb14f474aa",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--f6334cf8-14c7-5bd5-82b3-8681db4f2f40",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--ec276f22-47ff-589b-a206-5c2416b3bd8c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI domain: api.aliasrobotics.com",
+   "description": "Alias gateway: CAI's licence check GET :666/key/info on every start (unless CAI_LICENSE_OFF=1), /v1/validate on :665, and the default model alias1 on :666. Also serves Alias's other products, including the successor CSI. Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[domain-name:value = 'api.aliasrobotics.com']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cai",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/util_ext.py#L32-L33"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--49bcde92-0ecb-5021-a730-a48ffc11d6ed",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--ec276f22-47ff-589b-a206-5c2416b3bd8c",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--1e62c000-608f-5fe1-b464-9950307d6d63",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI url: https://api.aliasrobotics.com:666/key/info",
+   "description": "CAI licence check with Authorization: Bearer <ALIAS_API_KEY>; the CLI exits if it fails (src/cai/util_ext.py:33, :102-116, src/cai/cli.py:174). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value = 'https://api.aliasrobotics.com:666/key/info']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "cai",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/util_ext.py#L33"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1e436653-e8de-5915-91b2-c2a20700388c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--1e62c000-608f-5fe1-b464-9950307d6d63",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--7abc15d8-f23f-5b55-bb2b-996db23f5eea",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI url: https://api.aliasrobotics.com:666/",
+   "description": "Default OpenAI-compatible base URL of CAI for the alias1 model and --unrestricted mode (src/cai/util/llm_api_base.py:8, src/cai/cli.py:255). TLS on TCP 666. Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value = 'https://api.aliasrobotics.com:666/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cai",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/util/llm_api_base.py#L8"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--52f4064a-a460-5fa4-a494-1586ceffff8d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--7abc15d8-f23f-5b55-bb2b-996db23f5eea",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--63f90964-cebe-5868-a656-16bfdbdc2f55",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI domain: packages.aliasrobotics.com",
+   "description": "Alias private package index CAI 1.x updates from: pip index versions / pip install --index-url https://packages.aliasrobotics.com:664/<ALIAS_API_KEY>/ cai-framework (src/cai/util_ext.py:251, :399). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[domain-name:value = 'packages.aliasrobotics.com']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cai",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/util_ext.py#L251"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--93d2dea8-a8d2-5c6c-b408-88100e0650ae",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--63f90964-cebe-5868-a656-16bfdbdc2f55",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--8a84d67a-b508-5e56-bfdd-b319a5f89f30",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI user_agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+   "description": "Default user agent of CAI's fetch_url tool, also used by its curl-cffi Chrome 124 fallback. The two-part Chrome version is not what real Chrome sends (124.0.0.0). CAI_FETCH_USER_AGENT overrides it (src/cai/tools/web/fetch_url.py:224-233). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cai",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/tools/web/fetch_url.py#L224-L233"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3dde65a0-82dc-5560-96f6-7275fb90dad3",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--8a84d67a-b508-5e56-bfdd-b319a5f89f30",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--4d2d8218-5889-5087-a9b0-2c127bbb3ca2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI user_agent: Agents/Python 0.0.0",
+   "description": "User agent on CAI's model API requests (its fork of the OpenAI Agents SDK reads the version of a package named agents, absent in a normal install). The upstream SDK run from source sends the same string. Visible only with TLS inspection (src/cai/sdk/agents/models/openai_chatcompletions.py:312). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'Agents/Python 0.0.0']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "cai",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/sdk/agents/models/openai_chatcompletions.py#L312"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--96c6be75-0849-52bd-a34c-8b2e3de51206",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--4d2d8218-5889-5087-a9b0-2c127bbb3ca2",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--0430329c-6498-5ba2-9113-c93cf394a81c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI file_path: /.cai/logs/cai_",
+   "description": "CAI session log ~/.cai/logs/[<workspace>_]cai_<uuid>_<YYYYmmdd_HHMMSS>_<user>_<os>_<release>_<public ip>.jsonl; its first line holds the operator's ALIAS_API_KEY. This file is what the telemetry uploads (src/cai/sdk/agents/run_to_jsonl.py:89-160). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.cai/logs/cai_']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cai",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/sdk/agents/run_to_jsonl.py#L89-L160"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--003d9e5c-50f6-5e2b-9c92-2b84d2f34685",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--0430329c-6498-5ba2-9113-c93cf394a81c",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--9c2cf1e1-c113-5881-b80c-6a47ef8ac3dc",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI file_path: /.cai/api_auth.json",
+   "description": "User and session database of the CAI API backend, AES-GCM encrypted with the key in api_auth.json.key next to it (src/cai/api/auth.py:90, :125-155). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.cai/api_auth.json']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cai",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/api/auth.py#L90"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--72ceebdc-1e5d-53d9-929d-a55f9c42e8e0",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--9c2cf1e1-c113-5881-b80c-6a47ef8ac3dc",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--5c155d94-7ca2-5760-904f-93dc4ebdb9d0",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI file_path: /.config/systemd/user/cai-cops-run_",
+   "description": "Systemd user unit cai-cops-run_<12 hex>.service the CAI continuous-ops wizard installs and enables; ExecStart <python> -m cai.continuous_ops.loop_runner --run-dir ~/.cai/continuous_ops/run_<hex>, Restart=always (src/cai/continuous_ops/systemd_unit.py:59-100, wizard.py:853, :888). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.config/systemd/user/cai-cops-run_']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "cai",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/continuous_ops/systemd_unit.py#L59-L100"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3cc4c594-7e7d-50f4-8548-489f5d9da929",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--5c155d94-7ca2-5760-904f-93dc4ebdb9d0",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--33e92376-ecea-53e8-a9db-a359f1b57146",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "CAI uri_string: /api/v1/auth/add-ip",
+   "description": "CAI API route that creates a random user and a session token bound to a device address (src/cai/api/app.py:241-242). Reported by ThreatDefence review of the CAI source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%/api/v1/auth/add-ip%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cai",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the CAI source code",
+     "url": "https://github.com/aliasrobotics/cai/blob/6dc79257777f5f1c9500b4d2319935d34a47412e/src/cai/api/app.py#L241-L242"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--74ca7aec-7724-5688-bfbc-b68b2609f378",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--33e92376-ecea-53e8-a9db-a359f1b57146",
+   "target_ref": "tool--dcd73231-9304-5e3c-8e2a-f7fafa0ba29d"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--f685938e-cd05-5582-b02c-306af31382fe",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Shannon file_path: .shannon/deliverables/",
+   "description": "Folder of the Shannon agents' outputs inside each run: pre_recon_deliverable.md, recon_deliverable.md, <class>_analysis_deliverable.md, <class>_exploitation_queue.json, <class>_exploitation_evidence.md, comprehensive_security_assessment_report.md (apps/worker/src/paths.ts:25). Reported by ThreatDefence review of the Shannon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '.shannon/deliverables/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-25T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "shannon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Shannon source code",
+     "url": "https://github.com/KeygraphHQ/shannon/blob/3760d2f9df9f3afa374a8eb2473adadfbf9ed991/apps/worker/src/paths.ts#L25"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--7e5d2811-1d9b-5fc0-95ab-b0ef4432badc",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--f685938e-cd05-5582-b02c-306af31382fe",
+   "target_ref": "tool--86927cfb-3024-52e3-a8d3-8cf035178584"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--3518570c-9824-5ba7-a5ac-b7ae9cfeb92e",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Shannon file_name: comprehensive_security_assessment_report.md",
+   "description": "Assembled Shannon report in .shannon/deliverables/; copied to the run root as Security-Assessment-Report.md and .pdf (apps/worker/src/paths.ts:38). Reported by ThreatDefence review of the Shannon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'comprehensive_security_assessment_report.md%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-25T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "shannon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Shannon source code",
+     "url": "https://github.com/KeygraphHQ/shannon/blob/3760d2f9df9f3afa374a8eb2473adadfbf9ed991/apps/worker/src/paths.ts#L38"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--97eaa708-31d4-52f1-9726-1f6b9e3d745b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--3518570c-9824-5ba7-a5ac-b7ae9cfeb92e",
+   "target_ref": "tool--86927cfb-3024-52e3-a8d3-8cf035178584"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--29341e14-efa0-5c37-a37c-e81a609bccd2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Shannon file_name: Security-Assessment-Report.pdf",
+   "description": "Shannon PDF report at the run root (apps/worker/src/paths.ts:44). A generic name: check the PDF author. Reported by ThreatDefence review of the Shannon source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[file:name LIKE 'Security-Assessment-Report.pdf%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-25T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "shannon",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Shannon source code",
+     "url": "https://github.com/KeygraphHQ/shannon/blob/3760d2f9df9f3afa374a8eb2473adadfbf9ed991/apps/worker/src/paths.ts#L44"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--e8745e17-7f84-5940-b306-5a7d22527f09",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--29341e14-efa0-5c37-a37c-e81a609bccd2",
+   "target_ref": "tool--86927cfb-3024-52e3-a8d3-8cf035178584"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--6f8a225c-e4a2-538c-bf02-87d962085179",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Shannon file_name: php2shell-report.json",
+   "description": "JSON report of the php2shell probe, written to the -o directory (apps/cli/src/exp-php2shell/run.ts:74). Reported by ThreatDefence review of the Shannon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'php2shell-report.json%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-25T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "shannon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Shannon source code",
+     "url": "https://github.com/KeygraphHQ/shannon/blob/3760d2f9df9f3afa374a8eb2473adadfbf9ed991/apps/cli/src/exp-php2shell/run.ts#L74"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--d12819be-54e5-516c-b5a5-698d6cedc1d7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--6f8a225c-e4a2-538c-bf02-87d962085179",
+   "target_ref": "tool--86927cfb-3024-52e3-a8d3-8cf035178584"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--9db96225-d72b-5b85-b759-37a81e16e2df",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "VulnBot file_path: /etc/legal",
+   "description": "File VulnBot creates on the Kali host it drives (actions/remote_shell.py:99). Present by default on Ubuntu, so only its creation on another distribution counts. Reported by ThreatDefence review of the VulnBot source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[directory:path = '/etc/legal']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-08T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "vulnbot",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the VulnBot source code",
+     "url": "https://github.com/KHenryAegis/VulnBot/blob/9a12effa43e265e7278d678b3cd42037d0fecac6/actions/remote_shell.py#L99"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--901d341c-b872-5a74-a449-232e9b44ae7f",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--9db96225-d72b-5b85-b759-37a81e16e2df",
+   "target_ref": "tool--8ff707e4-aeb5-5c27-b4b2-9e2b065ce1b6"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--f77d44cf-7d3d-5897-bb45-b693f54e78b1",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "VulnBot file_name: Auto-Pentest.log",
+   "description": "VulnBot run log, written to logs/ under PENTEST_ROOT (the working directory by default) by loguru (utils/log_common.py:31,47-51, config/config.py:36). Reported by ThreatDefence review of the VulnBot source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'Auto-Pentest.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-08T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "vulnbot",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the VulnBot source code",
+     "url": "https://github.com/KHenryAegis/VulnBot/blob/9a12effa43e265e7278d678b3cd42037d0fecac6/utils/log_common.py#L31"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--4cc96d51-1a53-5758-b1a7-6cfeb62319f2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--f77d44cf-7d3d-5897-bb45-b693f54e78b1",
+   "target_ref": "tool--8ff707e4-aeb5-5c27-b4b2-9e2b065ce1b6"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--5a6ad015-e3aa-5e6b-b5d3-1be6771d33d7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "VulnBot uri_string: /knowledge_base/list_knowledge_bases",
+   "description": "Path of VulnBot's knowledge base API (FastAPI app titled Server, port 7861, bound to 0.0.0.0, no authentication; server/server.py:7, server/api/kb_route.py:16-22). Langchain-Chatchat has the same path: context only. Reported by ThreatDefence review of the VulnBot source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[url:value LIKE '%/knowledge_base/list_knowledge_bases%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-08T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "vulnbot",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the VulnBot source code",
+     "url": "https://github.com/KHenryAegis/VulnBot/blob/9a12effa43e265e7278d678b3cd42037d0fecac6/server/api/kb_route.py#L20"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--22e6a655-b0f3-5c69-beae-d316584bea07",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--5a6ad015-e3aa-5e6b-b5d3-1be6771d33d7",
+   "target_ref": "tool--8ff707e4-aeb5-5c27-b4b2-9e2b065ce1b6"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--97b10f30-aa4b-54d0-ad6f-bb66d93dc208",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent domain: dalfox-xss-test.com",
+   "description": "Blind XSS callback Cyber-AutoAgent's general module passes to dalfox (-b https://dalfox-xss-test.com) for up to 10 parameters of a target. In requests to your sites it means the tool was pointed at you; a lookup from your network means a stored payload ran. Other dalfox users could choose the same name. Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[domain-name:value = 'dalfox-xss-test.com']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cyber-autoagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/general/tools/advanced_payload_coordinator.py#L324"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--fb5cb07f-9bba-5598-8611-7f691c301dfb",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--97b10f30-aa4b-54d0-ad6f-bb66d93dc208",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--c71fe89b-e043-54ed-9157-ae4c9a81764c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent uri_string: /api/public/v2/prompts/cyber/system/",
+   "description": "Langfuse prompt path Cyber-AutoAgent fetches its system prompt and tools guide from (cyber/system/system_prompt, cyber/system/tools_guide; cyber/report/... for the report agent), with ?label=production. Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%/api/public/v2/prompts/cyber/system/%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "cyber-autoagent",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/prompts/factory.py#L42"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--ff94b522-c075-5612-89fb-9aa38e8647f3",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--c71fe89b-e043-54ed-9157-ae4c9a81764c",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--d5da52c6-ac2c-5010-9612-448fb9311270",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent file_name: cyber_operations.log",
+   "description": "Operation log Cyber-AutoAgent writes to outputs/<target>/OP_<YYYYMMDD_HHMMSS>/. Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'cyber_operations.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cyber-autoagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/cyberautoagent.py#L447"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--253feee8-73f4-5a8f-8185-51358f2aa585",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--d5da52c6-ac2c-5010-9612-448fb9311270",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--019aee1e-cfed-54da-af13-2436e0ededee",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent file_name: security_assessment_report.md",
+   "description": "Report the Cyber-AutoAgent front end saves to outputs/<target>/OP_<timestamp>/. A common name: only with the OP_ folder. Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[file:name LIKE 'security_assessment_report.md%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "cyber-autoagent",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/handlers/react/react_bridge_handler.py#L2793"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--b5a01633-fa81-58f3-b02b-b6d998f0232d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--019aee1e-cfed-54da-af13-2436e0ededee",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--d4c4e458-c3a1-53d2-83cb-cf64050d182d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent file_path: /.cyber-autoagent/config.json",
+   "description": "Cyber-AutoAgent front-end settings in the user's home folder; can hold model provider keys and the Langfuse keys in clear JSON. Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.cyber-autoagent/config.json']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cyber-autoagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/interfaces/react/src/contexts/ConfigContext.tsx#L492"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--fa63745e-8aa2-51ad-a4c1-18e55cf059a0",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--d4c4e458-c3a1-53d2-83cb-cf64050d182d",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--86268dca-329a-5dfa-b23f-76a8a31a5415",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent file_path: /tmp/auth_wordlist.txt",
+   "description": "Word list Cyber-AutoAgent's auth_chain_analyzer writes and passes to feroxbuster (-w /tmp/auth_wordlist.txt -t 20 -C 404 --silent --no-recursion). Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[directory:path = '/tmp/auth_wordlist.txt']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "cyber-autoagent",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/general/tools/auth_chain_analyzer.py#L252"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--a56966fb-0d93-5e6f-96c9-406ab04818b8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--86268dca-329a-5dfa-b23f-76a8a31a5415",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--9c0b252b-6b35-52f8-a494-f32b5bb45bea",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent file_name: .emulation_marker_",
+   "description": "Marker file name (.emulation_marker_<TTP_ID>) the Cyber-AutoAgent threat_emulation prompt tells the model to create for every technique it runs on a host. From the prompt, so the model may vary it. Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE '.emulation_marker_%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "cyber-autoagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/threat_emulation/execution_prompt.md#L51"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1a1b7a4e-5747-5f32-b176-fb7152644483",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--9c0b252b-6b35-52f8-a494-f32b5bb45bea",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--85e30754-e5d1-5ae2-9d92-4b8e537f5b68",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Cyber-AutoAgent domain: bedrock-runtime.us-east-1.amazonaws.com",
+   "description": "Default model endpoint of Cyber-AutoAgent: Bedrock in us-east-1 with us.anthropic.claude-sonnet-4-5-20250929-v1:0. Shared by every Bedrock user: context only, never alone. Reported by ThreatDefence review of the Cyber-AutoAgent source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[domain-name:value = 'bedrock-runtime.us-east-1.amazonaws.com']",
+   "pattern_type": "stix",
+   "valid_from": "2025-11-29T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "cyber-autoagent",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Cyber-AutoAgent source code",
+     "url": "https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/config/manager.py#L465"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--94799472-13af-5d1b-82e3-62ed823a9837",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--85e30754-e5d1-5ae2-9d92-4b8e537f5b68",
+   "target_ref": "tool--5742dcdf-d54b-5b17-a547-1018e17c815e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--29d01e46-35f1-56fe-878b-8244dcb21938",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (paper code) file_name: exeuction_agent.log",
+   "description": "Log of the nbshenxm PentestAgent execution agent, misspelled in the code, written in the working directory (agents/execution_agent.py:119). Reported by ThreatDefence review of the PentestAgent (paper code) source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'exeuction_agent.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "pentestagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (paper code) source code",
+     "url": "https://github.com/nbshenxm/pentest-agent/blob/97ac5be7ba47377b235a7eebe64d53539084d229/agents/execution_agent.py#L119"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--09b90b01-8fc3-5577-8132-74be25bcdefb",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--29d01e46-35f1-56fe-878b-8244dcb21938",
+   "target_ref": "tool--46492424-edc5-5e86-b3f6-b9011a0505c7"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--1b2aa9d6-3f3c-54d3-8c1f-134c976d9272",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (paper code) file_name: Trend_Score.json",
+   "description": "Per-CVE exploit popularity score the nbshenxm PentestAgent planning agent writes from GitHub search results (utils/searchers/github_searcher.py:390). Reported by ThreatDefence review of the PentestAgent (paper code) source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'Trend_Score.json%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "pentestagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (paper code) source code",
+     "url": "https://github.com/nbshenxm/pentest-agent/blob/97ac5be7ba47377b235a7eebe64d53539084d229/utils/searchers/github_searcher.py#L390"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--39a4bdcb-3248-5e29-9098-79e39d764a73",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--1b2aa9d6-3f3c-54d3-8c1f-134c976d9272",
+   "target_ref": "tool--46492424-edc5-5e86-b3f6-b9011a0505c7"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--bd00ecd9-8ef6-54cc-8e45-2e389b91b5cc",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (paper code) file_path: /CVEMAP/cvemap.json",
+   "description": "cvemap results of the nbshenxm PentestAgent planning agent: <output_dir>/<keyword>/CVEMAP/cvemap.json (agents/planning_agent.py:36,151). Reported by ThreatDefence review of the PentestAgent (paper code) source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/CVEMAP/cvemap.json']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "pentestagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (paper code) source code",
+     "url": "https://github.com/nbshenxm/pentest-agent/blob/97ac5be7ba47377b235a7eebe64d53539084d229/agents/planning_agent.py#L151"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--243e01f3-5d96-50c8-bf68-aed67131c9c8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--bd00ecd9-8ef6-54cc-8e45-2e389b91b5cc",
+   "target_ref": "tool--46492424-edc5-5e86-b3f6-b9011a0505c7"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--1522cf9d-dfae-598d-a964-46860e18b99d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (paper code) file_path: recon_memory/",
+   "description": "Folder where the nbshenxm PentestAgent recon agent saves its chat history as <topic>.json, default topic thisisatry (configs/config.yaml:102,105). Configurable and a generic name. Reported by ThreatDefence review of the PentestAgent (paper code) source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[directory:path = 'recon_memory/']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-20T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "pentestagent",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (paper code) source code",
+     "url": "https://github.com/nbshenxm/pentest-agent/blob/97ac5be7ba47377b235a7eebe64d53539084d229/configs/config.yaml#L105"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--06d7354b-5e88-5ec0-9019-5a86cce6bd5e",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--1522cf9d-dfae-598d-a964-46860e18b99d",
+   "target_ref": "tool--46492424-edc5-5e86-b3f6-b9011a0505c7"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--aced078b-580a-5606-b980-4d8947ecd559",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (paper code) file_name: recon_agent.log",
+   "description": "Log of the nbshenxm PentestAgent recon agent in the working directory (agents/recon_agent.py:31). Generic name. Reported by ThreatDefence review of the PentestAgent (paper code) source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[file:name LIKE 'recon_agent.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-20T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "pentestagent",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (paper code) source code",
+     "url": "https://github.com/nbshenxm/pentest-agent/blob/97ac5be7ba47377b235a7eebe64d53539084d229/agents/recon_agent.py#L31"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1b4302b8-96ef-5ba6-9085-81916a5170f2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--aced078b-580a-5606-b980-4d8947ecd559",
+   "target_ref": "tool--46492424-edc5-5e86-b3f6-b9011a0505c7"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--1d79896d-89b8-5a49-b99d-8fca716846b2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (paper code) file_name: planning_agent.log",
+   "description": "Log of the nbshenxm PentestAgent planning agent in the working directory (agents/planning_agent.py:134). Generic name. Reported by ThreatDefence review of the PentestAgent (paper code) source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[file:name LIKE 'planning_agent.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2025-12-20T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "pentestagent",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (paper code) source code",
+     "url": "https://github.com/nbshenxm/pentest-agent/blob/97ac5be7ba47377b235a7eebe64d53539084d229/agents/planning_agent.py#L134"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--d855602f-7b1a-5d8a-8bea-e9a4f061f737",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--1d79896d-89b8-5a49-b99d-8fca716846b2",
+   "target_ref": "tool--46492424-edc5-5e86-b3f6-b9011a0505c7"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--8f32d65e-b116-559c-8581-178d0eac0010",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (GH05TCREW) file_path: /tmp/pa_mcp_",
+   "description": "Temporary folder of a PentestAgent (GH05TCREW) child agent, holding the named pipes mcp_in.fifo and mcp_out.fifo (pentestagent/tools/mcp_agent.py:163-167). Under TMPDIR if set. Reported by ThreatDefence review of the PentestAgent (GH05TCREW) source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/tmp/pa_mcp_']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-08T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "ghostcrew-pentestagent",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (GH05TCREW) source code",
+     "url": "https://github.com/GH05TCREW/pentestagent/blob/5bcf872186c12583cb4295b3f6e7cda80e92b59a/pentestagent/tools/mcp_agent.py#L163"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--f4276b35-efe2-57fd-b175-5e4140c2be63",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--8f32d65e-b116-559c-8581-178d0eac0010",
+   "target_ref": "tool--600fcb03-35e4-530c-88cf-c99835248122"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--3e350776-d87f-506c-b53b-6b188ce43bcb",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "PentestAgent (GH05TCREW) file_path: loot/token_usage.json",
+   "description": "Daily token counter PentestAgent (GH05TCREW) writes under loot/ in the working directory or workspaces/<name>/loot/ (pentestagent/tools/token_tracker.py:3,34). Reported by ThreatDefence review of the PentestAgent (GH05TCREW) source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[directory:path = 'loot/token_usage.json']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-08T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "ghostcrew-pentestagent",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the PentestAgent (GH05TCREW) source code",
+     "url": "https://github.com/GH05TCREW/pentestagent/blob/5bcf872186c12583cb4295b3f6e7cda80e92b59a/pentestagent/tools/token_tracker.py#L34"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--11320347-b2b9-542b-8076-e4e063b9dd10",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--3e350776-d87f-506c-b53b-6b188ce43bcb",
+   "target_ref": "tool--600fcb03-35e4-530c-88cf-c99835248122"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--fa3df592-9d5b-5109-90a4-16fa36febd75",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon user_agent: dm-edge",
+   "description": "User agent of the edge-proxy agent's first request to a target (curl -sSI -A dm-edge). Written in the agent prompt, so the model usually but not always sends it. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'dm-edge']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "darkmoon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/conf/agents/edge-proxy.md#L374"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--dd9afc69-263c-595c-a9b4-7bca039ec876",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--fa3df592-9d5b-5109-90a4-16fa36febd75",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--09b37a29-1f17-5b29-9b87-120909e9028a",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon uri_string: dmcb=DM1",
+   "description": "Cache buster of the edge-proxy agent's cache poisoning test (/?dmcb=DM1), sent twice, the first time with X-Forwarded-Host: dm-poison.invalid. From the agent prompt. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%dmcb=DM1%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "darkmoon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/conf/agents/edge-proxy.md#L475"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--b36f7cea-9b2d-573e-9382-20391dd02cc6",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--09b37a29-1f17-5b29-9b87-120909e9028a",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--79cce5e4-e134-5937-a5d8-fe4305b374c2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon uri_string: /manifests/darkmoon-proof-",
+   "description": "Container registry manifest of the proof image the registry agent pushes (tag darkmoon-proof-<random>) when it can push. From the agent prompt. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%/manifests/darkmoon-proof-%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "darkmoon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/conf/agents/container-registry.md#L452"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--68ae08dc-d087-5125-ab7f-baebc01439ca",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--79cce5e4-e134-5937-a5d8-fe4305b374c2",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--13fc4818-f9b1-5c5c-be7c-3bd82a51e444",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_path: /tmp/.dm_proof",
+   "description": "File the database and cache agents make a target server write to prove command execution or file write (PostgreSQL COPY TO PROGRAM, MySQL INTO OUTFILE, sys_exec, Redis cron). Found on your server, the attack worked. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/tmp/.dm_proof']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "darkmoon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/conf/agents/sql-databases.md#L424"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1a1aeff6-b210-5ccd-8e8f-e93f19fb78d7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--13fc4818-f9b1-5c5c-be7c-3bd82a51e444",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--ef49c53e-5979-5a62-b35c-d2463a6b4b97",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_path: /run/darkmoon-gpu.env",
+   "description": "GPU state file the toolbox container entrypoint writes at start. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/run/darkmoon-gpu.env']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "darkmoon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/conf/entrypoint-darkmoon.sh#L91"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--d6b1b778-dc9a-5603-87f2-514cf1b2c5d2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--ef49c53e-5979-5a62-b35c-d2463a6b4b97",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--e7f31028-d091-59df-963a-d6de3ad0a086",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_path: /tmp/darkmoon-mcp-boot.log",
+   "description": "Boot log of the persistent DarkMoon MCP server in the opencode container. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/tmp/darkmoon-mcp-boot.log']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "darkmoon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/conf/entrypoint-opencode.sh#L169"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--af5e3a01-3319-529f-884f-a1db44ecdfb1",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--e7f31028-d091-59df-963a-d6de3ad0a086",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--47619d08-547f-59a1-9bbd-43b3fa7ccde9",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_path: /tmp/darkmoon-privacy.sock",
+   "description": "Unix socket of the DarkMoon privacy gateway (prompt tokenization) in the opencode container. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/tmp/darkmoon-privacy.sock']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "darkmoon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/mcp/src/prompt_socket.py#L33"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--8d883d0a-03a1-5347-a943-110a22d35471",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--47619d08-547f-59a1-9bbd-43b3fa7ccde9",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--a287b1e9-131e-580f-a22e-4e4308aa18e7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_path: /tmp/darkmoon_mcp_stream",
+   "description": "Prefix of the Unix sockets (/tmp/darkmoon_mcp_stream.sock, /tmp/darkmoon_mcp_stream_<session>.sock) that stream every agent command to darkmoon-cli. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/tmp/darkmoon_mcp_stream']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "darkmoon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/mcp/src/mcp_monitoring.py#L27"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--cae5df62-5cb5-5d71-a254-2c080c14da85",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--a287b1e9-131e-580f-a22e-4e4308aa18e7",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--72a11310-7cf3-5a8c-a4a5-f17d2749bc84",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_path: /opt/darkmoon/out/",
+   "description": "Toolbox folder where DarkMoon workflows write their results (port_scan_, subdomain_discovery_, web_crawler_, vulnerability_scan_, ad_enum_). Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/opt/darkmoon/out/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "darkmoon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/mcp/src/tools/workflows/port_scan.py#L56"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--5e342ec2-194d-5327-b5c5-54f0d13444b6",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--72a11310-7cf3-5a8c-a4a5-f17d2749bc84",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--ba70dbf0-df71-5cd6-8cb7-4ecc8a0ab17f",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_path: /darkmoon-settings/campaigns/camp_",
+   "description": "Campaign records camp_<YYYYMMDD>_<id>.json in the darkmoon-settings folder next to the compose file. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/darkmoon-settings/campaigns/camp_']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "darkmoon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/mcp/api/live_push.py#L587"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--69584685-20af-5127-b1c5-663705631059",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--ba70dbf0-df71-5cd6-8cb7-4ecc8a0ab17f",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--5956a8c6-5e45-502b-9de8-d922d68da53b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "DarkMoon file_name: pentest_report_",
+   "description": "Prefix of DarkMoon's report file pentest_report_<host>_<YYYYMMDD>-<HHMMSS>.md in ./reports. Other tools use similar names. Reported by ThreatDefence review of the DarkMoon source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[file:name LIKE 'pentest_report_%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-22T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "darkmoon",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the DarkMoon source code",
+     "url": "https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/mcp/api/live_push.py#L1501"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--6f7c4c81-0b1e-5cc0-947d-08bd39ed43a8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--5956a8c6-5e45-502b-9de8-d922d68da53b",
+   "target_ref": "tool--8ee0cc45-515f-509a-9877-c46d9a4d9a6c"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--7a7b5cba-d3a2-56c6-9905-248005e098f0",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon domain: decepticon-telemetry-gateway.purpleailab.workers.dev",
+   "description": "Decepticon usage telemetry gateway (Cloudflare Worker forwarding to PostHog). Shipped in the launcher's .env template; the setup wizard defaults to sharing (DECEPTICON_TELEMETRY=research) unless the operator declines (clients/launcher/cmd/onboard.go:280,916). POST /v1/telemetry from the langgraph container. Seen from your network, Decepticon ran from your network. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[domain-name:value = 'decepticon-telemetry-gateway.purpleailab.workers.dev']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "decepticon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/clients/launcher/internal/config/env.example#L200"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--cb4ccb10-b074-55db-a199-4dc6c5512b92",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--7a7b5cba-d3a2-56c6-9905-248005e098f0",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--39906882-5a7a-5973-8bb1-13c9d2b4ae02",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon user_agent: decepticon-telemetry/1.0",
+   "description": "User agent of Decepticon's telemetry exporter on POST /v1/telemetry to its gateway. Visible only with TLS inspection. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'decepticon-telemetry/1.0']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "decepticon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/packages/decepticon/decepticon/telemetry/exporter.py#L35"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--59cb1747-c97f-5521-bf26-5ecdc42ce224",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--39906882-5a7a-5973-8bb1-13c9d2b4ae02",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--54f6a154-fd56-5438-abbb-c3d9b7cf4e3a",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon user_agent: decepticon-roe/1",
+   "description": "User agent of Decepticon's passive subdomain discovery, which queries https://crt.sh/?q=%.<root>&output=json when an engagement is created (passive_discovery.py:71). Sent to crt.sh, never to the target. Visible only with TLS inspection. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'decepticon-roe/1']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "decepticon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/packages/decepticon/decepticon/passive_discovery.py#L40"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3eb4791a-3d13-542e-bd43-3e075b6da6ef",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--54f6a154-fd56-5438-abbb-c3d9b7cf4e3a",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--99796e13-21a6-5e60-b4e2-417c5c18f6eb",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon user_agent: decepticon-http-sandbox/1",
+   "description": "User agent of the HTTP client that sends every agent command to the Decepticon sandbox daemon (POST /execute, /execute_tmux and others on port 9999). Normally on a Docker bridge network; crosses your network only when the sandbox is remote. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'decepticon-http-sandbox/1']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "decepticon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/packages/decepticon/decepticon/backends/http_transport.py#L139"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--bed3fe25-d067-504a-842b-8e7644531154",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--99796e13-21a6-5e60-b4e2-417c5c18f6eb",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--8207919f-dbdc-550d-8263-f780a8031d4b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon user_agent: Mozilla/5.0 (compatible; Decepticon/1.0)",
+   "description": "Default user agent of Decepticon's http_recon helper. The helper is in the package but not bound to any agent at 6b15092d or v2.2.2, so expect it only from forks or plugins. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'Mozilla/5.0 (compatible; Decepticon/1.0)']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "decepticon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/packages/decepticon/decepticon/tools/network/protocols.py#L84"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--8dd1d881-cee3-52f1-82d7-622cef39ed4c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--8207919f-dbdc-550d-8263-f780a8031d4b",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--d672e09c-e10f-5d92-a5ee-b92c1b307c1d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon user_agent: Decepticon/1.0",
+   "description": "User agent Decepticon's LiteLLM gateway sends to the Vercel AI Gateway for the vercel/anthropic/claude-haiku-4.5 model entry only. Visible only with TLS inspection. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'Decepticon/1.0']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "decepticon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/config/litellm.yaml#L622"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--8fea8a31-c392-51df-b235-5ec66b902de9",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--d672e09c-e10f-5d92-a5ee-b92c1b307c1d",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--5c09bc47-625e-5c3a-9fe5-76dcd832e403",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon user_agent: codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown",
+   "description": "Placeholder user agent Decepticon's LiteLLM handler sends to chatgpt.com/backend-api/codex when it runs on a ChatGPT subscription (originator codex_cli_rs). The real Codex CLI sends its version and OS. Override: CHATGPT_USER_AGENT. Visible only with TLS inspection. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "decepticon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/config/codex_chatgpt_handler.py#L54"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--317d0d8d-6362-5c62-a075-41adf114d94e",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--5c09bc47-625e-5c3a-9fe5-76dcd832e403",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--25ff4ca4-35e2-5dfe-b304-9c909354d665",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon uri_string: /_decepticon/",
+   "description": "Route prefix of Decepticon's routes on its LangGraph server (port 2024): /_decepticon/bundles, /_decepticon/roe/validate, /_decepticon/roles/<role>/purpose. No authentication on langgraph dev. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%/_decepticon/%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "decepticon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/packages/decepticon/decepticon/server/operator_contracts.py#L13"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--9713bc7b-a83e-55f5-a33e-00e2b2b8f04d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--25ff4ca4-35e2-5dfe-b304-9c909354d665",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--23f4f378-58da-5e59-b01b-59e1f430f52c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon md5: 0d9eb87ab032844a4bed864085981964",
+   "description": "Decepticon web console icon icon.png / logo.png (79,060 bytes). Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:hashes.MD5 = '0d9eb87ab032844a4bed864085981964']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-10T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "decepticon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/d26ddaa1e3b0ccaffd50b982fcc2debeb650c840/clients/web/public/logo.png"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--bc84b0eb-fc1b-51b7-ab2d-8e1cf0267f9a",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--23f4f378-58da-5e59-b01b-59e1f430f52c",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--bd857145-cbdb-5fc8-b0dd-2b617dccc124",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon sha256: 3bd7f5a8f315b398fc9ec1ccd8c5e47dadaf67923051b1e89a5ac2acb0501f65",
+   "description": "Decepticon web console icon icon.png / logo.png (79,060 bytes). Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:hashes.'SHA-256' = '3bd7f5a8f315b398fc9ec1ccd8c5e47dadaf67923051b1e89a5ac2acb0501f65']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-10T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "decepticon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/d26ddaa1e3b0ccaffd50b982fcc2debeb650c840/clients/web/public/logo.png"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--4b5fd6d7-e298-563d-b095-3d5324df9f73",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--bd857145-cbdb-5fc8-b0dd-2b617dccc124",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--bc65de96-4c10-5f8a-aabb-75afc41631f0",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon file_path: .sliver-configs/decepticon.cfg",
+   "description": "Sliver operator config the Decepticon c2-sliver container writes into the engagement workspace (sliver-server operator --name decepticon --lhost c2-sliver --permissions all). Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '.sliver-configs/decepticon.cfg']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "decepticon",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/containers/c2-sliver-entrypoint.sh#L10"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--b3c03adc-59c6-5d71-85a9-0df55adce432",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--bc65de96-4c10-5f8a-aabb-75afc41631f0",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--fc365fba-02bd-5cda-9d97-8589eec415b4",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon url: https://decepticon.red/install",
+   "description": "Decepticon install script (curl -fsSL https://decepticon.red/install | bash); Windows: irm https://decepticon.red/install.ps1 | iex. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value = 'https://decepticon.red/install']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "decepticon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/scripts/install.sh#L6"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--9d3fa959-d1f2-5fbe-82e5-821a1694ec8f",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--fc365fba-02bd-5cda-9d97-8589eec415b4",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--c47a333f-7ec8-58fc-a3bd-93e1123ddffb",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon domain: decepticon.red",
+   "description": "Decepticon web site, installer and hosted console (app.decepticon.red, docs.decepticon.red). A lookup also comes from reading about the project. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[domain-name:value = 'decepticon.red']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "decepticon",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/README.md#L40"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1bc592a5-2ef8-5585-bdd0-4848a6637329",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--c47a333f-7ec8-58fc-a3bd-93e1123ddffb",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--61489511-c0e0-5511-97af-866153341895",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "Decepticon file_path: .decepticon/",
+   "description": "Decepticon install folder ($DECEPTICON_HOME, default ~/.decepticon): docker-compose.yml, .env, config/litellm.yaml, workspace/<engagement>/ and telemetry/install_id. Reported by ThreatDefence review of the Decepticon source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '.decepticon/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "decepticon",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the Decepticon source code",
+     "url": "https://github.com/BitterSecurity/Decepticon/blob/6b15092d2e0b41f2ef5af79a16333582cc3fb353/scripts/install.sh#L503"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--90621478-686d-5e9b-926d-843cb7d54021",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--61489511-c0e0-5511-97af-866153341895",
+   "target_ref": "tool--df40077d-5737-5263-9384-b8eee507d13e"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--01bf3323-fae0-5b3f-ac44-3dc568dfdd22",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 uri_string: /__sapper_graph__/",
+   "description": "Path of the graph JSON on the sapper-v2 board, /__sapper_graph__/<24 hex>.json, polled every 2 seconds by the open board page. The token is printed in the page at /, so anyone who loads the page can read the graph. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%/__sapper_graph__/%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "sapper-v2",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/lib/sapper.py#L3600-L3602"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--38ef16cb-e97f-5579-b094-bd1d225af78e",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--01bf3323-fae0-5b3f-ac44-3dc568dfdd22",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--e4e73bf1-7906-5053-aa12-614a33ec1fb8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 file_path: /opt/sapper/docker/commander/SKILL.md",
+   "description": "Commander doctrine in the sapper-v2 commander image, named in its bootstrap and restart prompts; worker.sh, watchdog.sh and entrypoint.sh sit next to it. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/opt/sapper/docker/commander/SKILL.md']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "sapper-v2",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/docker/commander/watchdog.sh#L42"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--ffbf74eb-39bf-5344-af57-67c07a85d859",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--e4e73bf1-7906-5053-aa12-614a33ec1fb8",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--050589d5-3c29-5177-942d-ca52e9261363",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 file_path: /opt/sapper/lib/sapper.py",
+   "description": "The sapper CLI in the sapper-v2 images, linked as /home/agent/.local/bin/sapper; arena.py, kb.py and sapper-hook.py sit next to it. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/opt/sapper/lib/sapper.py']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "sapper-v2",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/docker/Dockerfile#L95"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--32a92b9e-feb4-5b81-bfb7-b74f4678a92b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--050589d5-3c29-5177-942d-ca52e9261363",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--aa112bcf-c816-521c-b718-aa2b509d32d8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 file_name: commander-state.md",
+   "description": "Handover note the sapper-v2 commander writes in SAPPER_ROOT for its next incarnation; read by the bootstrap and restart prompts. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'commander-state.md%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "sapper-v2",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/docker/commander/entrypoint.sh#L125"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--82b7672e-be42-5452-bf3b-9c6893c6a175",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--aa112bcf-c816-521c-b718-aa2b509d32d8",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--4942c1dc-c8e7-5e8f-bfd4-b8b4b233d715",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 file_name: sapper-graph.html",
+   "description": "Board snapshot written by sapper view next to the .sapper/ graph, with the whole graph inlined as JSON. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'sapper-graph.html%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "sapper-v2",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/lib/sapper.py#L3560"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--5d67495d-3e6f-5d00-a55f-a6a42222d63f",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--4942c1dc-c8e7-5e8f-bfd4-b8b4b233d715",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--168cb845-da13-5680-8c42-322f654a831b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 file_path: .sapper/facts/",
+   "description": "Folder of the sapper-v2 engagement graph: one JSON file per fact (host, service, cred, vuln, loot, flag, note), next to intents/, hints/ and project.json. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '.sapper/facts/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "sapper-v2",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/docker/commander/worker.sh#L93"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--702f30d7-7eee-5ab1-b3d7-744eb74f14d3",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--168cb845-da13-5680-8c42-322f654a831b",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--158886f7-4a23-5c4c-a35e-bbdb56937273",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 file_path: ~/.claude/skills/sapper-setup",
+   "description": "Claude Code skill link created by the sapper-v2 install.sh, pointing at the repository's skill/ folder; ~/.local/bin/sapper links to lib/sapper.py. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '~/.claude/skills/sapper-setup']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "sapper-v2",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/install.sh#L29-L31"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--9c783c8b-6d6d-5cef-9a71-c2a37a2d8f7a",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--158886f7-4a23-5c4c-a35e-bbdb56937273",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--147363e5-7f69-57ae-89fd-e54d39052eee",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 uri_string: /openapi/v1/challenges/submit",
+   "description": "TSecBench flag submission path the sapper-v2 arena client calls with the BENCHMARK_TOKEN header; the missions also tell the model to POST to it directly. Shared with every client of that platform. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[url:value LIKE '%/openapi/v1/challenges/submit%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "sapper-v2",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/lib/arena.py#L13"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--9d1e0170-2165-502a-b34e-903be51be355",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--147363e5-7f69-57ae-89fd-e54d39052eee",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--9acc1ae5-151b-5133-bd72-678fcb47b444",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 url: https://open.bigmodel.cn/api/anthropic",
+   "description": "Zhipu GLM Anthropic-compatible endpoint documented as ANTHROPIC_BASE_URL for the sapper-v2 image. Used by many Claude Code users: context only. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[url:value = 'https://open.bigmodel.cn/api/anthropic']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "sapper-v2",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/docker/ENV.md#L23"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--23dba839-6fe1-5ae5-a566-6dbb7055eda8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--9acc1ae5-151b-5133-bd72-678fcb47b444",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--faa71888-d736-5ef2-9b80-04d55d0b19ab",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "sapper-v2 url: https://api.deepseek.com/anthropic",
+   "description": "Default DEEPSEEK_BASE_URL of the sapper-v2 reserve workers. Used by many Claude Code users: context only. Reported by ThreatDefence review of the sapper-v2 source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[url:value = 'https://api.deepseek.com/anthropic']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-11T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "sapper-v2",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the sapper-v2 source code",
+     "url": "https://github.com/N1nEmAn/sapper-v2/blob/7b75e6f1f5d5b4ae0c55878b0dd0994d9b08f1fb/docker/commander/worker.sh#L43"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3b6b6961-3469-5e2b-afaf-4449ed1fafd5",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--faa71888-d736-5ef2-9b80-04d55d0b19ab",
+   "target_ref": "tool--7d22d6ae-9ce9-558d-8d85-53ea96441a62"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--feb6a1b7-8142-5dbc-9c40-5c1728d3183b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike user_agent: NyxStrike/1.0",
+   "description": "User agent of the NyxStrike decision engine's target probe: a HEAD request then a GET fallback to the target URL when it profiles a web application (analyze-target, smart-scan, select-tools, attack chains). Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'NyxStrike/1.0']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "nyxstrike",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_core/intelligence/intelligent_decision_engine.py#L192"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1f99277f-4370-557b-9053-d686262c337c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--feb6a1b7-8142-5dbc-9c40-5c1728d3183b",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--b203eb4c-d603-59de-a5be-f1a24d83355c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike user_agent: Security-HTTP-Framework/1.0 (Advanced Security Testing)",
+   "description": "User agent of NyxStrike's HTTP testing framework (http_framework tool); renamed from HexStrike-HTTP-Framework/1.0. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'Security-HTTP-Framework/1.0 (Advanced Security Testing)']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "nyxstrike",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_api/web_framework/http_framework.py#L19"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--2c7db167-1c88-5f8f-b0f0-39e2ac7adaf1",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--b203eb4c-d603-59de-a5be-f1a24d83355c",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--42e7da2a-678d-5e28-b2e0-0bfb27c3e4b9",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike user_agent: Security-BrowserAgent/1.0 (Security Testing)",
+   "description": "User agent of NyxStrike's headless Chrome browser agent (Selenium, 1920x1080, --disable-web-security); renamed from HexStrike-BrowserAgent/1.0. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'Security-BrowserAgent/1.0 (Security Testing)']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "nyxstrike",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_api/web_framework/browser_agent.py#L47"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--40a59183-fd38-533d-afdd-8f2a0a2e1195",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--42e7da2a-678d-5e28-b2e0-0bfb27c3e4b9",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--1b02e79c-04ed-55e8-a000-b8ecbd5603ec",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike uri_string: xssTest123",
+   "description": "NyxStrike browser agent reflection probe value in query strings. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%xssTest123%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_api/web_framework/browser_agent.py#L238"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3caeeef0-d6d5-5fca-92b1-dade5ec3b657",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--1b02e79c-04ed-55e8-a000-b8ecbd5603ec",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--84880db7-6cb7-5b76-afbe-946169513958",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike md5: 3ea8bc0926603ec3a6b570917e3c5678",
+   "description": "NyxStrike dashboard icon favicon-CBc3_nbG.ico (also frontend/ui/favicons/favicon.ico). Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:hashes.MD5 = '3ea8bc0926603ec3a6b570917e3c5678']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/frontend/dashboard/assets/favicon-CBc3_nbG.ico"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--9b7e23b1-678a-5b93-a554-a7c013bc3d26",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--84880db7-6cb7-5b76-afbe-946169513958",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--75dfddba-f82e-5a06-9321-373f196095fe",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike sha256: 3a732c79cd0940418257e8cd989d2682069a3cc9d49ebee8bfe906c1fb362d64",
+   "description": "NyxStrike dashboard icon favicon-CBc3_nbG.ico. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:hashes.'SHA-256' = '3a732c79cd0940418257e8cd989d2682069a3cc9d49ebee8bfe906c1fb362d64']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/frontend/dashboard/assets/favicon-CBc3_nbG.ico"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--ab28a08c-721b-5a02-8929-f3149fb80ad6",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--75dfddba-f82e-5a06-9321-373f196095fe",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--12f4f9be-803b-5d25-a1ae-aa240dd0050b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_name: nyxstrike_server.py",
+   "description": "NyxStrike tool server script, the parent of every tool it runs through /bin/sh -c. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'nyxstrike_server.py%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "nyxstrike",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/nyxstrike_server.py"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--5e97971c-5776-596d-b107-df2993fc11f0",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--12f4f9be-803b-5d25-a1ae-aa240dd0050b",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--bca49358-fdf9-5599-b476-fc41e7542b25",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_name: nyxstrike_mcp.py",
+   "description": "NyxStrike MCP client that AI assistants launch: <dir>/nyxstrike-env/bin/python3 <dir>/nyxstrike_mcp.py --server http://127.0.0.1:8888 --profile full. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'nyxstrike_mcp.py%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "nyxstrike",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/nyxstrike_mcp.py"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--49349625-f1b5-56e5-956e-358c4a35830d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--bca49358-fdf9-5599-b476-fc41e7542b25",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--4a2741cc-153c-5e33-81d6-f9cfa99e7fbe",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_name: nyxstrike.sh",
+   "description": "NyxStrike launcher and installer (-a, -t, -ai, -ai-small, --server, --mcp). Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'nyxstrike.sh%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/nyxstrike.sh"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--0e3cf704-517b-58fe-bf9b-d7624185c5b8",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--4a2741cc-153c-5e33-81d6-f9cfa99e7fbe",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--38df7a99-3ac4-5e2f-a20d-8aeafb46505f",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_path: /nyxstrike-env/",
+   "description": "Virtual environment nyxstrike.sh creates with uv next to the code; the server and MCP client run from <dir>/nyxstrike-env/bin/python3. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/nyxstrike-env/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/nyxstrike.sh#L27"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--90fd7c47-33fb-51d7-8cff-292eadc04865",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--38df7a99-3ac4-5e2f-a20d-8aeafb46505f",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--5794f2d3-e6de-5330-bc92-9441651894c7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_path: /.nyxstrike_data/",
+   "description": "NyxStrike data folder in its working directory (or NYXSTRIKE_DATA_DIR): nyxstrike.db, sessions/, run_history.json, tool_stats.json, wordlists.json, config/cred_key, config/config_local.json, tmp/mcp_msf_resource.rc. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.nyxstrike_data/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/config.py#L6"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--13cf2eb2-bff5-503c-bed6-d65e1ecae16a",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--5794f2d3-e6de-5330-bc92-9441651894c7",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--d1120bb5-c9ce-55dd-b844-3decf55a8611",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_name: nyxstrike.db",
+   "description": "NyxStrike SQLite database (credentials, loot, recipes) in .nyxstrike_data. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'nyxstrike.db%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_core/db.py#L39"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--61c5cb8f-8c0c-5629-8ce2-92ead8662916",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--d1120bb5-c9ce-55dd-b844-3decf55a8611",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--ae9230f2-731e-518b-a014-47be4ed25f16",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_name: nyxstrike.log",
+   "description": "NyxStrike server log in its working folder. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'nyxstrike.log%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_core/setup_logging.py#L34"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1698f61f-8c86-5430-9bbe-f6e90dd9d217",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--ae9230f2-731e-518b-a014-47be4ed25f16",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--cefd2e3a-8c9d-5ceb-b9ff-b3f14e54d637",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike file_name: security_screenshot_",
+   "description": "Screenshots of the NyxStrike browser agent, /tmp/security_screenshot_<epoch>.png; renamed from hexstrike_screenshot_. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'security_screenshot_%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_api/web_framework/browser_agent.py#L98"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--1e7f34a1-5892-54e0-9587-d39d8b8bfa08",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--cefd2e3a-8c9d-5ceb-b9ff-b3f14e54d637",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--555b3681-d60e-501e-b996-8791f04723a9",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike url: https://raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/master/config.py",
+   "description": "Version check the NyxStrike server makes once at start-up with Python urllib (user agent Python-urllib/<version>). Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value = 'https://raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/master/config.py']",
+   "pattern_type": "stix",
+   "valid_from": "2026-08-20T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/nyxstrike/blob/3ac74499b8d77785d1b496791a4aab32a253a9cb/backend/server_api/ops/web_dashboard.py#L20"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--4c2fd513-d6e6-5e81-8645-11030ee7c8d5",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--555b3681-d60e-501e-b996-8791f04723a9",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--a22153d6-4e7c-5f53-a755-62a1ca65ece7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NyxStrike user_agent: commonhuman-core/openapi-discover",
+   "description": "User agent of the OpenAPI discovery in commonhuman-core, used by NyxStrike's openapi_discover tool: GETs of /openapi.json, /swagger.json, /api-docs, /docs, /redoc and 15 more paths. The library also serves other CommonHuman-Lab tools. Reported by ThreatDefence review of the NyxStrike source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'commonhuman-core/openapi-discover']",
+   "pattern_type": "stix",
+   "valid_from": "2026-06-03T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "nyxstrike",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NyxStrike source code",
+     "url": "https://github.com/CommonHuman-Lab/commonhuman-core/blob/ac4ded6333568f3b5a0fbf787eb1e7da0cf6f22a/src/commonhuman_core/openapi.py#L351"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--bf6a7055-7575-5109-939e-983219c966ee",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--a22153d6-4e7c-5f53-a755-62a1ca65ece7",
+   "target_ref": "tool--818b1a09-32c2-5975-8346-ed961e1c1268"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--9da190d8-76a1-5a50-8588-73eff27eef24",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit user_agent: NeuroSploit/4.4.3",
+   "description": "Default user agent of NeuroSploit's own HTTP client (NeuroSploit/<version>; 4.4.3 at the reviewed commit), on the first probe, the replay of every finding and the authorization sweep. Overridable with NEUROSPLOIT_UA. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'NeuroSploit/4.4.3']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "neurosploit",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/pipeline.rs#L629"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3dee9677-b23a-5bad-9e00-fb4dc50a8eeb",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--9da190d8-76a1-5a50-8588-73eff27eef24",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--485ab7d6-e77d-5e31-984f-8795e67848e6",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit uri_string: /nrsplt_baseline_404_check_9x7",
+   "description": "Soft-404 baseline path NeuroSploit requests right after the first GET of every run, with its user agent. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%/nrsplt_baseline_404_check_9x7%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "neurosploit",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/probe.rs#L415"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--3c0ca29a-8269-5443-9a22-db064b658ee2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--485ab7d6-e77d-5e31-984f-8795e67848e6",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--9da7cdf5-7653-545b-bda2-fa84108f3adc",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit user_agent: Mozilla/5.0 (compatible; NeuroSploit-WebShell/1.0)",
+   "description": "User agent of NeuroSploit's web shell manager on every command sent to a planted web shell. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'Mozilla/5.0 (compatible; NeuroSploit-WebShell/1.0)']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 85,
+   "labels": [
+    "neurosploit",
+    "high"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/c2/manager.rs#L1406"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--291f9766-fe8e-5791-a9ac-d3b6a546497e",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--9da7cdf5-7653-545b-bda2-fa84108f3adc",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--95428d55-e972-542e-adbe-cdac6023ddf7",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit uri_string: /api/beacon",
+   "description": "NeuroSploit C2 beacon check-in path (POST, ?format=sh for the bash beacon), always with the header X-Implant-Token. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value LIKE '%/api/beacon%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "neurosploit",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/c2/manager.rs#L297"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--6a419adf-e7c3-5594-87fc-15e5f3427269",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--95428d55-e972-542e-adbe-cdac6023ddf7",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--8f25c44d-dddc-5840-a1ea-240a82907fd4",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit file_name: nsupdate.service",
+   "description": "systemd user unit ~/.config/systemd/user/nsupdate.service (Description=NSUpdate) that NeuroSploit's Linux persistence writes. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:name LIKE 'nsupdate.service%']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "neurosploit",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/c2/templates.rs#L406"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--43d21aad-0cd3-5948-92ed-5012c7ded21b",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--8f25c44d-dddc-5840-a1ea-240a82907fd4",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--57f01ed4-33ce-553c-9944-cf27d96092c6",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit file_path: /.neurosploit/",
+   "description": "NeuroSploit project store in the working directory: keys.json (model API keys), vault/ (credentials of created test accounts), c2/ (state.json, control.json, audit.jsonl, payloads/). Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/.neurosploit/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "neurosploit",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/c2/mod.rs#L53"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--bdd671f3-2089-5ab8-9968-dc11f864e21c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--57f01ed4-33ce-553c-9944-cf27d96092c6",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--f61a9a8a-a5e5-5e15-8a3d-c1f729c54c86",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit file_path: /tmp/ns_browser_prefetch.js",
+   "description": "Playwright script NeuroSploit writes and runs with node to pre-fetch pages behind a WAF. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[directory:path = '/tmp/ns_browser_prefetch.js']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "neurosploit",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/pipeline.rs#L707"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--8a1d0c83-e0d4-54ec-97ea-83e92ef4e31c",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--f61a9a8a-a5e5-5e15-8a3d-c1f729c54c86",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--318ee296-455e-57d8-9ac4-ff9a8ad42847",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit user_agent: neurosploit-logship/4.4",
+   "description": "User agent of NeuroSploit's log shipping to a SIEM. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'neurosploit-logship/4.4']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "neurosploit",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/logship.rs#L270"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--a75b43c4-da0d-54bb-b640-3eac4cecc058",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--318ee296-455e-57d8-9ac4-ff9a8ad42847",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--cc70f897-3ea4-5c25-89a7-b8e3de0c07d4",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit user_agent: NeuroSploit",
+   "description": "Bare user agent of NeuroSploit's GitHub, GitLab, Jira, Slack and Microsoft Graph integrations from the operator host. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[network-traffic:extensions.'http-request-ext'.request_header.'User-Agent' = 'NeuroSploit']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "neurosploit",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/crates/harness/src/integrations.rs#L140"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--784c047c-4053-5c5b-bbcc-40f85b89b5e2",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--cc70f897-3ea4-5c25-89a7-b8e3de0c07d4",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--8e73f982-a6cf-56c0-addd-bb7c9f42d7ff",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit md5: f8fb482e183c10bb03aaf940dde7b18c",
+   "description": "NeuroSploit web console icon web/public/logo.svg (863 bytes); also the favicon md5 ONYPHE and offensive.agency use. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[file:hashes.MD5 = 'f8fb482e183c10bb03aaf940dde7b18c']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "neurosploit",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/web/public/logo.svg"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--767e5787-4e65-5675-944d-b8be1a1f8f53",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--8e73f982-a6cf-56c0-addd-bb7c9f42d7ff",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--53cdead4-789d-5b53-a5db-cd56bf7f062d",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit url: https://codeload.github.com/JoasASantos/NeuroSploit/tar.gz/refs/tags/",
+   "description": "Agent library download the NeuroSploit binary makes when agents_md/ is missing (followed by the release tag). Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "anomalous-activity"
+   ],
+   "pattern": "[url:value = 'https://codeload.github.com/JoasASantos/NeuroSploit/tar.gz/refs/tags/']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 30,
+   "labels": [
+    "neurosploit",
+    "low"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/neurosploit-rs/app/src/main.rs#L963"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--a91a6bda-f8b4-53b9-a9f2-ce69b439a1b6",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--53cdead4-789d-5b53-a5db-cd56bf7f062d",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
+  },
+  {
+   "type": "indicator",
+   "spec_version": "2.1",
+   "id": "indicator--87ed02a6-71b0-547b-953e-c64b5fd0c874",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "created_by_ref": "identity--cfb32124-d0d1-5d3a-8537-b5b8d8c30a0d",
+   "name": "NeuroSploit url: https://raw.githubusercontent.com/JoasASantos/NeuroSploit/main/setup.sh",
+   "description": "NeuroSploit install script (curl -fsSL ... | bash); Windows: install.ps1 from the same path. Reported by ThreatDefence review of the NeuroSploit source code.",
+   "indicator_types": [
+    "malicious-activity"
+   ],
+   "pattern": "[url:value = 'https://raw.githubusercontent.com/JoasASantos/NeuroSploit/main/setup.sh']",
+   "pattern_type": "stix",
+   "valid_from": "2026-11-24T00:00:00Z",
+   "confidence": 60,
+   "labels": [
+    "neurosploit",
+    "medium"
+   ],
+   "external_references": [
+    {
+     "source_name": "ThreatDefence review of the NeuroSploit source code",
+     "url": "https://github.com/JoasASantos/NeuroSploit/blob/54d8e86039c0821017ced8c79e4fb9b55a9c4614/setup.sh#L4"
+    }
+   ]
+  },
+  {
+   "type": "relationship",
+   "spec_version": "2.1",
+   "id": "relationship--538d8ac0-0a23-5b2f-99c7-57b8f9299112",
+   "created": "2026-11-21T00:00:00.000Z",
+   "modified": "2026-11-21T00:00:00.000Z",
+   "relationship_type": "indicates",
+   "source_ref": "indicator--87ed02a6-71b0-547b-953e-c64b5fd0c874",
+   "target_ref": "tool--ada96aab-5ece-590b-8656-5f12e891c40b"
   }
  ]
 }

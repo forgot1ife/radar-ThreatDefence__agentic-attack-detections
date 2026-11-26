@@ -1,0 +1,39 @@
+id: 3e101fa3-a62a-5616-ab68-478d25436f2e
+name: NeuroSploit AI pentest harness scanned a web server
+description: |
+  A web server or proxy logged a request with a string hard-coded in NeuroSploit (JoasASantos/NeuroSploit, reviewed
+  at 54d8e860): the user agent NeuroSploit/<version> its own HTTP client sends by default, the soft-404 probe path
+  /nrsplt_baseline_404_check_9x7 it requests at the start of every run, its open redirect test host
+  neurosploit.example, or the user agent of its web shell manager (NeuroSploit-WebShell/1.0). NeuroSploit is promoted
+  to security teams; check whether the test was agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - InitialAccess
+relevantTechniques:
+  - T1595.002
+  - T1190
+query: |
+  let Paths = dynamic(["nrsplt_baseline_404_check_9x7", "neurosploit.example"]);
+  union isfuzzy=true
+      (W3CIISLog
+          | extend UA=replace_string(csUserAgent, "+", " ")
+          | where UA startswith "NeuroSploit/" or UA has "NeuroSploit-WebShell/" or csUriStem has_any (Paths) or csUriQuery has_any (Paths)
+          | project TimeGenerated, Source="W3CIISLog", IPAddress=cIP, Target=csHost, Url=strcat(csUriStem, "?", csUriQuery), UserAgent=UA),
+      (CommonSecurityLog
+          | where RequestClientApplication startswith "NeuroSploit/" or RequestClientApplication has "NeuroSploit-WebShell/" or RequestURL has_any (Paths)
+          | project TimeGenerated, Source="CommonSecurityLog", IPAddress=SourceIP, Target=DestinationHostName, Url=RequestURL, UserAgent=RequestClientApplication)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), SampleURLs=make_set(Url, 10),
+      UserAgents=make_set(UserAgent, 5), Sources=make_set(Source) by IPAddress, Target
+version: 1.0.0
+kind: Scheduled

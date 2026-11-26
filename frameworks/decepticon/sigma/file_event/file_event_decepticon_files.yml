@@ -1,0 +1,47 @@
+title: Decepticon Configuration, Telemetry ID or C2 Operator Config Written
+id: 71e35d20-e85d-56e2-a3ba-bce5e6bd840c
+status: experimental
+description: |
+    Detects the files Decepticon writes on the host that runs it: the install folder ~/.decepticon/ with its .env,
+    docker-compose.yml and telemetry/install_id, the Sliver operator config workspace/.sliver-configs/decepticon.cfg,
+    and the sandbox tmux session logs under workspace/.sessions/.
+references:
+    - https://github.com/BitterSecurity/Decepticon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_home:
+        TargetFilename|contains:
+            - '/.decepticon/'
+            - '\.decepticon\'
+        TargetFilename|endswith:
+            - '.env'
+            - 'docker-compose.yml'
+            - 'install_id'
+            - 'litellm.yaml'
+            - '.version'
+    selection_sliver:
+        TargetFilename|endswith:
+            - '/.sliver-configs/decepticon.cfg'
+            - '\.sliver-configs\decepticon.cfg'
+    selection_workspace:
+        TargetFilename|contains:
+            - '/.decepticon/workspace/'
+            - '\.decepticon\workspace\'
+        TargetFilename|endswith:
+            - '/plan/roe.json'
+            - '/plan/opplan.json'
+            - '\plan\roe.json'
+            - '\plan\opplan.json'
+            - '/timeline.jsonl'
+            - '\timeline.jsonl'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests and research with Decepticon
+level: low

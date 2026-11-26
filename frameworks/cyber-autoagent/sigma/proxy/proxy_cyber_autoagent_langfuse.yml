@@ -1,0 +1,28 @@
+title: Cyber-AutoAgent Langfuse Prompt Fetch or Project Page in Proxy Logs
+id: 3cca7c8b-035c-5a46-97fe-01a4375f48bd
+status: experimental
+description: |
+    Detects Cyber-AutoAgent fetching or seeding its prompts in Langfuse (/api/public/v2/prompts/cyber/system/...,
+    /cyber/report/...), and browsing of the Langfuse project its compose file seeds (cyber-project-id).
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/prompts/factory.py
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/docker/docker-compose.yml
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_prompts:
+        c-uri|contains:
+            - '/api/public/v2/prompts/cyber/system/'
+            - '/api/public/v2/prompts/cyber/report/'
+    selection_project:
+        c-uri|contains: '/project/cyber-project-id'
+    condition: 1 of selection_*
+falsepositives:
+    - Another Langfuse project that names its prompts cyber/system/ or cyber/report/
+level: medium

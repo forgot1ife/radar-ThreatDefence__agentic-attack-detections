@@ -1,0 +1,38 @@
+title: NeuroSploit Beacon or Persistence on Linux
+id: 936d9e3d-22cf-55c0-9745-d8d4e1e79923
+status: experimental
+description: |
+    Detects NeuroSploit's bash beacon and the Linux persistence commands its C2 hands an agent. The whole beacon is on
+    the command line (nohup bash -c '...' started directly, from an @reboot crontab entry or from ~/.bashrc), so it
+    carries the X-Implant-Token header and the /api/beacon path; the systemd variant writes
+    ~/.config/systemd/user/nsupdate.service and enables it with systemctl --user.
+references:
+    - https://github.com/JoasASantos/NeuroSploit
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+    - attack.persistence
+    - attack.t1053.003
+    - attack.t1546.004
+    - attack.t1543.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_beacon:
+        CommandLine|contains|all:
+            - 'X-Implant-Token'
+            - '/api/beacon'
+    selection_systemd:
+        CommandLine|contains: 'nsupdate.service'
+    selection_bashrc:
+        CommandLine|contains|all:
+            - '# NSUpdate'
+            - '.bashrc'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with NeuroSploit
+level: high

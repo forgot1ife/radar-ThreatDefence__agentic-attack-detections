@@ -1,0 +1,4 @@
+# HackSynth Benchmark Launcher
+# Sigma id f08ccd82-52f6-5b21-a742-45b80fb68334, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "run_bench.py" and CommandLine matches regex "\\s(-b|--benchmark)\\s") and (CommandLine contains "benchmark_solved.json" or CommandLine contains "combined_solved.json" or CommandLine contains "bandit_solved.json" or CommandLine contains "natas_solved.json" or CommandLine contains "configs/pico_bench/" or CommandLine contains "configs/overthewire_bench/")

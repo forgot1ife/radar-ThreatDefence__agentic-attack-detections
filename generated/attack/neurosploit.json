@@ -1,0 +1,142 @@
+{
+ "description": "40 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 15,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "neurosploit",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: NeuroSploit C2 beacons, NSUpdate persistence and web shells on hosts it compromised; Sigma: NeuroSploit Beacon or Persistence on Linux",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1053.003"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit C2 beacons, NSUpdate persistence and web shells on hosts it compromised; Sigma: NeuroSploit Beacon Windows Persistence Named NSUpdate",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1053.005"
+  },
+  {
+   "comment": "YARA: NeuroSploit_C2_Beacon",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.001"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit on a host you monitor; Sigma: NeuroSploit Harness on a Host; YARA: NeuroSploit_C2_Beacon",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit C2 beacons, NSUpdate persistence and web shells on hosts it compromised; Sigma: NeuroSploit Beacon or Persistence on Linux; Sigma: NeuroSploit Out-of-Band Callback in Proxy Logs; Suricata: 3817210 TD NeuroSploit out-of-band HTTP callback host; Suricata: 3817214 TD NeuroSploit C2 beacon check-in; Suricata: 3817215 TD NeuroSploit C2 listener task answer to the bash beacon; Suricata: 3817216 TD NeuroSploit C2 listener refused an implant token; Suricata: 3817217 TD NeuroSploit console page; Suricata: 3817218 TD NeuroSploit console proxy option (survives a renamed title); Suricata: 3817222 TD NeuroSploit C2 beacon script downloaded; YARA: NeuroSploit_C2_Beacon",
+   "enabled": true,
+   "score": 11,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Sigma: NeuroSploit Out-of-Band Callback Name Lookup; Suricata: 3817209 TD NeuroSploit out-of-band token lookup",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "Suricata: 3817222 TD NeuroSploit C2 beacon script downloaded",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit testing you: its user agent, probe path, canaries and out-of-band callbacks in web, proxy and DNS logs; Sentinel analytics: NeuroSploit AI pentest harness scanned a web server; Sigma: NeuroSploit Out-of-Band Callback Name Lookup; Sigma: NeuroSploit Out-of-Band Callback in Proxy Logs; Sigma: NeuroSploit Scan Markers in Web Logs; Suricata: 3817201 TD NeuroSploit scanner user agent; Suricata: 3817202 TD NeuroSploit X-NeuroSploit-Scan attribution header; Suricata: 3817203 TD NeuroSploit soft-404 baseline probe path; Suricata: 3817204 TD NeuroSploit provenance sigil canary in URI; Suricata: 3817205 TD NeuroSploit provenance sigil canary in request body; Suricata: 3817206 TD NeuroSploit sign-up test account nrsplt_; Suricata: 3817207 TD NeuroSploit open redirect candidate host neurosploit.example; Suricata: 3817208 TD NeuroSploit SSRF candidate oob.invalid (no out-of-band domain set); Suricata: 3817209 TD NeuroSploit out-of-band token lookup; Suricata: 3817210 TD NeuroSploit out-of-band HTTP callback host",
+   "enabled": true,
+   "score": 15,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit C2 beacons, NSUpdate persistence and web shells on hosts it compromised; Suricata: 3817211 TD NeuroSploit web shell manager user agent; Suricata: 3817212 TD NeuroSploit web shell default password in request body; Suricata: 3817213 TD NeuroSploit web shell default password in URI; Suricata: 3817221 TD NeuroSploit generated web shell uploaded; YARA: NeuroSploit_Generated_WebShell",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1505.003"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit C2 beacons, NSUpdate persistence and web shells on hosts it compromised; Sigma: NeuroSploit Beacon or Persistence on Linux",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1543.002"
+  },
+  {
+   "comment": "Sigma: NeuroSploit Beacon or Persistence on Linux",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1546.004"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit C2 beacons, NSUpdate persistence and web shells on hosts it compromised; Sigma: NeuroSploit Beacon Run Key Value NSUpdate; Sigma: NeuroSploit Beacon Windows Persistence Named NSUpdate",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1547.001"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit on a host you monitor; Sigma: NeuroSploit Harness on a Host; Sigma: NeuroSploit Project Store, Vault or C2 Files Written; Sigma: NeuroSploit User Agents in Proxy Logs; Suricata: 3817219 TD NeuroSploit integration user agent; Suricata: 3817220 TD NeuroSploit log shipping user agent; YARA: NeuroSploit_Binary_Or_Source; YARA: NeuroSploit_Run_Output",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: NeuroSploit testing you: its user agent, probe path, canaries and out-of-band callbacks in web, proxy and DNS logs; Sentinel analytics: NeuroSploit AI pentest harness scanned a web server; Sigma: NeuroSploit Scan Markers in Web Logs; Sigma: NeuroSploit User Agents in Proxy Logs; Suricata: 3817201 TD NeuroSploit scanner user agent; Suricata: 3817202 TD NeuroSploit X-NeuroSploit-Scan attribution header; Suricata: 3817203 TD NeuroSploit soft-404 baseline probe path; Suricata: 3817204 TD NeuroSploit provenance sigil canary in URI; Suricata: 3817205 TD NeuroSploit provenance sigil canary in request body; Suricata: 3817206 TD NeuroSploit sign-up test account nrsplt_; Suricata: 3817207 TD NeuroSploit open redirect candidate host neurosploit.example; Suricata: 3817208 TD NeuroSploit SSRF candidate oob.invalid (no out-of-band domain set)",
+   "enabled": true,
+   "score": 12,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

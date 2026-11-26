@@ -1,0 +1,3 @@
+# Cyber-AutoAgent General Module Tool Command Lines
+# Sigma id f431fc1b-d3f2-5ee6-aace-b0034ce41036, pipeline ecs
+(process.command_line:*dalfox* AND process.command_line:*dalfox\-xss\-test.com*) OR (process.command_line:*feroxbuster* AND process.command_line:*\/tmp\/auth_wordlist.txt*)

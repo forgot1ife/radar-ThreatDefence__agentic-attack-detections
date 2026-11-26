@@ -1,0 +1,4 @@
+# Decepticon AI Red Team Agent Installed or Started
+# Sigma id b2cc9abb-091b-552c-9671-43932c67be6d, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "decepticon.red/install" or CommandLine contains "raw.githubusercontent.com/BitterSecurity/Decepticon/") or CommandLine matches regex "(^|[/\\\\\\s])decepticon(\\.exe)?[\"']?\\s+(onboard|start|stop|status|doctor|update|attach|resume|mcp\\s+serve)(\\s|$)" or CommandLine contains "ghcr.io/bittersecurity/decepticon-" or ((CommandLine contains "decepticon-sandbox" or CommandLine contains "decepticon-langgraph" or CommandLine contains "decepticon-c2-sliver" or CommandLine contains "decepticon-c2-havoc") and CommandLine contains "docker")

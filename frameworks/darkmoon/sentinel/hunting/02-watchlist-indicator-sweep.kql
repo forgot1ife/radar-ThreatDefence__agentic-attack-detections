@@ -1,0 +1,28 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (DarkMoon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595 (Active Scanning), T1588.002 (Obtain Capabilities: Tool)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. DarkMoon has no published addresses or domains and sends no telemetry; its rows
+// are the user agent dm-edge, the probe strings from its agent prompts, its image names and its file paths.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "darkmoon" | project value=tostring(SearchKey), type, confidence, actor, source;
+let UAs = toscalar(IOC | where type == "user_agent" and confidence in ("high", "medium") | summarize make_list(value));
+let UriStrings = toscalar(IOC | where type in ("uri_string", "string") and confidence in ("high", "medium") | summarize make_list(value));
+let HostStrings = toscalar(IOC | where type in ("docker_image", "file_path", "string") and confidence in ("high", "medium") | summarize make_list(value));
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA in (UAs) or csUriStem has_any (UriStrings) or csUriQuery has_any (UriStrings)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=iff(UA in (UAs), UA, strcat(csUriStem, "?", csUriQuery)), Detail=strcat(cIP, " ", csHost)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication in (UAs) or RequestURL has_any (UriStrings)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=iff(RequestClientApplication in (UAs), RequestClientApplication, RequestURL),
+            Detail=strcat(SourceIP, " -> ", DestinationHostName)),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (HostStrings)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator=substring(ProcessCommandLine, 0, 200), Detail=DeviceName),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (HostStrings)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FolderPath, Detail=strcat(DeviceName, " ", InitiatingProcessFileName))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by Source, Indicator
+| order by LastSeen desc

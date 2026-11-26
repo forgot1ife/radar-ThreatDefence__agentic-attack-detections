@@ -1,0 +1,29 @@
+title: NeuroSploit Out-of-Band Callback Name Lookup
+id: 06a8664a-55a3-5797-9368-75f82d6c75c7
+status: experimental
+description: |
+    Detects a lookup of a name whose first label starts with neurosploit, the prefix of every out-of-band token
+    NeuroSploit puts in blind SSRF, XXE, command injection and JNDI payloads (<token>.<operator domain>). A lookup proves
+    a resolver saw the payload; NeuroSploit itself treats it as weaker than an HTTP callback. neurosploitai.github.io is
+    the project's documentation site.
+references:
+    - https://github.com/JoasASantos/NeuroSploit
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.command-and-control
+    - attack.t1071.004
+logsource:
+    category: dns_query
+detection:
+    selection:
+        QueryName|startswith: 'neurosploit'
+    filter_docs:
+        QueryName|startswith: 'neurosploitai.'
+    condition: selection and not filter_docs
+falsepositives:
+    - Authorized tests with NeuroSploit
+level: high

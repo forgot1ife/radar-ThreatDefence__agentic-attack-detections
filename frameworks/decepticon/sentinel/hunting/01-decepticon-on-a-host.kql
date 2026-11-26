@@ -1,0 +1,37 @@
+// Decepticon running on a host you monitor
+// Agentic attack detections by ThreatDefence (Decepticon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the Decepticon source code (BitterSecurity/Decepticon at 6b15092d, November 20, 2026). Decepticon is a Go
+// launcher (decepticon) that runs a Docker Compose stack of LangGraph agents, a LiteLLM gateway, Neo4j, PostgreSQL and a
+// Kali sandbox:
+//  - Install: curl -fsSL https://decepticon.red/install | bash (or irm https://decepticon.red/install.ps1 | iex) puts
+//    the launcher in ~/.local/bin/decepticon and docker-compose.yml, .env and config/litellm.yaml in ~/.decepticon/.
+//  - Images: ghcr.io/bittersecurity/decepticon-litellm, -sandbox, -langgraph, -cli, -skillogy, -rea, -c2-sliver,
+//    -c2-havoc; containers are named decepticon-<service> (decepticon-<stack>-<service> with DECEPTICON_STACK_NAME).
+//  - Inside the sandbox: python3 -m decepticon_sandbox.server on port 9999, every command runs in tmux with the prompt
+//    [DCPTN:<status>:<cwd>] and a hook that calls tmux set-option ... @dcptn_completion after each command.
+//  - On demand: the c2-sliver container creates the Sliver operator decepticon (/workspace/.sliver-configs/decepticon.cfg).
+//  - Telemetry: the setup wizard defaults to sharing, sent to decepticon-telemetry-gateway.purpleailab.workers.dev.
+// Processes inside containers are only visible where the EDR sees container processes (Linux hosts, not Docker Desktop).
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine matches regex @"decepticon\.red/install|ghcr\.io/bittersecurity/decepticon-|decepticon_sandbox\.(server|web|browser)|@dcptn_completion|decepticon\.cli time-window-resume"
+            or (ProcessCommandLine contains "sliver-server operator" and ProcessCommandLine contains "--name decepticon")
+            or ProcessCommandLine matches regex @"(^|[/\\\s])decepticon(\.exe)?[""']?\s+(onboard|start|update|doctor|mcp\s+serve)(\s|$)"
+        | project Timestamp, DeviceName, Signal="Decepticon install, launcher, container or sandbox process", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FolderPath matches regex @"[/\\]\.decepticon([/\\]|$)" and FileName in~ (".env", "docker-compose.yml", "install_id", "litellm.yaml", "roe.json", "opplan.json"))
+            or (FileName =~ "decepticon.cfg" and FolderPath contains ".sliver-configs")
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, FolderPath
+        | project Timestamp, DeviceName, Signal="Decepticon files", Detail=strcat(FolderPath, " ", tostring(Files)), Parent=""),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where RemoteUrl has "decepticon-telemetry-gateway.purpleailab.workers.dev" or RemoteUrl endswith "decepticon.red"
+        | project Timestamp, DeviceName, Signal="Decepticon telemetry or installer site", Detail=RemoteUrl, Parent=InitiatingProcessCommandLine)
+| order by Timestamp desc

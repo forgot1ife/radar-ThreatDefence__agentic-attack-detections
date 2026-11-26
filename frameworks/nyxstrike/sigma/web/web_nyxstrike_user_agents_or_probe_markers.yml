@@ -1,0 +1,42 @@
+title: NyxStrike User Agent or Probe Marker in Web Logs
+id: d5a3cdd4-f7ef-5aac-9e9c-e5c4192c5c1f
+status: experimental
+description: |
+    Detects NyxStrike testing a web application: its hard-coded user agents (NyxStrike/1.0 from the decision engine,
+    Security-HTTP-Framework/1.0 and Security-BrowserAgent/1.0, and commonhuman-core/openapi-discover from its OpenAPI
+    discovery), the <xssTest123> probe of its browser agent, and the markers of the StingXSS and BreachSQL scanners it
+    installs and drives (StingXSS_<6>, BreachSQL_<6>, stingxss_redir_marker, stingxss_jsonp_probe,
+    stingxss-crlf-detected). StingXSS and BreachSQL also run on their own, so their markers mean those scanners, not
+    necessarily NyxStrike.
+references:
+    - https://github.com/CommonHuman-Lab/nyxstrike
+    - https://github.com/CommonHuman-Lab/stingxss
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_ua:
+        cs-user-agent|startswith:
+            - 'NyxStrike/'
+            - 'Security-HTTP-Framework/'
+            - 'Security-BrowserAgent/'
+            - 'commonhuman-core/openapi-discover'
+    selection_query:
+        cs-uri-query|contains:
+            - 'xssTest123'
+            - 'StingXSS_'
+            - 'BreachSQL_'
+            - 'stingxss_redir_marker'
+            - 'stingxss_jsonp_probe'
+            - 'stingxss-crlf-detected'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with NyxStrike, StingXSS or BreachSQL
+level: high

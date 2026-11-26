@@ -1,0 +1,4 @@
+# Shannon Experimental php2shell Crash Probe Started
+# Sigma id 54ad49ab-c349-522e-a532-11e7aee8c79c, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "--exp-php2shell" and ProcessCommandLine contains "shannon"

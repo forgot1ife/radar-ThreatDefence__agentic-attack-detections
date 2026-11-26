@@ -1,0 +1,4 @@
+# VulnBot Login Notice File Created
+# Sigma id 706dfee1-a13f-5161-bbc1-0b5177d1b882, pipeline azure_monitor
+SecurityEvent
+| where ObjectName =~ "/etc/legal" and (not(NewProcessName endswith "/dpkg"))

@@ -1,0 +1,4 @@
+# Kali Headless Metapackage Download, as in HackSynth Attackbox Setup
+# Sigma id 4cdca422-1dbf-5385-a8ef-1ad419e23052, pipeline sentinel_asim
+imWebSession
+| where Url contains "kali-linux-headless"

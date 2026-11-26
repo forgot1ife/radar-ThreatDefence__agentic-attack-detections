@@ -1,0 +1,8 @@
+# Shannon AI Pentest Agent CLI, Worker Container or Report Renderer
+# Sigma id a1390b62-ad0b-5a7a-9ac7-dfef102a8dbf, pipeline splunk_windows
+CommandLine="*@keygraph/shannon*"
+| rex field=CommandLine "(?<CommandLineMatch>(^|[/\\\\\\s])shannon[\"']?\\s+start\\s(.*\\s)?(-u|--url)[\\s=])"
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), "true", "false")
+| rex field=CommandLine "(?<CommandLineMatch2>playwright-cli\\s+(.*\\s)?-s=agent[1-6](\\s|$))"
+| eval CommandLineCondition2=if(isnotnull(CommandLineMatch2), "true", "false")
+| search OR CommandLineCondition="true" OR CommandLine IN ("*keygraph/shannon:*", "*--name shannon-worker-*", "*shannon.workspace=*", "*shannon.workflow-id=*", "*TEMPORAL_ADDRESS=shannon-temporal:7233*") OR (CommandLine="*temporal/worker.js*" CommandLine="*--task-queue*" CommandLine="*--workflow-id*") OR CommandLineCondition2="true" OR CommandLine="*brand=Shannon | AI Pentester by Keygraph*"

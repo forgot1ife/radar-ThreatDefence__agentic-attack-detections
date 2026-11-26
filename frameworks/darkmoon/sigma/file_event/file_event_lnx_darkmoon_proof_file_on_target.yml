@@ -1,0 +1,27 @@
+title: DarkMoon Proof File /tmp/.dm_proof Written on a Server
+id: b26984be-1655-5687-afda-bbfd614f19fb
+status: experimental
+description: |
+    Detects /tmp/.dm_proof, the file DarkMoon's database and cache agents write on a target to prove command
+    execution or file write: PostgreSQL COPY ... TO PROGRAM 'id > /tmp/.dm_proof', MySQL INTO OUTFILE, sys_exec,
+    and a Redis cron line. A database or cache server process writing it means an attack worked.
+references:
+    - https://github.com/ASCIT31/Dark-Moon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection:
+        TargetFilename: '/tmp/.dm_proof'
+    condition: selection
+falsepositives:
+    - Authorized tests with DarkMoon
+level: high

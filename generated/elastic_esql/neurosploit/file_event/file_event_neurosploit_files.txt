@@ -1,0 +1,3 @@
+# NeuroSploit Project Store, Vault or C2 Files Written
+# Sigma id e3bb33ff-a33c-55ff-8592-e7841eac06be, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/.neurosploit/c2/*" or TargetFilename like "*\\.neurosploit\\c2\\*" or TargetFilename like "*/.neurosploit/vault/*" or TargetFilename like "*\\.neurosploit\\vault\\*" or ends_with(TargetFilename, "/.neurosploit/keys.json") or ends_with(TargetFilename, "\\.neurosploit\\keys.json") or TargetFilename=="/tmp/ns_browser_prefetch.js"

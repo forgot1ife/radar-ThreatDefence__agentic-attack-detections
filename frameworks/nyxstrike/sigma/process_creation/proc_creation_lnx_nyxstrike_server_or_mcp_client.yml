@@ -1,0 +1,32 @@
+title: NyxStrike Server, MCP Client or Tool Started by the Server
+id: 4f28ea68-b9bd-58b4-accb-a62b492dd7fe
+status: experimental
+description: |
+    Detects the NyxStrike tool server (nyxstrike_server.py), its MCP client (nyxstrike_mcp.py), its launcher
+    (nyxstrike.sh) and its virtual environment (nyxstrike-env), and every tool the server starts: the server runs each
+    tool through /bin/sh -c with itself as the parent. NyxStrike is a HexStrike derivative that exposes about 200
+    offensive tools to an AI assistant or its own LLM agents.
+references:
+    - https://github.com/CommonHuman-Lab/nyxstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    product: linux
+    category: process_creation
+detection:
+    selection_self:
+        CommandLine|contains:
+            - 'nyxstrike_server.py'
+            - 'nyxstrike_mcp.py'
+            - 'nyxstrike.sh'
+            - '/nyxstrike-env/bin/python'
+    selection_child:
+        ParentCommandLine|contains: 'nyxstrike_server.py'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized red team or lab use of NyxStrike
+level: high

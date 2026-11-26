@@ -2,7 +2,7 @@ Agentic Attack Detections for Splunk, version 2.11.1
 
 https://github.com/ThreatDefence/agentic-attack-detections
 
-88 saved searches, all disabled, and the Agentic Attack Activity dashboard.
+151 saved searches, all disabled, and the Agentic Attack Activity dashboard.
 
 Searches per framework:
   ARTEX: 46
@@ -16,10 +16,24 @@ Searches per framework:
   RedAmon: 3
   Xalgorix: 3
   Pentest Swarm AI: 3
+  Shannon: 3
+  PentestGPT: 3
+  Cyber-AutoAgent: 8
+  CAI: 6
+  HackSynth: 4
+  VulnBot: 3
+  AutoPT: 4
+  PentestAgent (paper): 3
+  PentestAgent (GH05TCREW): 3
+  Dark Moon: 4
+  Decepticon: 6
+  sapper-v2: 3
+  NyxStrike: 4
+  NeuroSploit: 9
   Shared behaviors: 6
   Indicator searches: 4 (addresses, domains, file hashes, user agents)
 
-Lookups: aad_indicators.csv has all 580 rows of iocs/indicators.csv. aad_ioc_ip, aad_ioc_domain,
+Lookups: aad_indicators.csv has all 864 rows of iocs/indicators.csv. aad_ioc_ip, aad_ioc_domain,
 aad_ioc_hash and aad_ioc_user_agent hold the rows the indicator searches match on.
 
 Set up:

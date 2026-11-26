@@ -1,0 +1,35 @@
+id: f1574172-225d-534e-b601-1eb8a46aac2a
+name: sapper-v2 autonomous pentest agents on a host
+description: |
+  A host ran sapper-v2, a kit that starts Claude Code or Codex sessions in tmux with approvals turned off and types
+  penetration-testing missions into them: an agent window ending "echo DRIVE_PANE_EXITED; exec sleep infinity", one of
+  its tmux sessions (sapper-cmd, sapper-tui, sapper-fleet), one of its mission prompts, or the executor system prompt it
+  passes to claude -p. The strings are in its code; a match means sapper-v2 or a close fork. Check who ran it and whether
+  the test was agreed.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - Reconnaissance
+relevantTechniques:
+  - T1059.004
+  - T1595.002
+query: |
+  let Prompts = dynamic(["You are an autonomous executor in a penetration-testing fact-graph agent system",
+      "You are the autonomous field commander of a pentest campaign (TSecBench)",
+      "You are an autonomous pentest operator in a CTF benchmark", "You are a GENERAL (senior operator) on challenge"]);
+  DeviceProcessEvents
+  | where ProcessCommandLine has "DRIVE_PANE_EXITED"
+      or (ProcessCommandLine has "tmux" and ProcessCommandLine matches regex @"\s-[st]\s+['""]?sapper-(cmd|tui|fleet)\b")
+      or ProcessCommandLine has_any (Prompts)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10)
+      by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

@@ -1,0 +1,27 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (Shannon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595 (Active Scanning), T1588.002 (Obtain Capabilities: Tool)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". Shannon has no infrastructure of its own: its rows are user agents, docker images, file names, strings and
+// the console port, so a match needs the context in the row. Low-confidence user agents are left out here.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "shannon" | project value=tostring(SearchKey), type, confidence, actor, source;
+let UAs = toscalar(IOC | where type == "user_agent" and confidence in ("high", "medium") | summarize make_list(value));
+let Images = toscalar(IOC | where type == "docker_image" | summarize make_list(value));
+let Strings = toscalar(IOC | where type == "string" and confidence in ("high", "medium") | summarize make_list(value));
+let Files = toscalar(IOC | where type == "file_name" and confidence in ("high", "medium") | summarize make_list(value));
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication has_any (UAs) or RequestURL has_any (Strings)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=coalesce(RequestClientApplication, RequestURL), Detail=strcat(SourceIP, " ", RequestURL)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where replace_string(csUserAgent, "+", " ") has_any (UAs)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=replace_string(csUserAgent, "+", " "), Detail=strcat(cIP, " ", csUriStem)),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Images) or ProcessCommandLine has_any (Strings)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator=substring(ProcessCommandLine, 0, 200), Detail=DeviceName),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FileName in~ (Files)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FileName, Detail=strcat(DeviceName, " ", FolderPath))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by Source, Indicator
+| order by LastSeen desc

@@ -1,0 +1,36 @@
+id: 249eae68-1a5b-5606-b5b8-a1111225170b
+name: CAI AI pentest framework on a host or reporting from your network
+description: |
+  A host ran the CAI (Cybersecurity AI, aliasrobotics/cai) command line as an API backend, TUI, with --yolo or
+  --unrestricted, installed cai-framework, started its continuous-ops loop runner or kali-security container, or
+  connected to logs.aliasrobotics.com, where CAI uploads its session logs (every 5 model interactions, even with
+  CAI_TELEMETRY=false), or to Alias's gateway and package index on TCP 666, 665 and 664.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - CommandAndControl
+relevantTechniques:
+  - T1059.006
+  - T1071.001
+query: |
+  union isfuzzy=true
+      (DeviceProcessEvents
+          | where ProcessCommandLine matches regex @"(^|[/\\\s])cai(\.exe)?[""']?\s(.*\s)?(--api|--api-host|--api-port|--tui|--yaml|--prompt|--yolo|--unrestricted)([\s=]|$)"
+              or ProcessCommandLine matches regex @"((pip|pip3|pipx)\s+install|uv\s+(tool\s+install|tool\s+run|pip\s+install|add)|uvx)\s(.*\s)?[""']?cai-framework"
+              or ProcessCommandLine has "packages.aliasrobotics.com" or ProcessCommandLine has "cai.continuous_ops.loop_runner"
+              or (ProcessCommandLine has "--name kali-security" and ProcessCommandLine has "seccomp=unconfined")
+          | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine),
+      (DeviceNetworkEvents
+          | where RemoteUrl has_any ("logs.aliasrobotics.com", "api.aliasrobotics.com", "packages.aliasrobotics.com")
+          | project TimeGenerated, DeviceName, AccountName=InitiatingProcessAccountName, Detail=strcat(RemoteUrl, ":", RemotePort, " ", InitiatingProcessCommandLine))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

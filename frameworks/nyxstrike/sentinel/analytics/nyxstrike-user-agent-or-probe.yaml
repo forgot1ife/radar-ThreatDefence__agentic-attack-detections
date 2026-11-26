@@ -1,0 +1,40 @@
+id: 86a6ea39-e455-5f66-b995-4bad87836c7a
+name: NyxStrike user agent or browser agent probe
+description: |
+  A web request, proxy request, sign-in or AWS call carried a user agent hard-coded in NyxStrike (NyxStrike/ from its
+  decision engine, Security-HTTP-Framework/ and Security-BrowserAgent/ from its HTTP and browser testing modules), or the
+  <xssTest123> probe its browser agent submits into GET forms. NyxStrike is a HexStrike derivative that gives AI agents
+  about 200 offensive tools.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+  - connectorId: AzureActiveDirectory
+    dataTypes: []
+  - connectorId: AWS
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - InitialAccess
+relevantTechniques:
+  - T1595.002
+  - T1190
+query: |
+  let UAs = dynamic(["NyxStrike/", "Security-HTTP-Framework/", "Security-BrowserAgent/"]);
+  union isfuzzy=true
+      (CommonSecurityLog | where RequestClientApplication has_any (UAs) or RequestURL contains "xssTest123"
+          | project TimeGenerated, Src=SourceIP, Target=DestinationHostName, UA=RequestClientApplication, Detail=RequestURL),
+      (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ") | where UA has_any (UAs) or csUriQuery contains "xssTest123"
+          | project TimeGenerated, Src=cIP, Target=csHost, UA, Detail=csUriStem),
+      (SigninLogs | where UserAgent has_any (UAs) | project TimeGenerated, Src=IPAddress, Target=AppDisplayName, UA=UserAgent, Detail=UserPrincipalName),
+      (AWSCloudTrail | where UserAgent has_any (UAs) | project TimeGenerated, Src=SourceIpAddress, Target=EventSource, UA=UserAgent, Detail=EventName)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Samples=make_set(Detail, 10) by Src, Target, UA
+version: 1.0.0
+kind: Scheduled

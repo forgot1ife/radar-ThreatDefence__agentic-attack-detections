@@ -1,0 +1,40 @@
+title: CAI Cybersecurity AI CLI, Install, Continuous Ops Worker or Kali Container
+id: 7d11f287-f002-5e4e-83d9-52042784cebb
+status: experimental
+description: |
+    Detects the CAI (Cybersecurity AI, aliasrobotics/cai) command line started as an API backend, Textual UI, with
+    parallel agents, an initial prompt, --yolo or --unrestricted; the cai-framework package being installed (also from
+    Alias's private index on packages.aliasrobotics.com:664); its continuous-ops loop runner; and the Kali container
+    its /virtualization command starts as kali-security with host networking and seccomp off.
+references:
+    - https://github.com/aliasrobotics/cai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+detection:
+    selection_cli:
+        # cai or .../bin/cai followed by one of its distinctive flags; a bare cai is too short to hunt on
+        CommandLine|re: '(^|[/\\\s])cai(\.exe)?["'']?\s(.*\s)?(--api|--api-host|--api-port|--tui|--yaml|--prompt|--yolo|--unrestricted)([\s=]|$)'
+    selection_install:
+        CommandLine|re: '((pip|pip3|pipx)\s+install|uv\s+(tool\s+install|tool\s+run|pip\s+install|add)|uvx)\s(.*\s)?["'']?cai-framework'
+    selection_index:
+        CommandLine|contains: 'packages.aliasrobotics.com'
+    selection_loop:
+        CommandLine|contains: 'cai.continuous_ops.loop_runner'
+    selection_container:
+        CommandLine|contains|all:
+            - 'docker'
+            - '--name kali-security'
+            - '--security-opt=seccomp=unconfined'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests and research with CAI
+    - Other tools that name a container kali-security with seccomp turned off
+level: medium

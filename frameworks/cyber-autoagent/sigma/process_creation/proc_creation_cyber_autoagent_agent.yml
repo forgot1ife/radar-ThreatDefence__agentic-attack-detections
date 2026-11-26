@@ -1,0 +1,35 @@
+title: Cyber-AutoAgent AI Pentest Agent Started
+id: 8951bac6-de2e-5ab6-87f0-c6cd8af00f7e
+status: experimental
+description: |
+    Detects the Cyber-AutoAgent Python agent starting an assessment (cyberautoagent.py with --target, or the
+    --objective via environment placeholder its terminal front end always passes), its idle compose container
+    (--service-mode), its front end, or a container from the cyber-autoagent image.
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_cli:
+        CommandLine|contains: 'cyberautoagent.py'
+    selection_cli_args:
+        CommandLine|contains:
+            - '--target'
+            - '--service-mode'
+    selection_frontend:
+        # Placeholder the React front end passes for every run; the real objective is in CYBER_OBJECTIVE
+        CommandLine|contains: '--objective via environment'
+    selection_ui:
+        CommandLine|contains: '/interfaces/react/dist/index.js'
+    selection_image:
+        CommandLine|contains: 'cyber-autoagent:latest'
+    condition: (selection_cli and selection_cli_args) or selection_frontend or selection_ui or selection_image
+falsepositives:
+    - Authorized tests with Cyber-AutoAgent
+level: medium

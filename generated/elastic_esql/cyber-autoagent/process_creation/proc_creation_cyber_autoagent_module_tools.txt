@@ -1,0 +1,3 @@
+# Cyber-AutoAgent General Module Tool Command Lines
+# Sigma id f431fc1b-d3f2-5ee6-aace-b0034ce41036, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*dalfox*" and process.command_line like "*dalfox-xss-test.com*" or process.command_line like "*feroxbuster*" and process.command_line like "*/tmp/auth_wordlist.txt*"

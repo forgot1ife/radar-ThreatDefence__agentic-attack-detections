@@ -1,0 +1,30 @@
+id: 903da355-4bf0-51e8-ad53-f793930f1f85
+name: Shannon AI pentest agent on a host
+description: |
+  A host ran the Shannon CLI (npx @keygraph/shannon, ./shannon start -u), started its worker container (image
+  keygraph/shannon, container shannon-worker-<hex>, labels shannon.workspace and shannon.workflow-id) or the worker
+  process inside it, or rendered a Shannon PDF report. Shannon reads an application's source code and exploits the
+  running application with model-driven agents.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+relevantTechniques:
+  - T1595.002
+query: |
+  let Markers = dynamic(["@keygraph/shannon", "keygraph/shannon:", "--name shannon-worker-", "shannon.workspace=", "shannon.workflow-id=",
+      "TEMPORAL_ADDRESS=shannon-temporal:7233", "brand=Shannon | AI Pentester by Keygraph"]);
+  DeviceProcessEvents
+  | where ProcessCommandLine has_any (Markers)
+      or ProcessCommandLine matches regex @"(^|[/\\\s])shannon[""']?\s+start\s(.*\s)?(-u|--url)[\s=]"
+      or (ProcessCommandLine has "temporal/worker.js" and ProcessCommandLine has "--task-queue" and ProcessCommandLine has "--workflow-id")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

@@ -1,0 +1,4 @@
+# CAI Cybersecurity AI CLI, Install, Continuous Ops Worker or Kali Container
+# Sigma id 7d11f287-f002-5e4e-83d9-52042784cebb, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessCommandLine matches regex "(^|[/\\\\\\s])cai(\\.exe)?[\"']?\\s(.*\\s)?(--api|--api-host|--api-port|--tui|--yaml|--prompt|--yolo|--unrestricted)([\\s=]|$)" or TargetProcessCommandLine matches regex "((pip|pip3|pipx)\\s+install|uv\\s+(tool\\s+install|tool\\s+run|pip\\s+install|add)|uvx)\\s(.*\\s)?[\"']?cai-framework" or TargetProcessCommandLine contains "packages.aliasrobotics.com" or TargetProcessCommandLine contains "cai.continuous_ops.loop_runner" or (TargetProcessCommandLine contains "docker" and TargetProcessCommandLine contains "--name kali-security" and TargetProcessCommandLine contains "--security-opt=seccomp=unconfined")

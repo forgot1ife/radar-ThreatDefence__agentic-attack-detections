@@ -1,0 +1,41 @@
+title: DarkMoon AI Pentest Agent Launcher, Containers or MCP Server
+id: 1900dd4a-afed-5b22-bcbb-9affa37ca0ab
+status: experimental
+description: |
+    Detects the DarkMoon autonomous penetration testing stack on a host: its launcher starting a campaign
+    (opencode run --agent pentest with a TARGET line, through docker compose exec), its Docker Hub images
+    ascit/darkmoon and ascit/opencode-darkmoon, and the wrappers that start its MCP server and live log console
+    (darkmoon-mcp, darkmoon-cli, and docker exec -i darkmoon darkmoon-mcp for the stdio transport).
+references:
+    - https://github.com/ASCIT31/Dark-Moon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+detection:
+    selection_campaign:
+        CommandLine|contains|all:
+            - 'opencode'
+            - '--agent pentest'
+            - 'TARGET:'
+    selection_launcher:
+        CommandLine|re: '(^|[/\s])darkmoon\.sh(\s|$)'
+    selection_images:
+        CommandLine|contains:
+            - 'ascit/darkmoon'
+            - 'ascit/opencode-darkmoon'
+    selection_mcp_wrapper:
+        # /usr/local/bin/darkmoon-mcp, /usr/local/bin/darkmoon-cli and the stdio wrapper docker exec -i darkmoon darkmoon-mcp
+        CommandLine|contains:
+            - 'darkmoon-mcp'
+            - 'darkmoon-cli'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with DarkMoon
+level: medium

@@ -1,0 +1,24 @@
+title: Cyber-AutoAgent Threat Emulation Marker Registry Key
+id: 63a9d992-50b1-5904-962f-f6c24c2d1594
+status: experimental
+description: |
+    Detects a value written under HKLM\SOFTWARE\EmulationMarkers\, where Cyber-AutoAgent's threat_emulation module
+    tells the model to record each technique it runs. The key comes from the prompt, so the model may vary it.
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/threat_emulation/execution_prompt.md
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.persistence
+    - attack.t1112
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|contains: '\SOFTWARE\EmulationMarkers\'
+    condition: selection
+falsepositives:
+    - Authorized adversary emulation with Cyber-AutoAgent
+level: high

@@ -1,0 +1,5 @@
+{"name": "edge agent first request", "expected": true, "event": {"cs-method": "HEAD", "cs-uri-stem": "/", "cs-user-agent": "dm-edge"}}
+{"name": "cache poisoning probe", "expected": true, "event": {"cs-uri-stem": "/", "cs-uri-query": "dmcb=DM1", "cs-user-agent": "curl/8.11.1"}}
+{"name": "registry proof manifest", "expected": true, "event": {"cs-uri-stem": "/v2/shop/web/manifests/darkmoon-proof-7f3a9c", "cs-user-agent": "curl/8.11.1"}}
+{"name": "near miss: a user agent that starts with dm-edge", "expected": false, "event": {"cs-uri-stem": "/", "cs-user-agent": "dm-edge-monitor/1.0"}}
+{"name": "near miss: another cache buster", "expected": false, "event": {"cs-uri-stem": "/", "cs-uri-query": "dmcb=DM2"}}

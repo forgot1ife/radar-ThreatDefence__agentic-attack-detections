@@ -1,0 +1,4 @@
+# AutoPT Agent Started or Running Its Scan Steps
+# Sigma id 090f97a6-0e7e-5ebb-90cf-9e9a28e40656, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "main.py" and ProcessCommandLine contains "--name " and ProcessCommandLine contains "--ip_addr ") or (ProcessCommandLine contains "autopt" and ProcessCommandLine contains "--benchmark-name" and ProcessCommandLine contains "--ip-addr") or ProcessCommandLine contains "nmap -sS -p- --min-rate 3000 -T4 "

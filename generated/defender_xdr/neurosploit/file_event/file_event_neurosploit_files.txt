@@ -1,0 +1,4 @@
+# NeuroSploit Project Store, Vault or C2 Files Written
+# Sigma id e3bb33ff-a33c-55ff-8592-e7841eac06be, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.neurosploit/c2/" or FolderPath contains "\\.neurosploit\\c2\\" or FolderPath contains "/.neurosploit/vault/" or FolderPath contains "\\.neurosploit\\vault\\") or (FolderPath endswith "/.neurosploit/keys.json" or FolderPath endswith "\\.neurosploit\\keys.json") or FolderPath =~ "/tmp/ns_browser_prefetch.js"

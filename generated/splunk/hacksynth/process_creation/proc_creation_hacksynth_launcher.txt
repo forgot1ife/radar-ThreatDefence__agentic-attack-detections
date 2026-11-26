@@ -1,0 +1,4 @@
+# HackSynth Benchmark Launcher
+# Sigma id f08ccd82-52f6-5b21-a742-45b80fb68334, pipeline splunk_windows
+CommandLine="*run_bench.py*" CommandLine IN ("*benchmark_solved.json*", "*combined_solved.json*", "*bandit_solved.json*", "*natas_solved.json*", "*configs/pico_bench/*", "*configs/overthewire_bench/*")
+| regex CommandLine="\\s(-b|--benchmark)\\s"

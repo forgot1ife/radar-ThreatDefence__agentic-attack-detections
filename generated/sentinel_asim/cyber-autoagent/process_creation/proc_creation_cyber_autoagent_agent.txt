@@ -1,0 +1,4 @@
+# Cyber-AutoAgent AI Pentest Agent Started
+# Sigma id 8951bac6-de2e-5ab6-87f0-c6cd8af00f7e, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "cyberautoagent.py" and (TargetProcessCommandLine contains "--target" or TargetProcessCommandLine contains "--service-mode")) or TargetProcessCommandLine contains "--objective via environment" or TargetProcessCommandLine contains "/interfaces/react/dist/index.js" or TargetProcessCommandLine contains "cyber-autoagent:latest"

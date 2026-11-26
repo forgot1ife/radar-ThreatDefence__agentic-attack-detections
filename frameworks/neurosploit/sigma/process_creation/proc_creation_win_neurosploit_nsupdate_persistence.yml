@@ -1,0 +1,35 @@
+title: NeuroSploit Beacon Windows Persistence Named NSUpdate
+id: 95e1ccf2-4522-5571-bec7-f883b2f97acc
+status: experimental
+description: |
+    Detects the Windows persistence commands NeuroSploit's C2 hands an agent: a scheduled task NSUpdate
+    (schtasks /Create /F /SC ONLOGON /TN "NSUpdate") or a Run value NSUpdate added with reg.exe, both starting
+    powershell -NoProfile -ExecutionPolicy Bypass -EncodedCommand with the PowerShell beacon.
+references:
+    - https://github.com/JoasASantos/NeuroSploit
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.persistence
+    - attack.t1053.005
+    - attack.t1547.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_task:
+        CommandLine|contains|all:
+            - 'schtasks'
+            - '/create'
+            - 'NSUpdate'
+    selection_reg:
+        CommandLine|contains|all:
+            - 'reg'
+            - ' add '
+            - '\CurrentVersion\Run'
+            - 'NSUpdate'
+    condition: 1 of selection_*
+falsepositives:
+    - Software that really names its updater task or Run value NSUpdate (check the command it starts)
+level: high

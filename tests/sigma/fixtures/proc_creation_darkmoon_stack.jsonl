@@ -1,0 +1,7 @@
+{"name": "darkmoon.sh one-shot campaign through docker compose exec", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker compose exec -it opencode bash -lc app=\"$1\"; shift; exec \"$app\" run \"$@\" bash opencode --agent pentest TARGET: example.com"}}
+{"name": "the launcher script", "expected": true, "event": {"Image": "/usr/bin/bash", "CommandLine": "bash ./darkmoon.sh --log 3fa1b2c4"}}
+{"name": "pulling the toolbox image", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker pull ascit/darkmoon:latest"}}
+{"name": "the persistent MCP server wrapper", "expected": true, "event": {"Image": "/usr/bin/bash", "CommandLine": "/usr/bin/env bash /usr/local/bin/darkmoon-mcp"}}
+{"name": "near miss: a plain opencode session with another agent", "expected": false, "event": {"Image": "/usr/local/bin/opencode", "CommandLine": "opencode run --agent build fix the tests"}}
+{"name": "near miss: a script whose name ends in darkmoon.sh", "expected": false, "event": {"Image": "/usr/bin/bash", "CommandLine": "bash ./run-darkmoon.sh.bak"}}
+{"name": "the live log console started by darkmoon.sh --log", "expected": true, "event": {"Image": "/usr/bin/bash", "CommandLine": "bash -lc exec \"$1\" \"$2\" bash darkmoon-cli 3fa1b2c4"}}

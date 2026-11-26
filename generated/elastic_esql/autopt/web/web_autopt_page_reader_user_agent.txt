@@ -1,0 +1,3 @@
+# AutoPT Page Reader User Agent in Web Logs
+# Sigma id 30af23fc-7df5-52c1-aa75-b99496c0c170, pipeline ecs
+from * metadata _id, _index, _version | where starts_with(user_agent.original, "AutoPT/") or user_agent.original=="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"

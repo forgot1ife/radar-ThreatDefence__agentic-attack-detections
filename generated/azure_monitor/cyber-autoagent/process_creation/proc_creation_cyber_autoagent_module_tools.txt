@@ -1,0 +1,4 @@
+# Cyber-AutoAgent General Module Tool Command Lines
+# Sigma id f431fc1b-d3f2-5ee6-aace-b0034ce41036, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "dalfox" and CommandLine contains "dalfox-xss-test.com") or (CommandLine contains "feroxbuster" and CommandLine contains "/tmp/auth_wordlist.txt")

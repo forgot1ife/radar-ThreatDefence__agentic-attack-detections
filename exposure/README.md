@@ -56,7 +56,7 @@ Use it to check whether one of your own addresses is on it, to see where console
 - Renamed builds show up for the newer frameworks too: CyberStrike consoles titled `HiveHack` and `HB-Red-team`, found by their theme script, and a Cairn server titled `Zero`, found by an animation name in its page.
 - 58 addresses are also in [`iocs/indicators.csv`](../iocs/indicators.csv), where a named report ties them to attacks.
 - Most unflagged services are in the United States (3,037), China (1,036), Hong Kong (839), Germany (464) and Singapore (351).
-- Searches that were tried and dropped because they matched other things: the AutoCVE, CyberStrike, AIDA, Z3r0, NeuroSploit and REDCELL favicons and the T3MP3ST settings key (no host on Shodan), and the title `Autonomous Red Team Platform` without the Decepticon icon, which found 7 pages of another product titled `Jed | The Autonomous Red Team Platform`.
+- Searches that were tried and dropped because they matched other things: the AutoCVE, CyberStrike, AIDA, Z3r0, NeuroSploit and REDCELL favicons (NeuroSploit now has title and page-text searches) and the T3MP3ST settings key (no host on Shodan), and the title `Autonomous Red Team Platform` without the Decepticon icon, which found 7 pages of another product titled `Jed | The Autonomous Red Team Platform`.
 
 ### ARTEX behind Basic authentication
 

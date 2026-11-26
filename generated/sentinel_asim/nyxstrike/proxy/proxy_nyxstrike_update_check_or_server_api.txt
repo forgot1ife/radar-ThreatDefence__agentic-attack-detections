@@ -1,0 +1,4 @@
+# NyxStrike Update Check or Server API Requested Through a Proxy
+# Sigma id d152dfea-0dba-5e37-a6e4-4b1cc8f1cc42, pipeline sentinel_asim
+imWebSession
+| where Url contains "raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/" or (Url contains ":8888/web-dashboard" or Url contains ":8888/api/intelligence/ai-recon-session" or Url contains ":8888/api/intelligence/ai-vuln-session" or Url contains ":8888/api/intelligence/ai-osint-session" or Url contains ":8888/api/intelligence/ai-profiling-session" or Url contains ":8888/api/intelligence/ai-followup-session")

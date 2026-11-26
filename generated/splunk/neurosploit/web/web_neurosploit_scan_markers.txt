@@ -1,0 +1,3 @@
+# NeuroSploit Scan Markers in Web Logs
+# Sigma id 40eb9798-d25b-5238-9307-dcefb97a4d8a, pipeline splunk_windows
+"cs-user-agent" IN ("NeuroSploit/*", "*NeuroSploit-WebShell/*") OR "cs-uri-stem" IN ("*nrsplt_baseline_404_check_9x7*", "*NEUROSPLOITsub*") OR "cs-uri-query" IN ("*NEUROSPLOITns*", "*neurosploit.example*", "*oob.invalid*")

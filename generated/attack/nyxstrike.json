@@ -1,0 +1,93 @@
+{
+ "description": "28 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 13,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "nyxstrike",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: NyxStrike server, MCP client or local model on a host you monitor; Sigma: NyxStrike Server, MCP Client or Tool Started by the Server",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: NyxStrike testing you, or a NyxStrike server used through your proxy: user agents, probe markers and server paths; Sigma: NyxStrike Update Check or Server API Requested Through a Proxy; Suricata: 3817020 TD NyxStrike server health response; Suricata: 3817021 TD NyxStrike server ping response; Suricata: 3817022 TD NyxStrike console page; Suricata: 3817023 TD NyxStrike server refused a request without its bearer token; Suricata: 3817024 TD NyxStrike dashboard data response; Suricata: 3817025 TD NyxStrike AI session request to its server",
+   "enabled": true,
+   "score": 8,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: NyxStrike testing you, or a NyxStrike server used through your proxy: user agents, probe markers and server paths; Sentinel analytics: NyxStrike user agent or browser agent probe; Sigma: NyxStrike User Agent or Probe Marker in Web Logs; Suricata: 3817004 TD NyxStrike browser agent XSS reflection probe; Suricata: 3817006 TD NyxStrike StingXSS confirmation marker in URI; Suricata: 3817007 TD NyxStrike StingXSS confirmation marker in request body; Suricata: 3817008 TD NyxStrike StingXSS redirect, JSONP or CRLF probe in URI; Suricata: 3817010 TD NyxStrike BreachSQL UNION marker in URI; Suricata: 3817011 TD NyxStrike BreachSQL UNION marker in request body",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: NyxStrike server, MCP client or local model on a host you monitor; Sigma: NyxStrike Data Folder, Log or Browser Screenshot Written; YARA: NyxStrike_CommonHuman_Scanner_Packages; YARA: NyxStrike_MCP_Client_Config; YARA: NyxStrike_Server_Or_Source",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "YARA: NyxStrike_MCP_Client_Config",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: NyxStrike testing you, or a NyxStrike server used through your proxy: user agents, probe markers and server paths; Sentinel analytics: NyxStrike user agent or browser agent probe; Sigma: NyxStrike User Agent or Probe Marker in Web Logs; Suricata: 3817001 TD NyxStrike decision engine user agent; Suricata: 3817002 TD NyxStrike HTTP framework user agent; Suricata: 3817003 TD NyxStrike browser agent user agent; Suricata: 3817004 TD NyxStrike browser agent XSS reflection probe; Suricata: 3817006 TD NyxStrike StingXSS confirmation marker in URI; Suricata: 3817007 TD NyxStrike StingXSS confirmation marker in request body; Suricata: 3817008 TD NyxStrike StingXSS redirect, JSONP or CRLF probe in URI; Suricata: 3817009 TD NyxStrike StingXSS CORS probe origin; Suricata: 3817010 TD NyxStrike BreachSQL UNION marker in URI; Suricata: 3817011 TD NyxStrike BreachSQL UNION marker in request body",
+   "enabled": true,
+   "score": 13,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "Suricata: 3817005 TD NyxStrike OpenAPI discovery user agent (commonhuman-core)",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.003"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

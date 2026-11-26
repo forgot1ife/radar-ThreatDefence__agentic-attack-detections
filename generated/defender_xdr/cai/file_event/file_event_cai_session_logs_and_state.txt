@@ -1,0 +1,4 @@
+# CAI Session Log, API Auth Database or Workspace Written
+# Sigma id 0abc86e5-02e5-5fd2-9c2c-03489e14a6b9, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath matches regex "[/\\\\]\\.cai[/\\\\]logs[/\\\\]([A-Za-z0-9_-]+_)?cai_[0-9a-f-]{36}_\\d{8}_\\d{6}_.*\\.jsonl$" or (FolderPath endswith "/.cai/api_auth.json" or FolderPath endswith "/.cai/api_auth.json.key" or FolderPath endswith "\\.cai\\api_auth.json" or FolderPath endswith "\\.cai\\api_auth.json.key") or (FolderPath contains "/.cai/continuous_ops/run_" or FolderPath contains "\\.cai\\continuous_ops\\run_")

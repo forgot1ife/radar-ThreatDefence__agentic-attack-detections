@@ -1,0 +1,29 @@
+title: CAI Telemetry Upload or Alias Gateway in Proxy Logs
+id: 0dc46137-563f-5997-8001-72e433acc6a0
+status: experimental
+description: |
+    Detects CAI (Cybersecurity AI) uploading its session log to https://logs.aliasrobotics.com/upload (and
+    /upload/intermediate), its licence check GET https://api.aliasrobotics.com:666/key/info, and pip reaching Alias's
+    private package index on packages.aliasrobotics.com:664 with the API key in the URL path.
+references:
+    - https://github.com/aliasrobotics/cai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_telemetry:
+        cs-host: 'logs.aliasrobotics.com'
+    selection_licence:
+        cs-host: 'api.aliasrobotics.com'
+        c-uri|contains: '/key/info'
+    selection_index:
+        cs-host: 'packages.aliasrobotics.com'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized use of CAI or other Alias Robotics products
+level: medium

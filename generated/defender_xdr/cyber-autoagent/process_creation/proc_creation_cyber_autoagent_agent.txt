@@ -1,0 +1,4 @@
+# Cyber-AutoAgent AI Pentest Agent Started
+# Sigma id 8951bac6-de2e-5ab6-87f0-c6cd8af00f7e, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "cyberautoagent.py" and (ProcessCommandLine contains "--target" or ProcessCommandLine contains "--service-mode")) or ProcessCommandLine contains "--objective via environment" or ProcessCommandLine contains "/interfaces/react/dist/index.js" or ProcessCommandLine contains "cyber-autoagent:latest"

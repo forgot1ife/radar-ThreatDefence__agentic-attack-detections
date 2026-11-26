@@ -1,0 +1,37 @@
+// NeuroSploit testing you: its user agent, probe path, canaries and out-of-band callbacks in web, proxy and DNS logs
+// Agentic attack detections by ThreatDefence (NeuroSploit). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the NeuroSploit source code (JoasASantos/NeuroSploit, reviewed at 54d8e860):
+//  - The harness's own requests carry User-Agent NeuroSploit/<version> and the header X-NeuroSploit-Scan (headers are
+//    rarely logged; the user agent is). Its first probe requests /nrsplt_baseline_404_check_9x7.
+//  - Canaries are NEUROSPLOIT<kind><12 hex> with the sigil in upper case: /NEUROSPLOITsub<hex> soft-404 checks and
+//    NEUROSPLOITnsxss<hex> in XSS payloads. Open redirect tests use neurosploit.example; SSRF tests without an
+//    out-of-band domain use http://oob.invalid/. Sign-ups use nrsplt_<rand>@example.test (an example in the prompt).
+//  - Out-of-band payloads make your servers look up or fetch <token>.<operator domain>, where the token starts with
+//    neurosploit. neurosploitai.github.io is the project's documentation site and is left out.
+// The browser fallback user agent (Chrome 125 on Windows) is a real browser string, so it is not used here.
+
+let Window = 30d;
+let PathMarkers = dynamic(["nrsplt_baseline_404_check_9x7", "neurosploit.example", "oob.invalid", "nrsplt_"]);
+let IsOob = (h:string) { tolower(h) startswith "neurosploit" and not(tolower(h) startswith "neurosploitai.") };
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA startswith "NeuroSploit/" or UA has "NeuroSploit-WebShell/" or csUriStem has_any (PathMarkers) or csUriQuery has_any (PathMarkers)
+            or csUriStem has_cs "NEUROSPLOIT" or csUriQuery has_cs "NEUROSPLOIT"
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where RequestClientApplication startswith "NeuroSploit" or RequestClientApplication has "NeuroSploit-WebShell/"
+            or RequestURL has_any (PathMarkers) or RequestURL has_cs "NEUROSPLOIT" or IsOob(DestinationHostName)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication),
+    (DnsEvents | where TimeGenerated > ago(Window)
+        | where IsOob(Name)
+        | project TimeGenerated, Source="DnsEvents (out-of-band lookup)", Src=ClientIP, Target=Name, Detail=Name, UA=""),
+    (DeviceNetworkEvents | where Timestamp > ago(Window)
+        | where IsOob(RemoteUrl)
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents (out-of-band callback)", Src=DeviceName, Target=RemoteUrl,
+            Detail=InitiatingProcessCommandLine, UA="")
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

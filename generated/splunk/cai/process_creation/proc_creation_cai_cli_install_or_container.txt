@@ -1,0 +1,8 @@
+# CAI Cybersecurity AI CLI, Install, Continuous Ops Worker or Kali Container
+# Sigma id 7d11f287-f002-5e4e-83d9-52042784cebb, pipeline splunk_windows
+
+| rex field=CommandLine "(?<CommandLineMatch>(^|[/\\\\\\s])cai(\\.exe)?[\"']?\\s(.*\\s)?(--api|--api-host|--api-port|--tui|--yaml|--prompt|--yolo|--unrestricted)([\\s=]|$))"
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), "true", "false")
+| rex field=CommandLine "(?<CommandLineMatch2>((pip|pip3|pipx)\\s+install|uv\\s+(tool\\s+install|tool\\s+run|pip\\s+install|add)|uvx)\\s(.*\\s)?[\"']?cai-framework)"
+| eval CommandLineCondition2=if(isnotnull(CommandLineMatch2), "true", "false")
+| search CommandLineCondition="true" OR CommandLineCondition2="true" OR CommandLine="*packages.aliasrobotics.com*" OR CommandLine="*cai.continuous_ops.loop_runner*" OR (CommandLine="*docker*" CommandLine="*--name kali-security*" CommandLine="*--security-opt=seccomp=unconfined*")

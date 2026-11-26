@@ -1,0 +1,27 @@
+// Cyber-AutoAgent in web and proxy logs: its dalfox callback, its Langfuse prompts and its seeded Langfuse project
+// Agentic attack detections by ThreatDefence (Cyber-AutoAgent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Cyber-AutoAgent source code (westonbrown/Cyber-AutoAgent at 54897ff9):
+//  - Its general module runs dalfox with -b https://dalfox-xss-test.com against up to 10 parameters, so the name
+//    shows up in the query strings your web servers log (advanced_payload_coordinator.py:319-330).
+//  - It fetches its prompts from Langfuse at /api/public/v2/prompts/cyber/system/... and /cyber/report/...
+//    (prompts/factory.py:41-47, :105). Seen in a proxy when its Langfuse is on another machine.
+//  - Its compose file seeds a Langfuse project with the id cyber-project-id and publishes Langfuse on 0.0.0.0:3000 with
+//    the login admin@cyber-autoagent.com / changeme. Requests to /project/cyber-project-id are someone reading its traces.
+// Everything else it sends to a target is stock Kali tools and curl with their own user agents.
+
+let Markers = @"dalfox-xss-test\.com|/api/public/v2/prompts/cyber/(system|report)/|/project/cyber-project-id";
+union isfuzzy=true
+    (W3CIISLog
+        | where TimeGenerated > ago(90d)
+        | where csUriStem matches regex Markers or csUriQuery matches regex Markers
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csUriStem, "?", csUriQuery),
+            UA=replace_string(csUserAgent, "+", " ")),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(90d)
+        | where RequestURL matches regex Markers
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

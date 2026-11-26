@@ -1,0 +1,29 @@
+id: 4654adb4-4990-56a7-88da-ac8516797089
+name: HackSynth AI pentest agent attackbox set up on a host
+description: |
+  A process installed kali-linux-headless with sshpass and curl, or added the OverTheWire Bandit, Krypton or Leviathan
+  SSH host keys with ssh-keyscan on their non-standard ports. HackSynth (aielte-research/HackSynth) runs exactly these
+  commands once in every new kalilinux/kali-rolling attackbox container it creates (docker_setup.py:34-40), before its
+  model starts writing commands. HackSynth is research code for CTF games; check who runs it and against what.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Low
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has "kali-linux-headless sshpass curl"
+      or ProcessCommandLine has_any ("ssh-keyscan -p 2220 bandit.labs.overthewire.org", "ssh-keyscan -p 2231 krypton.labs.overthewire.org",
+          "ssh-keyscan -p 2223 leviathan.labs.overthewire.org")
+  | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

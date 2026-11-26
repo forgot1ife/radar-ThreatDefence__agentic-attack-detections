@@ -1,0 +1,33 @@
+id: 1bf117da-9931-566d-8b24-6a6cc91cdc97
+name: AutoPT LLM pentest agent run on a host
+description: |
+  A host started the AutoPT agent (python main.py --name <service/CVE> --ip_addr <IP>, or the upstream autopt run
+  --benchmark-name ... --ip-addr ...) or wrote an AutoPT run result (src/result/<model>/<service>_<CVE>_<model>_FSM.jsonl).
+  AutoPT runs model-chosen shell commands with no approval step. Check who ran it and against which IP.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - Reconnaissance
+relevantTechniques:
+  - T1059.006
+  - T1595.002
+query: |
+  union isfuzzy=true
+      (DeviceProcessEvents
+          | where (ProcessCommandLine has "main.py" and ProcessCommandLine has "--ip_addr" and ProcessCommandLine has "--name")
+              or (ProcessCommandLine has "autopt" and ProcessCommandLine has "--benchmark-name" and ProcessCommandLine has "--ip-addr")
+          | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine),
+      (DeviceFileEvents
+          | where FileName endswith "_FSM.jsonl" and (FolderPath has "/result/" or FolderPath has @"\result\")
+          | project TimeGenerated, DeviceName, AccountName=InitiatingProcessAccountName, Detail=FolderPath)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

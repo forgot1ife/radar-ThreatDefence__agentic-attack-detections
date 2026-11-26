@@ -1,0 +1,4 @@
+# DarkMoon Proof File /tmp/.dm_proof Written on a Server
+# Sigma id b26984be-1655-5687-afda-bbfd614f19fb, pipeline sentinel_asim
+imFileEvent
+| where TargetFileName =~ "/tmp/.dm_proof"

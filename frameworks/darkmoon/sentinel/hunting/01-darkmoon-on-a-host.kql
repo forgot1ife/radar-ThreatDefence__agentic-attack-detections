@@ -1,0 +1,35 @@
+// DarkMoon running on a host you monitor
+// Agentic attack detections by ThreatDefence (DarkMoon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the DarkMoon source code (ASCIT31/Dark-Moon at bb1b70ce). DarkMoon is a Docker Compose stack (project
+// darkmoon-stack) with two containers that both mount the host's Docker socket:
+//  - darkmoon (image ascit/darkmoon, root, host network, NET_RAW and NET_ADMIN): the toolbox. Every agent command
+//    arrives as docker exec ... timeout --kill-after=5 <n> bash -c <command>.
+//  - opencode (image ascit/opencode-darkmoon): an OpenCode fork, the DarkMoon MCP server (python -m src.server from
+//    /opt/darkmoon/mcp/server, on 127.0.0.1:8181) and the live log console darkmoon-cli (python -m src.mcp_monitoring).
+//  - The operator runs ./darkmoon.sh "TARGET: <host>", which runs opencode run --agent pentest TARGET: ... in the
+//    opencode container, and ./darkmoon.sh --log <session_id> to watch the commands.
+//  - Files on the host, next to the compose file: .opencode.env (model provider and key), darkmoon-settings/
+//    (opencode.json, campaigns/camp_<date>_<id>.json, vulnerabilities/, infrastructure/), reports/pentest_report_<host>_<date>-<time>.md.
+// Names and paths need a code change, apart from the image names and the folder the operator cloned into.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "opencode" and ProcessCommandLine contains "--agent pentest" and ProcessCommandLine contains "TARGET:")
+            or ProcessCommandLine matches regex @"(^|[/\s])darkmoon\.sh(\s|$)"
+            or ProcessCommandLine contains "ascit/darkmoon" or ProcessCommandLine contains "ascit/opencode-darkmoon"
+            or ProcessCommandLine has_any ("darkmoon-mcp", "darkmoon-cli")
+        | project Timestamp, DeviceName, Signal="DarkMoon launcher, image or MCP server", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath in ("/run/darkmoon-gpu.env", "/tmp/darkmoon-mcp-boot.log")
+            or FolderPath startswith "/opt/darkmoon/out/"
+            or FolderPath has "/darkmoon-settings/campaigns/camp_"
+            or (FolderPath has "/reports/" and FileName startswith "pentest_report_" and FileName endswith ".md")
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, Folder=tostring(split(FolderPath, FileName)[0])
+        | project Timestamp, DeviceName, Signal="DarkMoon files", Detail=strcat(Folder, " ", tostring(Files)), Parent="")
+| order by Timestamp desc

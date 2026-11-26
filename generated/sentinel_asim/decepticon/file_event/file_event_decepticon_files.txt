@@ -1,0 +1,4 @@
+# Decepticon Configuration, Telemetry ID or C2 Operator Config Written
+# Sigma id 71e35d20-e85d-56e2-a3ba-bce5e6bd840c, pipeline sentinel_asim
+imFileEvent
+| where ((TargetFileName contains "/.decepticon/" or TargetFileName contains "\\.decepticon\\") and (TargetFileName endswith ".env" or TargetFileName endswith "docker-compose.yml" or TargetFileName endswith "install_id" or TargetFileName endswith "litellm.yaml" or TargetFileName endswith ".version")) or (TargetFileName endswith "/.sliver-configs/decepticon.cfg" or TargetFileName endswith "\\.sliver-configs\\decepticon.cfg") or ((TargetFileName contains "/.decepticon/workspace/" or TargetFileName contains "\\.decepticon\\workspace\\") and (TargetFileName endswith "/plan/roe.json" or TargetFileName endswith "/plan/opplan.json" or TargetFileName endswith "\\plan\\roe.json" or TargetFileName endswith "\\plan\\opplan.json" or TargetFileName endswith "/timeline.jsonl" or TargetFileName endswith "\\timeline.jsonl"))

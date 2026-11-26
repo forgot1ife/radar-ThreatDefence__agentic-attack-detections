@@ -1,0 +1,33 @@
+title: HackSynth Attackbox Setup Command
+id: fe2a721e-a4db-599d-b25e-b76a9973e97f
+status: experimental
+description: |
+    Detects the one-time setup HackSynth runs in a new kalilinux/kali-rolling container: installing the
+    kali-linux-headless metapackage with sshpass and curl, and adding the OverTheWire Bandit, Krypton and Leviathan SSH
+    host keys with ssh-keyscan on their non-standard ports (docker_setup.py:34-40).
+references:
+    - https://github.com/aielte-research/HackSynth/blob/48a41f795dda186df66561c4fd2b58ae84e3e4f8/docker_setup.py#L34-L40
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_install:
+        CommandLine|contains: 'install kali-linux-headless sshpass curl'
+    selection_keyscan:
+        CommandLine|contains:
+            - 'ssh-keyscan -p 2220 bandit.labs.overthewire.org'
+            - 'ssh-keyscan -p 2231 krypton.labs.overthewire.org'
+            - 'ssh-keyscan -p 2223 leviathan.labs.overthewire.org'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized research runs of HackSynth
+    - People playing OverTheWire who add the host keys by hand (the ssh-keyscan selection only)
+level: medium

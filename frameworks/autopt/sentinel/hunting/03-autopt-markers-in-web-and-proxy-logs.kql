@@ -1,0 +1,28 @@
+// AutoPT testing you, or its console used: user agents and console API paths in web and proxy logs
+// Agentic attack detections by ThreatDefence (AutoPT). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the AutoPT source code (evenhu9/AutoPT at e38e2086, Dizzy-K/AutoPT at fb26e0c4):
+//  - ReadHTML sends AutoPT/1.0 (upstream) or a Chrome string cut off before "(KHTML, like Gecko)" (evenhu9). The
+//    truncated string is shared with CyberStrikeAI's implant and a Xalgorix prompt example.
+//  - Before each exploit, evenhu9/AutoPT fetches raw.githubusercontent.com/vulhub/vulhub/master/<service>/<CVE>/README.md
+//    with the truncated string (visible only with TLS inspection).
+//  - The console (port 5000, no login) answers /api/config with the model keys and starts agent runs on POST
+//    /api/task/start. A request to these from anywhere but the operator's own host is someone else using it.
+//  - Scans come from nmap -sS -p- --min-rate 3000 -T4 and xray ws --url, which look like any nmap or xray scan.
+
+let Truncated = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+let ConsolePaths = dynamic(["/api/task/start", "/api/system/info", "/api/docker/envs", "/api/docker/start"]);
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA == Truncated or UA startswith "AutoPT/"
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog
+        | where RequestClientApplication == Truncated or RequestClientApplication startswith "AutoPT/"
+            or RequestURL has "/vulhub/vulhub/master/" and RequestClientApplication == Truncated
+            or RequestURL has_any (ConsolePaths)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

@@ -1,0 +1,35 @@
+title: VulnBot CLI Started
+id: e65e9d4a-1178-56b9-bc1f-7c920e1baf70
+status: experimental
+description: |
+    Detects the VulnBot command line: python cli.py init, cli.py start -a (knowledge base API on 7861 and Streamlit
+    page on 8501), cli.py vulnbot -m <interactions> [-t <timeout>] (the agent) and the experiment commands
+    cli.py pentestgpt and cli.py base (cli.py:20-39, pentest.py:82-86 at 9a12effa). The rule needs the word vulnbot on
+    the command line, from the subcommand or from the default clone folder VulnBot/.
+references:
+    - https://github.com/KHenryAegis/VulnBot
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_cli:
+        CommandLine|contains|all:
+            - 'cli.py'
+            - 'vulnbot'
+    selection_sub:
+        CommandLine|contains:
+            - 'cli.py vulnbot'
+            - 'cli.py pentestgpt'
+            - 'cli.py start -a'
+            - 'cli.py init'
+            - 'cli.py base'
+    condition: all of selection_*
+falsepositives:
+    - Researchers reproducing the VulnBot paper (arXiv 2501.13411)
+    - Authorized tests with VulnBot
+level: low

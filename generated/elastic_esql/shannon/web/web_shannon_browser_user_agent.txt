@@ -1,0 +1,3 @@
+# Shannon Pentest Browser User Agent in Web Logs
+# Sigma id f4a52139-45ea-5c92-a482-2c6709fd1d62, pipeline ecs
+from * metadata _id, _index, _version | where user_agent.original in ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/124.0.0.0+Safari/537.36")

@@ -1,0 +1,3 @@
+#fields	indicator	indicator_type	meta.source	meta.desc	meta.url
+AutoPT/1.0	Intel::SOFTWARE	threatdefence-autopt	AutoPT medium: User agent of the ReadHTML page reader in the upstream AutoPT engine, sent with Python urllib on every page the agent reads (tools/web.py:38) (AutoPT operators)	https://github.com/Dizzy-K/AutoPT/blob/fb26e0c47d47bd835e2164fe2b485df1c546d017/tools/web.py#L38
+api.whatai.cc	Intel::DOMAIN	threatdefence-autopt	AutoPT low: Third-party OpenAI-compatible relay set as openai_base in AutoPT's shipped config.yml (src/config/config.yml:3). A public service many tools use, so only context (AutoPT operators)	https://github.com/evenhu9/AutoPT/blob/e38e208612e15bce94c828c2eb919ab1171332d6/src/config/config.yml#L3

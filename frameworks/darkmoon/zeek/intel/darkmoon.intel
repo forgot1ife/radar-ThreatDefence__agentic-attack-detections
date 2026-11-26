@@ -1,0 +1,2 @@
+#fields	indicator	indicator_type	meta.source	meta.desc	meta.url
+dm-edge	Intel::SOFTWARE	threatdefence-darkmoon	DarkMoon medium: User agent of the edge-proxy agent's first request to a target (curl -sSI -A dm-edge). Written in the agent prompt, so the model usually but not always sends it (DarkMoon operators)	https://github.com/ASCIT31/Dark-Moon/blob/bb1b70cef54c01344e90b373d48bd9a7f91e5dfe/conf/agents/edge-proxy.md#L374

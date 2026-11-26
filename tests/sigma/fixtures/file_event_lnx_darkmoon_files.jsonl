@@ -1,0 +1,6 @@
+{"name": "toolbox GPU state file", "expected": true, "event": {"TargetFilename": "/run/darkmoon-gpu.env"}}
+{"name": "workflow output", "expected": true, "event": {"TargetFilename": "/opt/darkmoon/out/port_scan_10_0_0_5/naabu.json"}}
+{"name": "campaign record", "expected": true, "event": {"TargetFilename": "/home/op/Dark-Moon/darkmoon-settings/campaigns/camp_20261126_ab12cd34.json"}}
+{"name": "report", "expected": true, "event": {"TargetFilename": "/home/op/Dark-Moon/reports/pentest_report_example.com_20261126-101500.md"}}
+{"name": "near miss: a report folder file with another name", "expected": false, "event": {"TargetFilename": "/home/op/reports/summary.md"}}
+{"name": "near miss: a pentest_report outside a reports folder", "expected": false, "event": {"TargetFilename": "/home/op/pentest_report_q3.md"}}

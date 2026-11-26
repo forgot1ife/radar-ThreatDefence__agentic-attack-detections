@@ -1,0 +1,4 @@
+# HackSynth Agent Command Wrapper in a Container
+# Sigma id 94fad7a0-f8b9-56de-af95-58b1ad11ef2e, pipeline splunk_windows
+Image="*/timeout" ParentImage IN ("*/containerd-shim", "*/containerd-shim-runc-v2", "*/runc")
+| regex CommandLine="^(\\S*/)?timeout \\d+s /bin/bash -c "

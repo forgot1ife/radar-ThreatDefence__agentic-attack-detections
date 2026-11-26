@@ -1,0 +1,4 @@
+# Shannon Workspace, Deliverable or Browser Files Written
+# Sigma id 82a9276f-09b9-544e-990b-d9f327daa1cc, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath matches regex "[/\\\\]\\.shannon[/\\\\](session\\.json|workflow\\.log|startup-error\\.json)$" or FolderPath matches regex "[/\\\\]\\.shannon[/\\\\]deliverables[/\\\\][a-z_]+_(deliverable\\.md|exploitation_queue\\.json|exploitation_evidence\\.md)$" or FolderPath matches regex "[/\\\\]\\.shannon[/\\\\]\\.playwright[/\\\\](cli\\.config\\.json|scripts[/\\\\]stealth\\.js)$" or (FolderPath endswith "/.shannon/config.toml" or FolderPath endswith "\\.shannon\\config.toml")

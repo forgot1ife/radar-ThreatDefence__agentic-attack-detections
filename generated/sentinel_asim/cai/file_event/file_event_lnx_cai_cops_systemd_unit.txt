@@ -1,0 +1,4 @@
+# CAI Continuous Ops Systemd User Unit Written
+# Sigma id d07fdeeb-eb47-511a-b04d-adeeae7e3de1, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/systemd/user/cai-cops-" and TargetFileName endswith ".service") or (TargetFileName contains "/.cai/continuous_ops/run_" and TargetFileName endswith ".service")

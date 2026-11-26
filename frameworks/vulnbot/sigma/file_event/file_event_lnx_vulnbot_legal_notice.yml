@@ -1,0 +1,28 @@
+title: VulnBot Login Notice File Created
+id: 706dfee1-a13f-5161-bbc1-0b5177d1b882
+status: experimental
+description: |
+    Detects /etc/legal being created, which VulnBot does with sudo touch /etc/legal each time it opens its SSH shell on
+    the Kali host it drives, next to touch ~/.hushlogin and the removal of /etc/motd and /etc/update-motd.d/*
+    (actions/remote_shell.py:95-103 at 9a12effa). On Kali and other non-Ubuntu hosts nothing else normally creates it.
+references:
+    - https://github.com/KHenryAegis/VulnBot
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection:
+        TargetFilename: '/etc/legal'
+    filter_dpkg:
+        Image|endswith: '/dpkg'
+    condition: selection and not filter_dpkg
+falsepositives:
+    - Ubuntu base-files package scripts not run by dpkg itself
+    - Authorized tests with VulnBot
+level: low

@@ -1,0 +1,3 @@
+# VulnBot Shell Setup on the Kali Host It Drives
+# Sigma id dafb4a3d-5699-5044-8028-771509ffa732, pipeline splunk_windows
+(Image="*/touch" CommandLine="* /etc/legal") OR (Image="*/chmod" CommandLine="* 644 *" CommandLine="*/etc/legal*") OR (Image="*/sudo" CommandLine IN ("*touch /etc/legal*", "*chmod 644 /etc/legal*"))

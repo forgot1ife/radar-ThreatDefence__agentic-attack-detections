@@ -1,0 +1,4 @@
+# VulnBot Shell Setup on the Kali Host It Drives
+# Sigma id dafb4a3d-5699-5044-8028-771509ffa732, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/touch" and ProcessCommandLine endswith " /etc/legal") or (FolderPath endswith "/chmod" and (ProcessCommandLine contains " 644 " and ProcessCommandLine contains "/etc/legal")) or (FolderPath endswith "/sudo" and (ProcessCommandLine contains "touch /etc/legal" or ProcessCommandLine contains "chmod 644 /etc/legal"))

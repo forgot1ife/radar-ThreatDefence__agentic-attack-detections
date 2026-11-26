@@ -1,0 +1,24 @@
+title: NeuroSploit Beacon Run Key Value NSUpdate
+id: 5f5a6160-f5ee-5a15-849d-c1c1ade4fa4e
+status: experimental
+description: |
+    Detects a Run value named NSUpdate, which NeuroSploit's C2 writes under HKCU\Software\Microsoft\Windows\CurrentVersion\Run
+    to start its PowerShell beacon at logon.
+references:
+    - https://github.com/JoasASantos/NeuroSploit
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.persistence
+    - attack.t1547.001
+logsource:
+    category: registry_set
+    product: windows
+detection:
+    selection:
+        TargetObject|endswith: '\CurrentVersion\Run\NSUpdate'
+    condition: selection
+falsepositives:
+    - Software that really names its Run value NSUpdate
+level: high

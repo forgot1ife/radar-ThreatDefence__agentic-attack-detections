@@ -1,0 +1,4 @@
+# NeuroSploit Beacon or Persistence on Linux
+# Sigma id 936d9e3d-22cf-55c0-9745-d8d4e1e79923, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "X-Implant-Token" and ProcessCommandLine contains "/api/beacon") or ProcessCommandLine contains "nsupdate.service" or (ProcessCommandLine contains "# NSUpdate" and ProcessCommandLine contains ".bashrc")

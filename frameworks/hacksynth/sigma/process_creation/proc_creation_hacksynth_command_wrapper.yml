@@ -1,0 +1,31 @@
+title: HackSynth Agent Command Wrapper in a Container
+id: 94fad7a0-f8b9-56de-af95-58b1ad11ef2e
+status: experimental
+description: |
+    Detects the wrapper HackSynth puts around every command its Planner model writes: timeout 10s /bin/bash -c <command>,
+    started through a Docker exec in the attackbox container, so the parent is the container runtime
+    (pentest_agent.py:81). The timeout comes from timeout_duration, 10 in every shipped config. Scripts use the same
+    wrapper, so look for many of them from one container in a short time, each followed by a security tool.
+references:
+    - https://github.com/aielte-research/HackSynth/blob/48a41f795dda186df66561c4fd2b58ae84e3e4f8/pentest_agent.py#L72-L81
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        Image|endswith: '/timeout'
+        CommandLine|re: '^(\S*/)?timeout \d+s /bin/bash -c '
+        ParentImage|endswith:
+            - '/containerd-shim'
+            - '/containerd-shim-runc-v2'
+            - '/runc'
+    condition: selection
+falsepositives:
+    - Health checks and scripts run with docker exec that wrap a command in timeout and bash
+level: low

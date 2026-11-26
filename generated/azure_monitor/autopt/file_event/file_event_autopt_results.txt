@@ -1,0 +1,4 @@
+# AutoPT Run Result Written
+# Sigma id 4dc01358-f0f5-56d4-a9a5-b1eab1185598, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/result/" or ObjectName endswith "\\result*") and ObjectName endswith "_FSM.jsonl"

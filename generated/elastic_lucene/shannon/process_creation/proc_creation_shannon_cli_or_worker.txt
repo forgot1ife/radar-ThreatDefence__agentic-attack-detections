@@ -1,0 +1,3 @@
+# Shannon AI Pentest Agent CLI, Worker Container or Report Renderer
+# Sigma id a1390b62-ad0b-5a7a-9ac7-dfef102a8dbf, pipeline ecs
+process.command_line:*@keygraph\/shannon* OR process.command_line:/(.*([\/\\ ]))?shannon["']?[ ]+start[ ](.*[ ])?(-u|--url)[ =].*/ OR (process.command_line:(*keygraph\/shannon\:* OR *\-\-name\ shannon\-worker\-* OR *shannon.workspace\=* OR *shannon.workflow\-id\=* OR *TEMPORAL_ADDRESS\=shannon\-temporal\:7233*)) OR (process.command_line:*temporal\/worker.js* AND process.command_line:*\-\-task\-queue* AND process.command_line:*\-\-workflow\-id*) OR process.command_line:/.*playwright-cli[ ]+(.*[ ])?-s=agent[1-6](([ ]).*)?/ OR process.command_line:*brand\=Shannon\ \|\ AI\ Pentester\ by\ Keygraph*

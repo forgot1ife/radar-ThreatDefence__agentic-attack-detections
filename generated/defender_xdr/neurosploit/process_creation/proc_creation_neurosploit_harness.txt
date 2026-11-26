@@ -1,0 +1,4 @@
+# NeuroSploit Harness on a Host
+# Sigma id ec1e9ac1-280c-5e4f-a77c-2b8ceb295512, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/neurosploit" or FolderPath endswith "\\neurosploit.exe") or (ProcessCommandLine contains "c2 daemon --port 0 --dir" or ProcessCommandLine contains "neurosploit-kali" or ProcessCommandLine contains "neurosploit-neo4j" or ProcessCommandLine contains "ns_browser_prefetch.js" or ProcessCommandLine contains "neurosploit-mcp") or ((InitiatingProcessFolderPath endswith "/neurosploit" or InitiatingProcessFolderPath endswith "\\neurosploit.exe") and (ProcessCommandLine contains "--dangerously-skip-permissions" or ProcessCommandLine contains "--dangerously-bypass-approvals-and-sandbox"))

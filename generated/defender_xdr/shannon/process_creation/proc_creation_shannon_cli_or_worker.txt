@@ -1,0 +1,4 @@
+# Shannon AI Pentest Agent CLI, Worker Container or Report Renderer
+# Sigma id a1390b62-ad0b-5a7a-9ac7-dfef102a8dbf, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "@keygraph/shannon" or ProcessCommandLine matches regex "(^|[/\\\\\\s])shannon[\"']?\\s+start\\s(.*\\s)?(-u|--url)[\\s=]" or (ProcessCommandLine contains "keygraph/shannon:" or ProcessCommandLine contains "--name shannon-worker-" or ProcessCommandLine contains "shannon.workspace=" or ProcessCommandLine contains "shannon.workflow-id=" or ProcessCommandLine contains "TEMPORAL_ADDRESS=shannon-temporal:7233") or (ProcessCommandLine contains "temporal/worker.js" and ProcessCommandLine contains "--task-queue" and ProcessCommandLine contains "--workflow-id") or ProcessCommandLine matches regex "playwright-cli\\s+(.*\\s)?-s=agent[1-6](\\s|$)" or ProcessCommandLine contains "brand=Shannon | AI Pentester by Keygraph"

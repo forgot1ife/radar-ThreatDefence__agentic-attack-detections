@@ -1,0 +1,43 @@
+// HackSynth attackbox download in proxy logs, and its one-login-per-command SSH pattern on targets
+// Agentic attack detections by ThreatDefence (HackSynth). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1021.004 (Remote Services: SSH)
+// Example hunt for Microsoft Sentinel. Test before alerting.
+// From the HackSynth source code (aielte-research/HackSynth at 48a41f79). HackSynth sends no fixed user agent or marker
+// to a target, so this hunt looks at two shapes instead:
+//  - Proxy: the attackbox setup installs kali-linux-headless (docker_setup.py:36). The kalilinux/kali-rolling image
+//    fetches packages over plain HTTP from http.kali.org, so the package name is in the URL. Any Kali build that
+//    installs the same metapackage matches; look at which host did it.
+//  - Target: the OverTheWire prompt makes every command start with sshpass -p <password> ssh <user>@<host> -p <port>
+//    (configs/overthewire_bench/benchmarks/*.json:19), and every command is killed after 10 seconds
+//    (pentest_agent.py:81). An SSH server sees one password login per step, each session over within about 10 seconds,
+//    up to 20 in a row. Scripted checks and other tools look the same: this finds the shape, not HackSynth.
+
+let Window = 14d;
+let MinLogins = 5;      // short password logins from one source in an hour
+let MaxSeconds = 12;    // 10 second timeout plus logging slack
+let Accepted = Syslog
+    | where TimeGenerated > ago(Window)
+    | where ProcessName == "sshd" and SyslogMessage startswith "Accepted password for "
+    | parse SyslogMessage with "Accepted password for " User " from " SrcIP " port " SrcPort " " *
+    | project Start=TimeGenerated, Computer, User, SrcIP, SrcPort;
+let Closed = Syslog
+    | where TimeGenerated > ago(Window)
+    | where ProcessName == "sshd" and SyslogMessage startswith "Disconnected from user "
+    | parse SyslogMessage with "Disconnected from user " * " " SrcIP " port " SrcPort
+    | project End=TimeGenerated, Computer, SrcIP, SrcPort;
+union isfuzzy=true
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where RequestURL has "kali-linux-headless"
+        | summarize Requests=count(), URLs=make_set(substring(RequestURL, 0, 200), 5), TimeGenerated=min(TimeGenerated) by SourceIP
+        | project TimeGenerated, Source="CommonSecurityLog", Signal="kali-linux-headless download (HackSynth attackbox setup)",
+            Host=SourceIP, Detail=strcat(Requests, " requests: ", tostring(URLs))),
+    (Accepted
+        | join kind=inner Closed on Computer, SrcIP, SrcPort
+        | extend Seconds=datetime_diff('second', End, Start)
+        | where Seconds between (0 .. MaxSeconds)
+        | summarize Logins=count(), Users=make_set(User, 10), TimeGenerated=min(Start) by Computer, SrcIP, Hour=bin(Start, 1h)
+        | where Logins >= MinLogins
+        | project TimeGenerated, Source="Syslog", Signal="Short SSH password logins in a row (HackSynth OverTheWire prompt shape)",
+            Host=Computer, Detail=strcat(SrcIP, ": ", Logins, " logins under ", MaxSeconds, " s, users ", tostring(Users)))
+| order by TimeGenerated desc

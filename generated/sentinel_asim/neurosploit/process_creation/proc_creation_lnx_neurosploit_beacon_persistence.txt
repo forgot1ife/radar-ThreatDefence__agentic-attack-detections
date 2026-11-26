@@ -1,0 +1,4 @@
+# NeuroSploit Beacon or Persistence on Linux
+# Sigma id 936d9e3d-22cf-55c0-9745-d8d4e1e79923, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "X-Implant-Token" and TargetProcessCommandLine contains "/api/beacon") or TargetProcessCommandLine contains "nsupdate.service" or (TargetProcessCommandLine contains "# NSUpdate" and TargetProcessCommandLine contains ".bashrc")

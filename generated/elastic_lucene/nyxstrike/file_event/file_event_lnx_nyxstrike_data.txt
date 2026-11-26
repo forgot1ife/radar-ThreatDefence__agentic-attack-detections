@@ -1,0 +1,3 @@
+# NyxStrike Data Folder, Log or Browser Screenshot Written
+# Sigma id f8896e92-99ba-53b7-8e09-daa339abd7d0, pipeline ecs
+TargetFilename:(*\/.nyxstrike_data\/* OR *\/nyxstrike.log OR \/tmp\/security_screenshot_*)

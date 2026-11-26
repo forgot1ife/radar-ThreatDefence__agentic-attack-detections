@@ -1,0 +1,4 @@
+# NeuroSploit Harness on a Host
+# Sigma id ec1e9ac1-280c-5e4f-a77c-2b8ceb295512, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessName endswith "/neurosploit" or TargetProcessName endswith "\\neurosploit.exe") or (TargetProcessCommandLine contains "c2 daemon --port 0 --dir" or TargetProcessCommandLine contains "neurosploit-kali" or TargetProcessCommandLine contains "neurosploit-neo4j" or TargetProcessCommandLine contains "ns_browser_prefetch.js" or TargetProcessCommandLine contains "neurosploit-mcp") or (((ParentProcessName endswith "/neurosploit" or ParentProcessName endswith "\\neurosploit.exe") or (ActingProcessName endswith "/neurosploit" or ActingProcessName endswith "\\neurosploit.exe")) and (TargetProcessCommandLine contains "--dangerously-skip-permissions" or TargetProcessCommandLine contains "--dangerously-bypass-approvals-and-sandbox"))

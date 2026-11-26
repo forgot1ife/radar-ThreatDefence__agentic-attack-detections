@@ -1,0 +1,4 @@
+# VulnBot CLI Started
+# Sigma id e65e9d4a-1178-56b9-bc1f-7c920e1baf70, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "cli.py" and ProcessCommandLine contains "vulnbot") and (ProcessCommandLine contains "cli.py vulnbot" or ProcessCommandLine contains "cli.py pentestgpt" or ProcessCommandLine contains "cli.py start -a" or ProcessCommandLine contains "cli.py init" or ProcessCommandLine contains "cli.py base")

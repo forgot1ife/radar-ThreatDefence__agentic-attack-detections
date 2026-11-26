@@ -1,0 +1,31 @@
+title: DarkMoon Probe Markers in Web Server Logs
+id: 54477369-6333-5558-bb79-74cb818ca5fc
+status: experimental
+description: |
+    Detects strings DarkMoon's agent prompts put in requests: the user agent dm-edge (the edge-proxy agent's first
+    request, curl -sSI -A dm-edge), the cache buster dmcb=DM1 of its cache poisoning test, and a container registry
+    manifest tagged darkmoon-proof-<random> when it proves it can push images. The model usually copies these
+    commands from the prompt but may change them.
+references:
+    - https://github.com/ASCIT31/Dark-Moon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_ua:
+        cs-user-agent: 'dm-edge'
+    selection_query:
+        cs-uri-query|contains: 'dmcb=DM1'
+    selection_registry:
+        cs-uri-stem|contains: '/manifests/darkmoon-proof-'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with DarkMoon
+level: high

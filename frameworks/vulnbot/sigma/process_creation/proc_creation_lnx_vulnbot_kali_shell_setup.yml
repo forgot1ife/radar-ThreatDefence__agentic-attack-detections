@@ -1,0 +1,40 @@
+title: VulnBot Shell Setup on the Kali Host It Drives
+id: dafb4a3d-5699-5044-8028-771509ffa732
+status: experimental
+description: |
+    Detects the commands VulnBot sends as soon as it opens its SSH shell on the Kali host that runs its tools:
+    touch ~/.hushlogin, sudo touch /etc/legal, sudo chmod 644 /etc/legal, sudo rm -f /etc/motd and
+    sudo rm -f /etc/update-motd.d/* (actions/remote_shell.py:95-103 at 9a12effa). They run once per VulnBot run, in an
+    interactive shell under sshd, usually as root with a password login. Creating /etc/legal is the rare part: it
+    belongs to Ubuntu's login notice and is not normally touched on Kali. Look for the motd removal from the same
+    session and for the Kali tools (nmap, nikto, dirb, sqlmap, hydra, msfconsole) that follow.
+references:
+    - https://github.com/KHenryAegis/VulnBot
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_touch:
+        Image|endswith: '/touch'
+        CommandLine|endswith: ' /etc/legal'
+    selection_chmod:
+        Image|endswith: '/chmod'
+        CommandLine|contains|all:
+            - ' 644 '
+            - '/etc/legal'
+    selection_sudo:
+        Image|endswith: '/sudo'
+        CommandLine|contains:
+            - 'touch /etc/legal'
+            - 'chmod 644 /etc/legal'
+    condition: 1 of selection_*
+falsepositives:
+    - Ubuntu base-files installs or upgrades that recreate /etc/legal (run by dpkg, not from an interactive SSH shell)
+    - Authorized tests with VulnBot
+level: medium

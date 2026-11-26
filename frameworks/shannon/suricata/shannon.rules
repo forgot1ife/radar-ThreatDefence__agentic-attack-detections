@@ -1,0 +1,11 @@
+# Agentic attack detections by ThreatDefence: Shannon
+# https://github.com/ThreatDefence/agentic-attack-detections
+# Suricata 7 and 8. SID range 3813001-3813499. HTTP rules need cleartext or decrypted traffic.
+
+# --- The experimental php2shell crash probe (shannon start --exp-php2shell), against your PHP sites ---
+alert http any any -> $HOME_NET any (msg:"TD Shannon php2shell crash probe multipart boundary"; flow:established,to_server; http.method; content:"POST"; http.content_type; content:"boundary=----shannonPhp2shellProbe"; fast_pattern; classtype:attempted-dos; sid:3813001; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Shannon, mitre_tactic_id TA0040, mitre_tactic_name Impact, mitre_technique_id T1499.004, mitre_technique_name Application_or_System_Exploitation, mitre_tactic_id TA0043, mitre_tactic_name Reconnaissance, mitre_technique_id T1595.002, mitre_technique_name Vulnerability_Scanning;)
+alert http any any -> $HOME_NET any (msg:"TD Shannon php2shell crash probe MIME header flood"; flow:established,to_server; http.method; content:"POST"; http.request_body; content:"|0d 0a|X-h0: a|0d 0a|X-h1: a|0d 0a|X-h2: a|0d 0a|"; fast_pattern; classtype:attempted-dos; sid:3813002; rev:1; metadata:created_at 2026_11_26, confidence High, malware_family Shannon, mitre_tactic_id TA0040, mitre_tactic_name Impact, mitre_technique_id T1499.004, mitre_technique_name Application_or_System_Exploitation;)
+
+
+# --- Shannon scans listed by the Temporal server it runs (Web UI and HTTP API, port 8233 by default) ---
+alert http any any -> any any (msg:"TD Shannon scan workflows in a Temporal Web UI or API response"; flow:established,to_client; http.response_body; content:"pentestPipelineWorkflow"; fast_pattern; content:"_shannon-"; classtype:policy-violation; sid:3813010; rev:1; metadata:created_at 2026_11_26, confidence Medium, malware_family Shannon, mitre_tactic_id TA0011, mitre_tactic_name Command_and_Control, mitre_technique_id T1071.001, mitre_technique_name Web_Protocols;)

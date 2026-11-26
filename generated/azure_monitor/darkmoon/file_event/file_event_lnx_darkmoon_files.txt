@@ -1,0 +1,4 @@
+# DarkMoon Configuration, Campaign or Report Files Written
+# Sigma id 9cf90f83-0222-59dc-84a6-9dc5cec46bfd, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName in~ ("/run/darkmoon-gpu.env", "/tmp/darkmoon-mcp-boot.log")) or ObjectName startswith "/opt/darkmoon/out/" or ObjectName contains "/darkmoon-settings/campaigns/camp_" or (ObjectName contains "/reports/pentest_report_" and ObjectName endswith ".md")

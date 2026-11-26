@@ -1,0 +1,24 @@
+// DarkMoon's proof file /tmp/.dm_proof on your database and cache servers
+// Agentic attack detections by ThreatDefence (DarkMoon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1190 (Exploit Public-Facing Application), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the DarkMoon agent prompts (ASCIT31/Dark-Moon at bb1b70ce). To prove command execution or file write, its
+// database and cache agents make the server write /tmp/.dm_proof:
+//  - sql-databases.md:424,433,459,467: PostgreSQL COPY (select 1) TO PROGRAM 'id > /tmp/.dm_proof 2>&1', COPY ... TO
+//    '/tmp/.dm_proof', MySQL SELECT 'proof' INTO OUTFILE '/tmp/.dm_proof', sys_exec('id > /tmp/.dm_proof').
+//  - messaging-cache.md:443: a Redis cron line * * * * * id > /tmp/.dm_proof.
+// A database or cache process (postgres, mysqld, mariadbd, redis-server, cron) writing it means the attack worked.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath == "/tmp/.dm_proof"
+        | project Timestamp, DeviceName, Signal="/tmp/.dm_proof written", Detail=strcat(ActionType, " by ", InitiatingProcessFileName),
+            Parent=substring(InitiatingProcessCommandLine, 0, 200)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "/tmp/.dm_proof"
+        | project Timestamp, DeviceName, Signal="command naming /tmp/.dm_proof", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150)))
+| order by Timestamp asc

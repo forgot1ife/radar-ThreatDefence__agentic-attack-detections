@@ -1,0 +1,36 @@
+title: Decepticon Telemetry, Discovery, Sandbox or Model Gateway Requests in Proxy Logs
+id: 8363827c-25d4-5c8c-bf77-faf291e11437
+status: experimental
+description: |
+    Detects the user agents Decepticon's own HTTP clients send from the host that runs it: decepticon-telemetry/1.0 to
+    its telemetry gateway, decepticon-roe/1 to crt.sh when an engagement is created, decepticon-http-sandbox/1 to its
+    sandbox daemon, Decepticon/1.0 on one model gateway entry, and the placeholder ChatGPT subscription user agent
+    codex_cli_rs/0.0.0. Also matches the telemetry gateway host. Needs TLS inspection for the HTTPS requests.
+references:
+    - https://github.com/BitterSecurity/Decepticon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+    - attack.reconnaissance
+    - attack.t1596.003
+logsource:
+    category: proxy
+detection:
+    selection_ua:
+        c-useragent:
+            - 'decepticon-telemetry/1.0'
+            - 'decepticon-roe/1'
+            - 'decepticon-http-sandbox/1'
+            - 'codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown'
+    selection_ua_token:
+        c-useragent|contains: 'Decepticon/'
+    selection_host:
+        - cs-host: 'decepticon-telemetry-gateway.purpleailab.workers.dev'
+        - cs-host|endswith: '.decepticon-telemetry-gateway.purpleailab.workers.dev'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Decepticon
+level: medium

@@ -1,0 +1,24 @@
+title: sapper-v2 Engagement Graph Board in Proxy Logs
+id: 00648c66-4a8b-5d29-883f-12d2a8bb297b
+status: experimental
+description: |
+    Detects a browser polling a sapper-v2 board (sapper view --serve), which fetches /__sapper_graph__/<24 hex>.json
+    every 2 seconds. The board has no login and shows the targets, credentials and flags of an engagement. Seen through
+    your proxy, someone in your network is watching a sapper-v2 engagement, often on an exposed board.
+references:
+    - https://github.com/N1nEmAn/sapper-v2
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection:
+        c-uri|contains: '/__sapper_graph__/'
+    condition: selection
+falsepositives:
+    - Contest teams and testers running sapper-v2 or a fork of it
+level: medium

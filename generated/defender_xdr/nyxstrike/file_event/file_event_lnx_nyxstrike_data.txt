@@ -1,0 +1,4 @@
+# NyxStrike Data Folder, Log or Browser Screenshot Written
+# Sigma id f8896e92-99ba-53b7-8e09-daa339abd7d0, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath contains "/.nyxstrike_data/" or FolderPath endswith "/nyxstrike.log" or FolderPath startswith "/tmp/security_screenshot_"

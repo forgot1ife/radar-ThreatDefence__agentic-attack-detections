@@ -18,7 +18,7 @@ The image counts every agent found since 21 October 2026, across 25 public frame
 
 ## What is here
 
-- **Framework folders.** ARTEX and its AntiFox fork, Cairn, PentAGI, HexStrike, CyberStrikeAI, Strix, Hermes Agent, Agent Zero, RedAmon, Xalgorix and Pentest Swarm AI. Each folder is built from a review of the framework's source code and the public reporting on its use. Fourteen more frameworks whose consoles were found on the internet have smaller folders that say what the console and the tool look like, with the code behind each signal: AutoCVE, CyberStrike, Vulnerator AI, Decepticon, AIDA, BugTraceAI, Z3r0, AIRecon, LuaN1aoAgent, open-kritt, REDCELL, T3MP3ST, WormXGPT and Chufeng Agent Core.
+- **Framework folders.** ARTEX and its AntiFox fork, Cairn, PentAGI, HexStrike, CyberStrikeAI, Strix, Hermes Agent, Agent Zero, RedAmon, Xalgorix, Pentest Swarm AI, Decepticon, Shannon, PentestGPT, Cyber-AutoAgent, CAI, HackSynth, VulnBot, AutoPT, PentestAgent (the paper's and GH05TCREW's), Dark Moon, NyxStrike, sapper-v2 and NeuroSploit. Each folder is built from a review of the framework's source code and the public reporting on its use. Fourteen more frameworks whose consoles were found on the internet have smaller folders that say what the console and the tool look like, with the code behind each signal: AutoCVE, CyberStrike, Vulnerator AI, Decepticon, AIDA, BugTraceAI, Z3r0, AIRecon, LuaN1aoAgent, open-kritt, REDCELL, T3MP3ST, WormXGPT and Chufeng Agent Core.
 - **Shared behaviors.** Rules for what these frameworks have in common, whatever the tool or the model behind it.
 - **Indicators and feeds.** One CSV of 580 sourced indicators, and the feeds generated from it.
 - **Exposed consoles.** A dated list of addresses where one of these consoles answers on the internet, in [`exposure/`](exposure), with a [count per framework](#exposed-consoles). It is a record of what is exposed, not a detection feed.
@@ -77,13 +77,27 @@ The capture is test traffic written from the framework source code and published
 | [RedAmon](frameworks/redamon) | 3 | | 3 | 10 | 1 | intel | 19 |
 | [Xalgorix](frameworks/xalgorix) | 3 | | 3 | 10 | 1 | intel | 24 |
 | [Pentest Swarm AI](frameworks/pentestswarm) | 3 | | 3 | 11 | 1 | intel | 15 |
+| [Decepticon](frameworks/decepticon) | 3 | 1 | 6 | 15 | 6 | intel | 31 |
+| [Shannon](frameworks/shannon) | 3 | 1 | 3 | 3 | 5 | intel | 21 |
+| [PentestGPT](frameworks/pentestgpt) | 3 | 1 | 3 | 9 | 3 | intel | 23 |
+| [Cyber-AutoAgent](frameworks/cyber-autoagent) | 4 | 1 | 8 | 8 | 4 | intel | 19 |
+| [CAI](frameworks/cai) | 3 | 1 | 6 | 14 | 4 | intel | 22 |
+| [HackSynth](frameworks/hacksynth) | 3 | 1 | 4 | 1 | 2 | intel | 10 |
+| [VulnBot](frameworks/vulnbot) | 3 | 1 | 3 | 5 | 2 | intel | 15 |
+| [AutoPT](frameworks/autopt) | 3 | 1 | 4 | 6 | 2 | intel | 8 |
+| [PentestAgent (paper code)](frameworks/pentestagent) | 3 |  | 3 | 3 | 2 | intel | 11 |
+| [PentestAgent (GH05TCREW)](frameworks/ghostcrew-pentestagent) | 3 | 1 | 3 | 3 | 1 | intel | 10 |
+| [DarkMoon](frameworks/darkmoon) | 4 | 1 | 4 | 12 | 3 | intel | 29 |
+| [NyxStrike](frameworks/nyxstrike) | 3 | 1 | 4 | 17 | 3 | intel | 38 |
+| [sapper-v2](frameworks/sapper-v2) | 3 | 1 | 3 | 6 | 2 | intel | 24 |
+| [NeuroSploit](frameworks/neurosploit) | 4 | 1 | 9 | 22 | 4 |  | 30 |
 | [AutoCVE](frameworks/autocve) | | | | 2 | | script | |
 | [LuaN1aoAgent](frameworks/luan1aoagent) | | | | 4 | | script | |
 | [Shared behaviors](behaviors) | 9 | 2 | 6 | 18 | | package | |
 
 Every rule names its MITRE ATT&CK techniques. [docs/attack-coverage.md](docs/attack-coverage.md) lists them per framework with links to the rules, and [`generated/attack/`](generated/attack) has an ATT&CK Navigator layer per framework and one for everything.
 
-The other twelve console-level folders (CyberStrike, Vulnerator AI, Decepticon, AIDA, BugTraceAI, Z3r0, AIRecon, open-kritt, REDCELL, T3MP3ST, WormXGPT, Chufeng Agent Core) have no rules yet: they describe the console and the tool, and their exposure searches are in `exposure/`. Suricata counts are hand-written rules; each framework also has address rules generated from its indicators. Some indicators belong to more than one framework. Every framework is in the [Splunk app](deploy/splunk). ARTEX also has Elastic rules and ES\|QL queries, and an osquery pack.
+The other eleven console-level folders (CyberStrike, Vulnerator AI, AIDA, BugTraceAI, Z3r0, AIRecon, open-kritt, REDCELL, T3MP3ST, WormXGPT, Chufeng Agent Core) have no rules yet: they describe the console and the tool, and their exposure searches are in `exposure/`. Suricata counts are hand-written rules; each framework also has address rules generated from its indicators. Some indicators belong to more than one framework. Every framework is in the [Splunk app](deploy/splunk). ARTEX also has Elastic rules and ES\|QL queries, and an osquery pack.
 
 ## Frameworks
 
@@ -100,10 +114,23 @@ The other twelve console-level folders (CyberStrike, Vulnerator AI, Decepticon, 
 | [RedAmon](frameworks/redamon) | Self-hosted penetration testing platform: a web console, a recon pipeline and an agent that exploits from a Kali sandbox with Metasploit | No public report of use in an attack. Covered from its source code |
 | [Xalgorix](frameworks/xalgorix) | Go binary with a web dashboard whose agent tests web applications and APIs without approval steps and re-exploits each finding | No public report of use in an attack. Covered from its source code |
 | [Pentest Swarm AI](frameworks/pentestswarm) | Go command-line tool that runs recon, exploit and report agents over about 40 security tools | No public report of use in an attack. Covered from its source code |
+| [Shannon](frameworks/shannon) | TypeScript white-box AI pentester: Temporal workers drive model agents that read the code and test the running application with a headless browser | No public report of use in an attack. Covered from its source code |
+| [PentestGPT](frameworks/pentestgpt) | Python agent from the USENIX Security 2024 paper that drives the Claude Code or Codex CLI with permission checks off | No public report of use in an attack. Covered from its source code |
+| [Cyber-AutoAgent](frameworks/cyber-autoagent) | Python agent on the Strands SDK that runs a penetration test from a Kali container without approval steps, with a bundled Langfuse stack | No public report of use in an attack. Covered from its source code |
+| [CAI](frameworks/cai) | Alias Robotics agent framework whose red team and bug bounty agents run shell commands, with an optional HTTP API and session-log telemetry | No public report of use in an attack. Covered from its source code |
+| [HackSynth](frameworks/hacksynth) | Research CTF agent: a planner model writes one bash command per step, run in a Kali container | No public report of use in an attack. Covered from its source code |
+| [VulnBot](frameworks/vulnbot) | Research multi-agent pentester that runs Kali tools over SSH, with an optional unauthenticated knowledge base API | No public report of use in an attack. Covered from its source code |
+| [AutoPT](frameworks/autopt) | Research web pentest agent that runs public vulhub exploits, with an unauthenticated Flask console on port 5000 | No public report of use in an attack. Covered from its source code |
+| [PentestAgent (paper code)](frameworks/pentestagent) | Research agent from arXiv 2411.05185: nmap, CVE lookup and a public exploit run with the model's commands. Not the GH05TCREW tool | No public report of use in an attack. Covered from its source code |
+| [PentestAgent (GH05TCREW)](frameworks/ghostcrew-pentestagent) | Python pentest agent (GH05TCREW/pentestagent) with a terminal UI, agent crews, Kali sandbox images and an unauthenticated MCP server | No public report of use in an attack. Covered from its source code |
+| [DarkMoon](frameworks/darkmoon) | OpenCode-based agent stack with 51 attack prompts, a root toolbox container and an unauthenticated MCP server | No public report of use in an attack. Covered from its source code |
+| [NyxStrike](frameworks/nyxstrike) | HexStrike AI derivative with a web interface, a decision engine and about 200 tools over MCP | No public report of use in an attack. Covered from its source code and scan data |
+| [sapper-v2](frameworks/sapper-v2) | Contest kit that coordinates several coding assistants around a shared engagement graph, with a web board | No public report of use in an attack. Covered from its source code and scan data |
+| [NeuroSploit](frameworks/neurosploit) | Rust multi-model harness with hundreds of specialist agents, an out-of-band channel and a web interface | No public report of use in an attack. Covered from its source code and scan data |
 | [AutoCVE](frameworks/autocve) | Python platform whose agents audit source code for new CVEs and write reports, with a web console and an API | No public report of use in an attack. 256 consoles exposed |
 | [CyberStrike](frameworks/cyberstrike) | TypeScript offensive security harness with a browser extension, an injection prober and a callback server. Not CyberStrikeAI | No public report of use in an attack |
 | [Vulnerator AI](frameworks/vulnerator-ai) | OODA-loop pentest agent: a Hermes Agent brain driving Kali and Playwright tools over MCP | No public report of use in an attack |
-| [Decepticon](frameworks/decepticon) | LangGraph red team agent with a Kali sandbox; its open web console was removed in November 2026 | No public report of use in an attack |
+| [Decepticon](frameworks/decepticon) | Python LangGraph red team agents that run commands in a Kali sandbox and start Sliver or Havoc C2 on demand; telemetry on unless the operator declines | No public report of use in an attack. Covered from its source code |
 | [AIDA](frameworks/aida) | Platform that turns a model into a pentester working from its own tool container or Exegol | No public report of use in an attack |
 | [BugTraceAI](frameworks/bugtraceai) | Self-hosted web pentest suite with agentic scanning, a web interface and an API | No public report of use in an attack |
 | [Z3r0](frameworks/z3r0) | Red team workbench with specialist agents, sandboxed tools and an egress proxy pool | No public report of use in an attack |

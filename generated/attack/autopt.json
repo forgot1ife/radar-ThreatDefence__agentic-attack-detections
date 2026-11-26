@@ -1,0 +1,86 @@
+{
+ "description": "16 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 10,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "autopt",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Suricata: 3812601 TD Truncated Chrome user agent of AI pentest agents (AutoPT page reader, PentestAgent GH05TCREW browser, CyberStrikeAI implant)",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1036.012"
+  },
+  {
+   "comment": "KQL hunt: AutoPT on a host you monitor; Sentinel analytics: AutoPT LLM pentest agent run on a host; Sigma: AutoPT Agent Started or Running Its Scan Steps; Sigma: AutoPT Run Result Written",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: AutoPT testing you, or its console used: user agents and console API paths in web and proxy logs; Sigma: AutoPT Console API or Vulhub PoC Fetch in Proxy Logs; Suricata: 3812603 TD AutoPT console page; Suricata: 3812604 TD AutoPT console configuration with model keys served; Suricata: 3812605 TD AutoPT console system info; Suricata: 3812606 TD AutoPT console agent run started",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Suricata: 3812604 TD AutoPT console configuration with model keys served",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1552.001"
+  },
+  {
+   "comment": "YARA: AutoPT_Source",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: AutoPT on a host you monitor; KQL hunt: AutoPT testing you, or its console used: user agents and console API paths in web and proxy logs; Sentinel analytics: AutoPT LLM pentest agent run on a host; Sigma: AutoPT Agent Started or Running Its Scan Steps; Sigma: AutoPT Console API or Vulhub PoC Fetch in Proxy Logs; Sigma: AutoPT Page Reader User Agent in Web Logs; Suricata: 3812601 TD Truncated Chrome user agent of AI pentest agents (AutoPT page reader, PentestAgent GH05TCREW browser, CyberStrikeAI implant); Suricata: 3812602 TD AutoPT upstream page reader user agent; Suricata: 3812606 TD AutoPT console agent run started; YARA: AutoPT_Run_Result",
+   "enabled": true,
+   "score": 10,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

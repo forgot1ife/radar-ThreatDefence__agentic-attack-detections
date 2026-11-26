@@ -1,0 +1,3 @@
+# NeuroSploit Out-of-Band Callback in Proxy Logs
+# Sigma id dba52ebb-fd29-5944-bacc-dbe86084082a, pipeline ecs
+from * metadata _id, _index, _version | where url.domain rlike "[nN][eE][uU][rR][oO][sS][pP][lL][oO][iI][tT].*" and not url.domain rlike "[nN][eE][uU][rR][oO][sS][pP][lL][oO][iI][tT][aA][iI]\\..*"

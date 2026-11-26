@@ -1,0 +1,72 @@
+{
+ "description": "14 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 6,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "vulnbot",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: VulnBot on a host you monitor: the controller and the Kali host it drives",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1021.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: VulnBot on a host you monitor: the controller and the Kali host it drives; Sentinel analytics: VulnBot AI pentest agent opened its shell on a host; Sigma: VulnBot Login Notice File Created; Sigma: VulnBot Shell Setup on the Kali Host It Drives",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: VulnBot in web and proxy logs: its open knowledge base API and the models it downloads; Suricata: 3812505 TD VulnBot knowledge base API schema",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: VulnBot in web and proxy logs: its open knowledge base API and the models it downloads; KQL hunt: VulnBot on a host you monitor: the controller and the Kali host it drives; Sigma: VulnBot CLI Started; YARA: VulnBot_Run_Log; YARA: VulnBot_Source",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Suricata: 3812501 TD VulnBot role prompt in model request; Suricata: 3812502 TD VulnBot command-writing prompt in model request; Suricata: 3812503 TD VulnBot certified-simulation task prompt in model request; Suricata: 3812504 TD VulnBot knowledge base context in model request",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.007"
+  },
+  {
+   "comment": "Suricata: 3812502 TD VulnBot command-writing prompt in model request; Suricata: 3812503 TD VulnBot certified-simulation task prompt in model request",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1699"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

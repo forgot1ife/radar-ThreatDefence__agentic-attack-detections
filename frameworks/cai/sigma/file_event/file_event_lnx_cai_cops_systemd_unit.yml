@@ -1,0 +1,29 @@
+title: CAI Continuous Ops Systemd User Unit Written
+id: d07fdeeb-eb47-511a-b04d-adeeae7e3de1
+status: experimental
+description: |
+    Detects the systemd user unit the CAI continuous-ops wizard writes and enables (systemctl --user enable --now):
+    cai-cops-run_<12 hex>.service, which restarts python -m cai.continuous_ops.loop_runner forever, so CAI agents keep
+    running on a schedule after the operator logs off.
+references:
+    - https://github.com/aliasrobotics/cai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.persistence
+    - attack.t1543.002
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_unit:
+        TargetFilename|contains: '/systemd/user/cai-cops-'
+        TargetFilename|endswith: '.service'
+    selection_rundir:
+        TargetFilename|contains: '/.cai/continuous_ops/run_'
+        TargetFilename|endswith: '.service'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams running CAI continuous operations on purpose
+level: medium

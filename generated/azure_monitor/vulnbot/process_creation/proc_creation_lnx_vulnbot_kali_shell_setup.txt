@@ -1,0 +1,4 @@
+# VulnBot Shell Setup on the Kali Host It Drives
+# Sigma id dafb4a3d-5699-5044-8028-771509ffa732, pipeline azure_monitor
+SecurityEvent
+| where (NewProcessName endswith "/touch" and CommandLine endswith " /etc/legal") or (NewProcessName endswith "/chmod" and (CommandLine contains " 644 " and CommandLine contains "/etc/legal")) or (NewProcessName endswith "/sudo" and (CommandLine contains "touch /etc/legal" or CommandLine contains "chmod 644 /etc/legal"))

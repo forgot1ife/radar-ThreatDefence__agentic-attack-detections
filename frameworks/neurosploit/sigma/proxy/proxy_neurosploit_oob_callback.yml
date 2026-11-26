@@ -1,0 +1,29 @@
+title: NeuroSploit Out-of-Band Callback in Proxy Logs
+id: dba52ebb-fd29-5944-bacc-dbe86084082a
+status: experimental
+description: |
+    Detects a server fetching a host name whose first label starts with neurosploit. NeuroSploit's out-of-band payloads
+    (blind SSRF, XXE, command injection, JNDI) point at <token>.<operator domain>, and every token starts with
+    neurosploit (neurosploit<kind><hex> from the code, and the prompt tells the agents to keep that prefix). A match means
+    a payload ran on the server that made the request. neurosploitai.github.io is the project's documentation site.
+references:
+    - https://github.com/JoasASantos/NeuroSploit
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.initial-access
+    - attack.t1190
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection:
+        cs-host|startswith: 'neurosploit'
+    filter_docs:
+        cs-host|startswith: 'neurosploitai.'
+    condition: selection and not filter_docs
+falsepositives:
+    - Authorized tests with NeuroSploit
+level: high

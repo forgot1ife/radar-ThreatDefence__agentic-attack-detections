@@ -1,0 +1,4 @@
+# CAI Continuous Ops Systemd User Unit Written
+# Sigma id d07fdeeb-eb47-511a-b04d-adeeae7e3de1, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/systemd/user/cai-cops-" and ObjectName endswith ".service") or (ObjectName contains "/.cai/continuous_ops/run_" and ObjectName endswith ".service")

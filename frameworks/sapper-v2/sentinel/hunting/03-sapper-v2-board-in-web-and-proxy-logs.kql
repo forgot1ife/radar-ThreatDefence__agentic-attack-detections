@@ -1,0 +1,27 @@
+// sapper-v2 board and contest client in web and proxy logs
+// Agentic attack detections by ThreatDefence (sapper-v2). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the sapper-v2 source code (N1nEmAn/sapper-v2 at 7b75e6f1). sapper-v2 sends nothing of its own to a target: its
+// agents run stock Kali tools, which the behaviors hunts cover. What it does put on the wire:
+//  - Its board (sapper view --serve) polls GET /__sapper_graph__/<24 hex>.json every 2 seconds while open. The board has
+//    no login: a hit through your proxy is someone in your network watching an engagement, often on an exposed board.
+//  - Its contest client sends the header BENCHMARK_TOKEN to /openapi/v1/challenges (start, submit, close, hint). Any
+//    TSecBench contest agent does the same, so treat it as context: an autonomous contest agent runs in your network.
+//    Header values are rarely logged; the path is shown for context and needs the BENCHMARK_TOKEN header to mean much.
+
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has "/__sapper_graph__/" or RequestURL has "/openapi/v1/challenges"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=coalesce(DestinationHostName, DestinationIP),
+            Signal=iff(RequestURL has "/__sapper_graph__/", "sapper-v2 board poll", "TSecBench API path (context)"), Detail=RequestURL),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriStem startswith "/__sapper_graph__/"
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Signal="sapper-v2 board poll", Detail=csUriStem),
+    (DeviceNetworkEvents | where Timestamp > ago(30d)
+        | where RemoteUrl has "/__sapper_graph__/"
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Src=DeviceName, Target=RemoteIP, Signal="sapper-v2 board poll",
+            Detail=RemoteUrl)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10)
+    by Source, Src, Target, Signal
+| order by FirstSeen asc

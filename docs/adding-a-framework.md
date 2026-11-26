@@ -46,8 +46,13 @@ Suricata rule IDs (SIDs) come from the block 3800000 to 3819999, the range reque
 | Xalgorix | 3809001 to 3809499 | from 3809500 |
 | Pentest Swarm AI | 3810001 to 3810499 | from 3810500 |
 | Console-level frameworks added November 25, 2026 | blocks of 100 from 3811000: rules base + 1 to base + 49 | from base + 50 |
-| Next framework | 3813001 to 3813499 | from 3813500 |
+| Shannon | 3813001 to 3813499 | from 3813500 |
+| PentestGPT | 3814001 to 3814499 | from 3814500 |
+| Cyber-AutoAgent | 3815001 to 3815499 | from 3815500 |
+| CAI | 3816001 to 3816499 | from 3816500 |
+| Frameworks added November 26, 2026 with a block of 100 | see below | |
+| Next framework | 3818001 to 3818499 | from 3818500 |
 
-The block from 3811000 to 3812399 is split into blocks of 100 for frameworks that were added from the exposure snapshot with few or no rules: AutoCVE 3811000, CyberStrike 3811100, Vulnerator AI 3811200, Decepticon 3811300, AIDA 3811400, BugTraceAI 3811500, Z3r0 3811600, AIRecon 3811700, LuaN1aoAgent 3811800, open-kritt 3811900, REDCELL 3812000, T3MP3ST 3812100, WormXGPT 3812200 and Chufeng Agent Core 3812300. AutoCVE's rules are 3811001 to 3811049 and its address rules start at 3811050, and so on. A framework that outgrows its 100 moves to a full block of 1,000. 3812400 to 3812999 stay free.
+The block from 3811000 to 3812399 is split into blocks of 100 for frameworks that were added from the exposure snapshot with few or no rules: AutoCVE 3811000, CyberStrike 3811100, Vulnerator AI 3811200, Decepticon 3811300, AIDA 3811400, BugTraceAI 3811500, Z3r0 3811600, AIRecon 3811700, LuaN1aoAgent 3811800, open-kritt 3811900, REDCELL 3812000, T3MP3ST 3812100, WormXGPT 3812200 and Chufeng Agent Core 3812300. AutoCVE's rules are 3811001 to 3811049 and its address rules start at 3811050, and so on. A framework that outgrows its 100 moves to a full block of 1,000. The rest of that block went to frameworks added on November 26, 2026: HackSynth 3812400, VulnBot 3812500, AutoPT 3812600, PentestAgent (the arXiv 2411.05185 code) 3812700, PentestAgent (GH05TCREW) 3812800 and Dark Moon 3812900. The block from 3817000 is split the same way: NyxStrike 3817000, sapper-v2 3817100 and NeuroSploit 3817200; 3817300 to 3817999 stay free. Decepticon keeps its block at 3811300 now that it has a full folder.
 
 Rules in `behaviors/suricata/` use numbers inside the Cairn block (3801010 to 3801059), where they were first published. Sigma and Sentinel rule ids are UUIDv5 values derived from the file path, so they stay stable as long as a file is not renamed.

@@ -1,0 +1,6 @@
+# CAI Session Log, API Auth Database or Workspace Written
+# Sigma id 0abc86e5-02e5-5fd2-9c2c-03489e14a6b9, pipeline splunk_windows
+
+| rex field=TargetFilename "(?<TargetFilenameMatch>[/\\\\]\\.cai[/\\\\]logs[/\\\\]([A-Za-z0-9_-]+_)?cai_[0-9a-f-]{36}_\\d{8}_\\d{6}_.*\\.jsonl$)"
+| eval TargetFilenameCondition=if(isnotnull(TargetFilenameMatch), "true", "false")
+| search TargetFilenameCondition="true" OR TargetFilename IN ("*/.cai/api_auth.json", "*/.cai/api_auth.json.key", "*\\.cai\\api_auth.json", "*\\.cai\\api_auth.json.key") OR TargetFilename IN ("*/.cai/continuous_ops/run_*", "*\\.cai\\continuous_ops\\run_*")

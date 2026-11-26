@@ -1,0 +1,32 @@
+// NeuroSploit C2 beacons, NSUpdate persistence and web shells on hosts it compromised
+// Agentic attack detections by ThreatDefence (NeuroSploit). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1053.005 (Scheduled Task/Job: Scheduled Task), T1547.001 (Boot or Logon Autostart Execution: Registry Run Keys / Startup Folder), T1053.003 (Scheduled Task/Job: Cron), T1543.002 (Create or Modify System Process: Systemd Service), T1505.003 (Server Software Component: Web Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// From the NeuroSploit C2 code (harness/src/c2/templates.rs at 54d8e860), which is off until the operator enables it:
+//  - Beacons POST to http://<callback>:<port>/api/beacon (bash adds ?format=sh) with the header X-Implant-Token.
+//    CyberStrikeAI's implant uses the same header name, with /check_in and /tasks instead of /api/beacon.
+//  - Windows persistence: schtasks /Create /F /SC ONLOGON /TN "NSUpdate" or a Run value NSUpdate, both starting
+//    powershell -NoProfile -ExecutionPolicy Bypass -EncodedCommand <beacon>.
+//  - Linux persistence: @reboot crontab entry, "# NSUpdate" in ~/.bashrc, or ~/.config/systemd/user/nsupdate.service.
+//  - Web shells start with the comment "NeuroSploit WebShell"; generated names are webshell-<ms>.<php|aspx|asp|jsp>;
+//    the manager sends User-Agent "Mozilla/5.0 (compatible; NeuroSploit-WebShell/1.0)".
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "X-Implant-Token" and ProcessCommandLine has "/api/beacon")
+            or (ProcessCommandLine has "schtasks" and ProcessCommandLine has "NSUpdate")
+            or (ProcessCommandLine has @"CurrentVersion\Run" and ProcessCommandLine has "NSUpdate")
+            or ProcessCommandLine has "nsupdate.service" or ProcessCommandLine has "# NSUpdate"
+        | project TimeGenerated=Timestamp, DeviceName, Signal="NeuroSploit beacon or persistence command", Detail=substring(ProcessCommandLine, 0, 300)),
+    (DeviceRegistryEvents | where Timestamp > ago(Window)
+        | where RegistryKey endswith @"\CurrentVersion\Run" and RegistryValueName =~ "NSUpdate"
+        | project TimeGenerated=Timestamp, DeviceName, Signal="Run value NSUpdate", Detail=RegistryValueData),
+    (DeviceFileEvents | where Timestamp > ago(Window)
+        | where FileName =~ "nsupdate.service" or FileName matches regex @"^webshell-\d{13}\.(php|aspx|asp|jsp)$"
+            or FileName matches regex @"^beacon-\d{13}\.(sh|py|ps1|php)$"
+        | project TimeGenerated=Timestamp, DeviceName, Signal="NeuroSploit unit, web shell or beacon file name", Detail=FolderPath),
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | where replace_string(csUserAgent, "+", " ") has "NeuroSploit-WebShell/" or csUriQuery has "pass=ns_pass"
+        | project TimeGenerated, DeviceName=csHost, Signal="Web shell manager request", Detail=strcat(csMethod, " ", csUriStem, " from ", cIP))
+| order by TimeGenerated desc

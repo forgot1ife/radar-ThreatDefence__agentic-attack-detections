@@ -1,0 +1,3 @@
+# AutoPT Page Reader User Agent in Web Logs
+# Sigma id 30af23fc-7df5-52c1-aa75-b99496c0c170, pipeline splunk_windows
+"cs-user-agent" IN ("AutoPT/*", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")

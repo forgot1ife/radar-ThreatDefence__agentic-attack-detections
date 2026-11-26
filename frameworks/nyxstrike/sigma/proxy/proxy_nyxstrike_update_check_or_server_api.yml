@@ -1,0 +1,34 @@
+title: NyxStrike Update Check or Server API Requested Through a Proxy
+id: d152dfea-0dba-5e37-a6e4-4b1cc8f1cc42
+status: experimental
+description: |
+    Detects the NyxStrike server's version check at start-up, a GET of
+    raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/master/config.py, and a browser or script using a remote
+    NyxStrike server on port 8888: its dashboard data endpoint /web-dashboard and the AI session endpoints
+    /api/intelligence/ai-<recon|profiling|vuln|osint|followup>-session.
+references:
+    - https://github.com/CommonHuman-Lab/nyxstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_update:
+        c-uri|contains: 'raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/'
+    selection_api:
+        c-uri|contains:
+            - ':8888/web-dashboard'
+            - ':8888/api/intelligence/ai-recon-session'
+            - ':8888/api/intelligence/ai-vuln-session'
+            - ':8888/api/intelligence/ai-osint-session'
+            - ':8888/api/intelligence/ai-profiling-session'
+            - ':8888/api/intelligence/ai-followup-session'
+    condition: 1 of selection_*
+falsepositives:
+    - Developers reading the NyxStrike repository through raw.githubusercontent.com
+    - Authorized tests with NyxStrike
+level: medium

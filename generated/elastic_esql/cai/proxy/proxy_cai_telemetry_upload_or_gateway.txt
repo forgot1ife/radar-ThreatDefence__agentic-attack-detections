@@ -1,0 +1,3 @@
+# CAI Telemetry Upload or Alias Gateway in Proxy Logs
+# Sigma id 0dc46137-563f-5997-8001-72e433acc6a0, pipeline ecs
+from * metadata _id, _index, _version | where url.domain rlike "[lL][oO][gG][sS]\\.[aA][lL][iI][aA][sS][rR][oO][bB][oO][tT][iI][cC][sS]\\.[cC][oO][mM]" or url.domain rlike "[aA][pP][iI]\\.[aA][lL][iI][aA][sS][rR][oO][bB][oO][tT][iI][cC][sS]\\.[cC][oO][mM]" and url.original like "*/key/info*" or url.domain rlike "[pP][aA][cC][kK][aA][gG][eE][sS]\\.[aA][lL][iI][aA][sS][rR][oO][bB][oO][tT][iI][cC][sS]\\.[cC][oO][mM]"

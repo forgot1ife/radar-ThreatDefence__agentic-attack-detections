@@ -1,0 +1,4 @@
+# sapper-v2 Engagement Graph or Run Files Written
+# Sigma id c7f134df-fb75-5194-bc67-c8870c97a51c, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.sapper/facts/" or ObjectName contains "/.sapper/intents/" or ObjectName contains "/.sapper/hints/" or ObjectName contains "/opt/sapper/docker/commander/" or ObjectName contains "/work/runs/pane-env/") or (ObjectName endswith "/.sapper/project.json" or ObjectName endswith "/.sapper/arena.json" or ObjectName endswith "/.sapper/ai-channel.txt" or ObjectName endswith "/.sapper/ai-peers.json" or ObjectName endswith "/sapper-graph.html" or ObjectName endswith "/work/runs/commander-state.md" or ObjectName endswith "/work/runs/rotated.env" or ObjectName endswith "/.claude/skills/sapper-setup")

@@ -1,0 +1,25 @@
+title: Cyber-AutoAgent Threat Emulation Marker File
+id: 0c6cb7a4-5f3d-5f37-85e7-01bab7f4835c
+status: experimental
+description: |
+    Detects a file named .emulation_marker_<TTP_ID>, which Cyber-AutoAgent's threat_emulation module tells the model
+    to create for every technique it runs on a host. The name comes from the prompt, so the model may vary it.
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/threat_emulation/execution_prompt.md
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059
+logsource:
+    category: file_event
+detection:
+    selection:
+        TargetFilename|contains:
+            - '/.emulation_marker_'
+            - '\.emulation_marker_'
+    condition: selection
+falsepositives:
+    - Authorized adversary emulation with Cyber-AutoAgent
+level: high

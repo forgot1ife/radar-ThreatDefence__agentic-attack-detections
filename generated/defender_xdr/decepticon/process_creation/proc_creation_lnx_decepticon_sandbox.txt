@@ -1,0 +1,4 @@
+# Decepticon Sandbox, Agent Server or C2 Container Process
+# Sigma id 83265ac6-f94e-588e-9b1b-74fa1ece484d, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "decepticon_sandbox.server" or ProcessCommandLine contains "decepticon_sandbox.web" or ProcessCommandLine contains "decepticon_sandbox.browser" or ProcessCommandLine contains "@dcptn_completion") or (ProcessCommandLine contains "decepticon.cli time-window-resume" or ProcessCommandLine contains "/app/litellm_startup.py") or (ProcessCommandLine contains "sliver-server operator" and ProcessCommandLine contains "--name decepticon") or (ProcessCommandLine contains "teamserver server" and ProcessCommandLine contains "/opt/havoc/profiles/havoc.yaotl")

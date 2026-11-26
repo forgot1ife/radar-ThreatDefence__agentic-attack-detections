@@ -1,0 +1,3 @@
+# HackSynth Attackbox Setup Command
+# Sigma id fe2a721e-a4db-599d-b25e-b76a9973e97f, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*install kali-linux-headless sshpass curl*" or process.command_line like "*ssh-keyscan -p 2220 bandit.labs.overthewire.org*" or process.command_line like "*ssh-keyscan -p 2231 krypton.labs.overthewire.org*" or process.command_line like "*ssh-keyscan -p 2223 leviathan.labs.overthewire.org*"

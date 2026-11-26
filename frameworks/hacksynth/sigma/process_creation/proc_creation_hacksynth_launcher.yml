@@ -1,0 +1,33 @@
+title: HackSynth Benchmark Launcher
+id: f08ccd82-52f6-5b21-a742-45b80fb68334
+status: experimental
+description: |
+    Detects the HackSynth launcher, python run_bench.py -b <benchmark>.json -c <config>.json, with one of the benchmark or
+    config names the repository ships (run_bench.py:132-134, README.md:28). run_bench.py is a common file name, so the
+    rule also needs a HackSynth benchmark or config path.
+references:
+    - https://github.com/aielte-research/HackSynth/blob/48a41f795dda186df66561c4fd2b58ae84e3e4f8/run_bench.py#L132-L134
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+detection:
+    selection_script:
+        CommandLine|contains: 'run_bench.py'
+        CommandLine|re: '\s(-b|--benchmark)\s'
+    selection_names:
+        CommandLine|contains:
+            - 'benchmark_solved.json'
+            - 'combined_solved.json'
+            - 'bandit_solved.json'
+            - 'natas_solved.json'
+            - 'configs/pico_bench/'
+            - 'configs/overthewire_bench/'
+    condition: all of selection_*
+falsepositives:
+    - Authorized research runs of HackSynth
+level: low

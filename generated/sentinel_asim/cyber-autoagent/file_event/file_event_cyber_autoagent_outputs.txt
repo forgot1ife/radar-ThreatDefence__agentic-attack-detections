@@ -1,0 +1,4 @@
+# Cyber-AutoAgent Operation Files Written
+# Sigma id 2dbb915f-15f8-5498-bf43-527bcf704946, pipeline sentinel_asim
+imFileEvent
+| where ((TargetFileName contains "/OP_" or TargetFileName contains "\\OP_") and (TargetFileName endswith "cyber_operations.log" or TargetFileName endswith "security_assessment_report.md" or TargetFileName endswith "execution_prompt_optimized.txt")) or (TargetFileName contains "/.cyber-autoagent/config.json" or TargetFileName contains "\\.cyber-autoagent\\config.json")

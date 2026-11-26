@@ -1,0 +1,32 @@
+title: Decepticon Telemetry or Installer Domain Lookup
+id: 105f6b2a-35dc-54c6-9fa5-18fa67bbc576
+status: experimental
+description: |
+    Detects lookups of the Decepticon telemetry gateway (decepticon-telemetry-gateway.purpleailab.workers.dev), which
+    the launcher's setup wizard enables unless the operator declines, and of decepticon.red, which serves the installer
+    and the hosted console.
+references:
+    - https://github.com/BitterSecurity/Decepticon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.004
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: dns_query
+detection:
+    selection_telemetry:
+        - QueryName: 'decepticon-telemetry-gateway.purpleailab.workers.dev'
+        - QueryName|endswith: '.decepticon-telemetry-gateway.purpleailab.workers.dev'
+    selection_site:
+        # The installer, docs and the hosted console. A visit to the project's web site also matches
+        - QueryName: 'decepticon.red'
+        - QueryName|endswith: '.decepticon.red'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Decepticon
+    - Visits to the Decepticon web site (selection_site)
+level: medium

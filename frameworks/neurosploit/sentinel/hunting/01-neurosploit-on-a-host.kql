@@ -1,0 +1,43 @@
+// NeuroSploit on a host you monitor
+// Agentic attack detections by ThreatDefence (NeuroSploit). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// NeuroSploit (JoasASantos/NeuroSploit, reviewed at 54d8e860) is a Rust harness with a Node.js web console on port 4173
+// that has no login. No report of its use in a real intrusion was found on November 26, 2026, so this hunt looks for
+// the software itself, from its source code:
+//  - The binary neurosploit (neurosploit.exe), its C2 daemon "neurosploit c2 daemon --port 0 --dir <...>/.neurosploit/c2",
+//    the containers neurosploit-kali and neurosploit-neo4j, and node running /tmp/ns_browser_prefetch.js.
+//  - Coding agent CLIs started by neurosploit with approvals off: claude -p ... --dangerously-skip-permissions,
+//    codex exec ... --dangerously-bypass-approvals-and-sandbox.
+//  - Files: <cwd>/.neurosploit/ (keys.json, vault/, c2/), runs/ns-<unix time>-<target>/.
+//  - The web console listening on 4173 (node), and the out-of-band listener on 8080 (neurosploit).
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Markers = dynamic(["c2 daemon --port 0 --dir", "neurosploit-kali", "neurosploit-neo4j", "ns_browser_prefetch.js", "neurosploit-mcp"]);
+let NsProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where FileName in~ ("neurosploit", "neurosploit.exe") or ProcessCommandLine has_any (Markers)
+        or (InitiatingProcessFileName in~ ("neurosploit", "neurosploit.exe")
+            and ProcessCommandLine has_any ("--dangerously-skip-permissions", "--dangerously-bypass-approvals-and-sandbox"));
+let NsDevices = NsProcesses | distinct DeviceName;
+union isfuzzy=true
+    (NsProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="NeuroSploit binary, C2 daemon, container or agent CLI child", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has_any ("/.neurosploit/c2/", @"\.neurosploit\c2\", "/.neurosploit/vault/", @"\.neurosploit\vault\")
+            or FolderPath endswith "/.neurosploit/keys.json" or FolderPath endswith @"\.neurosploit\keys.json"
+            or FolderPath =~ "/tmp/ns_browser_prefetch.js" or FolderPath matches regex @"[/\\]runs[/\\]ns-\d{10}-"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="NeuroSploit project store, vault, C2 state or run folder", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated"
+        | where (LocalPort == 4173 and InitiatingProcessFileName in~ ("node", "node.exe") and InitiatingProcessCommandLine has "server.js")
+            or (InitiatingProcessFileName in~ ("neurosploit", "neurosploit.exe"))
+        | summarize Ports=make_set(LocalPort, 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, Signal="NeuroSploit console (4173) or listener opened by neurosploit", Detail=strcat(InitiatingProcessFileName, " ", tostring(Ports)))
+| extend KnownNeuroSploitDevice = DeviceName in (NsDevices)
+| order by Timestamp desc

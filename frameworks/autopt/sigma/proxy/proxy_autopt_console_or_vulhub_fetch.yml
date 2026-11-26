@@ -1,0 +1,37 @@
+title: AutoPT Console API or Vulhub PoC Fetch in Proxy Logs
+id: 16e9d7d8-0441-52da-9e2e-c2e3f9d7e9e7
+status: experimental
+description: |
+    Detects use of an AutoPT web console's API (configuration with model keys, system info, agent runs), its upstream
+    user agent AutoPT/1.0, and the request AutoPT makes before each Inquire step: a vulhub README from
+    raw.githubusercontent.com with a Chrome user agent cut off before "(KHTML, like Gecko)". The console has no login,
+    so a request to these paths from outside the operator's host is someone else using it.
+references:
+    - https://github.com/evenhu9/AutoPT
+    - https://github.com/Dizzy-K/AutoPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_console:
+        c-uri|contains:
+            - '/api/task/start'
+            - '/api/system/info'
+            - '/api/docker/envs'
+    selection_upstream:
+        c-useragent|startswith: 'AutoPT/'
+    selection_vulhub:
+        c-uri|contains: '/vulhub/vulhub/master/'
+        c-useragent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    condition: 1 of selection_*
+falsepositives:
+    - Researchers running the AutoPT benchmark
+    - Other Flask apps with the same API paths (selection_console alone is weak; check the response for the AutoPT page title)
+level: low

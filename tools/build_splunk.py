@@ -51,6 +51,20 @@ FRAMEWORKS = {
     "redamon": ("RedAmon", "#EF5A5A", "3000", "Self-hosted pentest platform: web console, recon pipeline and a Metasploit agent."),
     "xalgorix": ("Xalgorix", "#C9A0FF", "9137", "Go binary with a web dashboard whose agent tests web apps and re-exploits findings."),
     "pentestswarm": ("Pentest Swarm AI", "#9AA4B2", "8080", "Go command-line tool that runs recon, exploit and report agents."),
+    "shannon": ("Shannon", "#5B8DEF", "", "TypeScript white-box AI pentester: Temporal workers drive model agents and a headless browser."),
+    "pentestgpt": ("PentestGPT", "#7FD1AE", "", "Python agent that drives the Claude Code or Codex CLI with permission checks off."),
+    "cyber-autoagent": ("Cyber-AutoAgent", "#F2A65A", "3000", "Python agent on the Strands SDK in a Kali container, with a bundled Langfuse stack."),
+    "cai": ("CAI", "#B784E0", "8000", "Alias Robotics agent framework: shell agents, optional HTTP API, session-log telemetry."),
+    "hacksynth": ("HackSynth", "#6FB3B8", "", "Research CTF agent: a planner model runs one bash command per step in a Kali container."),
+    "vulnbot": ("VulnBot", "#D98880", "7861", "Research multi-agent pentester that runs Kali tools over SSH, with an optional knowledge base API."),
+    "autopt": ("AutoPT", "#C39BD3", "5000", "Research web pentest agent with an unauthenticated Flask console that runs vulhub exploits."),
+    "pentestagent": ("PentestAgent (paper)", "#A3B18A", "", "Research agent from arXiv 2411.05185: nmap, CVE lookup and public exploit runs."),
+    "ghostcrew-pentestagent": ("PentestAgent (GH05TCREW)", "#E0B354", "8080", "Python pentest agent with a terminal UI, crews and an unauthenticated MCP server."),
+    "darkmoon": ("Dark Moon", "#7D8CC4", "8181", "OpenCode-based agent stack with 51 attack prompts and an unauthenticated MCP server."),
+    "decepticon": ("Decepticon", "#E05D5D", "3000", "LangGraph red team agents in a Kali sandbox with on-demand Sliver and Havoc C2."),
+    "sapper-v2": ("sapper-v2", "#8FBC8F", "8765", "Contest kit that drives Claude Code sessions in tmux around a shared engagement graph."),
+    "nyxstrike": ("NyxStrike", "#6C7BD9", "8888", "HexStrike derivative with a web dashboard, a decision engine and about 200 tools over MCP."),
+    "neurosploit": ("NeuroSploit", "#D4699A", "4173", "Rust multi-model harness with an unauthenticated web console, out-of-band channel and optional C2."),
     "behaviors": ("Shared behaviors", "#D9DEE5", "", "What every agentic framework does: coding agents with approvals off, agent tooling, callbacks."),
 }
 
@@ -230,6 +244,18 @@ def annotations(techniques):
     return json.dumps({"mitre_attack": techniques}, separators=(", ", ": "))
 
 
+def fix_or_with_regex(spl):
+    """Repair the Splunk backend's output for an OR whose first branch is a plain term and a later one a regex.
+
+    The backend keeps the plain term as the base search and starts the final `search` with a bare OR, which
+    Splunk refuses, and which would drop the other branches anyway. Move the term into that `search`.
+    """
+    head, nl, rest = spl.partition("\n")
+    if not nl or head.lstrip().startswith("|") or "\n| search OR " not in rest:
+        return spl
+    return rest.replace("\n| search OR ", f"\n| search ({head.strip()}) OR ", 1)
+
+
 def sigma_searches():
     from sigma.backends.splunk import SplunkBackend
     from sigma.collection import SigmaCollection
@@ -276,6 +302,7 @@ def sigma_searches():
         if not spl:
             raise SystemExit(f"{path}: the Splunk backend returned no query")
         spl = str(spl[-1]) if isinstance(rule, SigmaCorrelationRule) else "\n".join(map(str, spl))
+        spl = fix_or_with_regex(spl)
         key = logsource.category if logsource.category in SOURCE_MACRO else (logsource.product, logsource.service)
         macro = SOURCE_MACRO.get(key)
         if not macro:

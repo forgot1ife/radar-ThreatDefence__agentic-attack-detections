@@ -1,0 +1,8 @@
+# sapper-v2 Agent Orchestration on a Host
+# Sigma id 6729ae36-bb67-5361-a363-e5b0b2edbbd2, pipeline splunk_windows
+CommandLine="*echo DRIVE_PANE_EXITED; exec sleep infinity*"
+| rex field=CommandLine "(?<CommandLineMatch>\\s-[st]\\s+['\"]?sapper-(cmd|tui|fleet)\\b)"
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), "true", "false")
+| rex field=CommandLine "(?<CommandLineMatch2>(^|[/\\s])sapper(\\.py)?\\s(.*\\s)?(auto\\s(.*\\s)?--(minutes|skip-permissions)|bench\\s(.*\\s)?--(root|minutes)|view\\s(.*\\s)?--serve)\\b)"
+| eval CommandLineCondition2=if(isnotnull(CommandLineMatch2), "true", "false")
+| search OR (CommandLine="*tmux*" CommandLineCondition="true") OR CommandLine IN ("*You are an autonomous executor in a penetration-testing fact-graph agent system*", "*You are the autonomous field commander of a pentest campaign (TSecBench)*", "*You are an autonomous pentest operator in a CTF benchmark*", "*You are a GENERAL (senior operator) on challenge*", "*/opt/sapper/docker/commander/*") OR CommandLineCondition2="true"

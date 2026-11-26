@@ -1,0 +1,41 @@
+title: Decepticon AI Red Team Agent Installed or Started
+id: b2cc9abb-091b-552c-9671-43932c67be6d
+status: experimental
+description: |
+    Detects the Decepticon installer (curl https://decepticon.red/install | bash, irm https://decepticon.red/install.ps1),
+    the Decepticon launcher commands, and its containers being pulled or run from ghcr.io/bittersecurity/decepticon-*
+    (litellm, sandbox, langgraph, cli, skillogy, rea, c2-sliver, c2-havoc).
+references:
+    - https://github.com/BitterSecurity/Decepticon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.execution
+    - attack.t1610
+logsource:
+    category: process_creation
+detection:
+    selection_installer:
+        CommandLine|contains:
+            - 'decepticon.red/install'
+            - 'raw.githubusercontent.com/BitterSecurity/Decepticon/'
+    selection_launcher:
+        # The launcher is a Go binary named decepticon; onboard writes ~/.decepticon/.env, start brings up the stack
+        CommandLine|re: '(^|[/\\\s])decepticon(\.exe)?["'']?\s+(onboard|start|stop|status|doctor|update|attach|resume|mcp\s+serve)(\s|$)'
+    selection_images:
+        CommandLine|contains: 'ghcr.io/bittersecurity/decepticon-'
+    selection_containers:
+        CommandLine|contains:
+            - 'decepticon-sandbox'
+            - 'decepticon-langgraph'
+            - 'decepticon-c2-sliver'
+            - 'decepticon-c2-havoc'
+        CommandLine|contains|all:
+            - 'docker'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests and research with Decepticon
+level: medium

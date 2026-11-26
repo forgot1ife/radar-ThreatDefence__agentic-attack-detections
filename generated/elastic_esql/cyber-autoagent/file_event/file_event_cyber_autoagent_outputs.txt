@@ -1,0 +1,3 @@
+# Cyber-AutoAgent Operation Files Written
+# Sigma id 2dbb915f-15f8-5498-bf43-527bcf704946, pipeline ecs
+from * metadata _id, _index, _version | where (TargetFilename like "*/OP_*" or TargetFilename like "*\\OP_*") and (ends_with(TargetFilename, "cyber_operations.log") or ends_with(TargetFilename, "security_assessment_report.md") or ends_with(TargetFilename, "execution_prompt_optimized.txt")) or TargetFilename like "*/.cyber-autoagent/config.json*" or TargetFilename like "*\\.cyber-autoagent\\config.json*"

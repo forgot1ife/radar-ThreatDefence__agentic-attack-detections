@@ -1,0 +1,3 @@
+# CAI fetch_url User Agent in Web Logs
+# Sigma id bdfb6624-6b40-502b-a893-8e545a831f47, pipeline splunk_windows
+"cs-user-agent" IN ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36", "Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/124.0+Safari/537.36")

@@ -1,0 +1,4 @@
+# NeuroSploit Harness on a Host
+# Sigma id ec1e9ac1-280c-5e4f-a77c-2b8ceb295512, pipeline azure_monitor
+SecurityEvent
+| where (NewProcessName endswith "/neurosploit" or NewProcessName endswith "\\neurosploit.exe") or (CommandLine contains "c2 daemon --port 0 --dir" or CommandLine contains "neurosploit-kali" or CommandLine contains "neurosploit-neo4j" or CommandLine contains "ns_browser_prefetch.js" or CommandLine contains "neurosploit-mcp") or ((ParentProcessName endswith "/neurosploit" or ParentProcessName endswith "\\neurosploit.exe") and (CommandLine contains "--dangerously-skip-permissions" or CommandLine contains "--dangerously-bypass-approvals-and-sandbox"))

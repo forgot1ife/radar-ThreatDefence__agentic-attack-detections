@@ -1,0 +1,107 @@
+{
+ "description": "31 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 11,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "decepticon",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Decepticon running on a host you monitor; Sentinel analytics: Decepticon AI red team agent on a host or reporting from your network; Sigma: Decepticon Sandbox, Agent Server or C2 Container Process; Suricata: 3811305 TD Decepticon sandbox command transport; YARA: Decepticon_Sandbox_Session_Log",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: Decepticon in web and proxy logs: its own user agents, unfilled user agent templates and its API routes; KQL hunt: Decepticon running on a host you monitor; Sentinel analytics: Decepticon AI red team agent on a host or reporting from your network; Sigma: Decepticon Telemetry, Discovery, Sandbox or Model Gateway Requests in Proxy Logs; Suricata: 3811302 TD Decepticon telemetry TLS (decepticon-telemetry-gateway.purpleailab.workers.dev); Suricata: 3811303 TD Decepticon telemetry client user agent; Suricata: 3811306 TD Decepticon ChatGPT subscription gateway default user agent; Suricata: 3811310 TD Decepticon sandbox daemon API page; Suricata: 3811311 TD Decepticon LangGraph server plugin or RoE API request; Suricata: 3811312 TD Decepticon web console page (removed November 11, 2026); Suricata: 3811313 TD Decepticon web console health answer",
+   "enabled": true,
+   "score": 11,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Sigma: Decepticon Telemetry or Installer Domain Lookup; Suricata: 3811301 TD Decepticon telemetry DNS query (decepticon-telemetry-gateway.purpleailab.workers.dev)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "Sigma: Decepticon Sandbox, Agent Server or C2 Container Process; YARA: Decepticon_Havoc_Default_Profile; YARA: Decepticon_Sliver_Operator_Config",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1219"
+  },
+  {
+   "comment": "Suricata: 3811324 TD Decepticon phishing lure engagement header in SMTP",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1566.002"
+  },
+  {
+   "comment": "KQL hunt: Decepticon running on a host you monitor; Sigma: Decepticon AI Red Team Agent Installed or Started; Sigma: Decepticon Configuration, Telemetry ID or C2 Operator Config Written; Sigma: Decepticon Telemetry or Installer Domain Lookup; YARA: Decepticon_Launcher; YARA: Decepticon_Package; YARA: Decepticon_RoE_File",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Decepticon in web and proxy logs: its own user agents, unfilled user agent templates and its API routes; Sigma: Decepticon Markers in Web Server Logs; Suricata: 3811320 TD Decepticon user agent token; Suricata: 3811321 TD Decepticon opsec skill user agent template sent unfilled; Suricata: 3811322 TD Decepticon web fetch engine headers with a Chrome user agent; Suricata: 3811323 TD Decepticon web fetch platform probe headers",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  },
+  {
+   "comment": "KQL hunt: Decepticon in web and proxy logs: its own user agents, unfilled user agent templates and its API routes; Sigma: Decepticon Telemetry, Discovery, Sandbox or Model Gateway Requests in Proxy Logs; Suricata: 3811304 TD Decepticon passive subdomain discovery on crt.sh",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1596.003"
+  },
+  {
+   "comment": "Sigma: Decepticon AI Red Team Agent Installed or Started",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1610"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

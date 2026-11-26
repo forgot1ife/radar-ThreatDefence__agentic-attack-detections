@@ -1,0 +1,32 @@
+title: NeuroSploit User Agents in Proxy Logs
+id: cbd0a114-3ee0-5143-9749-0e260001c4e2
+status: experimental
+description: |
+    Detects the user agents hard-coded in NeuroSploit: NeuroSploit/<version> on the harness's own requests (also sent to
+    crt.sh for subdomain lists), NeuroSploit-WebShell/1.0 from its web shell manager, the bare NeuroSploit from its
+    GitHub, GitLab, Jira, Slack and Graph integrations, and neurosploit-logship/<version> from its log shipping.
+references:
+    - https://github.com/JoasASantos/NeuroSploit
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection_prefix:
+        c-useragent|startswith:
+            - 'NeuroSploit/'
+            - 'neurosploit-logship/'
+    selection_shell:
+        c-useragent|contains: 'NeuroSploit-WebShell/'
+    selection_exact:
+        c-useragent: 'NeuroSploit'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with NeuroSploit
+level: medium

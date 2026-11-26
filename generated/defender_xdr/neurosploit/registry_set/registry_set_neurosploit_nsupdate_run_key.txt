@@ -1,0 +1,4 @@
+# NeuroSploit Beacon Run Key Value NSUpdate
+# Sigma id 5f5a6160-f5ee-5a15-849d-c1c1ade4fa4e, pipeline microsoft_xdr
+DeviceRegistryEvents
+| where RegistryKey endswith "\\CurrentVersion\\Run\\NSUpdate"

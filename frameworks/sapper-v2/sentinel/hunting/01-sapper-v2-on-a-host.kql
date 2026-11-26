@@ -1,0 +1,46 @@
+// sapper-v2 running on a host you monitor
+// Agentic attack detections by ThreatDefence (sapper-v2). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the sapper-v2 source code (N1nEmAn/sapper-v2 at 7b75e6f1). sapper-v2 starts Claude Code (and Codex) sessions in
+// tmux, types missions into them and keeps a shared engagement graph on disk:
+//  - Every agent window runs "cd <dir> && claude ... --dangerously-skip-permissions 2>&1; echo DRIVE_PANE_EXITED; exec
+//    sleep infinity" in tmux session sapper-cmd, sapper-tui or sapper-fleet.
+//  - Missions are typed with tmux send-keys, so their text is in the command line ("You are the autonomous field commander
+//    of a pentest campaign (TSecBench)", "You are an autonomous pentest operator in a CTF benchmark").
+//  - Executor steps run claude -p with --append-system-prompt "You are an autonomous executor in a penetration-testing
+//    fact-graph agent system".
+//  - The graph lives in .sapper/ (project.json, facts/, intents/); the contest image uses /work/runs and /opt/sapper.
+//  - sapper view --serve opens a board on TCP 8765 (loopback by default).
+// The names need a code change; the run folder (SAPPER_ROOT) and the board port are settings.
+
+let Window = 30d;
+let Prompts = dynamic(["You are an autonomous executor in a penetration-testing fact-graph agent system",
+    "You are the autonomous field commander of a pentest campaign (TSecBench)",
+    "You are an autonomous pentest operator in a CTF benchmark", "You are a GENERAL (senior operator) on challenge",
+    "/opt/sapper/docker/commander/"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "DRIVE_PANE_EXITED"
+            or (ProcessCommandLine has "tmux" and ProcessCommandLine matches regex @"\s-[st]\s+['""]?sapper-(cmd|tui|fleet)\b")
+            or ProcessCommandLine has_any (Prompts)
+            or ProcessCommandLine matches regex @"(^|[/\s])sapper(\.py)?\s(.*\s)?(auto\s(.*\s)?--(minutes|skip-permissions)|bench\s(.*\s)?--(root|minutes)|view\s(.*\s)?--serve)\b"
+        | project Timestamp, DeviceName, Signal="sapper-v2 agent window, tmux session, mission or CLI", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath matches regex @"/\.sapper/(facts|intents|hints)/" or FolderPath has "/opt/sapper/docker/commander/"
+            or FolderPath has "/work/runs/pane-env/"
+            or (FolderPath has "/.sapper/" and FileName in~ ("project.json", "arena.json", "ai-channel.txt", "ai-peers.json"))
+            or FileName =~ "sapper-graph.html"
+            or (FolderPath has "/work/runs/" and FileName in~ ("commander-state.md", "rotated.env"))
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, Folder=tostring(split(FolderPath, ".sapper")[0])
+        | project Timestamp, DeviceName, Signal="sapper-v2 graph or run files", Detail=strcat(Folder, " ", tostring(Files)), Parent=""),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated"
+        | where InitiatingProcessCommandLine matches regex @"(^|[/\s])sapper(\.py)?\s(.*\s)?view\s(.*\s)?--serve"
+        | project Timestamp, DeviceName, Signal="sapper-v2 board listening", Detail=strcat(LocalIP, ":", LocalPort),
+            Parent=InitiatingProcessCommandLine)
+| order by Timestamp desc

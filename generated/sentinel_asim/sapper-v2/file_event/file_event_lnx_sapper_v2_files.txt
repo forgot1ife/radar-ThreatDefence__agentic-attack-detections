@@ -1,0 +1,4 @@
+# sapper-v2 Engagement Graph or Run Files Written
+# Sigma id c7f134df-fb75-5194-bc67-c8870c97a51c, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.sapper/facts/" or TargetFileName contains "/.sapper/intents/" or TargetFileName contains "/.sapper/hints/" or TargetFileName contains "/opt/sapper/docker/commander/" or TargetFileName contains "/work/runs/pane-env/") or (TargetFileName endswith "/.sapper/project.json" or TargetFileName endswith "/.sapper/arena.json" or TargetFileName endswith "/.sapper/ai-channel.txt" or TargetFileName endswith "/.sapper/ai-peers.json" or TargetFileName endswith "/sapper-graph.html" or TargetFileName endswith "/work/runs/commander-state.md" or TargetFileName endswith "/work/runs/rotated.env" or TargetFileName endswith "/.claude/skills/sapper-setup")

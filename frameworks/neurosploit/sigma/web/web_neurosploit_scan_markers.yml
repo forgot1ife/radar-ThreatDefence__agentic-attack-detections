@@ -1,0 +1,37 @@
+title: NeuroSploit Scan Markers in Web Logs
+id: 40eb9798-d25b-5238-9307-dcefb97a4d8a
+status: experimental
+description: |
+    Detects NeuroSploit testing a web server: its user agent NeuroSploit/<version>, the soft-404 probe path
+    /nrsplt_baseline_404_check_9x7 it requests at the start of every run, the NEUROSPLOIT canaries it puts in paths and
+    parameters (NEUROSPLOITsub<hex> soft-404 checks, NEUROSPLOITnsxss<hex> XSS payloads), its open redirect test host
+    neurosploit.example, and the user agent of its web shell manager. All strings are in the NeuroSploit code at 54d8e860.
+references:
+    - https://github.com/JoasASantos/NeuroSploit
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_ua:
+        - cs-user-agent|startswith: 'NeuroSploit/'
+        - cs-user-agent|contains: 'NeuroSploit-WebShell/'
+    selection_path:
+        cs-uri-stem|contains:
+            - 'nrsplt_baseline_404_check_9x7'
+            - 'NEUROSPLOITsub'
+    selection_query:
+        cs-uri-query|contains:
+            - 'NEUROSPLOITns'
+            - 'neurosploit.example'
+            - 'oob.invalid'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with NeuroSploit
+level: high

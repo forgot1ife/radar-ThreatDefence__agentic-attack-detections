@@ -1,0 +1,27 @@
+title: AutoPT Run Result Written
+id: 4dc01358-f0f5-56d4-a9a5-b1eab1185598
+status: experimental
+description: |
+    Detects the result file AutoPT writes after each agent run:
+    src/result/<model folder>/<service>_<CVE>_<model>_FSM.jsonl, with the commands the agent ran and whether the
+    exploit worked.
+references:
+    - https://github.com/evenhu9/AutoPT
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: file_event
+detection:
+    selection:
+        TargetFilename|contains:
+            - '/result/'
+            - '\result\'
+        TargetFilename|endswith: '_FSM.jsonl'
+    condition: selection
+falsepositives:
+    - Researchers running the AutoPT benchmark
+level: medium

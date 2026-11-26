@@ -1,0 +1,30 @@
+title: NyxStrike Data Folder, Log or Browser Screenshot Written
+id: f8896e92-99ba-53b7-8e09-daa339abd7d0
+status: experimental
+description: |
+    Detects files NyxStrike writes on the host that runs it: its data folder .nyxstrike_data (SQLite database
+    nyxstrike.db, sessions, run history, the credential encryption key config/cred_key and config_local.json), its log
+    nyxstrike.log, and the screenshots of its browser agent, /tmp/security_screenshot_<epoch>.png.
+references:
+    - https://github.com/CommonHuman-Lab/nyxstrike
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    product: linux
+    category: file_event
+detection:
+    selection_data:
+        TargetFilename|contains: '/.nyxstrike_data/'
+    selection_log:
+        TargetFilename|endswith: '/nyxstrike.log'
+    selection_screenshot:
+        TargetFilename|startswith: '/tmp/security_screenshot_'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized red team or lab use of NyxStrike
+    - Another tool that writes /tmp/security_screenshot_ files
+level: medium

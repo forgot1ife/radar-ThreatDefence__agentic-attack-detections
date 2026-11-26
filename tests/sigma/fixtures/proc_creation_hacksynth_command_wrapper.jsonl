@@ -1,0 +1,4 @@
+{"name": "an agent command wrapped in timeout and bash inside a container", "expected": true, "event": {"Image": "/usr/bin/timeout", "CommandLine": "timeout 30s /bin/bash -c 'nmap -sV 10.20.30.40'", "ParentImage": "/usr/bin/containerd-shim-runc-v2"}}
+{"name": "the same wrapper with the full path to timeout", "expected": true, "event": {"Image": "/usr/bin/timeout", "CommandLine": "/usr/bin/timeout 120s /bin/bash -c 'cat /etc/passwd'", "ParentImage": "/usr/bin/runc"}}
+{"name": "timeout and bash run from a login shell, not a container", "expected": false, "event": {"Image": "/usr/bin/timeout", "CommandLine": "timeout 30s /bin/bash -c 'make test'", "ParentImage": "/bin/zsh"}}
+{"name": "timeout without a seconds suffix in a container", "expected": false, "event": {"Image": "/usr/bin/timeout", "CommandLine": "timeout 30 /bin/sh -c 'curl -fs localhost/health'", "ParentImage": "/usr/bin/containerd-shim-runc-v2"}}

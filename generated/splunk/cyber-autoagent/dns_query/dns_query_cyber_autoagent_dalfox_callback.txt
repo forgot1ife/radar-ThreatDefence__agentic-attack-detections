@@ -1,0 +1,3 @@
+# Cyber-AutoAgent Dalfox Blind XSS Callback DNS Query
+# Sigma id 4f00c370-3800-5551-81ed-ff487e16c2bb, pipeline splunk_windows
+QueryName IN ("dalfox-xss-test.com", "*.dalfox-xss-test.com")

@@ -1,0 +1,3 @@
+# Cyber-AutoAgent Operation Files Written
+# Sigma id 2dbb915f-15f8-5498-bf43-527bcf704946, pipeline ecs
+((TargetFilename:(*\/OP_* OR *\\OP_*)) AND (TargetFilename:(*cyber_operations.log OR *security_assessment_report.md OR *execution_prompt_optimized.txt))) OR (TargetFilename:(*\/.cyber\-autoagent\/config.json* OR *\\.cyber\-autoagent\\config.json*))

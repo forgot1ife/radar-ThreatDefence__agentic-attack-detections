@@ -1,0 +1,26 @@
+title: Cyber-AutoAgent Dalfox Blind XSS Callback in Web Logs
+id: 68a4e040-8542-50f5-aa5b-a9c175c4b450
+status: experimental
+description: |
+    Detects requests carrying the blind XSS callback https://dalfox-xss-test.com that Cyber-AutoAgent's general module
+    passes to dalfox (-b). The dalfox payloads put it in the query string of the parameters it tests.
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/general/tools/advanced_payload_coordinator.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-uri-query|contains: 'dalfox-xss-test.com'
+    condition: selection
+falsepositives:
+    - Authorized tests with Cyber-AutoAgent
+    - Other dalfox users who chose the same callback name
+level: high

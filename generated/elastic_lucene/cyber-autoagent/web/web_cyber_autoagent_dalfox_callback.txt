@@ -1,0 +1,3 @@
+# Cyber-AutoAgent Dalfox Blind XSS Callback in Web Logs
+# Sigma id 68a4e040-8542-50f5-aa5b-a9c175c4b450, pipeline ecs
+url.query:*dalfox\-xss\-test.com*

@@ -1,0 +1,3 @@
+# NeuroSploit Project Store, Vault or C2 Files Written
+# Sigma id e3bb33ff-a33c-55ff-8592-e7841eac06be, pipeline splunk_windows
+TargetFilename IN ("*/.neurosploit/c2/*", "*\\.neurosploit\\c2\\*", "*/.neurosploit/vault/*", "*\\.neurosploit\\vault\\*") OR TargetFilename IN ("*/.neurosploit/keys.json", "*\\.neurosploit\\keys.json") OR TargetFilename="/tmp/ns_browser_prefetch.js"

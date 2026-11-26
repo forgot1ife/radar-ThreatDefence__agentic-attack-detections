@@ -1,0 +1,4 @@
+# Cyber-AutoAgent Operation Files Written
+# Sigma id 2dbb915f-15f8-5498-bf43-527bcf704946, pipeline microsoft_xdr
+DeviceFileEvents
+| where ((FolderPath contains "/OP_" or FolderPath contains "\\OP_") and (FolderPath endswith "cyber_operations.log" or FolderPath endswith "security_assessment_report.md" or FolderPath endswith "execution_prompt_optimized.txt")) or (FolderPath contains "/.cyber-autoagent/config.json" or FolderPath contains "\\.cyber-autoagent\\config.json")

@@ -1,0 +1,4 @@
+# Cyber-AutoAgent AI Pentest Agent Started
+# Sigma id 8951bac6-de2e-5ab6-87f0-c6cd8af00f7e, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "cyberautoagent.py" and (CommandLine contains "--target" or CommandLine contains "--service-mode")) or CommandLine contains "--objective via environment" or CommandLine contains "/interfaces/react/dist/index.js" or CommandLine contains "cyber-autoagent:latest"

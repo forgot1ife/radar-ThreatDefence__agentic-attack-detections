@@ -1,0 +1,3 @@
+# NeuroSploit Harness on a Host
+# Sigma id ec1e9ac1-280c-5e4f-a77c-2b8ceb295512, pipeline ecs
+from * metadata _id, _index, _version | where ends_with(process.executable, "/neurosploit") or ends_with(process.executable, "\\neurosploit.exe") or process.command_line like "*c2 daemon --port 0 --dir*" or process.command_line like "*neurosploit-kali*" or process.command_line like "*neurosploit-neo4j*" or process.command_line like "*ns_browser_prefetch.js*" or process.command_line like "*neurosploit-mcp*" or (ends_with(process.parent.executable, "/neurosploit") or ends_with(process.parent.executable, "\\neurosploit.exe")) and (process.command_line like "*--dangerously-skip-permissions*" or process.command_line like "*--dangerously-bypass-approvals-and-sandbox*")

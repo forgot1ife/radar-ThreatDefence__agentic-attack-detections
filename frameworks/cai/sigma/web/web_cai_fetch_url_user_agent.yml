@@ -1,0 +1,28 @@
+title: CAI fetch_url User Agent in Web Logs
+id: bdfb6624-6b40-502b-a893-8e545a831f47
+status: experimental
+description: |
+    Detects the user agent of CAI's fetch_url tool, Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like
+    Gecko) Chrome/124.0 Safari/537.36. The Chrome version has two parts where real Chrome sends four (124.0.0.0). The
+    operator can change it with CAI_FETCH_USER_AGENT; other scrapers may copy the same short form.
+references:
+    - https://github.com/aliasrobotics/cai
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1594
+logsource:
+    category: webserver
+detection:
+    selection:
+        cs-user-agent:
+            - 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36'
+            # IIS writes spaces in the user agent as plus signs
+            - 'Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/124.0+Safari/537.36'
+    condition: selection
+falsepositives:
+    - Scrapers that send the same shortened Chrome version
+    - Authorized tests with CAI
+level: low

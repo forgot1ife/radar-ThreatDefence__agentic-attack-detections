@@ -1,0 +1,37 @@
+// VulnBot on a host you monitor: the controller and the Kali host it drives
+// Agentic attack detections by ThreatDefence (VulnBot). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.004 (Command and Scripting Interpreter: Unix Shell), T1021.004 (Remote Services: SSH), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// VulnBot (KHenryAegis/VulnBot, reviewed at 9a12effa) is a Python CLI whose three agents (reconnaissance, scanning,
+// exploitation) run every command in one SSH shell on a separate Kali host. No report of its use in a real intrusion
+// was found on November 26, 2026, so this hunt looks for the software itself, from its source code:
+//  - Controller: python cli.py vulnbot -m <n> [-t <s>], cli.py start -a (API on 7861, Streamlit on 8501), cli.py init.
+//  - Kali host: right after an SSH password login (default root/root) the shell runs touch ~/.hushlogin,
+//    sudo touch /etc/legal, sudo chmod 644 /etc/legal, sudo rm -f /etc/motd, sudo rm -f /etc/update-motd.d/*, then
+//    the Kali tools the model chose (nmap, nikto, dirb, sqlmap, hydra, msfconsole and others).
+//  - Files: logs/Auto-Pentest.log, basic_config.yaml, model_config.yaml, kb_config.yaml, db_config.yaml in its folder.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let SetupCommands = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where (FileName in~ ("touch", "chmod", "sudo") and ProcessCommandLine has "/etc/legal")
+        or (FileName in~ ("rm", "sudo") and ProcessCommandLine has "-f" and ProcessCommandLine has_any ("/etc/motd", "/etc/update-motd.d/"))
+        or (FileName =~ "touch" and ProcessCommandLine endswith "/.hushlogin");
+union isfuzzy=true
+    (SetupCommands
+        | summarize Steps=dcount(case(ProcessCommandLine has "/etc/legal", "legal", ProcessCommandLine has "motd", "motd", "hushlogin")),
+            Commands=make_set(ProcessCommandLine, 10), First=min(Timestamp) by DeviceName, AccountName, Bucket=bin(Timestamp, 2m)
+        | where Steps >= 2
+        | project Timestamp=First, DeviceName, Signal="VulnBot SSH shell setup on the host it drives", Detail=strcat(AccountName, " ", tostring(Commands))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "cli.py" and ProcessCommandLine has_any (" vulnbot", " pentestgpt", " start -a", "VulnBot/cli.py", "VulnBot\\cli.py")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, Signal="VulnBot command line", Detail=strcat(AccountName, " ", tostring(Commands))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName =~ "Auto-Pentest.log" or (FolderPath has "/logs/run_api_server_" or FolderPath has "/logs/run_webui_")
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="VulnBot log files", Detail=tostring(Files))
+| order by Timestamp desc

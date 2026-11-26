@@ -1,0 +1,4 @@
+# Decepticon Telemetry, Discovery, Sandbox or Model Gateway Requests in Proxy Logs
+# Sigma id 8363827c-25d4-5c8c-bf77-faf291e11437, pipeline sentinel_asim
+imWebSession
+| where (HttpUserAgent in~ ("decepticon-telemetry/1.0", "decepticon-roe/1", "decepticon-http-sandbox/1", "codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown")) or HttpUserAgent contains "Decepticon/" or (HttpHost in~ ("decepticon-telemetry-gateway.purpleailab.workers.dev") or HttpHost endswith ".decepticon-telemetry-gateway.purpleailab.workers.dev")

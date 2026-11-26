@@ -1,0 +1,4 @@
+# NeuroSploit Project Store, Vault or C2 Files Written
+# Sigma id e3bb33ff-a33c-55ff-8592-e7841eac06be, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.neurosploit/c2/" or TargetFileName contains "\\.neurosploit\\c2\\" or TargetFileName contains "/.neurosploit/vault/" or TargetFileName contains "\\.neurosploit\\vault\\") or (TargetFileName endswith "/.neurosploit/keys.json" or TargetFileName endswith "\\.neurosploit\\keys.json") or TargetFileName =~ "/tmp/ns_browser_prefetch.js"

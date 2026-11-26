@@ -1,0 +1,34 @@
+id: 3059c458-82ba-5410-a3c2-256ffe971896
+name: Decepticon AI red team agent on a host or reporting from your network
+description: |
+  A host installed or started Decepticon (decepticon.red/install, ghcr.io/bittersecurity/decepticon-* images), ran its
+  sandbox command daemon or tmux completion hook, created its Sliver operator decepticon, or sent Decepticon usage
+  telemetry to decepticon-telemetry-gateway.purpleailab.workers.dev, which the launcher's setup wizard enables unless
+  the operator declines. Decepticon is an autonomous red team agent with on-demand Sliver and Havoc C2.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - CommandAndControl
+relevantTechniques:
+  - T1059.004
+  - T1071.001
+query: |
+  union isfuzzy=true
+      (DeviceProcessEvents
+          | where ProcessCommandLine matches regex @"decepticon\.red/install|ghcr\.io/bittersecurity/decepticon-|decepticon_sandbox\.server|@dcptn_completion"
+              or (ProcessCommandLine contains "sliver-server operator" and ProcessCommandLine contains "--name decepticon")
+          | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine),
+      (DeviceNetworkEvents
+          | where RemoteUrl has "decepticon-telemetry-gateway.purpleailab.workers.dev"
+          | project TimeGenerated, DeviceName, AccountName=InitiatingProcessAccountName, Detail=strcat(RemoteUrl, " ", InitiatingProcessCommandLine))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

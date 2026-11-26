@@ -1,0 +1,33 @@
+title: Cyber-AutoAgent General Module Tool Command Lines
+id: f431fc1b-d3f2-5ee6-aace-b0034ce41036
+status: experimental
+description: |
+    Detects the fixed command lines the tools of Cyber-AutoAgent's default "general" module start: dalfox with the
+    blind XSS callback https://dalfox-xss-test.com, and feroxbuster with the word list it writes to
+    /tmp/auth_wordlist.txt. The tools run only when the model calls them.
+references:
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/general/tools/advanced_payload_coordinator.py
+    - https://github.com/westonbrown/Cyber-AutoAgent/blob/54897ff91d16ed05bacfb9b96526021d7aaa3026/src/modules/operation_plugins/general/tools/auth_chain_analyzer.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.t1595.003
+logsource:
+    category: process_creation
+detection:
+    selection_dalfox:
+        CommandLine|contains|all:
+            - 'dalfox'
+            - 'dalfox-xss-test.com'
+    selection_ferox:
+        CommandLine|contains|all:
+            - 'feroxbuster'
+            - '/tmp/auth_wordlist.txt'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Cyber-AutoAgent
+    - Someone else choosing the same callback name or file name
+level: medium

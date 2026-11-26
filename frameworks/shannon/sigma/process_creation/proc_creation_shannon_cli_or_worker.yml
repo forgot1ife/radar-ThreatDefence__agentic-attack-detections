@@ -1,0 +1,46 @@
+title: Shannon AI Pentest Agent CLI, Worker Container or Report Renderer
+id: a1390b62-ad0b-5a7a-9ac7-dfef102a8dbf
+status: experimental
+description: |
+    Detects Shannon (KeygraphHQ/shannon, npm @keygraph/shannon) on the host that runs it: the CLI starting a scan, the
+    docker run that starts its worker container (image keygraph/shannon, container shannon-worker-<hex>, labels
+    shannon.workspace and shannon.workflow-id), the worker process inside it, the per-agent browser sessions
+    (playwright-cli -s=agent1 to agent5) and the Typst command that renders its PDF report.
+references:
+    - https://github.com/KeygraphHQ/shannon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: process_creation
+detection:
+    selection_npx:
+        CommandLine|contains: '@keygraph/shannon'
+    selection_local:
+        # The repository's ./shannon launcher: node ./shannon start -u <url> -r <repo>
+        CommandLine|re: '(^|[/\\\s])shannon["'']?\s+start\s(.*\s)?(-u|--url)[\s=]'
+    selection_docker:
+        CommandLine|contains:
+            - 'keygraph/shannon:'
+            - '--name shannon-worker-'
+            - 'shannon.workspace='
+            - 'shannon.workflow-id='
+            - 'TEMPORAL_ADDRESS=shannon-temporal:7233'
+    selection_worker:
+        CommandLine|contains|all:
+            - 'temporal/worker.js'
+            - '--task-queue'
+            - '--workflow-id'
+    selection_browser:
+        # Shannon assigns each agent a fixed session name; other playwright-cli users name sessions as they like
+        CommandLine|re: 'playwright-cli\s+(.*\s)?-s=agent[1-6](\s|$)'
+    selection_report:
+        CommandLine|contains: 'brand=Shannon | AI Pentester by Keygraph'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Shannon
+    - Developers evaluating Shannon
+level: medium

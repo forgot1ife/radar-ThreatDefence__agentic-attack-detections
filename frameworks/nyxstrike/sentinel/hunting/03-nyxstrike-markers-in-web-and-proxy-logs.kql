@@ -1,0 +1,36 @@
+// NyxStrike testing you, or a NyxStrike server used through your proxy: user agents, probe markers and server paths
+// Agentic attack detections by ThreatDefence (NyxStrike). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the NyxStrike source code (CommonHuman-Lab/nyxstrike, reviewed at 3ac7449):
+//  - User agents hard-coded in NyxStrike: NyxStrike/1.0 (decision engine, a HEAD then GET of the target),
+//    Security-HTTP-Framework/1.0 (Advanced Security Testing) and Security-BrowserAgent/1.0 (Security Testing).
+//    HexStrike's were HexStrike-HTTP-Framework/ and HexStrike-BrowserAgent/, so the HexStrike hunts miss these.
+//  - commonhuman-core/openapi-discover: its OpenAPI discovery requests /openapi.json, /swagger.json, /api-docs, /docs ...
+//  - <xssTest123>: the reflection probe its browser agent puts into GET forms, sent with python-requests.
+//  - StingXSS_<6> and BreachSQL_<6>: markers of the StingXSS and BreachSQL scanners NyxStrike installs. They also run on
+//    their own, so a hit on those alone means the scanner, not necessarily NyxStrike.
+//  - From the operator side: the version check to raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/ and requests to
+//    a NyxStrike server's /web-dashboard and /api/intelligence/ai-*-session.
+// Mozilla/5.0 (Compatible Exploit) in NyxStrike's generated exploits is shared with HexStrike and is in its hunts.
+
+let UAs = dynamic(["NyxStrike/", "Security-HTTP-Framework/", "Security-BrowserAgent/", "commonhuman-core/openapi-discover"]);
+let Markers = @"xssTest123|StingXSS_|BreachSQL_|stingxss_redir_marker|stingxss_jsonp_probe|stingxss-crlf-detected";
+let ServerPaths = @"raw\.githubusercontent\.com/CommonHuman-Lab/nyxstrike/|:8888/web-dashboard|:8888/api/intelligence/ai-(recon|profiling|vuln|osint|followup)-session";
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA has_any (UAs) or csUriQuery matches regex Markers or csUriStem matches regex Markers
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication has_any (UAs) or RequestURL matches regex Markers or RequestURL matches regex ServerPaths
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication),
+    (SigninLogs | where TimeGenerated > ago(90d)
+        | where UserAgent has_any (UAs)
+        | project TimeGenerated, Source="SigninLogs", Src=IPAddress, Target=AppDisplayName, Detail=UserPrincipalName, UA=UserAgent),
+    (AWSCloudTrail | where TimeGenerated > ago(90d)
+        | where UserAgent has_any (UAs)
+        | project TimeGenerated, Source="AWSCloudTrail", Src=SourceIpAddress, Target=EventSource, Detail=EventName, UA=UserAgent)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

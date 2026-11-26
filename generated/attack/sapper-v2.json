@@ -1,0 +1,58 @@
+{
+ "description": "15 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 10,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "sapper-v2",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: sapper-v2 running on a host you monitor; Sentinel analytics: sapper-v2 autonomous pentest agents on a host; Sigma: sapper-v2 Agent Orchestration on a Host",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: sapper-v2 board and contest client in web and proxy logs; Sigma: sapper-v2 Engagement Graph Board in Proxy Logs; Suricata: 3817101 TD sapper-v2 engagement graph board page; Suricata: 3817102 TD sapper-v2 live board page with graph poll path; Suricata: 3817103 TD sapper-v2 board template graph marker (any title); Suricata: 3817104 TD sapper-v2 board graph JSON request; Suricata: 3817105 TD sapper-v2 engagement graph JSON in a response; Suricata: 3817106 TD TSecBench contest API client (sapper-v2 arena); YARA: sapper_v2_Board_Page",
+   "enabled": true,
+   "score": 10,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "Sigma: sapper-v2 Engagement Graph or Run Files Written; YARA: sapper_v2_Source_Or_Image_Scripts",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: sapper-v2 running on a host you monitor; Sentinel analytics: sapper-v2 autonomous pentest agents on a host; Sigma: sapper-v2 Agent Orchestration on a Host",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

@@ -1,0 +1,5 @@
+{"name": "the benchmark launcher with a solved-challenge list", "expected": true, "event": {"CommandLine": "python3 run_bench.py -b benchmark_solved.json -c configs/pico_bench/llama3.json"}}
+{"name": "the long benchmark flag and an OverTheWire config", "expected": true, "event": {"CommandLine": "python run_bench.py --benchmark bandit_solved.json --config configs/overthewire_bench/gpt4o.json"}}
+{"name": "the launcher asked for its help text", "expected": false, "event": {"CommandLine": "python3 run_bench.py --help"}}
+{"name": "another script given a file with the same name", "expected": false, "event": {"CommandLine": "python3 score.py -b benchmark_solved.json"}}
+{"name": "a different run_bench.py with its own benchmark file", "expected": false, "event": {"CommandLine": "python3 run_bench.py -b suite.json"}}

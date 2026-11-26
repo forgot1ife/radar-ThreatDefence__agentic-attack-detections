@@ -1,0 +1,44 @@
+// CAI telemetry, Alias gateway, its API backend and its fetch_url user agent in network, proxy and web logs
+// Agentic attack detections by ThreatDefence (CAI). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1594 (Search Victim-Owned Websites)
+// Example hunt for Microsoft Sentinel. DNS works everywhere; URL paths need a proxy that records full URLs. Test before alerting.
+// From the CAI source code (aliasrobotics/cai at 6dc79257):
+//  - Telemetry: POST https://logs.aliasrobotics.com/upload at the end of a session (off with CAI_TELEMETRY=false) and
+//    /upload/intermediate every 5 model interactions (not turned off by CAI_TELEMETRY), multipart field "log" with the
+//    whole session log cai_<uuid>_<time>_<user>_<os>_<ip>.jsonl. The URL is base64-obfuscated in the code.
+//  - Licence check GET https://api.aliasrobotics.com:666/key/info on every start; default model alias1 on the same host
+//    and port; private package index https://packages.aliasrobotics.com:664/<ALIAS_API_KEY>/ (the key in the URL).
+//  - fetch_url sends "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36":
+//    a two-part Chrome version real Chrome never sends (CAI_FETCH_USER_AGENT overrides it).
+//  - cai --api serves /api/v1/health, /api/tags, /api/openapi.json, /api/docs and /api/v1/sessions/... on 8000 by
+//    default; clients send X-CAI-API-Key. Without ALIAS_API_KEY or CAI_API_KEY every route is open.
+
+let Window = 30d;
+let FetchUA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+let AliasHosts = dynamic(["logs.aliasrobotics.com", "api.aliasrobotics.com", "packages.aliasrobotics.com"]);
+union isfuzzy=true
+    (DnsEvents
+        | where TimeGenerated > ago(Window)
+        | where Name in~ (AliasHosts)
+        | summarize Queries=count(), Names=make_set(Name, 3), Timestamp=min(TimeGenerated) by Src=ClientIP
+        | project Timestamp, Src, Signal="DNS for CAI telemetry or the Alias gateway", Detail=strcat("x", Queries, " ", tostring(Names))),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where DestinationHostName in~ (AliasHosts) or RequestURL has_any (AliasHosts)
+            or RequestURL has "/api/v1/auth/add-ip" or RequestURL has "/messages/stream_tokens"
+        | extend Kind = case(RequestURL has "logs.aliasrobotics.com/upload/intermediate", "intermediate log upload",
+            RequestURL has "logs.aliasrobotics.com", "session log upload", RequestURL has "/key/info", "licence check",
+            RequestURL has "packages.aliasrobotics.com", "private package index", RequestURL has "aliasrobotics.com", "Alias gateway", "CAI API route")
+        | summarize Requests=count(), Kinds=make_set(Kind, 6), URLs=make_set(RequestURL, 5), Timestamp=min(TimeGenerated) by Src=SourceIP
+        | project Timestamp, Src, Signal="CAI telemetry, gateway or API through the proxy", Detail=strcat(tostring(Kinds), " ", tostring(URLs))),
+    (W3CIISLog
+        | where TimeGenerated > ago(Window)
+        | where replace_string(csUserAgent, "+", " ") == FetchUA
+        | summarize Requests=count(), Paths=make_set(csUriStem, 10), Timestamp=min(TimeGenerated) by Src=cIP, Site=csHost
+        | project Timestamp, Src, Signal="CAI fetch_url user agent on your site", Detail=strcat(Site, " x", Requests, " ", tostring(Paths))),
+    (CommonSecurityLog
+        | where TimeGenerated > ago(Window)
+        | where RequestClientApplication == FetchUA
+        | summarize Requests=count(), URLs=make_set(RequestURL, 10), Timestamp=min(TimeGenerated) by Src=SourceIP
+        | project Timestamp, Src, Signal="CAI fetch_url user agent through the proxy or WAF", Detail=strcat("x", Requests, " ", tostring(URLs)))
+| order by Timestamp desc

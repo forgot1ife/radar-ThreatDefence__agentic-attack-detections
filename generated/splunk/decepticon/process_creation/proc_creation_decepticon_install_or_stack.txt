@@ -1,0 +1,6 @@
+# Decepticon AI Red Team Agent Installed or Started
+# Sigma id b2cc9abb-091b-552c-9671-43932c67be6d, pipeline splunk_windows
+
+| rex field=CommandLine "(?<CommandLineMatch>(^|[/\\\\\\s])decepticon(\\.exe)?[\"']?\\s+(onboard|start|stop|status|doctor|update|attach|resume|mcp\\s+serve)(\\s|$))"
+| eval CommandLineCondition=if(isnotnull(CommandLineMatch), "true", "false")
+| search CommandLine IN ("*decepticon.red/install*", "*raw.githubusercontent.com/BitterSecurity/Decepticon/*") OR CommandLineCondition="true" OR CommandLine="*ghcr.io/bittersecurity/decepticon-*" OR (CommandLine IN ("*decepticon-sandbox*", "*decepticon-langgraph*", "*decepticon-c2-sliver*", "*decepticon-c2-havoc*") CommandLine="*docker*")

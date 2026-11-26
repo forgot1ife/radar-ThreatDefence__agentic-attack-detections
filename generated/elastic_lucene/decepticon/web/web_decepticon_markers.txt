@@ -1,0 +1,3 @@
+# Decepticon Markers in Web Server Logs
+# Sigma id 7b117342-950a-5245-9fb1-7421d4b987df, pipeline ecs
+(user_agent.original:(*Decepticon\/* OR *\<CHROME_VER\>* OR *\<FIREFOX_VER\>* OR *\<CURRENT_VER\>*)) OR url.path:\/_decepticon\/*

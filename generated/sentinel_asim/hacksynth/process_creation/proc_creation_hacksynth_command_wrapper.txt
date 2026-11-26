@@ -1,0 +1,4 @@
+# HackSynth Agent Command Wrapper in a Container
+# Sigma id 94fad7a0-f8b9-56de-af95-58b1ad11ef2e, pipeline sentinel_asim
+imProcessCreate
+| where TargetProcessName endswith "/timeout" and TargetProcessCommandLine matches regex "^(\\S*/)?timeout \\d+s /bin/bash -c " and ((ParentProcessName endswith "/containerd-shim" or ParentProcessName endswith "/containerd-shim-runc-v2" or ParentProcessName endswith "/runc") or (ActingProcessName endswith "/containerd-shim" or ActingProcessName endswith "/containerd-shim-runc-v2" or ActingProcessName endswith "/runc"))

@@ -1,0 +1,33 @@
+// Shannon testing you: the php2shell probe sizes and its browser user agent in web and proxy logs
+// Agentic attack detections by ThreatDefence (Shannon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1499.004 (Endpoint Denial of Service: Application or System Exploitation), T1595.002 (Active Scanning: Vulnerability Scanning)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Shannon source code (KeygraphHQ/shannon at 3760d2f9):
+//  - shannon start --exp-php2shell -u <url> sends three POSTs to the same URL: a 181-byte multipart control, a
+//    1,029,023-byte probe and, unless that one already crashed the worker, a 7,449,023-byte probe. Both probes are one
+//    multipart part with 80,000 or 540,000 headers X-h0: a, X-h1: a, ... and the boundary ----shannonPhp2shellProbe<32 hex>.
+//    The body sizes are exact; logged byte counts add the request line and headers (a few hundred bytes).
+//  - Its agents browse with a fixed user agent, Chrome 124 on Linux. Real Chrome 124 sends the same string, so it only
+//    counts next to other signs of testing from the same address.
+// A probe pair against a PHP site means someone checked it for the php2shell crash; the Suricata rules see the boundary.
+
+let Window = 30d;
+let ShannonUA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | where csMethod == "POST" and (csBytes between (1029023 .. 1031023) or csBytes between (7449023 .. 7451023))
+        | summarize Probes=count(), Sizes=make_set(csBytes, 5), Statuses=make_set(scStatus, 5), Timestamp=min(TimeGenerated) by Src=cIP, Target=csHost, Path=csUriStem
+        | project Timestamp, Source="W3CIISLog", Src, Target, Signal="php2shell probe sizes", Detail=strcat(Path, " sizes ", tostring(Sizes), " status ", tostring(Statuses))),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where RequestMethod == "POST" and (ReceivedBytes between (1029023 .. 1031023) or ReceivedBytes between (7449023 .. 7451023))
+        | summarize Probes=count(), Sizes=make_set(ReceivedBytes, 5), Timestamp=min(TimeGenerated) by Src=SourceIP, Target=DestinationHostName, Path=RequestURL
+        | project Timestamp, Source="CommonSecurityLog", Src, Target, Signal="php2shell probe sizes", Detail=strcat(Path, " sizes ", tostring(Sizes))),
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | where replace_string(csUserAgent, "+", " ") == ShannonUA
+        | summarize Requests=count(), Paths=dcount(csUriStem), Samples=make_set(csUriStem, 10), Timestamp=min(TimeGenerated) by Src=cIP, Target=csHost
+        | project Timestamp, Source="W3CIISLog", Src, Target, Signal="Shannon browser user agent (context)", Detail=strcat(Requests, " requests, ", Paths, " paths ", tostring(Samples))),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where RequestClientApplication == ShannonUA
+        | summarize Requests=count(), Samples=make_set(RequestURL, 10), Timestamp=min(TimeGenerated) by Src=SourceIP, Target=DestinationHostName
+        | project Timestamp, Source="CommonSecurityLog", Src, Target, Signal="Shannon browser user agent (context)", Detail=strcat(Requests, " requests ", tostring(Samples)))
+| order by Timestamp desc

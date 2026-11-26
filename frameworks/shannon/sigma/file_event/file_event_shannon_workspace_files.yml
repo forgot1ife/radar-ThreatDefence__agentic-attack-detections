@@ -1,0 +1,33 @@
+title: Shannon Workspace, Deliverable or Browser Files Written
+id: 82a9276f-09b9-544e-990b-d9f327daa1cc
+status: experimental
+description: |
+    Detects files Shannon writes on the host that runs it: the run state in <workspace>/.shannon/ (session.json,
+    workflow.log, startup-error.json), the agents' deliverables and exploitation queues in .shannon/deliverables/,
+    the stealth browser config in .shannon/.playwright/, and the npx-mode credential file ~/.shannon/config.toml.
+references:
+    - https://github.com/KeygraphHQ/shannon
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: file_event
+detection:
+    selection_state:
+        TargetFilename|re: '[/\\]\.shannon[/\\](session\.json|workflow\.log|startup-error\.json)$'
+    selection_deliverables:
+        TargetFilename|re: '[/\\]\.shannon[/\\]deliverables[/\\][a-z_]+_(deliverable\.md|exploitation_queue\.json|exploitation_evidence\.md)$'
+    selection_browser:
+        TargetFilename|re: '[/\\]\.shannon[/\\]\.playwright[/\\](cli\.config\.json|scripts[/\\]stealth\.js)$'
+    selection_config:
+        TargetFilename|endswith:
+            - '/.shannon/config.toml'
+            - '\.shannon\config.toml'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with Shannon
+    - Another tool that keeps its state in a folder named .shannon
+level: medium

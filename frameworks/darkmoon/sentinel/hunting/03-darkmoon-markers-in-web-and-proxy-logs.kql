@@ -1,0 +1,24 @@
+// DarkMoon testing you: its probe strings in web and proxy logs
+// Agentic attack detections by ThreatDefence (DarkMoon). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application), T1525 (Implant Internal Image)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the DarkMoon agent prompts (ASCIT31/Dark-Moon at bb1b70ce, conf/agents/). The model usually copies these commands:
+//  - edge-proxy.md:374: the first request to a target is curl -sSI -A dm-edge <target> (a HEAD with user agent dm-edge).
+//  - edge-proxy.md:475: cache poisoning test on /?dmcb=DM1 with X-Forwarded-Host: dm-poison.invalid, then the same URL
+//    without the header. Most web logs do not record X-Forwarded-Host; the query string is enough.
+//  - container-registry.md:452-455: a pushed proof image tagged darkmoon-proof-<random>, then GET /v2/<repo>/manifests/<tag>.
+//  - sso-idp.md:492: POST /scim/v2/Users creating a darkmoon-test user (in the body, so usually not in these logs).
+// The rest of what DarkMoon sends is its toolbox with defaults (naabu, httpx, nuclei, katana, ffuf, sqlmap): look at what
+// the same source sent around a match.
+
+let Markers = @"dmcb=DM1|/manifests/darkmoon-proof-";
+union isfuzzy=true
+    (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ")
+        | where strcat(csUriStem, "?", csUriQuery) matches regex Markers or UA == "dm-edge"
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, "?", csUriQuery), UA),
+    (CommonSecurityLog | where RequestURL matches regex Markers or RequestClientApplication == "dm-edge"
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Detail=RequestURL, UA=RequestClientApplication)
+| where TimeGenerated > ago(90d)
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc
