@@ -1,0 +1,32 @@
+title: Incalmo C2 Server or Its Celery Worker
+id: 57e6a544-ed95-5bb2-9897-71920401d10e
+status: experimental
+description: |
+    Detects the Incalmo C2 server (incalmo/c2server/c2server.py), its Celery worker and beat (incalmo.c2server.celery.celery_worker),
+    and the Metasploit RPC daemon its attacker container starts with the fixed password "password". The C2 server listens on
+    0.0.0.0:8888 with no authentication and hands shell commands to Caldera Sandcat implants on compromised hosts.
+references:
+    - https://github.com/cylabcyberautonomy/Incalmo/blob/8cd02e0e94889461bd04924c1db5b79cf7dc256c/docker/attacker/start.sh
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    product: linux
+    category: process_creation
+detection:
+    selection_c2:
+        CommandLine|contains:
+            - 'incalmo/c2server/c2server.py'
+            - 'incalmo.c2server.celery.celery_worker'
+    selection_msfrpcd:
+        CommandLine|contains|all:
+            - 'msfrpcd'
+            - '-P password'
+    condition: 1 of selection_*
+falsepositives:
+    - Research or red team use of Incalmo in a lab
+    - Other setups that start msfrpcd with the password "password"
+level: high

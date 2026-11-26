@@ -1,0 +1,50 @@
+// cyber-harness running on a host you monitor
+// Agentic attack detections by ThreatDefence (cyber-harness). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the cyber-harness source code (chainreactors/cyber-harness at 02ac8ecf; v0.4.0 for the AIScan names).
+// cyber-harness is an LLM agent harness from the chainreactors group with three binaries:
+//  - cyber-scan: the agent; its scanners (gogo, spray, zombie, neutron, katana), curl and fetch run inside the process,
+//    other commands are its children. A node joins a Web Hub with --server-url http://<access key>@<hub>:8080
+//    --node-name <n>, so the Hub key is in the command line. Up to v1.0.0-rc9 the binaries were aiscan and aiscan-full.
+//  - cyber-harness: the Web Hub, plain HTTP on 127.0.0.1:8080 by default (--addr 0.0.0.0:8080 in the docs).
+//  - cyber-audit: the source and binary audit agent.
+//  - The Hub's Quick Connect installer downloads a release zip from github.com/chainreactors/cyber-harness/releases
+//    (or through ghfast.top) to a temporary node.zip, in a folder cyber-node-<guid> on Windows.
+//  - Files: <temp>/cyber-agent.pid, .cyber/mitm/mitmproxy-ca-cert.pem, .cyber/output/<id>.log, .cyber/jev/,
+//    .cyber/active/active.sqlite, ~/.cyber/arsenal/bin/ (tools it downloads), cyber-harness.db; .aiscan/ before
+//    September 2026.
+// Binary names are trivial to change; the paths, the pid file and the Quick Connect strings need a code change.
+
+let Window = 30d;
+let Names = dynamic(["cyber-scan", "cyber-scan.exe", "cyber-harness", "cyber-harness.exe", "cyber-audit", "cyber-audit.exe",
+    "aiscan", "aiscan.exe", "aiscan-full", "aiscan-full.exe"]);
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ (Names)
+            or (ProcessCommandLine has "--server-url" and ProcessCommandLine has "--node-name")
+            or ProcessCommandLine has_any ("chainreactors/cyber-harness/releases/", "chainreactors/aiscan/releases/")
+            or (ProcessCommandLine has "cyber-node-" and ProcessCommandLine has "node.zip")
+        | project Timestamp, DeviceName, Signal="cyber-harness binary, node or installer", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessFileName in~ (Names)
+        | summarize Children=make_set(FileName, 25), Samples=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp)
+            by DeviceName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, Signal="commands started by cyber-harness", Detail=tostring(Samples), Parent=InitiatingProcessFileName),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName =~ "cyber-agent.pid" or FileName =~ "cyber-harness.db"
+            or FolderPath has_any ("/.cyber/mitm/", @"\.cyber\mitm\", "/.cyber/jev/", @"\.cyber\jev\", "/.cyber/arsenal/bin/",
+                @"\.cyber\arsenal\bin\", "/.cyber/active/", @"\.cyber\active\", "/.aiscan/", @"\.aiscan\")
+            or (FolderPath has_any ("/.cyber/output/", @"\.cyber\output\") and FileName endswith ".log")
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, Signal="cyber-harness files", Detail=tostring(Files), Parent=InitiatingProcessFileName),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and InitiatingProcessFileName in~ (Names)
+        | project Timestamp, DeviceName, Signal="cyber-harness listening (Hub 8080, IOA 8765 by default)",
+            Detail=strcat(LocalIP, ":", LocalPort), Parent=InitiatingProcessCommandLine)
+| order by Timestamp desc

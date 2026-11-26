@@ -1,0 +1,3 @@
+# LazyOwn Beacon Quick-Start Download One-Liner
+# Sigma id f310f6a9-32a6-5a4e-83a0-fc21333b4d7c, pipeline splunk_windows
+(CommandLine="*curl -sk*" CommandLine="*-o /tmp/.dbus*") OR (CommandLine="*chmod +x /tmp/.dbus*" CommandLine="*/tmp/.dbus*") OR (CommandLine="*iwr -Uri*" CommandLine="*win.exe*" CommandLine="*\\svchost.exe*")

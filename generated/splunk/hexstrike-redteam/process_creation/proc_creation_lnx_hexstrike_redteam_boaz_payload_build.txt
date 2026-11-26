@@ -1,0 +1,3 @@
+# Hexstrike-redteam BOAZ Evasive Payload Build
+# Sigma id ce9f3452-ef61-53d3-bb9e-fa7bdf6d0bf4, pipeline splunk_windows
+CommandLine="*/BOAZ_beta/Boaz.py*" OR (ParentCommandLine="*hexstrike_server.py*" CommandLine="*Boaz.py*" CommandLine="* -f *" CommandLine="* -o *")

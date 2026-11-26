@@ -1,0 +1,4 @@
+{"name": "a base64url command label under the C2 zone", "expected": true, "event": {"QueryName": "c3RhdHVz.c2.lazyown.org"}}
+{"name": "the zone itself", "expected": true, "event": {"QueryName": "c2.lazyown.org"}}
+{"name": "near miss: a look-alike domain", "expected": false, "event": {"QueryName": "c2.lazyown.org.example.net"}}
+{"name": "near miss: another subdomain of the project domain", "expected": false, "event": {"QueryName": "docs.lazyown.org"}}

@@ -1,0 +1,4 @@
+# cyber-harness Files Written
+# Sigma id 6c7540af-c762-5fd0-84e7-5cf2d052b713, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName endswith "/cyber-agent.pid" or ObjectName endswith "\\cyber-agent.pid" or ObjectName endswith "/cyber-harness.db" or ObjectName endswith "\\cyber-harness.db" or ObjectName endswith "/.cyber/mitm/mitmproxy-ca-cert.pem" or ObjectName endswith "\\.cyber\\mitm\\mitmproxy-ca-cert.pem" or ObjectName endswith "/.cyber/active/active.sqlite" or ObjectName endswith "\\.cyber\\active\\active.sqlite" or ObjectName endswith "/.cyber/jev/decisions.jsonl" or ObjectName endswith "\\.cyber\\jev\\decisions.jsonl") or (ObjectName contains "/.cyber/arsenal/bin/" or ObjectName endswith "\\.cyber\\arsenal\\bin*" or ObjectName contains "/.aiscan/" or ObjectName endswith "\\.aiscan*") or ((ObjectName contains "/.cyber/output/" or ObjectName endswith "\\.cyber\\output*") and ObjectName endswith ".log")

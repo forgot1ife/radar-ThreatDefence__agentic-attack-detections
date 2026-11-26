@@ -1,0 +1,3 @@
+# Incalmo Spreading a Caldera Sandcat Implant
+# Sigma id 17a55df2-2560-53b4-bd8d-218c0b66925b, pipeline ecs
+(process.command_line:(*sandcat_tmp.go* OR *C2\:%\{http_code\}* OR *file\:sandcat.go*)) OR (process.command_line:*\ \-server\ http* AND process.command_line:*\ \-group\ red*) OR (process.executable:*\/splunkd AND process.command_line:*\ \-server\ http*)

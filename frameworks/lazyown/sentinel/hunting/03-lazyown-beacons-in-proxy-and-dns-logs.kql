@@ -1,0 +1,43 @@
+// LazyOwn beacons, operator clients and C2 answers in proxy, firewall and DNS logs
+// Agentic attack detections by ThreatDefence (LazyOwn). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1071.004 (Application Layer Protocol: DNS), T1001.003 (Data Obfuscation: Protocol or Service Impersonation), T1572 (Protocol Tunneling)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the LazyOwn source code (grisuno/LazyOwn, reviewed at f4e54de9):
+//  - The C2 serves beacons on <c2_malleable_route><client id> (GET for commands, POST for results; /gmail/v1/users/ in
+//    the shipped payload.json, /api/v1/ when the key is empty) and always on /command/<id>, /api/poll/<id>, /report/,
+//    /stage/beacon, /stage/config and /bof/<object>. A real Gmail API call goes to a Google host.
+//  - Beacon configuration user agents: "...(Linux; LAzyOwnRedTeam 66_6)..." (user_agent_3 of the shipped payload.json)
+//    and a Windows string with both Chrome/120.0.0.0 and Firefox/120.0 (BlackSandBeacon config the C2 builds).
+//    The default beacon user agent is an old Chrome 58 string cut to Safari/537.3, widely copied, so it is kept to port 4444.
+//  - The redirector the repository ships is a Cloudflare quick tunnel (*.trycloudflare.com) that forwards only /gmail/*,
+//    /api/*, /command/* and /s/*.
+//  - Operator tools: LazyOwn/1.0 on exploitalert.com searches, lazyown-depconfuse/1.0 on PyPI.
+//  - The C2's DNS server answers the zone c2.lazyown.org with base64url command labels.
+// HTTPS beacon traffic is visible only with TLS inspection or on the redirector.
+
+let BeaconUAs = @"LAzyOwnRedTeam|Chrome/120\.0\.0\.0 Firefox/120\.0";
+let OperatorUAs = dynamic(["LazyOwn/1.0"]);
+let BeaconPaths = @"/(gmail/v1/users|command|api/poll)/[A-Za-z0-9_.-]+$|/stage/(beacon|config)$|/bof/[A-Za-z0-9_.-]+\.o$";
+union isfuzzy=true
+    (CommonSecurityLog
+        | where TimeGenerated > ago(30d)
+        | extend Path = tostring(parse_url(RequestURL).Path)
+        | where (RequestURL has "/gmail/v1/users/" and not(DestinationHostName endswith "google.com" or DestinationHostName endswith "googleapis.com"))
+            or RequestClientApplication matches regex BeaconUAs
+            or RequestClientApplication in (OperatorUAs) or RequestClientApplication startswith "lazyown-depconfuse/"
+            or (DestinationHostName endswith ".trycloudflare.com" and Path matches regex BeaconPaths)
+            or (DestinationPort == 4444 and RequestClientApplication endswith "Chrome/58.0.3029.110 Safari/537.3")
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=strcat(DestinationHostName, ":", DestinationPort),
+            Detail=RequestURL, UA=RequestClientApplication),
+    (DnsEvents
+        | where TimeGenerated > ago(30d)
+        | where Name =~ "c2.lazyown.org" or Name endswith ".c2.lazyown.org"
+        | project TimeGenerated, Source="DnsEvents", Src=ClientIP, Target=Name, Detail=strcat("QueryType ", QueryType), UA=""),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(30d)
+        | where RemoteUrl endswith "c2.lazyown.org" or (RemoteUrl endswith ".trycloudflare.com" and InitiatingProcessCommandLine contains "/tmp/.dbus")
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Src=DeviceName, Target=RemoteUrl,
+            Detail=InitiatingProcessCommandLine, UA="")
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target
+| order by FirstSeen asc

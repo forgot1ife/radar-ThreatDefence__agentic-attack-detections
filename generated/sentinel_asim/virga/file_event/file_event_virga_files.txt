@@ -1,0 +1,4 @@
+# Virga Server, Generator or Model Files Written
+# Sigma id 5c3fd692-b5ca-567d-977b-370a9cbc623c, pipeline sentinel_asim
+imFileEvent
+| where TargetFileName startswith "/tmp/virga/extensions/" or (TargetFileName endswith "/data/virga.db" or TargetFileName endswith "/.virga_history" or TargetFileName endswith "/internal/implant/llama/models/model.gguf" or TargetFileName endswith "\\internal\\implant\\llama\\models\\model.gguf") or (TargetFileName contains "/virga-generator-" or TargetFileName contains "\\virga-generator-") or (TargetFileName contains "/logs/virga-" and TargetFileName endswith ".jsonl")

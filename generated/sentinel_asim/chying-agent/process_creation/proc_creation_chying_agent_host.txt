@@ -1,0 +1,4 @@
+# CHYing-agent AI Pentest Agent Launch, Tools Container or Ghidra Services
+# Sigma id e45638e9-dd2c-5d19-90e0-861c607579d0, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "main.py" and TargetProcessCommandLine contains "--dashboard" and TargetProcessCommandLine contains "--skip-preflight") or (TargetProcessCommandLine contains "run_tencent_ctf.py" or TargetProcessCommandLine contains "run_htb_ctf.py") or TargetProcessCommandLine contains "chying-agent-docker" or (TargetProcessCommandLine contains "GhidraMCPHeadlessServer" and TargetProcessCommandLine contains "--port 8089" and TargetProcessCommandLine contains "--bind 0.0.0.0") or (TargetProcessCommandLine contains "bridge_mcp_ghidra.py" and TargetProcessCommandLine contains "--transport sse" and TargetProcessCommandLine contains "--mcp-host 0.0.0.0" and TargetProcessCommandLine contains "--mcp-port 8766")

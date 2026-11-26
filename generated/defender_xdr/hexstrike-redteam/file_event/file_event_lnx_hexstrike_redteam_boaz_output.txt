@@ -1,0 +1,4 @@
+# Hexstrike-redteam BOAZ Payload Written
+# Sigma id e4e709c5-6cc1-5366-b3a1-997183bc4510, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath contains "/BOAZ_beta/output/" and (FolderPath endswith ".exe" or FolderPath endswith ".dll" or FolderPath endswith ".cpl" or FolderPath endswith ".bin")

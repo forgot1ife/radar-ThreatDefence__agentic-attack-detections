@@ -1,0 +1,4 @@
+# LazyOwn Beacon Quick-Start Download One-Liner
+# Sigma id f310f6a9-32a6-5a4e-83a0-fc21333b4d7c, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "curl -sk" and ProcessCommandLine contains "-o /tmp/.dbus") or (ProcessCommandLine contains "chmod +x /tmp/.dbus" and ProcessCommandLine contains "/tmp/.dbus") or (ProcessCommandLine contains "iwr -Uri" and ProcessCommandLine contains "win.exe" and ProcessCommandLine contains "\\svchost.exe")

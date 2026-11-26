@@ -1,0 +1,3 @@
+# Incalmo Spreading a Caldera Sandcat Implant
+# Sigma id 17a55df2-2560-53b4-bd8d-218c0b66925b, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*sandcat_tmp.go*" or process.command_line like "*C2:%{http_code}*" or process.command_line like "*file:sandcat.go*" or process.command_line like "* -server http*" and process.command_line like "* -group red*" or ends_with(process.executable, "/splunkd") and process.command_line like "* -server http*"

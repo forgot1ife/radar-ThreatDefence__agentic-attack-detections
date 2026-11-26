@@ -1,0 +1,4 @@
+# Virga Server, Generator or Model Files Written
+# Sigma id 5c3fd692-b5ca-567d-977b-370a9cbc623c, pipeline microsoft_xdr
+DeviceFileEvents
+| where FolderPath startswith "/tmp/virga/extensions/" or (FolderPath endswith "/data/virga.db" or FolderPath endswith "/.virga_history" or FolderPath endswith "/internal/implant/llama/models/model.gguf" or FolderPath endswith "\\internal\\implant\\llama\\models\\model.gguf") or (FolderPath contains "/virga-generator-" or FolderPath contains "\\virga-generator-") or (FolderPath contains "/logs/virga-" and FolderPath endswith ".jsonl")

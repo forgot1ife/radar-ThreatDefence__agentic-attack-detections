@@ -1,0 +1,40 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (cyber-harness). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1071.001 (Application Layer Protocol: Web Protocols)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. cyber-harness has no operator addresses or domains of its own: its rows are its
+// user agents, Hub paths, file names and paths and prompt strings from the code.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework matches regex @"(^|\s)cyber-harness(\s|$)" | project value=tostring(SearchKey), type, confidence, actor, source;
+let UAs = toscalar(IOC | where type == "user_agent" and confidence in ("high", "medium") | summarize make_list(value));
+let Strings = toscalar(IOC | where type == "string" and confidence in ("high", "medium") | summarize make_list(value));
+let Paths = toscalar(IOC | where type in ("file_path", "file_name") and confidence in ("high", "medium") | summarize make_list(value));
+let Uris = toscalar(IOC | where type == "uri_string" and confidence in ("high", "medium") | summarize make_list(value));
+union isfuzzy=true
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (Strings)
+        | mv-apply s=Strings to typeof(string) on (where ProcessCommandLine has s | take 1 | project Indicator=s)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator, Detail=strcat(DeviceName, " ", substring(ProcessCommandLine, 0, 200))),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (Paths)
+        | mv-apply p=Paths to typeof(string) on (where FolderPath has p | take 1 | project Indicator=p)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator, Detail=strcat(DeviceName, " ", FolderPath)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication in~ (UAs)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=RequestClientApplication, Detail=strcat(SourceIP, " -> ", RequestURL)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (Uris)
+        | mv-apply u=Uris to typeof(string) on (where RequestURL has u | take 1 | project Indicator=u)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator, Detail=strcat(SourceIP, " -> ", RequestURL)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA in~ (UAs)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=UA, Detail=strcat(cIP, " ", csUriStem)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriStem has_any (Uris)
+        | mv-apply u=Uris to typeof(string) on (where csUriStem has u | take 1 | project Indicator=u)
+        | project TimeGenerated, Source="W3CIISLog", Indicator, Detail=strcat(cIP, " ", csUriStem))
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

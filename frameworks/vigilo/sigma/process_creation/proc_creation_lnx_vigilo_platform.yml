@@ -1,0 +1,41 @@
+title: Vigilo Platform or White-Box Agent on a Host
+id: 1baadfc6-4123-5648-b8c8-891d07ba1ce8
+status: experimental
+description: |
+    Detects Vigilo running (certeu/vigilo at 82c2d353): its white-box worker (src.temporal.worker on a vigilo- task
+    queue), its grey-box worker (src.greybox_web.worker), its API (src.webapi.main), the helper commands its agents run
+    (vigilo-record, save-deliverable), and the coding agent CLIs it starts with approvals off whose prompt contains
+    "authorised security assessment run by Vigilo".
+references:
+    - https://github.com/certeu/vigilo
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    product: linux
+    category: process_creation
+detection:
+    selection_platform:
+        CommandLine|contains:
+            - 'src.temporal.worker --serve --task-queue vigilo-'
+            - '-m src.greybox_web.worker'
+            - '-m src.webapi.main'
+            - '/usr/local/bin/vigilo-record'
+            - 'vigilo-record show '
+            - 'vigilo-record verdict '
+            - 'vigilo-record lead '
+    selection_agent_prompt:
+        CommandLine|contains: 'authorised security assessment run by Vigilo'
+    selection_agent_flags:
+        CommandLine|contains:
+            - '--dangerously-skip-permissions'
+            - '--dangerously-bypass-approvals-and-sandbox'
+    condition: selection_platform or (selection_agent_prompt and selection_agent_flags)
+falsepositives:
+    - Security teams running Vigilo
+level: low

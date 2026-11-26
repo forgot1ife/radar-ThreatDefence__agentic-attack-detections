@@ -1,0 +1,31 @@
+title: Hexstrike-redteam BOAZ Payload Written
+id: e4e709c5-6cc1-5366-b3a1-997183bc4510
+status: experimental
+description: |
+    Detects a Windows executable, DLL, control panel item or raw binary written under BOAZ_beta/output/, where
+    Hexstrike-redteam tells the AI assistant to put the evasive payloads it builds with BOAZ (README, MCP tool
+    description and .gitignore). The output path is chosen per request, so a payload written elsewhere in BOAZ_beta
+    is missed.
+references:
+    - https://github.com/Yenn503/Hexstrike-redteam
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1587.001
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection:
+        TargetFilename|contains: '/BOAZ_beta/output/'
+        TargetFilename|endswith:
+            - '.exe'
+            - '.dll'
+            - '.cpl'
+            - '.bin'
+    condition: selection
+falsepositives:
+    - Red teams building payloads with BOAZ for an agreed engagement
+level: high

@@ -1,0 +1,8 @@
+{"name": "the agent pid file on Linux", "expected": true, "event": {"TargetFilename": "/tmp/cyber-agent.pid", "Image": "/opt/tools/cyber-scan"}}
+{"name": "the MITM CA of the traffic hub", "expected": true, "event": {"TargetFilename": "/home/op/lab/.cyber/mitm/mitmproxy-ca-cert.pem", "Image": "/opt/tools/cyber-scan"}}
+{"name": "a tool installed by arsenal on Windows", "expected": true, "event": {"TargetFilename": "C:\\Users\\op\\.cyber\\arsenal\\bin\\nuclei.exe", "Image": "C:\\tools\\cyber-scan.exe"}}
+{"name": "a command output log", "expected": true, "event": {"TargetFilename": "/home/op/lab/.cyber/output/env-01HZX.log", "Image": "/opt/tools/cyber-scan"}}
+{"name": "the Web Hub database", "expected": true, "event": {"TargetFilename": "/srv/hub/cyber-harness.db", "Image": "/srv/hub/cyber-harness"}}
+{"name": "near miss: another file under a .cyber folder", "expected": false, "event": {"TargetFilename": "/home/op/.cyber/notes.txt", "Image": "/usr/bin/vim"}}
+{"name": "near miss: a different pid file", "expected": false, "event": {"TargetFilename": "/tmp/cyber-agent-ui.pid", "Image": "/usr/bin/node"}}
+{"name": "near miss: a json file under the output folder", "expected": false, "event": {"TargetFilename": "/home/op/lab/.cyber/output/run.json", "Image": "/opt/tools/cyber-scan"}}

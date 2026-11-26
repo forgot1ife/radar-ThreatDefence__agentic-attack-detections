@@ -1,0 +1,44 @@
+// CHYing-agent running on a host you monitor
+// Agentic attack detections by ThreatDefence (CHYing-agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.006 (Command and Scripting Interpreter: Python), T1610 (Deploy Container)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the CHYing-agent source code (yhy0/CHYing-agent at 0d2ee81f). A Python contest agent on the Claude Agent SDK:
+//  - Operator host: python main.py -t <url>, uv run main.py --dashboard --skip-preflight (dashboard on 0.0.0.0:8080, no login),
+//    run_tencent_ctf.py and run_htb_ctf.py, and docker inspect -f {{.State.Running}} chying-agent-docker at start.
+//  - Tools container chying-agent-docker (image chying-agent-docker-tools:latest, privileged, ports 8089 and 8766). Python tool
+//    calls arrive as /bin/bash -c "echo <base64> | base64 -d | python3"; the base64 of the agent's work-directory header starts
+//    IyA9PT0g6Ieq5Yqo5rOo5YWl77ya. The entrypoint starts GhidraMCPHeadlessServer --port 8089 --bind 0.0.0.0 and
+//    bridge_mcp_ghidra.py --mcp-host 0.0.0.0 --mcp-port 8766.
+//  - Files: <repo>/agent-work/ctf/<Category>/<challenge>/ (findings.log, attack_timeline.md, dumps/commands.log,
+//    poc_scripts/poc_<time>.py), <repo>/data/chying.db, <repo>/logs/chying_agent_<time>.log, ~/.taie/null-zone/.
+// Names and paths need a code change, apart from the folder the operator cloned into.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine has "main.py" and ProcessCommandLine contains "--dashboard" and ProcessCommandLine contains "--skip-preflight")
+            or ProcessCommandLine has_any ("run_tencent_ctf.py", "run_htb_ctf.py")
+            or ProcessCommandLine contains "chying-agent-docker"
+            or (ProcessCommandLine contains "IyA9PT0g6Ieq5Yqo5rOo5YWl77ya" and ProcessCommandLine contains "base64 -d")
+            or (ProcessCommandLine contains "GhidraMCPHeadlessServer" and ProcessCommandLine contains "--bind 0.0.0.0")
+            or (ProcessCommandLine contains "bridge_mcp_ghidra.py" and ProcessCommandLine contains "--mcp-host 0.0.0.0")
+        | project Timestamp, DeviceName, Signal="CHYing-agent process, container or Ghidra services", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FolderPath contains "/agent-work/ctf/" and (FileName in ("findings.log", "attack_timeline.md", "execution_summary.md", "reflection_history.md")
+                or (FileName == "commands.log" and FolderPath contains "/dumps/")
+                or (FolderPath contains "/poc_scripts/" and FileName startswith "poc_")))
+            or FolderPath endswith "/data/chying.db"
+            or (FolderPath contains "/logs/" and FileName startswith "chying_agent_" and FileName endswith ".log")
+            or FolderPath contains "/.taie/null-zone/"
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, Folder=tostring(split(FolderPath, FileName)[0])
+        | project Timestamp, DeviceName, Signal="CHYing-agent files", Detail=strcat(Folder, " ", tostring(Files)), Parent=""),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort in (8089, 8766)
+            and InitiatingProcessCommandLine has_any ("GhidraMCPHeadlessServer", "bridge_mcp_ghidra.py")
+        | project Timestamp, DeviceName, Signal="Ghidra MCP services listening (CHYing-agent tools container)",
+            Detail=strcat(LocalIP, ":", LocalPort), Parent=substring(InitiatingProcessCommandLine, 0, 150))
+| order by Timestamp desc

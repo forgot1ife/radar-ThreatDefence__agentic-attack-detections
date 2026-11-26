@@ -1,0 +1,40 @@
+// Virga C2 server, operator CLI or beacon builds on a host you monitor
+// Agentic attack detections by ThreatDefence (Virga). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1587.001 (Develop Capabilities: Malware), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Virga (r74tech/virga, reviewed at 43773ffe) is a Go C2 framework whose beacon can carry a local language model. No
+// report of its use in a real intrusion was found on November 26, 2026, so this hunt looks for the software itself:
+//  - virga-server, virga-cli, virga-mcp-stdio (bin/ or ~/.local/bin), and MCP Inspector started with --server virga-*.
+//  - Beacon builds: go build / link with -X ...internal/implant/config.BuildC2Host=<host> and -tags llama_selfextract.
+//  - Files: /tmp/virga/extensions/, data/virga.db, .virga_history, virga-generator-<random>, the model.gguf it embeds.
+//  - Listening sockets opened by virga-server: 8443 admin API, 8080 listener, 8444 and 50012 MCP (all without auth).
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let VirgaBinaries = dynamic(["virga-server", "virga-cli", "virga-mcp-stdio", "virga-server.exe", "virga-cli.exe"]);
+let BuildMarkers = dynamic(["internal/implant/config.BuildC2Host=", "internal/implant/config.BuildLlamaEnabled="]);
+let VirgaProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where FileName in~ (VirgaBinaries) or FileName startswith "virga-server-" or FileName startswith "virga-cli-"
+        or ProcessCommandLine has_any (BuildMarkers)
+        or (ProcessCommandLine has "llama_selfextract,prebuilt" and ProcessCommandLine has "internal/implant/main.go")
+        or ProcessCommandLine has_any ("--server virga-stdio", "--server virga-sse", "--server virga-streamable");
+union isfuzzy=true
+    (VirgaProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 300), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Virga server, CLI, MCP server or beacon build", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath startswith "/tmp/virga/extensions/" or FolderPath endswith "/data/virga.db" or FileName =~ ".virga_history"
+            or FolderPath has "/virga-generator-" or FolderPath has @"\virga-generator-"
+            or FolderPath endswith "/internal/implant/llama/models/model.gguf" or FolderPath endswith @"\internal\implant\llama\models\model.gguf"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Virga server data, generator folder or embedded model", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated"
+        | where InitiatingProcessFileName in~ (VirgaBinaries) or InitiatingProcessFileName startswith "virga-server-"
+        | summarize Ports=make_set(LocalPort, 10), Timestamp=min(Timestamp) by DeviceName, InitiatingProcessFileName
+        | project Timestamp, DeviceName, Signal="Ports opened by the Virga server (8443, 8080, 8444, 50012 by default)",
+            Detail=strcat(InitiatingProcessFileName, " ", tostring(Ports)))
+| order by Timestamp desc

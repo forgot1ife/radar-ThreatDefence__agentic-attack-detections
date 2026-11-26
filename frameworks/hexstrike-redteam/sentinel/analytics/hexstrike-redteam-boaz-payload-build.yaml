@@ -1,0 +1,26 @@
+id: 139f1b9f-51b7-533d-8b84-c2f4854f0e7b
+name: Hexstrike-redteam BOAZ evasive payload build on a host
+description: |
+  A process ran BOAZ's Boaz.py from a BOAZ_beta folder, or hexstrike_server.py started Boaz.py. Hexstrike-redteam
+  (a HexStrike AI fork) runs python3 <dir>/BOAZ_beta/Boaz.py -f <input> -o <output> when an AI assistant asks it,
+  over an unauthenticated API on 0.0.0.0:8888, to wrap a Windows payload for antivirus and EDR evasion.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has "/BOAZ_beta/Boaz.py"
+      or (InitiatingProcessCommandLine has "hexstrike_server.py" and ProcessCommandLine has "Boaz.py")
+  | summarize Events=count(), Commands=make_set(substring(ProcessCommandLine, 0, 250), 15), FirstSeen=min(TimeGenerated) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

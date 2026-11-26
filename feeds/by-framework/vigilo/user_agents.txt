@@ -1,0 +1,2 @@
+Vigilo-Greybox/1 (authorised security test)
+Vigilo-Preflight/1.0

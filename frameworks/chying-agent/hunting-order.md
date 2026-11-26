@@ -1,0 +1,7 @@
+# Where to start
+
+1. **Search your web terminals for the markers** (hunt 03). If you run ttyd, wetty, GoTTY, a Kubernetes dashboard or any browser shell that is reachable from outside, look in shell history and session logs for `__WSS_PROBE_7b3e__`, `__WSS_EXIT_c1a4__`, `__WSS_CMD_END_9f7a__` or `__chy_rc=$?`, and scan home folders with the YARA rule `CHYingAgent_Web_Terminal_Command_Trace`. A match means the agent had a shell on that host.
+2. **Look for an exposed dashboard.** Port 8080 answering with the title `CHYing Agent Dashboard` or an OpenAPI document described as `Web Dashboard API for CHYing Agent` is a CHYing-agent console with no login; it lists every target, flag and transcript. Ports 8089 and 8766 on the same host are its Ghidra services.
+3. **Check your own hosts** for the `chying-agent-docker` container, `main.py --dashboard --skip-preflight`, the contest runners and the `agent-work/ctf/` folder (hunt 01), and scan with the YARA rules.
+4. **Check for model traffic from servers** (behaviors hunt 02). CHYing-agent has no telemetry, so the model API (for example Tencent Cloud's `api.lkeap.cloud.tencent.com`) is the network signal that stays when the code is changed. With TLS inspection, the Suricata model-request rules name it.
+5. **Check what reached your web servers** with the cross-framework rules: CHYing-agent's own requests are stock tools (httpx, nuclei, ffuf, sqlmap, headless Chrome) and Metasploit.

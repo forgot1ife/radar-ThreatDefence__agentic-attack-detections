@@ -1,0 +1,7 @@
+{"name": "an uploaded extension in the server store", "expected": true, "event": {"TargetFilename": "/tmp/virga/extensions/3fa85f64/mimikatz/data.bin"}}
+{"name": "the server database", "expected": true, "event": {"TargetFilename": "/home/op/virga/data/virga.db"}}
+{"name": "the generator temp folder", "expected": true, "event": {"TargetFilename": "/tmp/virga-generator-2481930417/beacon.exe"}}
+{"name": "the downloaded model", "expected": true, "event": {"TargetFilename": "/home/op/virga/internal/implant/llama/models/model.gguf"}}
+{"name": "the CLI JSONL log", "expected": true, "event": {"TargetFilename": "/home/op/virga/logs/virga-2026-11-26_101500.jsonl"}}
+{"name": "near miss: another model file", "expected": false, "event": {"TargetFilename": "/home/op/models/model.gguf"}}
+{"name": "near miss: a JSON log named after virga", "expected": false, "event": {"TargetFilename": "/home/op/virga/logs/virga-2026-11-26.json"}}

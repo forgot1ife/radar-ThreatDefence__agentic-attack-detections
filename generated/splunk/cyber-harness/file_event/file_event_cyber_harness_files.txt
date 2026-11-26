@@ -1,0 +1,3 @@
+# cyber-harness Files Written
+# Sigma id 6c7540af-c762-5fd0-84e7-5cf2d052b713, pipeline splunk_windows
+TargetFilename IN ("*/cyber-agent.pid", "*\\cyber-agent.pid", "*/cyber-harness.db", "*\\cyber-harness.db", "*/.cyber/mitm/mitmproxy-ca-cert.pem", "*\\.cyber\\mitm\\mitmproxy-ca-cert.pem", "*/.cyber/active/active.sqlite", "*\\.cyber\\active\\active.sqlite", "*/.cyber/jev/decisions.jsonl", "*\\.cyber\\jev\\decisions.jsonl") OR TargetFilename IN ("*/.cyber/arsenal/bin/*", "*\\.cyber\\arsenal\\bin\\*", "*/.aiscan/*", "*\\.aiscan\\*") OR (TargetFilename IN ("*/.cyber/output/*", "*\\.cyber\\output\\*") TargetFilename="*.log")

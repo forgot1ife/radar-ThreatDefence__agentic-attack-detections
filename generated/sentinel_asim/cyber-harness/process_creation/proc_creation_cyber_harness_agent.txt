@@ -1,0 +1,4 @@
+# cyber-harness Agent, Node or Web Hub Started
+# Sigma id ebb09efa-4f08-5fdf-8988-d6fd6ae3fa13, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessName endswith "/cyber-scan" or TargetProcessName endswith "\\cyber-scan.exe" or TargetProcessName endswith "/cyber-harness" or TargetProcessName endswith "\\cyber-harness.exe" or TargetProcessName endswith "/cyber-audit" or TargetProcessName endswith "\\cyber-audit.exe" or TargetProcessName endswith "/aiscan" or TargetProcessName endswith "\\aiscan.exe" or TargetProcessName endswith "/aiscan-full" or TargetProcessName endswith "\\aiscan-full.exe") or (TargetProcessCommandLine contains "--server-url http" and TargetProcessCommandLine contains "--node-name") or (TargetProcessCommandLine contains "chainreactors/cyber-harness/releases/" or TargetProcessCommandLine contains "chainreactors/aiscan/releases/") or (TargetProcessCommandLine contains "cyber-node-" and TargetProcessCommandLine contains "node.zip")

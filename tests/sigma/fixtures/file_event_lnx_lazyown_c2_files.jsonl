@@ -1,0 +1,7 @@
+{"name": "the beacon AES key", "expected": true, "event": {"TargetFilename": "/opt/LazyOwn/sessions/key.aes", "Image": "/opt/LazyOwn/env/bin/python3"}}
+{"name": "the launcher environment file with the C2 credentials", "expected": true, "event": {"TargetFilename": "/home/kali/LazyOwn/sessions/c2_launch.env", "Image": "/usr/bin/bash"}}
+{"name": "the one-time admin password of the RBAC store", "expected": true, "event": {"TargetFilename": "/opt/LazyOwn/sessions/rbac_initial_admin.txt", "Image": "/opt/LazyOwn/env/bin/python3"}}
+{"name": "a camera frame captured by the decoy page", "expected": true, "event": {"TargetFilename": "/opt/LazyOwn/sessions/captured_images/capture_20261126_101500.png", "Image": "/opt/LazyOwn/env/bin/python3"}}
+{"name": "a microphone recording captured by the decoy page", "expected": true, "event": {"TargetFilename": "/opt/LazyOwn/sessions/captured_images/audio_20261126_101505.webm", "Image": "/opt/LazyOwn/env/bin/python3"}}
+{"name": "near miss: an AES key in another application's folder", "expected": false, "event": {"TargetFilename": "/var/lib/app/keys/key.aes", "Image": "/usr/bin/python3"}}
+{"name": "near miss: a sessions folder of a web framework", "expected": false, "event": {"TargetFilename": "/srv/www/sessions/sess_8f2a1c", "Image": "/usr/sbin/php-fpm8.2"}}

@@ -1,0 +1,4 @@
+# Hexstrike-redteam BOAZ Payload Written
+# Sigma id e4e709c5-6cc1-5366-b3a1-997183bc4510, pipeline sentinel_asim
+imFileEvent
+| where TargetFileName contains "/BOAZ_beta/output/" and (TargetFileName endswith ".exe" or TargetFileName endswith ".dll" or TargetFileName endswith ".cpl" or TargetFileName endswith ".bin")

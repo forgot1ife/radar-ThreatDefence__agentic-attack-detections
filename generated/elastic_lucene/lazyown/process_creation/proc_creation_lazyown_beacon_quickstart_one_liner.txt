@@ -1,0 +1,3 @@
+# LazyOwn Beacon Quick-Start Download One-Liner
+# Sigma id f310f6a9-32a6-5a4e-83a0-fc21333b4d7c, pipeline ecs
+(process.command_line:*curl\ \-sk* AND process.command_line:*\-o\ \/tmp\/.dbus*) OR (process.command_line:*chmod\ \+x\ \/tmp\/.dbus* AND process.command_line:*\/tmp\/.dbus*) OR (process.command_line:*iwr\ \-Uri* AND process.command_line:*win.exe* AND process.command_line:*\\svchost.exe*)

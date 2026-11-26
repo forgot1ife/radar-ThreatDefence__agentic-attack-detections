@@ -1,0 +1,3 @@
+# Vigilo Platform or White-Box Agent on a Host
+# Sigma id 1baadfc6-4123-5648-b8c8-891d07ba1ce8, pipeline splunk_windows
+CommandLine IN ("*src.temporal.worker --serve --task-queue vigilo-*", "*-m src.greybox_web.worker*", "*-m src.webapi.main*", "*/usr/local/bin/vigilo-record*", "*vigilo-record show *", "*vigilo-record verdict *", "*vigilo-record lead *") OR (CommandLine="*authorised security assessment run by Vigilo*" CommandLine IN ("*--dangerously-skip-permissions*", "*--dangerously-bypass-approvals-and-sandbox*"))

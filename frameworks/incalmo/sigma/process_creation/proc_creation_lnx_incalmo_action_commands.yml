@@ -1,0 +1,61 @@
+title: Incalmo Per-Command Script or Tool Command Line
+id: fe05b2c1-8dfb-5767-b48c-c10c58269a0b
+status: experimental
+description: |
+    Detects commands Incalmo's action layer runs on compromised hosts through its implant: the per-command scripts
+    dynamic_payload_<port>_<paw>.sh, its fixed nmap, nikto, nuclei and ncat command lines, and its exploit and helper scripts.
+references:
+    - https://github.com/cylabcyberautonomy/Incalmo/tree/8cd02e0e94889461bd04924c1db5b79cf7dc256c/incalmo/core/actions/LowLevel
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+    - attack.discovery
+    - attack.t1046
+logsource:
+    product: linux
+    category: process_creation
+detection:
+    selection_script:
+        CommandLine|contains: 'dynamic_payload_'
+    selection_nmap_sweep:
+        CommandLine|contains|all:
+            - 'nmap'
+            - '--max-rtt-timeout 100ms'
+            - ' -sn '
+            - '-oX -'
+    selection_nmap_services:
+        CommandLine|contains|all:
+            - 'nmap'
+            - '-sV --version-light -oX -'
+    selection_nikto:
+        CommandLine|contains|all:
+            - 'nikto'
+            - '-Tuning 8'
+            - '-maxtime 60s'
+            - '-timeout 3'
+    selection_nuclei:
+        CommandLine|contains|all:
+            - 'nuclei'
+            - '-timeout 5'
+            - '-severity critical'
+            - ' -j -silent'
+    selection_ncat:
+        CommandLine|contains|all:
+            - 'ncat'
+            - '--no-shutdown -i 5s'
+    selection_helpers:
+        CommandLine|contains:
+            - 'msf_rpc_client.py'
+            - 'sudo_baron_exploit.py'
+            - 'strutsExploit.py'
+            - 'becomeUserAgent.sh'
+            - 'writeable_passwd.sh'
+            - 'bind_metasploit_session'
+    condition: 1 of selection_*
+falsepositives:
+    - Research use of Incalmo in a lab
+    - An administrator who happens to run nmap or nikto with the same options
+level: medium

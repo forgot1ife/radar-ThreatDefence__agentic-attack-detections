@@ -1,0 +1,3 @@
+# cyber-harness User Agent in Web Logs
+# Sigma id bb0b1ef7-f434-5b67-b740-1f08fd13b4ca, pipeline ecs
+from * metadata _id, _index, _version | where user_agent.original in ("cyber", "aiscan") or user_agent.original like "*github.com/chainreactors/cyber-harness)*" or user_agent.original like "*github.com/chainreactors/aiscan)*"

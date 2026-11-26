@@ -1,0 +1,79 @@
+{
+ "description": "21 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 17,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "hexstrike-redteam",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Hexstrike-redteam and its BOAZ payload builds on a host you monitor; Sigma: Hexstrike-redteam BOAZ Evasive Payload Build; Suricata: 3817901 TD Hexstrike-redteam BOAZ payload generation request; Suricata: 3817912 TD Hexstrike-redteam BOAZ payload built response; YARA: HexStrike_RedTeam_BOAZ_Integration",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1027.002"
+  },
+  {
+   "comment": "KQL hunt: Hexstrike-redteam and its BOAZ payload builds on a host you monitor; Sentinel analytics: Hexstrike-redteam BOAZ evasive payload build on a host",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: Hexstrike-redteam BOAZ API in web, proxy and network logs; Sigma: Hexstrike-redteam BOAZ API Requested Through a Proxy; Suricata: 3817910 TD Hexstrike-redteam BOAZ loader list response; Suricata: 3817911 TD Hexstrike-redteam BOAZ encoder list response",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Hexstrike-redteam BOAZ API in web, proxy and network logs; KQL hunt: Hexstrike-redteam and its BOAZ payload builds on a host you monitor; Sigma: Hexstrike-redteam BOAZ API Requested Through a Proxy; Sigma: Hexstrike-redteam BOAZ API in Web Server Logs; Sigma: Hexstrike-redteam BOAZ Evasive Payload Build; Sigma: Hexstrike-redteam BOAZ Payload Written; Suricata: 3817901 TD Hexstrike-redteam BOAZ payload generation request; Suricata: 3817902 TD Hexstrike-redteam BOAZ loader or encoder list request; Suricata: 3817903 TD Hexstrike-redteam BOAZ binary analysis request; Suricata: 3817904 TD Hexstrike-redteam BOAZ option validation request; Suricata: 3817910 TD Hexstrike-redteam BOAZ loader list response; Suricata: 3817911 TD Hexstrike-redteam BOAZ encoder list response; Suricata: 3817912 TD Hexstrike-redteam BOAZ payload built response; Suricata: 3817913 TD Hexstrike-redteam BOAZ not installed response; Suricata: 3817914 TD Hexstrike-redteam BOAZ build failed response; Suricata: 3817915 TD Hexstrike-redteam BOAZ binary entropy analysis response; YARA: HexStrike_RedTeam_BOAZ_Integration",
+   "enabled": true,
+   "score": 17,
+   "showSubtechniques": true,
+   "techniqueID": "T1587.001"
+  },
+  {
+   "comment": "YARA: HexStrike_RedTeam_Install_Scripts; YARA: HexStrike_RedTeam_MCP_Client_Config",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

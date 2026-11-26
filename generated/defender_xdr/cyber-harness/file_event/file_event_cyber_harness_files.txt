@@ -1,0 +1,4 @@
+# cyber-harness Files Written
+# Sigma id 6c7540af-c762-5fd0-84e7-5cf2d052b713, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath endswith "/cyber-agent.pid" or FolderPath endswith "\\cyber-agent.pid" or FolderPath endswith "/cyber-harness.db" or FolderPath endswith "\\cyber-harness.db" or FolderPath endswith "/.cyber/mitm/mitmproxy-ca-cert.pem" or FolderPath endswith "\\.cyber\\mitm\\mitmproxy-ca-cert.pem" or FolderPath endswith "/.cyber/active/active.sqlite" or FolderPath endswith "\\.cyber\\active\\active.sqlite" or FolderPath endswith "/.cyber/jev/decisions.jsonl" or FolderPath endswith "\\.cyber\\jev\\decisions.jsonl") or (FolderPath contains "/.cyber/arsenal/bin/" or FolderPath contains "\\.cyber\\arsenal\\bin\\" or FolderPath contains "/.aiscan/" or FolderPath contains "\\.aiscan\\") or ((FolderPath contains "/.cyber/output/" or FolderPath contains "\\.cyber\\output\\") and FolderPath endswith ".log")

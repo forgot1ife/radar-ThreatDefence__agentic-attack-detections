@@ -1,0 +1,4 @@
+# Hexstrike-redteam BOAZ Evasive Payload Build
+# Sigma id ce9f3452-ef61-53d3-bb9e-fa7bdf6d0bf4, pipeline microsoft_xdr
+DeviceProcessEvents
+| where ProcessCommandLine contains "/BOAZ_beta/Boaz.py" or (InitiatingProcessCommandLine contains "hexstrike_server.py" and (ProcessCommandLine contains "Boaz.py" and ProcessCommandLine contains " -f " and ProcessCommandLine contains " -o "))

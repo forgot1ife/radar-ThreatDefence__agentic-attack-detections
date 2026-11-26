@@ -1,0 +1,41 @@
+title: Incalmo Implant, Script or Run File Written
+id: 03be2d7d-0290-534d-951c-573623343505
+status: experimental
+description: |
+    Detects files Incalmo writes: the implant copy sandcat_tmp.go and its log /tmp/sc.log, the implant saved as splunkd outside a
+    Splunk bin folder, the per-command scripts dynamic_payload_<port>_<paw>.sh, the C2 state database /tmp/state_store.db, the
+    LLM-written exploit plugins/deception/payloads/exploit.py, the LiteLLM spend file and the per-run llm_agent.log.
+references:
+    - https://github.com/cylabcyberautonomy/Incalmo/blob/8cd02e0e94889461bd04924c1db5b79cf7dc256c/incalmo/c2server/routes/command_routes.py
+    - https://github.com/cylabcyberautonomy/Incalmo/blob/8cd02e0e94889461bd04924c1db5b79cf7dc256c/incalmo/core/services/logging_service.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1105
+logsource:
+    product: linux
+    category: file_event
+detection:
+    selection_names:
+        TargetFilename|endswith:
+            - '/sandcat_tmp.go'
+            - '/tmp/sc.log'
+            - '/tmp/state_store.db'
+            - '/_litellm_key_status.json'
+            - '/plugins/deception/payloads/exploit.py'
+    selection_script:
+        TargetFilename|contains: '/dynamic_payload_'
+        TargetFilename|endswith: '.sh'
+    selection_run_log:
+        TargetFilename|contains: '/output/'
+        TargetFilename|endswith: '/llm_agent.log'
+    selection_splunkd:
+        TargetFilename|endswith: '/splunkd'
+    filter_splunk_install:
+        TargetFilename|contains: '/bin/splunkd'
+    condition: 1 of selection_* and not filter_splunk_install
+falsepositives:
+    - Research use of Incalmo in a lab
+level: high

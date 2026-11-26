@@ -1,0 +1,5 @@
+{"name": "LLM agent action poll", "expected": true, "event": {"c-uri": "http://10.2.0.5:8888/get_llm_agent_action", "cs-method": "GET"}}
+{"name": "environment state report", "expected": true, "event": {"c-uri": "http://10.2.0.5:8888/update_environment_state", "cs-method": "POST"}}
+{"name": "agent download", "expected": true, "event": {"c-uri": "http://10.2.0.5:8888/agent/download", "cs-method": "POST"}}
+{"name": "near miss: agent download page fetched with GET", "expected": false, "event": {"c-uri": "https://vendor.example.test/agent/download", "cs-method": "GET"}}
+{"name": "near miss: another API", "expected": false, "event": {"c-uri": "https://api.example.test/v1/environment", "cs-method": "POST"}}

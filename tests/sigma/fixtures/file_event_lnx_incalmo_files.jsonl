@@ -1,0 +1,9 @@
+{"name": "implant copy in a home folder", "expected": true, "event": {"TargetFilename": "/home/webadmin/sandcat_tmp.go"}}
+{"name": "implant log", "expected": true, "event": {"TargetFilename": "/tmp/sc.log"}}
+{"name": "per-command script next to the implant", "expected": true, "event": {"TargetFilename": "/home/webadmin/dynamic_payload_8888_abcd1234.sh"}}
+{"name": "C2 state database", "expected": true, "event": {"TargetFilename": "/tmp/state_store.db"}}
+{"name": "run log of the LLM sub-agents", "expected": true, "event": {"TargetFilename": "/incalmo/output/test_abcd1234_2026-11-02_10-00-00/llm_agent.log"}}
+{"name": "implant saved as splunkd in tmp", "expected": true, "event": {"TargetFilename": "/tmp/splunkd"}}
+{"name": "near miss: the real Splunk binary", "expected": false, "event": {"TargetFilename": "/opt/splunk/bin/splunkd"}}
+{"name": "near miss: another log in tmp", "expected": false, "event": {"TargetFilename": "/tmp/scan.log"}}
+{"name": "near miss: llm_agent.log outside an output folder", "expected": false, "event": {"TargetFilename": "/var/log/app/llm_agent.log"}}

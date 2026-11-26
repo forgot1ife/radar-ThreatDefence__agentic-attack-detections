@@ -1,0 +1,135 @@
+{
+ "description": "37 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 19,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "lazyown",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: LazyOwn beacons, operator clients and C2 answers in proxy, firewall and DNS logs; Sigma: LazyOwn Beacon Route, Beacon User Agents or Operator Clients in Proxy Logs; Suricata: 3818110 TD LazyOwn beacon poll on the default Gmail-style route; Suricata: 3818111 TD LazyOwn beacon result post on the default Gmail-style route",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1001.003"
+  },
+  {
+   "comment": "Sigma: LazyOwn Beacon Quick-Start Download One-Liner",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.001"
+  },
+  {
+   "comment": "Sigma: LazyOwn Beacon Quick-Start Download One-Liner; YARA: LazyOwn_C2_Launch_Files",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: LazyOwn C2, MCP server or beacon one-liner on a host you monitor; Sentinel analytics: LazyOwn C2 server or MCP server on a host, or a lookup of its DNS C2 zone; Sigma: LazyOwn C2 Server, MCP Server or Launcher Started",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: LazyOwn C2, MCP server or beacon one-liner on a host you monitor; KQL hunt: LazyOwn beacons, operator clients and C2 answers in proxy, firewall and DNS logs; Sigma: LazyOwn Beacon Route, Beacon User Agents or Operator Clients in Proxy Logs; Sigma: LazyOwn C2 Server, MCP Server or Launcher Started; Suricata: 3818101 TD LazyOwn C2 web UI Basic auth challenge; Suricata: 3818102 TD LazyOwn C2 web UI Content-Security-Policy header; Suricata: 3818103 TD LazyOwn C2 dashboard or login page; Suricata: 3818104 TD LazyOwn C2 public health answer; Suricata: 3818105 TD LazyOwn C2 operator API: connected beacon list; Suricata: 3818106 TD LazyOwn C2 operator API: command queued for a beacon; Suricata: 3818110 TD LazyOwn beacon poll on the default Gmail-style route; Suricata: 3818111 TD LazyOwn beacon result post on the default Gmail-style route; Suricata: 3818113 TD LazyOwn C2 empty command answer to a Gmail-style route poll; Suricata: 3818114 TD LazyOwn C2 accepted a beacon report; Suricata: 3818120 TD LazyOwn LAzyOwnRedTeam user agent; Suricata: 3818121 TD LazyOwn BlackSandBeacon config user agent (Chrome and Firefox tokens together); Suricata: 3818122 TD LazyOwn default beacon user agent on the default C2 port; YARA: LazyOwn_Beacon_Runtime_Config; YARA: LazyOwn_C2_Server",
+   "enabled": true,
+   "score": 19,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: LazyOwn C2, MCP server or beacon one-liner on a host you monitor; KQL hunt: LazyOwn beacons, operator clients and C2 answers in proxy, firewall and DNS logs; Sentinel analytics: LazyOwn C2 server or MCP server on a host, or a lookup of its DNS C2 zone; Sigma: LazyOwn DNS C2 Zone Lookup; Suricata: 3818125 TD LazyOwn DNS C2 query (c2.lazyown.org); YARA: LazyOwn_C2_Server",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: LazyOwn C2, MCP server or beacon one-liner on a host you monitor; Sigma: LazyOwn Beacon Quick-Start Download One-Liner; Suricata: 3818112 TD LazyOwn beacon staging, BOF or file download on the default Gmail-style route; Suricata: 3818115 TD LazyOwn C2 BOF object not found answer; Suricata: 3818116 TD LazyOwn C2 staging channel refused or empty; Suricata: 3818117 TD LazyOwn diskless stager request with bearer token",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "Suricata: 3818109 TD LazyOwn C2 decoy page microphone recording upload; YARA: LazyOwn_C2_Decoy_Page",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1123"
+  },
+  {
+   "comment": "Sigma: LazyOwn C2 Key, Launcher, Credential or Capture Files Written; Suricata: 3818107 TD LazyOwn C2 decoy page with camera and microphone capture; Suricata: 3818108 TD LazyOwn C2 decoy page camera frame upload; YARA: LazyOwn_C2_Decoy_Page",
+   "enabled": true,
+   "score": 4,
+   "showSubtechniques": true,
+   "techniqueID": "T1125"
+  },
+  {
+   "comment": "Suricata: 3818131 TD LazyOwn dependency confusion check user agent",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1195.001"
+  },
+  {
+   "comment": "KQL hunt: LazyOwn beacons, operator clients and C2 answers in proxy, firewall and DNS logs; Sigma: LazyOwn Beacon Route, Beacon User Agents or Operator Clients in Proxy Logs",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1572"
+  },
+  {
+   "comment": "Sigma: LazyOwn C2 Key, Launcher, Credential or Capture Files Written; Suricata: 3818113 TD LazyOwn C2 empty command answer to a Gmail-style route poll; YARA: LazyOwn_Beacon_Runtime_Config",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1573.001"
+  },
+  {
+   "comment": "Sigma: LazyOwn C2 Server, MCP Server or Launcher Started; YARA: LazyOwn_Payload_Config",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "Sigma: LazyOwn Beacon Route, Beacon User Agents or Operator Clients in Proxy Logs; Suricata: 3818130 TD LazyOwn exploit search user agent (exploitalert.com)",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.005"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

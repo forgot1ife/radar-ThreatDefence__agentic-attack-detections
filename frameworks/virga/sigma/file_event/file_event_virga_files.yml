@@ -1,0 +1,39 @@
+title: Virga Server, Generator or Model Files Written
+id: 5c3fd692-b5ca-567d-977b-370a9cbc623c
+status: experimental
+description: |
+    Detects files the Virga C2 framework writes on the operator host: the server's extension store under
+    /tmp/virga/extensions, its SQLite database data/virga.db, the CLI history .virga_history, the CLI JSONL log
+    logs/virga-<datetime>.jsonl, the generator's temporary folder virga-generator-<random>, and the local model the
+    beacons carry, internal/implant/llama/models/model.gguf.
+references:
+    - https://github.com/r74tech/virga
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1587.001
+logsource:
+    category: file_event
+detection:
+    selection_extensions:
+        TargetFilename|startswith: '/tmp/virga/extensions/'
+    selection_names:
+        TargetFilename|endswith:
+            - '/data/virga.db'
+            - '/.virga_history'
+            - '/internal/implant/llama/models/model.gguf'
+            - '\internal\implant\llama\models\model.gguf'
+    selection_generator:
+        TargetFilename|contains:
+            - '/virga-generator-'
+            - '\virga-generator-'
+    selection_jsonl:
+        TargetFilename|contains: '/logs/virga-'
+        TargetFilename|endswith: '.jsonl'
+    condition: 1 of selection_*
+falsepositives:
+    - Red teams and researchers running Virga
+    - Another application that names its database virga.db
+level: medium

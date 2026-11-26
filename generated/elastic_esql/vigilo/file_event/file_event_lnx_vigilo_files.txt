@@ -1,0 +1,3 @@
+# Vigilo Run Folder, Deliverables or Delivery State Written
+# Sigma id 77417edd-2f06-5546-b96c-adbf63c7e5cf, pipeline ecs
+from * metadata _id, _index, _version | where TargetFilename like "*/.vigilo/*" and (TargetFilename like "*/deliverables/*" or TargetFilename like "*/agents/*" or TargetFilename like "*/prompts/*") or ends_with(TargetFilename, "/.vigilo-remote-url") or ends_with(TargetFilename, "/.git/vigilo-delivery.json") or ends_with(TargetFilename, "/.git/vigilo-rebuild.json") or ends_with(TargetFilename, "/.git/vigilo-delivery.lock")

@@ -1,0 +1,4 @@
+# Vigilo Run Folder, Deliverables or Delivery State Written
+# Sigma id 77417edd-2f06-5546-b96c-adbf63c7e5cf, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/.vigilo/" and (TargetFileName contains "/deliverables/" or TargetFileName contains "/agents/" or TargetFileName contains "/prompts/")) or (TargetFileName endswith "/.vigilo-remote-url" or TargetFileName endswith "/.git/vigilo-delivery.json" or TargetFileName endswith "/.git/vigilo-rebuild.json" or TargetFileName endswith "/.git/vigilo-delivery.lock")

@@ -1,0 +1,29 @@
+id: 801fb0f3-be30-54e7-8078-8ef4444e785e
+name: Incalmo implant spread or per-command script on a host
+description: |
+  A host copied, pulled or started a Caldera Sandcat implant the way Incalmo's action layer does (sandcat_tmp.go, the
+  C2:%{http_code} check, curl with the header file:sandcat.go), or ran one of Incalmo's per-command scripts
+  dynamic_payload_<port>_<paw>.sh. Incalmo is a research system whose model plans a multi-host attack and whose Flask C2 on
+  port 8888 has no authentication.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - CommandAndControl
+relevantTechniques:
+  - T1059.004
+  - T1071.001
+query: |
+  DeviceProcessEvents
+  | where ProcessCommandLine has_any ("sandcat_tmp.go", "C2:%{http_code}", "file:sandcat.go", "dynamic_payload_")
+      or InitiatingProcessCommandLine has "dynamic_payload_"
+  | summarize Events=count(), Commands=make_set(substring(ProcessCommandLine, 0, 200), 15), FirstSeen=min(TimeGenerated) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

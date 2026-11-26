@@ -1,0 +1,39 @@
+// cyber-harness testing you, or a cyber-harness Web Hub used through your proxy: user agents, Hub paths and downloads
+// Agentic attack detections by ThreatDefence (cyber-harness). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1110.001 (Brute Force: Password Guessing), T1071.001 (Application Layer Protocol: Web Protocols)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the cyber-harness source code (chainreactors/cyber-harness at 02ac8ecf; v0.4.0 for the AIScan strings):
+//  - User-Agent exactly "cyber" ("aiscan" before September 2026): the scan pipeline's check of a URL that answered 401.
+//    When it finds Basic auth, the zombie stage guesses passwords against the same URL next, so look at what followed.
+//  - Mozilla/5.0 (compatible; cyber/1.0; +https://github.com/chainreactors/cyber-harness): its fetch tool, which the
+//    model uses to read pages, advisories or the target.
+//  - Its curl tool sends a Chrome 133 on Linux user agent with Sec-Ch-Ua "Chromium";v="133", "Google Chrome";v="133",
+//    "Not(A:Brand";v="24". Few logs keep Sec-Ch-Ua, so this hunt only lists the user agent for context.
+//  - Operator side: nodes and browsers talking to a Web Hub (/api/aop/node/ws, /api/aop/application/ws,
+//    /cyber.rpc.<pkg>.<Service>/) and downloads of its release zips from GitHub or the ghfast.top mirror.
+
+let ExactUAs = dynamic(["cyber", "aiscan"]);
+let FetchUAs = dynamic(["github.com/chainreactors/cyber-harness)", "github.com/chainreactors/aiscan)"]);
+let CurlUA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36";
+let HubPaths = @"/api/aop/(node|application)/ws|/cyber\.rpc\.(aop|chat|scan|config|agent|system|artifact)\.[A-Za-z]+Service/";
+let Releases = dynamic(["github.com/chainreactors/cyber-harness/releases/", "github.com/chainreactors/aiscan/releases/"]);
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | where UA in~ (ExactUAs) or UA has_any (FetchUAs) or UA == CurlUA
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Detail=strcat(csMethod, " ", csUriStem, " ", scStatus), UA,
+            Signal=case(UA in~ (ExactUAs), "basic-auth probe", UA has_any (FetchUAs), "fetch tool", "curl tool user agent (context)")),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestClientApplication in~ (ExactUAs) or RequestClientApplication has_any (FetchUAs)
+            or RequestURL matches regex HubPaths or RequestURL has_any (Releases)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=coalesce(DestinationHostName, DestinationIP),
+            Detail=RequestURL, UA=RequestClientApplication,
+            Signal=case(RequestClientApplication in~ (ExactUAs), "basic-auth probe", RequestClientApplication has_any (FetchUAs), "fetch tool",
+                RequestURL has_any (Releases), "release download", "Web Hub traffic")),
+    (DeviceNetworkEvents | where Timestamp > ago(30d)
+        | where RemoteUrl has_any (Releases) or RemoteUrl matches regex HubPaths
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Src=DeviceName, Target=RemoteIP, Detail=RemoteUrl,
+            UA=InitiatingProcessFileName, Signal="release download or Web Hub traffic")
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10),
+    UAs=make_set(UA, 5) by Source, Src, Target, Signal
+| order by FirstSeen asc

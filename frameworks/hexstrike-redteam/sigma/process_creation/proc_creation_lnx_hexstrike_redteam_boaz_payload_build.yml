@@ -1,0 +1,35 @@
+title: Hexstrike-redteam BOAZ Evasive Payload Build
+id: ce9f3452-ef61-53d3-bb9e-fa7bdf6d0bf4
+status: experimental
+description: |
+    Detects the command Hexstrike-redteam's server runs when an AI assistant asks it for an evasive payload:
+    python3 <dir>/BOAZ_beta/Boaz.py -f <dir>/BOAZ_beta/<input> -o <dir>/BOAZ_beta/<output>, started by hexstrike_server.py
+    with BOAZ_beta as the working folder. Through the MCP client the command also carries -l <loader> -c <compiler>
+    -t <shellcode type> (defaults -l 16 -c mingw -t donut). A Boaz.py run outside HexStrike matches too, which is
+    still a Windows payload being wrapped for evasion on a Linux host.
+references:
+    - https://github.com/Yenn503/Hexstrike-redteam
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1587.001
+    - attack.stealth
+    - attack.t1027.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_boaz:
+        CommandLine|contains: '/BOAZ_beta/Boaz.py'
+    selection_parent:
+        ParentCommandLine|contains: 'hexstrike_server.py'
+        CommandLine|contains|all:
+            - 'Boaz.py'
+            - ' -f '
+            - ' -o '
+    condition: 1 of selection_*
+falsepositives:
+    - Red teams building payloads with BOAZ for an agreed engagement
+level: high

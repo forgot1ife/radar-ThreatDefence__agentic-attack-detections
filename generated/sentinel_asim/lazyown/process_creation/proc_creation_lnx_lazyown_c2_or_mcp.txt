@@ -1,0 +1,4 @@
+# LazyOwn C2 Server, MCP Server or Launcher Started
+# Sigma id 452f7d09-5501-559c-814d-555ec58d6773, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "lazyc2.py" or TargetProcessCommandLine contains "lazyown_mcp.py" or TargetProcessCommandLine contains "lazyown_mcp_opencode.py" or TargetProcessCommandLine contains "fast_run_as_r00t.sh" or TargetProcessCommandLine contains "sessions/c2_launch.sh") or (TargetProcessCommandLine contains "python3" and TargetProcessCommandLine contains "lazyown.py") or (TargetProcessCommandLine contains "tmux" and TargetProcessCommandLine contains "lazyown_sessions") or (TargetProcessCommandLine contains "raw.githubusercontent.com/grisuno/LazyOwn/" or TargetProcessCommandLine contains "ghcr.io/grisuno/lazyown")

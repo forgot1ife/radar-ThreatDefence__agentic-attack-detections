@@ -1,0 +1,3 @@
+# Vigilo Assessment Markers in Web Logs
+# Sigma id 6a4e502c-ff5f-5909-bff7-251c78718093, pipeline ecs
+from * metadata _id, _index, _version | where starts_with(user_agent.original, "Vigilo-Greybox/") or starts_with(user_agent.original, "Vigilo-Preflight/") or url.query like "*vigilo-probe-*" or url.query like "*vigilo-callback-*" or url.query like "*vigilo-control-*" or url.path like "*vigilo-callback-*" or url.path like "*vigilo-control-*"

@@ -1,0 +1,40 @@
+title: Incalmo Spreading a Caldera Sandcat Implant
+id: 17a55df2-2560-53b4-bd8d-218c0b66925b
+status: experimental
+description: |
+    Detects the commands Incalmo uses to put its implant (MITRE Caldera's Sandcat) on a new host: the copy named sandcat_tmp.go,
+    the reachability check "curl ... -w C2:%{http_code}", the curl download with the header file:sandcat.go, an implant started
+    with "-server http... -group red", and the implant saved as splunkd as the model prompts suggest.
+references:
+    - https://github.com/cylabcyberautonomy/Incalmo/blob/8cd02e0e94889461bd04924c1db5b79cf7dc256c/incalmo/core/actions/LowLevel/ssh_lateral_move.py
+    - https://github.com/cylabcyberautonomy/Incalmo/blob/8cd02e0e94889461bd04924c1db5b79cf7dc256c/incalmo/core/actions/LowLevel/ssh_spawn_agent.py
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.lateral-movement
+    - attack.t1021.004
+    - attack.t1570
+    - attack.command-and-control
+    - attack.t1105
+logsource:
+    product: linux
+    category: process_creation
+detection:
+    selection_markers:
+        CommandLine|contains:
+            - 'sandcat_tmp.go'
+            - 'C2:%{http_code}'
+            - 'file:sandcat.go'
+    selection_implant_args:
+        CommandLine|contains|all:
+            - ' -server http'
+            - ' -group red'
+    selection_splunkd:
+        Image|endswith: '/splunkd'
+        CommandLine|contains: ' -server http'
+    condition: 1 of selection_*
+falsepositives:
+    - MITRE Caldera exercises, which start Sandcat with the same -server and -group red arguments
+    - Research use of Incalmo in a lab
+level: high

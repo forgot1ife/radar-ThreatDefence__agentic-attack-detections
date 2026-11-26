@@ -1,0 +1,3 @@
+# cyber-harness User Agent in Web Logs
+# Sigma id bb0b1ef7-f434-5b67-b740-1f08fd13b4ca, pipeline ecs
+(user_agent.original:(cyber OR aiscan)) OR (user_agent.original:(*github.com\/chainreactors\/cyber\-harness\)* OR *github.com\/chainreactors\/aiscan\)*))

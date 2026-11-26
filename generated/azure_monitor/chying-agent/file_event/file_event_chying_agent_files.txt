@@ -1,0 +1,4 @@
+# CHYing-agent Work Folder, Database or Log Files Written
+# Sigma id 56e2db42-5bb1-5724-bd1e-c939642cb0fe, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/agent-work/ctf/" and (ObjectName endswith "/findings.log" or ObjectName endswith "/attack_timeline.md" or ObjectName endswith "/dumps/commands.log" or ObjectName endswith "/dumps/execution_summary.md" or ObjectName endswith "/dumps/reflection_history.md")) or ((ObjectName contains "/agent-work/ctf/" and ObjectName contains "/poc_scripts/poc_") and ObjectName endswith ".py") or ObjectName endswith "/data/chying.db" or (ObjectName contains "/logs/chying_agent_" and ObjectName endswith ".log") or ObjectName contains "/.taie/null-zone/"

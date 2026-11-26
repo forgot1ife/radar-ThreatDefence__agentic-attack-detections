@@ -1,0 +1,48 @@
+title: Virga C2 Server, Operator CLI or MCP Server Started
+id: 6459511c-803c-5dc8-94ca-08e1ee7dae81
+status: experimental
+description: |
+    Detects the Virga command and control framework running on a host: its server (virga-server, which opens an
+    unauthenticated admin API and MCP servers on 8443, 8444 and 50012), its operator CLI (virga-cli), its MCP stdio
+    server (virga-mcp-stdio), the make targets that start them, and the MCP Inspector scripts that point at them.
+    Virga's beacon can carry a local language model that runs commands on the compromised host by itself.
+references:
+    - https://github.com/r74tech/virga
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+    - attack.resource-development
+    - attack.t1587.001
+logsource:
+    category: process_creation
+detection:
+    selection_image:
+        Image|endswith:
+            - '/virga-server'
+            - '/virga-cli'
+            - '/virga-mcp-stdio'
+            - '\virga-server.exe'
+            - '\virga-cli.exe'
+            - '\virga-server-windows-amd64.exe'
+            - '\virga-cli-windows-amd64.exe'
+            - '/virga-server-linux-amd64'
+            - '/virga-cli-linux-amd64'
+            - '/virga-server-darwin-amd64'
+            - '/virga-server-darwin-arm64'
+            - '/virga-cli-darwin-amd64'
+            - '/virga-cli-darwin-arm64'
+    selection_cmd:
+        CommandLine|contains:
+            - 'bin/virga-server --config'
+            - 'bin/virga-cli --host'
+            - 'bin/virga-mcp-stdio'
+            - '--server virga-stdio'
+            - '--server virga-sse'
+            - '--server virga-streamable'
+    condition: 1 of selection_*
+falsepositives:
+    - Red teams and researchers running Virga
+level: medium

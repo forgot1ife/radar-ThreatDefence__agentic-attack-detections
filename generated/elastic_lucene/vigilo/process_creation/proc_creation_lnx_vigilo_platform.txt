@@ -1,0 +1,3 @@
+# Vigilo Platform or White-Box Agent on a Host
+# Sigma id 1baadfc6-4123-5648-b8c8-891d07ba1ce8, pipeline ecs
+(process.command_line:(*src.temporal.worker\ \-\-serve\ \-\-task\-queue\ vigilo\-* OR *\-m\ src.greybox_web.worker* OR *\-m\ src.webapi.main* OR *\/usr\/local\/bin\/vigilo\-record* OR *vigilo\-record\ show\ * OR *vigilo\-record\ verdict\ * OR *vigilo\-record\ lead\ *)) OR (process.command_line:*authorised\ security\ assessment\ run\ by\ Vigilo* AND (process.command_line:(*\-\-dangerously\-skip\-permissions* OR *\-\-dangerously\-bypass\-approvals\-and\-sandbox*)))

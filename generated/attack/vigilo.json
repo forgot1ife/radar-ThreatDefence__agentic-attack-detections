@@ -1,0 +1,79 @@
+{
+ "description": "28 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 19,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "vigilo",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Suricata: 3817416 TD Vigilo grey-box network mode SMTP greeting EHLO vigilo.invalid",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1046"
+  },
+  {
+   "comment": "KQL hunt: Vigilo on a host you monitor; Sigma: Vigilo Platform or White-Box Agent on a Host",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1071"
+  },
+  {
+   "comment": "KQL hunt: Vigilo assessments reaching you: its user agents and probe markers in web and proxy logs; Sentinel analytics: Vigilo security assessment reached a web server; Sigma: Vigilo Assessment Markers in Web Logs; Suricata: 3817401 TD Vigilo grey-box assessment user agent; Suricata: 3817404 TD Vigilo grey-box reflection canary in URI; Suricata: 3817405 TD Vigilo grey-box reflection canary in request body; Suricata: 3817406 TD Vigilo grey-box open redirect probe host vigilo-probe .invalid; Suricata: 3817412 TD Vigilo grey-box server-side callback check token; Suricata: 3817413 TD Vigilo grey-box upload multipart boundary",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1190"
+  },
+  {
+   "comment": "KQL hunt: Vigilo on a host you monitor; Sigma: Vigilo Platform or White-Box Agent on a Host; Sigma: Vigilo Run Folder, Deliverables or Delivery State Written; Suricata: 3817417 TD Vigilo web UI page; Suricata: 3817418 TD Vigilo platform API response headers; YARA: Vigilo_Assessment_Output; YARA: Vigilo_Source_Or_Install",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1595"
+  },
+  {
+   "comment": "KQL hunt: Vigilo assessments reaching you: its user agents and probe markers in web and proxy logs; Sentinel analytics: Vigilo security assessment reached a web server; Sigma: Vigilo Assessment Markers in Web Logs; Sigma: Vigilo User Agents in Proxy Logs; Suricata: 3817401 TD Vigilo grey-box assessment user agent; Suricata: 3817402 TD Vigilo white-box preflight user agent; Suricata: 3817403 TD Vigilo grey-box header echo probe X-Note-Name; Suricata: 3817404 TD Vigilo grey-box reflection canary in URI; Suricata: 3817405 TD Vigilo grey-box reflection canary in request body; Suricata: 3817406 TD Vigilo grey-box open redirect probe host vigilo-probe .invalid; Suricata: 3817407 TD Vigilo grey-box CORS probe origin vigilo-probe .invalid; Suricata: 3817408 TD Vigilo grey-box soft-404 baseline path /vgl-; Suricata: 3817409 TD Vigilo grey-box login baseline with the same vgl value as user and password (form); Suricata: 3817410 TD Vigilo grey-box login baseline with the same vgl value as user and password (JSON); Suricata: 3817411 TD Vigilo grey-box login baseline with the same vgl value as user and password (query); Suricata: 3817412 TD Vigilo grey-box server-side callback check token; Suricata: 3817413 TD Vigilo grey-box upload multipart boundary; Suricata: 3817414 TD Vigilo grey-box GraphQL operation VigiloInvoke; Suricata: 3817415 TD Vigilo grey-box JSON-RPC request id vigilo-",
+   "enabled": true,
+   "score": 19,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

@@ -1,0 +1,3 @@
+# Hexstrike-redteam BOAZ API Requested Through a Proxy
+# Sigma id 55302221-b6f4-5066-86c1-767a70854a15, pipeline ecs
+url.original:(*\/api\/boaz\/generate\-payload* OR *\/api\/boaz\/list\-loaders* OR *\/api\/boaz\/list\-encoders* OR *\/api\/boaz\/analyze\-binary* OR *\/api\/boaz\/validate\-options*)

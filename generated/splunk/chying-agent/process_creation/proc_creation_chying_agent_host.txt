@@ -1,0 +1,3 @@
+# CHYing-agent AI Pentest Agent Launch, Tools Container or Ghidra Services
+# Sigma id e45638e9-dd2c-5d19-90e0-861c607579d0, pipeline splunk_windows
+(CommandLine="*main.py*" CommandLine="*--dashboard*" CommandLine="*--skip-preflight*") OR CommandLine IN ("*run_tencent_ctf.py*", "*run_htb_ctf.py*") OR CommandLine="*chying-agent-docker*" OR (CommandLine="*GhidraMCPHeadlessServer*" CommandLine="*--port 8089*" CommandLine="*--bind 0.0.0.0*") OR (CommandLine="*bridge_mcp_ghidra.py*" CommandLine="*--transport sse*" CommandLine="*--mcp-host 0.0.0.0*" CommandLine="*--mcp-port 8766*")

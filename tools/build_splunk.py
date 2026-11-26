@@ -65,6 +65,16 @@ FRAMEWORKS = {
     "sapper-v2": ("sapper-v2", "#8FBC8F", "8765", "Contest kit that drives Claude Code sessions in tmux around a shared engagement graph."),
     "nyxstrike": ("NyxStrike", "#6C7BD9", "8888", "HexStrike derivative with a web dashboard, a decision engine and about 200 tools over MCP."),
     "neurosploit": ("NeuroSploit", "#D4699A", "4173", "Rust multi-model harness with an unauthenticated web console, out-of-band channel and optional C2."),
+    "h-pentest": ("H-Pentest", "#B5838D", "8000", "Small contest pentest platform: unauthenticated FastAPI backend with the Docker socket, Vue console."),
+    "hexstrike-redteam": ("Hexstrike-redteam", "#9C6ADE", "8888", "HexStrike copy with BOAZ payload evasion routes, bound to every interface with no auth."),
+    "vigilo": ("Vigilo", "#5DADE2", "8080", "CERT-EU assessment platform: coding agents with approvals off, and a grey-box agent that names itself."),
+    "chying-agent": ("CHYing-agent", "#F1948A", "8080", "Contest agent on the Claude Agent SDK with an unauthenticated dashboard and web terminal markers."),
+    "incalmo": ("Incalmo", "#45B39D", "8888", "CMU research system for multistage attacks: unauthenticated Flask C2 driving Caldera Sandcat implants."),
+    "pentest-copilot": ("Pentest Copilot", "#F7DC6F", "3000", "BugBase web app whose agent runs commands in Kali, with a browser agent and Mythic C2 integration."),
+    "virga": ("Virga", "#AF7AC5", "5173", "Go C2 whose beacon can embed a local model; unauthenticated MCP servers and admin API."),
+    "pentest-ai": ("pentest-ai", "#85C1E9", "8888", "Python CLI and MCP server whose every request carries its name and a per-install id."),
+    "cyber-harness": ("cyber-harness", "#76D7C4", "8080", "chainreactors Go agent harness: scan agent, code audit and a Web Hub that controls nodes."),
+    "lazyown": ("LazyOwn", "#CD6155", "4444", "Python red team framework with a multi-operator C2, HTTP and DNS beacons, driven by an agent over MCP."),
     "behaviors": ("Shared behaviors", "#D9DEE5", "", "What every agentic framework does: coding agents with approvals off, agent tooling, callbacks."),
 }
 

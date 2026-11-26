@@ -1,0 +1,42 @@
+title: LazyOwn C2 Key, Launcher, Credential or Capture Files Written
+id: e0aa8b5f-2647-5490-9d6a-f2eed600add1
+status: experimental
+description: |
+    Detects files the LazyOwn framework writes under its sessions/ folder on the host that runs the C2: the beacon AES
+    key sessions/key.aes, the launcher files sessions/c2_launch.env (C2 port, user and password) and c2_launch.sh, the
+    one-time admin passwords sessions/rbac_initial_admin.txt and users_initial_admin.txt, the shared session state
+    sessionLazyOwn.json and LazyOwn_session_report.csv, and camera frames and recordings the decoy page captured
+    (sessions/captured_images/capture_<time>.png, audio_<time>.webm).
+references:
+    - https://github.com/grisuno/LazyOwn
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1573.001
+    - attack.collection
+    - attack.t1125
+logsource:
+    category: file_event
+    product: linux
+detection:
+    selection_named:
+        TargetFilename|endswith:
+            - '/sessions/key.aes'
+            - '/sessions/c2_launch.env'
+            - '/sessions/c2_launch.sh'
+            - '/sessions/rbac_initial_admin.txt'
+            - '/sessions/users_initial_admin.txt'
+            - '/sessions/sessionLazyOwn.json'
+            - '/sessions/LazyOwn_session_report.csv'
+    selection_capture:
+        TargetFilename|contains: '/sessions/captured_images/'
+        TargetFilename|endswith:
+            - '.png'
+            - '.webm'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with LazyOwn
+    - Developers working on the LazyOwn code
+level: medium

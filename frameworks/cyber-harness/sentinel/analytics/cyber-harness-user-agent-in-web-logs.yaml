@@ -1,0 +1,36 @@
+id: 89a42a7c-b304-5759-8c62-f2cc6fff38c6
+name: cyber-harness user agent in web or proxy logs
+description: |
+  A web or proxy request carried a user agent hard-coded in cyber-harness (chainreactors/cyber-harness, formerly
+  AIScan), an LLM agent harness that drives the chainreactors scanners: the exact user agent cyber (aiscan in older
+  builds), which its scan pipeline sends to a URL that answered 401 before guessing Basic-auth passwords there, or
+  Mozilla/5.0 (compatible; cyber/1.0; +https://github.com/chainreactors/cyber-harness) from its fetch tool. Check who ran
+  it and whether the test was agreed, and look for password guessing against the same URL.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - CredentialAccess
+relevantTechniques:
+  - T1595.002
+  - T1110.001
+query: |
+  let ExactUAs = dynamic(["cyber", "aiscan"]);
+  let FetchUAs = dynamic(["github.com/chainreactors/cyber-harness)", "github.com/chainreactors/aiscan)"]);
+  union isfuzzy=true
+      (CommonSecurityLog | where RequestClientApplication in~ (ExactUAs) or RequestClientApplication has_any (FetchUAs)
+          | project TimeGenerated, Src=SourceIP, Target=DestinationHostName, UA=RequestClientApplication, Detail=RequestURL),
+      (W3CIISLog | extend UA=replace_string(csUserAgent, "+", " ") | where UA in~ (ExactUAs) or UA has_any (FetchUAs)
+          | project TimeGenerated, Src=cIP, Target=csHost, UA, Detail=strcat(csUriStem, " ", scStatus))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Samples=make_set(Detail, 10) by Src, Target, UA
+version: 1.0.0
+kind: Scheduled

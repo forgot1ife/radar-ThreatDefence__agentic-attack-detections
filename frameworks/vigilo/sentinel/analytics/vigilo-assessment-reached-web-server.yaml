@@ -1,0 +1,38 @@
+id: 54df8e5f-182c-5bd2-b65f-e280d3228a38
+name: Vigilo security assessment reached a web server
+description: |
+  A web server or proxy logged a request with a user agent hard-coded in Vigilo (certeu/vigilo, reviewed at
+  82c2d353): Vigilo-Greybox/1 (authorised security test), sent on every request of a grey-box assessment, or
+  Vigilo-Preflight/1.0, sent at the start of a white-box run against a live copy. Vigilo is a CERT-EU tool for
+  assessing applications the operator is responsible for; confirm with the application owner that the assessment
+  was agreed and came from the declared source.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Low
+requiredDataConnectors:
+  - connectorId: CefAma
+    dataTypes: []
+  - connectorId: AzureMonitor(IIS)
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Reconnaissance
+  - InitialAccess
+relevantTechniques:
+  - T1595.002
+  - T1190
+query: |
+  union isfuzzy=true
+      (W3CIISLog
+          | extend UA=replace_string(csUserAgent, "+", " ")
+          | where UA startswith "Vigilo-Greybox/" or UA startswith "Vigilo-Preflight/"
+          | project TimeGenerated, Source="W3CIISLog", IPAddress=cIP, Target=csHost, Url=strcat(csUriStem, "?", csUriQuery), UserAgent=UA),
+      (CommonSecurityLog
+          | where RequestClientApplication startswith "Vigilo-Greybox/" or RequestClientApplication startswith "Vigilo-Preflight/"
+          | project TimeGenerated, Source="CommonSecurityLog", IPAddress=SourceIP, Target=DestinationHostName, Url=RequestURL, UserAgent=RequestClientApplication)
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), SampleURLs=make_set(Url, 10),
+      UserAgents=make_set(UserAgent, 5), Sources=make_set(Source) by IPAddress, Target
+version: 1.0.0
+kind: Scheduled

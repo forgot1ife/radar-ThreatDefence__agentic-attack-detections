@@ -1,0 +1,4 @@
+# LazyOwn C2 Server, MCP Server or Launcher Started
+# Sigma id 452f7d09-5501-559c-814d-555ec58d6773, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "lazyc2.py" or ProcessCommandLine contains "lazyown_mcp.py" or ProcessCommandLine contains "lazyown_mcp_opencode.py" or ProcessCommandLine contains "fast_run_as_r00t.sh" or ProcessCommandLine contains "sessions/c2_launch.sh") or (ProcessCommandLine contains "python3" and ProcessCommandLine contains "lazyown.py") or (ProcessCommandLine contains "tmux" and ProcessCommandLine contains "lazyown_sessions") or (ProcessCommandLine contains "raw.githubusercontent.com/grisuno/LazyOwn/" or ProcessCommandLine contains "ghcr.io/grisuno/lazyown")

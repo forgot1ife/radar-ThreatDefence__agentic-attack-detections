@@ -1,0 +1,6 @@
+{"name": "a node connecting to a Hub", "expected": true, "event": {"cs-host": "198.51.100.20:8080", "c-uri": "http://198.51.100.20:8080/api/aop/node/ws"}}
+{"name": "a browser calling the Hub session service", "expected": true, "event": {"cs-host": "hub.example.test:8080", "c-uri": "http://hub.example.test:8080/cyber.rpc.chat.SessionService/ListSessions"}}
+{"name": "a Quick Connect download of the scan node", "expected": true, "event": {"cs-host": "github.com", "c-uri": "https://github.com/chainreactors/cyber-harness/releases/latest/download/cyber-scan_linux_amd64.zip"}}
+{"name": "a Quick Connect download through the mirror", "expected": true, "event": {"cs-host": "ghfast.top", "c-uri": "https://ghfast.top/https://github.com/chainreactors/cyber-harness/releases/latest/download/cyber-scan_windows_amd64.zip"}}
+{"name": "near miss: the project page on GitHub", "expected": false, "event": {"cs-host": "github.com", "c-uri": "https://github.com/chainreactors/cyber-harness"}}
+{"name": "near miss: another ConnectRPC service", "expected": false, "event": {"cs-host": "api.example.test", "c-uri": "https://api.example.test/acme.rpc.chat.SessionService/ListSessions"}}

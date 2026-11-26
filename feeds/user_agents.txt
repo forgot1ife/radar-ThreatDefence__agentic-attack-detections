@@ -11,9 +11,12 @@ HexStrike-BrowserAgent/1.0
 HexStrike-BrowserAgent/1.0 (Security Testing)
 HexStrike-HTTP-Framework/1.0
 HexStrike-HTTP-Framework/1.0 (Advanced Security Testing)
+LazyOwn/1.0
 Mozilla/5.0 (ARTEX)
 Mozilla/5.0 (Compatible Exploit)
+Mozilla/5.0 (Linux; LAzyOwnRedTeam 66_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) ARTeX-authorized-pentest
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Firefox/120.0
 Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36
 Mozilla/5.0 (X11; Linux x86_64) artex-verify/1.0
 Mozilla/5.0 (compatible; ArtEx/1.0)
@@ -23,16 +26,22 @@ Mozilla/5.0 (compatible; Decepticon/1.0)
 Mozilla/5.0 (compatible; NeuroSploit-WebShell/1.0)
 Mozilla/5.0 (compatible; RedAmon-JsRecon/1.0)
 Mozilla/5.0 (compatible; RedAmon/4.7)
+Mozilla/5.0 (compatible; aiscan/1.0; +https://github.com/chainreactors/aiscan)
+Mozilla/5.0 (compatible; cyber/1.0; +https://github.com/chainreactors/cyber-harness)
 Mozilla/5.0 (spa-api-recon spider)
 Mozilla/5.0 (spa-api-recon)
 Mozilla/5.0 ARTeX
 NeuroSploit/4.4.3
 NyxStrike/1.0
+PentestCopilot/1.0
 ReconProbe/1.0
 RedAmon-AISurfaceRecon/1.0
 RedAmon-CachePoison/1.0
 Security-BrowserAgent/1.0 (Security Testing)
 Security-HTTP-Framework/1.0 (Advanced Security Testing)
+Vigilo-Greybox/1 (authorised security test)
+Vigilo-Preflight/1.0
+aiscan
 antifox-enrich/1.0
 antifox-selfupdate
 artex-agent
@@ -48,13 +57,19 @@ artex-verify/1.0
 azure-toolkit/1.0
 codex_cli_rs/0.0.0 (Unknown 0; unknown) unknown
 commonhuman-core/openapi-discover
+cyber
 decepticon-http-sandbox/1
 decepticon-roe/1
 decepticon-telemetry/1.0
 dm-edge
+lazyown-depconfuse/1.0
 neurosploit-logship/4.4
 norma/0.4
+pentest-ai-telemetry/1.0
+pentest-ai/1.6.2
+pentest-ai/authscan (+https://pentestai.xyz)
 pentestswarm-cli
 pentestswarm-webhook/1.0
+ptai-api-discovery/1.6.2
 scopeweaver
 xalgorix-origin-calibration/1

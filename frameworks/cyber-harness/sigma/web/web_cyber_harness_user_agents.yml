@@ -1,0 +1,35 @@
+title: cyber-harness User Agent in Web Logs
+id: bb0b1ef7-f434-5b67-b740-1f08fd13b4ca
+status: experimental
+description: |
+    Detects the two user agents hard-coded in cyber-harness (chainreactors/cyber-harness, formerly AIScan), an LLM agent
+    harness that drives the chainreactors scanners: the exact user agent cyber (aiscan in builds before September 2026)
+    of the scan pipeline's basic-auth check, sent to a URL that answered 401 just before the zombie stage guesses
+    passwords against it, and the user agent of its fetch tool, Mozilla/5.0 (compatible; cyber/1.0;
+    +https://github.com/chainreactors/cyber-harness). Both are code defaults.
+references:
+    - https://github.com/chainreactors/cyber-harness
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.credential-access
+    - attack.t1110.001
+logsource:
+    category: webserver
+detection:
+    selection_probe:
+        cs-user-agent:
+            - 'cyber'
+            - 'aiscan'
+    selection_fetch:
+        cs-user-agent|contains:
+            - 'github.com/chainreactors/cyber-harness)'
+            - 'github.com/chainreactors/aiscan)'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with cyber-harness or AIScan
+    - A script or client that sets its user agent to the bare word cyber or aiscan
+level: high

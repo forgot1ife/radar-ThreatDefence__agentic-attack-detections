@@ -1,0 +1,3 @@
+# Hexstrike-redteam BOAZ API in Web Server Logs
+# Sigma id 3914c63a-0a6b-50b4-ad2b-7cc6348b4375, pipeline splunk_windows
+"cs-uri-stem" IN ("/api/boaz/generate-payload*", "/api/boaz/list-loaders*", "/api/boaz/list-encoders*", "/api/boaz/analyze-binary*", "/api/boaz/validate-options*")

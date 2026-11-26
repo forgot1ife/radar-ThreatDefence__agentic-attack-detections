@@ -1,0 +1,4 @@
+# LazyOwn Beacon Quick-Start Download One-Liner
+# Sigma id f310f6a9-32a6-5a4e-83a0-fc21333b4d7c, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "curl -sk" and TargetProcessCommandLine contains "-o /tmp/.dbus") or (TargetProcessCommandLine contains "chmod +x /tmp/.dbus" and TargetProcessCommandLine contains "/tmp/.dbus") or (TargetProcessCommandLine contains "iwr -Uri" and TargetProcessCommandLine contains "win.exe" and TargetProcessCommandLine contains "\\svchost.exe")

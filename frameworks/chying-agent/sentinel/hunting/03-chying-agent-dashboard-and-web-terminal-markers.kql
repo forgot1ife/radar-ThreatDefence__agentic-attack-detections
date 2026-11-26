@@ -1,0 +1,30 @@
+// CHYing-agent dashboard use and web terminal markers in proxy, firewall and target logs
+// Agentic attack detections by ThreatDefence (CHYing-agent). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1059.004 (Command and Scripting Interpreter: Unix Shell), T1133 (External Remote Services)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the CHYing-agent source code (yhy0/CHYing-agent at 0d2ee81f):
+//  - The dashboard (FastAPI on 0.0.0.0:8080, no login) serves /api/dashboard/stats, /api/executions/<id>/transcript,
+//    /api/executions/<id>/log and POST /api/writeups/<id>/generate. A proxy or firewall that logs URLs shows who reads it.
+//  - The web terminal client types echo __WSS_PROBE_7b3e__ and wraps every command with
+//    ; __chy_rc=$?; printf '\n__WSS_EXIT_c1a4__%s\n' "$__chy_rc"; echo __WSS_CMD_END_9f7a__ (wss_terminal_client.py:205-215,399).
+//    A target that forwards shell history or terminal session logs to Syslog keeps these strings.
+// What else CHYing-agent sends to a web target is its Kali tools with their defaults (httpx, nuclei, ffuf, sqlmap):
+// look at what the same source sent around a match.
+
+let ApiPaths = @"/api/dashboard/stats|/api/executions/\d+/(transcript|log|writeup)|/api/writeups/\d+/generate";
+let TermMarkers = dynamic(["__WSS_PROBE_7b3e__", "__WSS_EXIT_c1a4__", "__WSS_CMD_END_9f7a__", "__chy_rc=$?"]);
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL matches regex ApiPaths
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=strcat(DestinationIP, ":", DestinationPort), Detail=RequestURL),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriStem matches regex ApiPaths
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=strcat(sIP, ":", sPort), Detail=strcat(csMethod, " ", csUriStem)),
+    (Syslog | where TimeGenerated > ago(90d)
+        | where SyslogMessage has_any (TermMarkers)
+        | project TimeGenerated, Source="Syslog", Src=HostIP, Target=Computer, Detail=substring(SyslogMessage, 0, 300)),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (TermMarkers)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Src="", Target=DeviceName, Detail=substring(ProcessCommandLine, 0, 300))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Samples=make_set(Detail, 10) by Source, Src, Target
+| order by FirstSeen asc

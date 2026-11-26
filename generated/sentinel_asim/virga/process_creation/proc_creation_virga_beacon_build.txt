@@ -1,0 +1,4 @@
+# Virga Beacon Built with go build
+# Sigma id c24c2aae-c27a-5d81-ad3b-4814a9c3e4c8, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "internal/implant/config.BuildC2Host=" or TargetProcessCommandLine contains "internal/implant/config.BuildLlamaEnabled=") or (TargetProcessCommandLine contains "llama_selfextract,prebuilt" and TargetProcessCommandLine contains "internal/implant/main.go")

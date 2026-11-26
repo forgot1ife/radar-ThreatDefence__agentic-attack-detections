@@ -1,0 +1,4 @@
+# Vigilo Run Folder, Deliverables or Delivery State Written
+# Sigma id 77417edd-2f06-5546-b96c-adbf63c7e5cf, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/.vigilo/" and (FolderPath contains "/deliverables/" or FolderPath contains "/agents/" or FolderPath contains "/prompts/")) or (FolderPath endswith "/.vigilo-remote-url" or FolderPath endswith "/.git/vigilo-delivery.json" or FolderPath endswith "/.git/vigilo-rebuild.json" or FolderPath endswith "/.git/vigilo-delivery.lock")

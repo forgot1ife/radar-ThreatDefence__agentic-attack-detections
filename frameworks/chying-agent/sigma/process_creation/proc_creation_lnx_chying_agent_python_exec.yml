@@ -1,0 +1,29 @@
+title: CHYing-agent Python Tool Call in Its Kali Container
+id: 1b361041-5cd3-5bdc-a4cd-ab59e9b23198
+status: experimental
+description: |
+    Detects how CHYing-agent runs model-written Python in its Kali tools container: a Docker exec of
+    /bin/bash -c "echo <base64> | base64 -d | python3" whose base64 starts with the work-directory header the agent
+    prepends to every script (# === 自动注入：工作目录设置 ===). The header is fixed in the code, so its base64 prefix
+    is the same on every call made with a challenge work directory.
+references:
+    - https://github.com/yhy0/CHYing-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        CommandLine|contains|all:
+            - 'IyA9PT0g6Ieq5Yqo5rOo5YWl77ya'
+            - 'base64 -d'
+            - 'python3'
+    condition: selection
+falsepositives:
+    - Authorized tests or contest work with CHYing-agent
+level: high

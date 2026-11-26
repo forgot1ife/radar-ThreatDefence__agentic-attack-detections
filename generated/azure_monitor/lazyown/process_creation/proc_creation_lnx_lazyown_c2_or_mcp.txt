@@ -1,0 +1,4 @@
+# LazyOwn C2 Server, MCP Server or Launcher Started
+# Sigma id 452f7d09-5501-559c-814d-555ec58d6773, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "lazyc2.py" or CommandLine contains "lazyown_mcp.py" or CommandLine contains "lazyown_mcp_opencode.py" or CommandLine contains "fast_run_as_r00t.sh" or CommandLine contains "sessions/c2_launch.sh") or (CommandLine contains "python3" and CommandLine contains "lazyown.py") or (CommandLine contains "tmux" and CommandLine contains "lazyown_sessions") or (CommandLine contains "raw.githubusercontent.com/grisuno/LazyOwn/" or CommandLine contains "ghcr.io/grisuno/lazyown")

@@ -1,0 +1,27 @@
+title: Vigilo User Agents in Proxy Logs
+id: de5bb28a-8885-5832-9aed-2f1f6d8aa6a5
+status: experimental
+description: |
+    Detects the user agents hard-coded in Vigilo (certeu/vigilo at 82c2d353): Vigilo-Greybox/1 (authorised security
+    test) on every grey-box request, which a forward proxy sees for plain-HTTP targets or with TLS inspection (Vigilo
+    sends grey-box traffic through an admin-defined egress proxy when one is set), and Vigilo-Preflight/1.0 on the
+    reachability check at the start of a white-box run.
+references:
+    - https://github.com/certeu/vigilo
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+logsource:
+    category: proxy
+detection:
+    selection:
+        c-useragent|startswith:
+            - 'Vigilo-Greybox/'
+            - 'Vigilo-Preflight/'
+    condition: selection
+falsepositives:
+    - Agreed Vigilo assessments run from your network
+level: medium

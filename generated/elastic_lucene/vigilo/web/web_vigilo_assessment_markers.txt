@@ -1,0 +1,3 @@
+# Vigilo Assessment Markers in Web Logs
+# Sigma id 6a4e502c-ff5f-5909-bff7-251c78718093, pipeline ecs
+(user_agent.original:(Vigilo\-Greybox\/* OR Vigilo\-Preflight\/*)) OR (url.query:(*vigilo\-probe\-* OR *vigilo\-callback\-* OR *vigilo\-control\-*)) OR (url.path:(*vigilo\-callback\-* OR *vigilo\-control\-*))

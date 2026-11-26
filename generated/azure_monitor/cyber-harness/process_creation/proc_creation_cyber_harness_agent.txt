@@ -1,0 +1,4 @@
+# cyber-harness Agent, Node or Web Hub Started
+# Sigma id ebb09efa-4f08-5fdf-8988-d6fd6ae3fa13, pipeline azure_monitor
+SecurityEvent
+| where (NewProcessName endswith "/cyber-scan" or NewProcessName endswith "\\cyber-scan.exe" or NewProcessName endswith "/cyber-harness" or NewProcessName endswith "\\cyber-harness.exe" or NewProcessName endswith "/cyber-audit" or NewProcessName endswith "\\cyber-audit.exe" or NewProcessName endswith "/aiscan" or NewProcessName endswith "\\aiscan.exe" or NewProcessName endswith "/aiscan-full" or NewProcessName endswith "\\aiscan-full.exe") or (CommandLine contains "--server-url http" and CommandLine contains "--node-name") or (CommandLine contains "chainreactors/cyber-harness/releases/" or CommandLine contains "chainreactors/aiscan/releases/") or (CommandLine contains "cyber-node-" and CommandLine contains "node.zip")

@@ -1,0 +1,4 @@
+# CHYing-agent AI Pentest Agent Launch, Tools Container or Ghidra Services
+# Sigma id e45638e9-dd2c-5d19-90e0-861c607579d0, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "main.py" and ProcessCommandLine contains "--dashboard" and ProcessCommandLine contains "--skip-preflight") or (ProcessCommandLine contains "run_tencent_ctf.py" or ProcessCommandLine contains "run_htb_ctf.py") or ProcessCommandLine contains "chying-agent-docker" or (ProcessCommandLine contains "GhidraMCPHeadlessServer" and ProcessCommandLine contains "--port 8089" and ProcessCommandLine contains "--bind 0.0.0.0") or (ProcessCommandLine contains "bridge_mcp_ghidra.py" and ProcessCommandLine contains "--transport sse" and ProcessCommandLine contains "--mcp-host 0.0.0.0" and ProcessCommandLine contains "--mcp-port 8766")

@@ -1,0 +1,31 @@
+title: Virga Beacon Check-in or Stage 2 Request in Proxy Logs
+id: 8fa02fb4-4ba9-5df5-88da-0ae2d5af1a52
+status: experimental
+description: |
+    Detects a Virga beacon talking to its listener: a POST to the default check-in path /api/updates with one of the
+    user agents Virga's generator builds in (the Chrome 96 string without a beacon config, the truncated Chrome
+    string from the shipped beacon.yaml), or a request for /api/updates/stage2. The path and user agent are settings
+    the operator can change. The truncated user agent is also used by other agent frameworks.
+references:
+    - https://github.com/r74tech/virga
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_checkin:
+        cs-method: 'POST'
+        c-uri|endswith: '/api/updates'
+        c-useragent:
+            - 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'
+            - 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    selection_stage2:
+        c-uri|endswith: '/api/updates/stage2'
+    condition: 1 of selection_*
+falsepositives:
+    - A real Chrome 96 browser posting to an application path named /api/updates
+level: medium

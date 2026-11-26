@@ -1,0 +1,79 @@
+{
+ "description": "26 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 17,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "incalmo",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Incalmo's implant and commands on the hosts it attacks; Sigma: Incalmo Spreading a Caldera Sandcat Implant",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1021.004"
+  },
+  {
+   "comment": "Sigma: Incalmo Per-Command Script or Tool Command Line",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1046"
+  },
+  {
+   "comment": "KQL hunt: Incalmo's implant and commands on the hosts it attacks; Sentinel analytics: Incalmo implant spread or per-command script on a host; Sigma: Incalmo Per-Command Script or Tool Command Line; Suricata: 3818307 TD Incalmo per-command script fetched by an implant; Suricata: 3818314 TD Incalmo command tasking request",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: Incalmo C2 protocol and operator API in web, proxy and firewall logs; KQL hunt: Incalmo C2 server on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: Incalmo implant spread or per-command script on a host; Sigma: Incalmo C2 Operator API Requested Through a Proxy; Sigma: Incalmo C2 Server or Its Celery Worker; Suricata: 3818301 TD Incalmo C2 server root response; Suricata: 3818302 TD Incalmo C2 server health response; Suricata: 3818303 TD Incalmo or Caldera Sandcat beacon answer; Suricata: 3818304 TD Incalmo or Caldera Sandcat beacon request; Suricata: 3818310 TD Incalmo web console page; Suricata: 3818311 TD Incalmo LLM agent action queue request; Suricata: 3818312 TD Incalmo strategy start request; Suricata: 3818313 TD Incalmo environment state report; Suricata: 3818314 TD Incalmo command tasking request; YARA: Incalmo_C2_Server_Source; YARA: Incalmo_Run_Configuration",
+   "enabled": true,
+   "score": 17,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Incalmo C2 protocol and operator API in web, proxy and firewall logs; KQL hunt: Incalmo's implant and commands on the hosts it attacks; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: Incalmo Implant, Script or Run File Written; Sigma: Incalmo Spreading a Caldera Sandcat Implant; Suricata: 3818305 TD Incalmo or Caldera Sandcat implant download; Suricata: 3818306 TD Incalmo agent download route; Suricata: 3818307 TD Incalmo per-command script fetched by an implant; Suricata: 3818308 TD Incalmo exploit or helper payload fetched by an implant; YARA: Incalmo_C2_Server_Source",
+   "enabled": true,
+   "score": 10,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "KQL hunt: Incalmo's implant and commands on the hosts it attacks; Sigma: Incalmo Spreading a Caldera Sandcat Implant",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1570"
+  },
+  {
+   "comment": "KQL hunt: Incalmo C2 server on a host you monitor; YARA: Incalmo_Model_Prompts",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

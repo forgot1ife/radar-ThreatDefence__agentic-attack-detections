@@ -1,0 +1,3 @@
+# Vigilo Assessment Markers in Web Logs
+# Sigma id 6a4e502c-ff5f-5909-bff7-251c78718093, pipeline splunk_windows
+"cs-user-agent" IN ("Vigilo-Greybox/*", "Vigilo-Preflight/*") OR "cs-uri-query" IN ("*vigilo-probe-*", "*vigilo-callback-*", "*vigilo-control-*") OR "cs-uri-stem" IN ("*vigilo-callback-*", "*vigilo-control-*")

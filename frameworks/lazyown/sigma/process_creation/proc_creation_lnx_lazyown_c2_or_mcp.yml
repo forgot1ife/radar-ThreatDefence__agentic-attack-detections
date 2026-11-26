@@ -1,0 +1,49 @@
+title: LazyOwn C2 Server, MCP Server or Launcher Started
+id: 452f7d09-5501-559c-814d-555ec58d6773
+status: experimental
+description: |
+    Detects the LazyOwn red team framework on a host: the C2 server (python3 -W ignore lazyc2.py <port> <user> <password>,
+    which puts the operator password on the command line), the MCP server an AI agent drives (skills/lazyown_mcp.py,
+    skills/lazyown_mcp_opencode.py, or with --sse on 127.0.0.1:9871), the CLI (lazyown.py) and the all-in-one launcher
+    fast_run_as_r00t.sh with its tmux session lazyown_sessions and sessions/c2_launch.sh. Also the documented install
+    (curl of raw.githubusercontent.com/grisuno/LazyOwn/main/bootstrap.sh) and the container ghcr.io/grisuno/lazyown.
+references:
+    - https://github.com/grisuno/LazyOwn
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.execution
+    - attack.t1059.006
+    - attack.command-and-control
+    - attack.t1071.001
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_scripts:
+        CommandLine|contains:
+            - 'lazyc2.py'
+            - 'lazyown_mcp.py'
+            - 'lazyown_mcp_opencode.py'
+            - 'fast_run_as_r00t.sh'
+            - 'sessions/c2_launch.sh'
+    selection_cli:
+        CommandLine|contains|all:
+            - 'python3'
+            - 'lazyown.py'
+    selection_tmux:
+        CommandLine|contains|all:
+            - 'tmux'
+            - 'lazyown_sessions'
+    selection_install:
+        CommandLine|contains:
+            - 'raw.githubusercontent.com/grisuno/LazyOwn/'
+            - 'ghcr.io/grisuno/lazyown'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with LazyOwn
+    - Developers working on the LazyOwn code
+level: high

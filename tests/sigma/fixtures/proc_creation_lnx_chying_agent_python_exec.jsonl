@@ -1,0 +1,2 @@
+{"name": "python tool call with the work directory header", "expected": true, "event": {"Image": "/bin/bash", "CommandLine": "/bin/bash -c echo IyA9PT0g6Ieq5Yqo5rOo5YWl77ya5bel5L2c55uu5b2V6K6+572uID09PQppbXBvcnQgb3MKV09SS19ESVIgPSAiL3Jvb3QvYWdlbnQtd29yay9jdGYvV2ViL21hbnVhbF8xMC4wLjAuMV84MDgwIgo= | base64 -d | python3"}}
+{"name": "near miss: another base64 pipe into python", "expected": false, "event": {"Image": "/bin/bash", "CommandLine": "/bin/bash -c echo aW1wb3J0IG9zCnByaW50KG9zLmdldGN3ZCgpKQo= | base64 -d | python3"}}

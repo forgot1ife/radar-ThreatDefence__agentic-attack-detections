@@ -1,0 +1,3 @@
+# cyber-harness Web Hub Traffic or Release Download Through a Proxy
+# Sigma id a871d699-8c24-54a5-a72f-c894ff5b3065, pipeline splunk_windows
+"c-uri" IN ("*/api/aop/node/ws*", "*/api/aop/application/ws*", "*/cyber.rpc.aop.AOPService/*", "*/cyber.rpc.chat.SessionService/*", "*/cyber.rpc.scan.ScanService/*", "*/cyber.rpc.config.ConfigService/*", "*/cyber.rpc.agent.AgentService/*", "*/cyber.rpc.system.SystemService/*", "*/cyber.rpc.artifact.ArtifactService/*") OR "c-uri" IN ("*github.com/chainreactors/cyber-harness/releases/download/*", "*github.com/chainreactors/cyber-harness/releases/latest/download/*", "*github.com/chainreactors/aiscan/releases/download/*")

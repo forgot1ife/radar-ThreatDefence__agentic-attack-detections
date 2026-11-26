@@ -13,11 +13,14 @@ https://cdn.js-static.com/js/tgo.js
 https://cdn.netlfjs.com/js/cts.js
 https://cdn.netlfjs.com/js/vla.js
 https://decepticon.red/install
+https://github.com/r74tech/llama.go/releases/download/
 https://logs.aliasrobotics.com/upload
 https://raw.githubusercontent.com/CommonHuman-Lab/nyxstrike/master/config.py
 https://raw.githubusercontent.com/JoasASantos/NeuroSploit/main/setup.sh
+https://raw.githubusercontent.com/grisuno/LazyOwn/main/bootstrap.sh
 https://static-js.com/js/bmws.js
 https://static-js.com/js/nrt.js
+https://telemetry.pentestai.xyz/v1/event
 https://update.pentagi.com/api/v1/proxy/updates/pentagi/check
 https://x1opay.co/js/eut.js
 https://x1opay.co/js/l.js

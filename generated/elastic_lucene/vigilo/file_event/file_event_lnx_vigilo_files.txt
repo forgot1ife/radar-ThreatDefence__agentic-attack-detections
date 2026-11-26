@@ -1,0 +1,3 @@
+# Vigilo Run Folder, Deliverables or Delivery State Written
+# Sigma id 77417edd-2f06-5546-b96c-adbf63c7e5cf, pipeline ecs
+(TargetFilename:*\/.vigilo\/* AND (TargetFilename:(*\/deliverables\/* OR *\/agents\/* OR *\/prompts\/*))) OR (TargetFilename:(*\/.vigilo\-remote\-url OR *\/.git\/vigilo\-delivery.json OR *\/.git\/vigilo\-rebuild.json OR *\/.git\/vigilo\-delivery.lock))

@@ -1,0 +1,50 @@
+title: cyber-harness Agent, Node or Web Hub Started
+id: ebb09efa-4f08-5fdf-8988-d6fd6ae3fa13
+status: experimental
+description: |
+    Detects cyber-harness (chainreactors/cyber-harness, formerly AIScan) on a host: its release binaries cyber-scan,
+    cyber-harness and cyber-audit (aiscan and aiscan-full up to v1.0.0-rc9), a node started with --server-url and
+    --node-name, which carries the Hub access key in the URL, and the Quick Connect installer the Hub generates, which
+    downloads a release zip to a temporary node.zip (cyber-node-<guid> on Windows) and starts the node.
+references:
+    - https://github.com/chainreactors/cyber-harness
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: process_creation
+detection:
+    selection_image:
+        Image|endswith:
+            - '/cyber-scan'
+            - '\cyber-scan.exe'
+            - '/cyber-harness'
+            - '\cyber-harness.exe'
+            - '/cyber-audit'
+            - '\cyber-audit.exe'
+            - '/aiscan'
+            - '\aiscan.exe'
+            - '/aiscan-full'
+            - '\aiscan-full.exe'
+    selection_node:
+        CommandLine|contains|all:
+            - '--server-url http'
+            - '--node-name'
+    selection_release:
+        CommandLine|contains:
+            - 'chainreactors/cyber-harness/releases/'
+            - 'chainreactors/aiscan/releases/'
+    selection_windows_installer:
+        CommandLine|contains|all:
+            - 'cyber-node-'
+            - 'node.zip'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams running cyber-harness for authorized tests
+    - Another program named cyber-scan or aiscan
+level: medium

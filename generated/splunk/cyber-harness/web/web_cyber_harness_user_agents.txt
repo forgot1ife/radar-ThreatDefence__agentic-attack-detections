@@ -1,0 +1,3 @@
+# cyber-harness User Agent in Web Logs
+# Sigma id bb0b1ef7-f434-5b67-b740-1f08fd13b4ca, pipeline splunk_windows
+"cs-user-agent" IN ("cyber", "aiscan") OR "cs-user-agent" IN ("*github.com/chainreactors/cyber-harness)*", "*github.com/chainreactors/aiscan)*")

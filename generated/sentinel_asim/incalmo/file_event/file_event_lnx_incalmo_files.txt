@@ -1,0 +1,4 @@
+# Incalmo Implant, Script or Run File Written
+# Sigma id 03be2d7d-0290-534d-951c-573623343505, pipeline sentinel_asim
+imFileEvent
+| where ((TargetFileName endswith "/sandcat_tmp.go" or TargetFileName endswith "/tmp/sc.log" or TargetFileName endswith "/tmp/state_store.db" or TargetFileName endswith "/_litellm_key_status.json" or TargetFileName endswith "/plugins/deception/payloads/exploit.py") or (TargetFileName contains "/dynamic_payload_" and TargetFileName endswith ".sh") or (TargetFileName contains "/output/" and TargetFileName endswith "/llm_agent.log") or TargetFileName endswith "/splunkd") and (not(TargetFileName contains "/bin/splunkd"))

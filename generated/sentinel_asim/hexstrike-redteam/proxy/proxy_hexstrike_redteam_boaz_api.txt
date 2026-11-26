@@ -1,0 +1,4 @@
+# Hexstrike-redteam BOAZ API Requested Through a Proxy
+# Sigma id 55302221-b6f4-5066-86c1-767a70854a15, pipeline sentinel_asim
+imWebSession
+| where Url contains "/api/boaz/generate-payload" or Url contains "/api/boaz/list-loaders" or Url contains "/api/boaz/list-encoders" or Url contains "/api/boaz/analyze-binary" or Url contains "/api/boaz/validate-options"

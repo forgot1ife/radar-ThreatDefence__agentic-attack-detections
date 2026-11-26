@@ -1,0 +1,65 @@
+{
+ "description": "27 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 22,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "virga",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "Suricata: 3818408 TD Virga MCP tool call that drives a beacon",
+   "enabled": true,
+   "score": 1,
+   "showSubtechniques": true,
+   "techniqueID": "T1059"
+  },
+  {
+   "comment": "KQL hunt: Executables over 1.5 GB that talk on the network: beacons that carry a local language model; KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Virga C2 server, operator CLI or beacon builds on a host you monitor; KQL hunt: Virga beacon check-ins, stage 2 requests and console calls in proxy and web logs; Sentinel analytics: Virga C2 server or beacon build on a host; Sigma: Virga Beacon Check-in or Stage 2 Request in Proxy Logs; Sigma: Virga C2 Server, Operator CLI or MCP Server Started; Suricata: 3818401 TD Virga beacon check-in (Base64 body to /api/updates); Suricata: 3818403 TD Virga beacon generator default user agent (Chrome 96) in a POST; Suricata: 3818404 TD Virga listener decoy 404 page; Suricata: 3818405 TD Virga listener rejected a check-in (Invalid base64 data); Suricata: 3818406 TD Virga MCP server initialize answer (Virga MCP Server); Suricata: 3818407 TD Virga MCP tool list (Virga C2 framework session tools); Suricata: 3818408 TD Virga MCP tool call that drives a beacon; Suricata: 3818409 TD Virga MCP SSE stream request /mcp/events; Suricata: 3818410 TD Virga web UI page; Suricata: 3818411 TD Virga admin API forest answer (c2-server node); Suricata: 3818412 TD Virga admin API listener list; Suricata: 3818413 TD Virga admin API session list; Suricata: 3818414 TD Virga admin API killswitch or beacon-config call; YARA: Virga_Beacon_Go_Binary; YARA: Virga_Server_CLI_Or_Source",
+   "enabled": true,
+   "score": 22,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: Virga beacon check-ins, stage 2 requests and console calls in proxy and web logs; Suricata: 3818402 TD Virga beacon stage 2 request",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1105"
+  },
+  {
+   "comment": "Suricata: 3818401 TD Virga beacon check-in (Base64 body to /api/updates); YARA: Virga_Beacon_Go_Binary",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1573.001"
+  },
+  {
+   "comment": "KQL hunt: Executables over 1.5 GB that talk on the network: beacons that carry a local language model; KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: Virga C2 server, operator CLI or beacon builds on a host you monitor; Sigma: Virga Beacon Built with go build; Sigma: Virga C2 Server, Operator CLI or MCP Server Started; Sigma: Virga Server, Generator or Model Files Written; YARA: Virga_Beacon_With_Appended_GGUF_Model; YARA: Virga_Config_Files; YARA: Virga_Server_CLI_Or_Source",
+   "enabled": true,
+   "score": 9,
+   "showSubtechniques": true,
+   "techniqueID": "T1587.001"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

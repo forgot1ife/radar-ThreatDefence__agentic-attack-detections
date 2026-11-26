@@ -1,0 +1,30 @@
+id: 16cf4db1-d644-524b-b61f-fe52d5080fe0
+name: CHYing-agent AI pentest agent running on a host
+description: |
+  A host started the CHYing-agent dashboard or contest runners, managed its Kali tools container chying-agent-docker,
+  or ran a Python tool call in that container with the agent's fixed work-directory header
+  (echo IyA9PT0g6Ieq5Yqo5rOo5YWl77ya... | base64 -d | python3). CHYing-agent is an open-source contest agent on the
+  Claude Agent SDK that runs every tool call with permissions bypassed, in a privileged Kali container.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: Medium
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+relevantTechniques:
+  - T1059.006
+  - T1059.004
+query: |
+  DeviceProcessEvents
+  | where (ProcessCommandLine has "main.py" and ProcessCommandLine contains "--dashboard" and ProcessCommandLine contains "--skip-preflight")
+      or ProcessCommandLine has_any ("run_tencent_ctf.py", "run_htb_ctf.py")
+      or ProcessCommandLine contains "chying-agent-docker"
+      or (ProcessCommandLine contains "IyA9PT0g6Ieq5Yqo5rOo5YWl77ya" and ProcessCommandLine contains "base64 -d")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

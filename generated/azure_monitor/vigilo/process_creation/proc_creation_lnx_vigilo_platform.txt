@@ -1,0 +1,4 @@
+# Vigilo Platform or White-Box Agent on a Host
+# Sigma id 1baadfc6-4123-5648-b8c8-891d07ba1ce8, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "src.temporal.worker --serve --task-queue vigilo-" or CommandLine contains "-m src.greybox_web.worker" or CommandLine contains "-m src.webapi.main" or CommandLine contains "/usr/local/bin/vigilo-record" or CommandLine contains "vigilo-record show " or CommandLine contains "vigilo-record verdict " or CommandLine contains "vigilo-record lead ") or (CommandLine contains "authorised security assessment run by Vigilo" and (CommandLine contains "--dangerously-skip-permissions" or CommandLine contains "--dangerously-bypass-approvals-and-sandbox"))

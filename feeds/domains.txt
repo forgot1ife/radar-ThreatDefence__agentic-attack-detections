@@ -1,5 +1,7 @@
 api.aliasrobotics.com
+app.pentestai.xyz
 b8t.shop
+c2.lazyown.org
 carbonato-proxy-drab.vercel.app
 carbonato-proxy-zeta-2.vercel.app
 carbonato-proxy-zeta.vercel.app
@@ -21,6 +23,7 @@ netlifyjs.com
 newssjs.com
 nginxmysql.com
 packages.aliasrobotics.com
+r.pentestai.xyz
 redhatupdating432.dnsrd.com
 server.vietnam852.com
 site.jiancai008.com
@@ -28,6 +31,7 @@ site.vietnam852.com
 sqlserver-sqlite.com
 static-js.com
 strix.gateway.scarf.sh
+telemetry.pentestai.xyz
 traffic-analyzer.net
 update.pentagi.com
 www.ddduuuppp.com

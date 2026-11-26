@@ -1,0 +1,58 @@
+{
+ "description": "27 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 15,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "cyber-harness",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: cyber-harness testing you, or a cyber-harness Web Hub used through your proxy: user agents, Hub paths and downloads; Sigma: cyber-harness Web Hub Traffic or Release Download Through a Proxy; Suricata: 3817606 TD cyber-harness MCP client initialize (clientInfo cyber-harness mcp-ext); Suricata: 3817607 TD cyber-harness MCP client JSON-RPC request id (cyber-mcp-); Suricata: 3817610 TD cyber-harness Web Hub page; Suricata: 3817611 TD cyber-harness (AIScan build) Web page; Suricata: 3817612 TD cyber-harness Web Hub CORS header set (any path); Suricata: 3817613 TD cyber-harness Web Hub API refused without access key; Suricata: 3817614 TD cyber-harness Web Hub login sets session cookie; Suricata: 3817615 TD cyber-harness (AIScan build) Web login sets session cookie; Suricata: 3817616 TD cyber-harness node connecting to a Web Hub (AOP node WebSocket); Suricata: 3817617 TD cyber-harness Web Hub application WebSocket; Suricata: 3817618 TD cyber-harness Web Hub ConnectRPC call; YARA: cyber_harness_Hub_Page",
+   "enabled": true,
+   "score": 15,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: cyber-harness testing you, or a cyber-harness Web Hub used through your proxy: user agents, Hub paths and downloads; Sentinel analytics: cyber-harness user agent in web or proxy logs; Sigma: cyber-harness User Agent in Web Logs; Suricata: 3817601 TD cyber-harness scan pipeline basic-auth probe user agent (cyber); Suricata: 3817603 TD cyber-harness (AIScan build) basic-auth probe user agent (aiscan)",
+   "enabled": true,
+   "score": 5,
+   "showSubtechniques": true,
+   "techniqueID": "T1110.001"
+  },
+  {
+   "comment": "KQL hunt: cyber-harness running on a host you monitor; Sigma: cyber-harness Agent, Node or Web Hub Started; Sigma: cyber-harness Files Written; Sigma: cyber-harness Web Hub Traffic or Release Download Through a Proxy; YARA: cyber_harness_Binary_Or_Source; YARA: cyber_harness_Hub_Database",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: Indicator sweep with the agentic watchlist; KQL hunt: cyber-harness running on a host you monitor; KQL hunt: cyber-harness testing you, or a cyber-harness Web Hub used through your proxy: user agents, Hub paths and downloads; Sentinel analytics: cyber-harness user agent in web or proxy logs; Sigma: cyber-harness Agent, Node or Web Hub Started; Sigma: cyber-harness User Agent in Web Logs; Suricata: 3817601 TD cyber-harness scan pipeline basic-auth probe user agent (cyber); Suricata: 3817602 TD cyber-harness fetch tool user agent; Suricata: 3817603 TD cyber-harness (AIScan build) basic-auth probe user agent (aiscan); Suricata: 3817604 TD cyber-harness (AIScan build) fetch tool user agent; Suricata: 3817605 TD cyber-harness curl tool browser header set (Chrome 133 brands with Linux user agent)",
+   "enabled": true,
+   "score": 11,
+   "showSubtechniques": true,
+   "techniqueID": "T1595.002"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

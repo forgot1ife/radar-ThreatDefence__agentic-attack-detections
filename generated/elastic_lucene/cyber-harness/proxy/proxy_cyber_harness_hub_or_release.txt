@@ -1,0 +1,3 @@
+# cyber-harness Web Hub Traffic or Release Download Through a Proxy
+# Sigma id a871d699-8c24-54a5-a72f-c894ff5b3065, pipeline ecs
+(url.original:(*\/api\/aop\/node\/ws* OR *\/api\/aop\/application\/ws* OR *\/cyber.rpc.aop.AOPService\/* OR *\/cyber.rpc.chat.SessionService\/* OR *\/cyber.rpc.scan.ScanService\/* OR *\/cyber.rpc.config.ConfigService\/* OR *\/cyber.rpc.agent.AgentService\/* OR *\/cyber.rpc.system.SystemService\/* OR *\/cyber.rpc.artifact.ArtifactService\/*)) OR (url.original:(*github.com\/chainreactors\/cyber\-harness\/releases\/download\/* OR *github.com\/chainreactors\/cyber\-harness\/releases\/latest\/download\/* OR *github.com\/chainreactors\/aiscan\/releases\/download\/*))

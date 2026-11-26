@@ -1,0 +1,42 @@
+// Vigilo on a host you monitor
+// Agentic attack detections by ThreatDefence (Vigilo). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1588.002 (Obtain Capabilities: Tool), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Vigilo (certeu/vigilo, reviewed at 82c2d353, v1.0.0) is a CERT-EU platform for AI-driven assessment of your own
+// applications. This hunt finds where it runs, from its source code:
+//  - Processes: python -m src.webapi.main (API on 8080, internal listener on 8081), python -m src.greybox_web.worker,
+//    python -m src.temporal.worker --serve --task-queue vigilo-pipeline or vigilo-<12 hex>.
+//  - White-box agents: claude -p <prompt> --dangerously-skip-permissions (or codex exec / opencode run) whose prompt
+//    contains "authorised security assessment run by Vigilo", and the helper commands vigilo-record and save-deliverable.
+//  - Files: <repo>/.vigilo/<session>/(agents|prompts|deliverables)/, <repo>/.vigilo-remote-url,
+//    .git/vigilo-delivery.json and .git/vigilo-rebuild.json.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let Platform = dynamic(["src.temporal.worker --serve --task-queue vigilo-", "-m src.greybox_web.worker", "-m src.webapi.main",
+    "/usr/local/bin/vigilo-record", "vigilo-record show ", "vigilo-record verdict ", "vigilo-record lead "]);
+let VgProcesses = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where ProcessCommandLine has_any (Platform)
+        or (ProcessCommandLine has "authorised security assessment run by Vigilo"
+            and ProcessCommandLine has_any ("--dangerously-skip-permissions", "--dangerously-bypass-approvals-and-sandbox"));
+let VgDevices = VgProcesses | distinct DeviceName;
+union isfuzzy=true
+    (VgProcesses
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Vigilo platform process, white-box agent or helper command", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FolderPath has "/.vigilo/" and FolderPath has_any ("/deliverables/", "/agents/", "/prompts/"))
+            or FolderPath endswith "/.vigilo-remote-url" or FolderPath endswith "/.git/vigilo-delivery.json"
+            or FolderPath endswith "/.git/vigilo-rebuild.json"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Vigilo run folder, deliverables or delivery state", Detail=tostring(Files)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated"
+        | where LocalPort in (8080, 8081) and InitiatingProcessCommandLine has "src.webapi.main"
+        | summarize Ports=make_set(LocalPort, 10), Timestamp=min(Timestamp) by DeviceName, LocalIP
+        | project Timestamp, DeviceName, Signal="Vigilo API listening", Detail=strcat(LocalIP, " ", tostring(Ports)))
+| extend KnownVigiloDevice = DeviceName in (VgDevices)
+| order by Timestamp desc

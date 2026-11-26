@@ -1,0 +1,3 @@
+# LazyOwn DNS C2 Zone Lookup
+# Sigma id ef65dc47-e81c-5f67-b893-63517d44f1af, pipeline splunk_windows
+QueryName IN ("c2.lazyown.org", "*.c2.lazyown.org")

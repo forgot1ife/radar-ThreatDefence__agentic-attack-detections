@@ -1,0 +1,31 @@
+title: Virga Beacon Built with go build
+id: c24c2aae-c27a-5d81-ad3b-4814a9c3e4c8
+status: experimental
+description: |
+    Detects Virga's operator CLI building a beacon: it runs go build on ./internal/implant/main.go with linker flags
+    that set github.com/r74tech/virga/internal/implant/config.BuildC2Host, BuildC2Port, BuildC2Path and
+    BuildUserAgent, and with the build tag llama_selfextract when the beacon carries a local model. The Go linker
+    child process receives the same -X values. The command line names the C2 host and port of the new beacon.
+references:
+    - https://github.com/r74tech/virga
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1587.001
+logsource:
+    category: process_creation
+detection:
+    selection_ldflags:
+        CommandLine|contains:
+            - 'internal/implant/config.BuildC2Host='
+            - 'internal/implant/config.BuildLlamaEnabled='
+    selection_tags:
+        CommandLine|contains|all:
+            - 'llama_selfextract,prebuilt'
+            - 'internal/implant/main.go'
+    condition: 1 of selection_*
+falsepositives:
+    - Red teams and researchers building Virga beacons
+level: high

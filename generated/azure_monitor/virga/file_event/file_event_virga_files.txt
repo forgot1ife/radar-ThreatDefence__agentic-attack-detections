@@ -1,0 +1,4 @@
+# Virga Server, Generator or Model Files Written
+# Sigma id 5c3fd692-b5ca-567d-977b-370a9cbc623c, pipeline azure_monitor
+SecurityEvent
+| where ObjectName startswith "/tmp/virga/extensions/" or (ObjectName endswith "/data/virga.db" or ObjectName endswith "/.virga_history" or ObjectName endswith "/internal/implant/llama/models/model.gguf" or ObjectName endswith "\\internal\\implant\\llama\\models\\model.gguf") or (ObjectName contains "/virga-generator-" or ObjectName contains "\\virga-generator-") or (ObjectName contains "/logs/virga-" and ObjectName endswith ".jsonl")

@@ -1,0 +1,4 @@
+# cyber-harness Agent, Node or Web Hub Started
+# Sigma id ebb09efa-4f08-5fdf-8988-d6fd6ae3fa13, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (FolderPath endswith "/cyber-scan" or FolderPath endswith "\\cyber-scan.exe" or FolderPath endswith "/cyber-harness" or FolderPath endswith "\\cyber-harness.exe" or FolderPath endswith "/cyber-audit" or FolderPath endswith "\\cyber-audit.exe" or FolderPath endswith "/aiscan" or FolderPath endswith "\\aiscan.exe" or FolderPath endswith "/aiscan-full" or FolderPath endswith "\\aiscan-full.exe") or (ProcessCommandLine contains "--server-url http" and ProcessCommandLine contains "--node-name") or (ProcessCommandLine contains "chainreactors/cyber-harness/releases/" or ProcessCommandLine contains "chainreactors/aiscan/releases/") or (ProcessCommandLine contains "cyber-node-" and ProcessCommandLine contains "node.zip")

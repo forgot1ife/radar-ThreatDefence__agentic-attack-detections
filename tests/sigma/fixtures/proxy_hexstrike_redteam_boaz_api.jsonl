@@ -1,0 +1,5 @@
+{"name": "a payload generation request to a remote server", "expected": true, "event": {"c-uri": "http://203.0.113.10:8888/api/boaz/generate-payload", "cs-method": "POST", "c-useragent": "python-requests/2.32.3"}}
+{"name": "a loader list request", "expected": true, "event": {"c-uri": "http://203.0.113.10:8888/api/boaz/list-loaders?category=stealth", "cs-method": "GET", "c-useragent": "python-requests/2.32.3"}}
+{"name": "a binary analysis request", "expected": true, "event": {"c-uri": "http://203.0.113.10:8888/api/boaz/analyze-binary", "cs-method": "POST", "c-useragent": "python-requests/2.32.3"}}
+{"name": "a HexStrike tool request", "expected": false, "event": {"c-uri": "http://203.0.113.10:8888/api/tools/nmap", "cs-method": "POST", "c-useragent": "python-requests/2.32.3"}}
+{"name": "a page about boaz", "expected": false, "event": {"c-uri": "https://blog.example.com/api/boaz-review", "cs-method": "GET", "c-useragent": "Mozilla/5.0"}}

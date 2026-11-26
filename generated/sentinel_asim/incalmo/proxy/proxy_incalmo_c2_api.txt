@@ -1,0 +1,4 @@
+# Incalmo C2 Operator API Requested Through a Proxy
+# Sigma id aa9813e9-76ee-570e-a10e-d02ad01698ef, pipeline sentinel_asim
+imWebSession
+| where (Url contains "/get_llm_agent_action" or Url contains "/start_llm_agent_action" or Url contains "/stream_llm_agent_logs" or Url contains "/update_environment_state" or Url contains "/send_manual_command" or Url contains "/get_initial_environment") or (HttpRequestMethod =~ "POST" and Url contains "/agent/download")

@@ -1,0 +1,29 @@
+id: 880d5a0c-ae18-5f8d-b063-184fe9ee0c8a
+name: Virga C2 server or beacon build on a host
+description: |
+  A host ran the Virga C2 server, operator CLI or MCP stdio server (virga-server, virga-cli, virga-mcp-stdio), or built
+  a Virga beacon (go build or the Go linker with -X ...internal/implant/config.BuildC2Host=<host>, or the build tags
+  llama_selfextract,prebuilt on ./internal/implant/main.go). The server opens an admin API and two MCP servers that have
+  no authentication, and the beacon can carry a local language model that runs commands on its own.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - CommandAndControl
+relevantTechniques:
+  - T1071.001
+query: |
+  DeviceProcessEvents
+  | where FileName in~ ("virga-server", "virga-cli", "virga-mcp-stdio", "virga-server.exe", "virga-cli.exe")
+      or FileName startswith "virga-server-" or FileName startswith "virga-cli-"
+      or ProcessCommandLine has "internal/implant/config.BuildC2Host="
+      or (ProcessCommandLine has "llama_selfextract,prebuilt" and ProcessCommandLine has "internal/implant/main.go")
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(ProcessCommandLine, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

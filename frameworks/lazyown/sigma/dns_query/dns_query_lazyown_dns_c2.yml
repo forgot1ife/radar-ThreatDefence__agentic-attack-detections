@@ -1,0 +1,25 @@
+title: LazyOwn DNS C2 Zone Lookup
+id: ef65dc47-e81c-5f67-b893-63517d44f1af
+status: experimental
+description: |
+    Detects lookups under c2.lazyown.org, the zone the LazyOwn C2's built-in DNS server (dnslib, UDP 53 on the
+    operator's lhost, on unless enable_c2_dns is false) answers. A client sends base64url-encoded commands as the
+    label in front of c2.lazyown.org and gets TXT answers such as "Servidor C2 activo" or "Ejecutado: <command>".
+references:
+    - https://github.com/grisuno/LazyOwn
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.004
+logsource:
+    category: dns_query
+detection:
+    selection:
+        - QueryName: 'c2.lazyown.org'
+        - QueryName|endswith: '.c2.lazyown.org'
+    condition: selection
+falsepositives:
+    - Authorized tests with LazyOwn
+level: high

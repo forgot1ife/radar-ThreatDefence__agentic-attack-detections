@@ -1,0 +1,4 @@
+# Incalmo Spreading a Caldera Sandcat Implant
+# Sigma id 17a55df2-2560-53b4-bd8d-218c0b66925b, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "sandcat_tmp.go" or ProcessCommandLine contains "C2:%{http_code}" or ProcessCommandLine contains "file:sandcat.go") or (ProcessCommandLine contains " -server http" and ProcessCommandLine contains " -group red") or (FolderPath endswith "/splunkd" and ProcessCommandLine contains " -server http")

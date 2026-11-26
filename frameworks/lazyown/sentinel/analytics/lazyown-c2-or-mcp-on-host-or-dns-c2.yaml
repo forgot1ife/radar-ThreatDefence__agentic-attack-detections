@@ -1,0 +1,33 @@
+id: 5c3badfe-7a63-503b-b94d-6af31fbddd09
+name: LazyOwn C2 server or MCP server on a host, or a lookup of its DNS C2 zone
+description: |
+  A host started the LazyOwn C2 server (python3 lazyc2.py <port> <user> <password>), the LazyOwn MCP server that lets an
+  AI agent drive the framework (skills/lazyown_mcp.py), or its launcher fast_run_as_r00t.sh, or a host looked up a name
+  under c2.lazyown.org, the zone LazyOwn's built-in DNS C2 server answers. LazyOwn is an open-source red team framework
+  with a multi-operator C2, beacons and an MCP server.
+  Agentic attack detections by ThreatDefence: https://github.com/ThreatDefence/agentic-attack-detections
+severity: High
+requiredDataConnectors:
+  - connectorId: MicrosoftThreatProtection
+    dataTypes: []
+queryFrequency: 1h
+queryPeriod: 1h
+triggerOperator: gt
+triggerThreshold: 0
+tactics:
+  - Execution
+  - CommandAndControl
+relevantTechniques:
+  - T1059.006
+  - T1071.004
+query: |
+  union isfuzzy=true
+      (DeviceProcessEvents
+          | where ProcessCommandLine matches regex @"lazyc2\.py|lazyown_mcp(_opencode)?\.py|fast_run_as_r00t\.sh"
+          | project TimeGenerated, DeviceName, AccountName, Detail=ProcessCommandLine),
+      (DeviceNetworkEvents
+          | where RemoteUrl =~ "c2.lazyown.org" or RemoteUrl endswith ".c2.lazyown.org"
+          | project TimeGenerated, DeviceName, AccountName=InitiatingProcessAccountName, Detail=strcat(RemoteUrl, " ", InitiatingProcessCommandLine))
+  | summarize Events=count(), FirstSeen=min(TimeGenerated), Details=make_set(substring(Detail, 0, 300), 10) by DeviceName, AccountName
+version: 1.0.0
+kind: Scheduled

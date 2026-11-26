@@ -1,0 +1,53 @@
+title: LazyOwn Beacon Route, Beacon User Agents or Operator Clients in Proxy Logs
+id: 96a44ca9-833e-5697-83de-8b1367e40e3d
+status: experimental
+description: |
+    Detects LazyOwn traffic in proxy logs. Beacon side: requests to the LazyOwn C2's default malleable route
+    /gmail/v1/users/ on a host that is not Google, the user agents of the beacon configuration LazyOwn ships
+    (LAzyOwnRedTeam, and a Windows string with both Chrome/120.0.0.0 and Firefox/120.0), and beacon paths through a
+    Cloudflare quick tunnel, which LazyOwn's redirector uses. Operator side: LazyOwn/1.0 on exploitalert.com searches and
+    lazyown-depconfuse/1.0 on PyPI checks. HTTPS needs TLS inspection.
+references:
+    - https://github.com/grisuno/LazyOwn
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+    - attack.t1001.003
+    - attack.t1572
+    - attack.resource-development
+    - attack.t1588.005
+logsource:
+    category: proxy
+detection:
+    selection_route:
+        c-uri|contains: '/gmail/v1/users/'
+    filter_google:
+        - cs-host|endswith:
+              - '.googleapis.com'
+              - '.google.com'
+        - cs-host:
+              - 'googleapis.com'
+              - 'google.com'
+    selection_ua_beacon:
+        c-useragent|contains:
+            - 'LAzyOwnRedTeam'
+            - 'Chrome/120.0.0.0 Firefox/120.0'
+    selection_ua_operator:
+        - c-useragent: 'LazyOwn/1.0'
+        - c-useragent|startswith: 'lazyown-depconfuse/'
+    selection_tunnel:
+        cs-host|endswith: '.trycloudflare.com'
+        c-uri|contains:
+            - '/gmail/v1/users/'
+            - '/command/'
+            - '/api/poll/'
+            - '/stage/beacon'
+            - '/stage/config'
+    condition: (selection_route and not filter_google) or 1 of selection_ua_* or selection_tunnel
+falsepositives:
+    - Authorized tests with LazyOwn
+    - A Gmail API client that goes through a self-hosted gateway on another host name (selection_route)
+level: high

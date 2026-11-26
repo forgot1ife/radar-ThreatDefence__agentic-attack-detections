@@ -1,0 +1,3 @@
+{"name": "a grey-box request through the egress proxy", "expected": true, "event": {"c-useragent": "Vigilo-Greybox/1 (authorised security test)", "cs-host": "app.example.test"}}
+{"name": "the white-box preflight through a proxy", "expected": true, "event": {"c-useragent": "Vigilo-Preflight/1.0", "cs-host": "staging.example.test"}}
+{"name": "near miss: a mobile app called Vigilo", "expected": false, "event": {"c-useragent": "Vigilo/2.4 (iPhone; iOS 18.1)", "cs-host": "api.example.test"}}

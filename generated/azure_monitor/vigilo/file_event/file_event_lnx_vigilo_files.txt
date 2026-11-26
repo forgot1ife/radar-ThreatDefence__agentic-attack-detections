@@ -1,0 +1,4 @@
+# Vigilo Run Folder, Deliverables or Delivery State Written
+# Sigma id 77417edd-2f06-5546-b96c-adbf63c7e5cf, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName contains "/.vigilo/" and (ObjectName contains "/deliverables/" or ObjectName contains "/agents/" or ObjectName contains "/prompts/")) or (ObjectName endswith "/.vigilo-remote-url" or ObjectName endswith "/.git/vigilo-delivery.json" or ObjectName endswith "/.git/vigilo-rebuild.json" or ObjectName endswith "/.git/vigilo-delivery.lock")

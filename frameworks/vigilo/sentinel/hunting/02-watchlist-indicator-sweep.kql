@@ -1,0 +1,34 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (Vigilo). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595 (Active Scanning), T1071 (Application Layer Protocol)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. Addresses are reassigned, so check the reported date and review_by.
+// Vigilo has no infrastructure of its own (it is self-hosted), so these rows are fingerprints of the software: its
+// user agents and markers. A match means a Vigilo assessment; check that it was agreed.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "vigilo" | project value=tostring(SearchKey), type, confidence, actor, source;
+let IPList = toscalar(IOC | where type in ("ipv4", "ipv6") | summarize make_list(value));
+let UAs = toscalar(IOC | where type == "user_agent" and confidence in ("high", "medium") | summarize make_list(value));
+let Strings = toscalar(IOC | where type in ("string", "uri_string") and confidence == "high" | summarize make_list(value));
+union isfuzzy=true
+    (SigninLogs | where TimeGenerated > ago(90d)
+        | where IPAddress in (IPList) or UserAgent has_any (UAs)
+        | project TimeGenerated, Source="SigninLogs", Indicator=coalesce(IPAddress, UserAgent), Detail=UserPrincipalName),
+    (AWSCloudTrail | where TimeGenerated > ago(90d)
+        | where SourceIpAddress in (IPList) or UserAgent has_any (UAs)
+        | project TimeGenerated, Source="AWSCloudTrail", Indicator=SourceIpAddress, Detail=strcat(EventName, " ", UserIdentityArn)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where SourceIP in (IPList) or DestinationIP in (IPList) or RequestClientApplication has_any (UAs) or RequestURL has_any (Strings)
+        | project TimeGenerated, Source="CommonSecurityLog", Detail=RequestURL,
+            Indicator=case(SourceIP in (IPList), SourceIP, DestinationIP in (IPList), DestinationIP, RequestClientApplication)),
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where cIP in (IPList) or replace_string(csUserAgent, "+", " ") has_any (UAs) or csUriQuery has_any (Strings)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=cIP, Detail=strcat(csUriStem, "?", csUriQuery)),
+    (DeviceNetworkEvents | where Timestamp > ago(30d)
+        | where RemoteIP in (IPList)
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Indicator=RemoteIP,
+            Detail=strcat(DeviceName, " ", InitiatingProcessFileName))
+| join kind=leftouter (IOC) on $left.Indicator == $right.value
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10)
+    by Source, Indicator, actor, confidence
+| order by LastSeen desc

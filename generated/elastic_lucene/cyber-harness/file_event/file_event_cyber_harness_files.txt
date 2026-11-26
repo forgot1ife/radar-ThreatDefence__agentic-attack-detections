@@ -1,0 +1,3 @@
+# cyber-harness Files Written
+# Sigma id 6c7540af-c762-5fd0-84e7-5cf2d052b713, pipeline ecs
+(TargetFilename:(*\/cyber\-agent.pid OR *\\cyber\-agent.pid OR *\/cyber\-harness.db OR *\\cyber\-harness.db OR *\/.cyber\/mitm\/mitmproxy\-ca\-cert.pem OR *\\.cyber\\mitm\\mitmproxy\-ca\-cert.pem OR *\/.cyber\/active\/active.sqlite OR *\\.cyber\\active\\active.sqlite OR *\/.cyber\/jev\/decisions.jsonl OR *\\.cyber\\jev\\decisions.jsonl)) OR (TargetFilename:(*\/.cyber\/arsenal\/bin\/* OR *\\.cyber\\arsenal\\bin\\* OR *\/.aiscan\/* OR *\\.aiscan\\*)) OR ((TargetFilename:(*\/.cyber\/output\/* OR *\\.cyber\\output\\*)) AND TargetFilename:*.log)

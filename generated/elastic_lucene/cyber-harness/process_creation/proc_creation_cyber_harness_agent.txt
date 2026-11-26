@@ -1,0 +1,3 @@
+# cyber-harness Agent, Node or Web Hub Started
+# Sigma id ebb09efa-4f08-5fdf-8988-d6fd6ae3fa13, pipeline ecs
+(process.executable:(*\/cyber\-scan OR *\\cyber\-scan.exe OR *\/cyber\-harness OR *\\cyber\-harness.exe OR *\/cyber\-audit OR *\\cyber\-audit.exe OR *\/aiscan OR *\\aiscan.exe OR *\/aiscan\-full OR *\\aiscan\-full.exe)) OR (process.command_line:*\-\-server\-url\ http* AND process.command_line:*\-\-node\-name*) OR (process.command_line:(*chainreactors\/cyber\-harness\/releases\/* OR *chainreactors\/aiscan\/releases\/*)) OR (process.command_line:*cyber\-node\-* AND process.command_line:*node.zip*)

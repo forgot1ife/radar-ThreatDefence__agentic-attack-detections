@@ -1,0 +1,29 @@
+// Executables over 1.5 GB that talk on the network: beacons that carry a local language model
+// Agentic attack detections by ThreatDefence (Virga). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1587.001 (Develop Capabilities: Malware)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Virga's generator appends the whole GGUF model (Qwen3-4B Q4_K_M by default, about 2.5 GB) to the beacon and writes
+// its size in the last 8 bytes, so a Virga beacon with its model is a single executable of several gigabytes that
+// beacons out over HTTP. Very few legitimate programs are that large in one file; games, IDEs and local AI tools are
+// the usual exceptions. Check the folder, the signer and what the process connects to. The YARA rule
+// Virga_Beacon_With_Appended_GGUF_Model confirms the layout if the scanner reads files of this size.
+
+let Window = 14d;
+let MinSize = 1536 * 1024 * 1024;
+union isfuzzy=true
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where InitiatingProcessFileSize > MinSize
+        | where ActionType in ("ConnectionSuccess", "ConnectionAttempt", "ConnectionRequest")
+        | summarize Connections=count(), Remotes=make_set(strcat(RemoteIP, ":", RemotePort), 10), Timestamp=min(Timestamp)
+            by DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessFileSize
+        | project Timestamp, DeviceName, Signal="Executable over 1.5 GB with network connections",
+            Detail=strcat(InitiatingProcessFolderPath, " (", tostring(InitiatingProcessFileSize / 1048576), " MB) -> ", tostring(Remotes))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileSize > MinSize
+        | where FileName endswith ".exe" or FileName endswith ".elf" or FolderPath has_any ("/tmp/", @"\Temp\", @"\Downloads\", @"\ProgramData\", @"\Users\Public\")
+        | where not(FileName has_any (".gguf", ".bin", ".safetensors", ".iso", ".vhd", ".zip", ".7z", ".tar", ".gz"))
+        | project Timestamp, DeviceName, Signal="Executable over 1.5 GB written",
+            Detail=strcat(FolderPath, " (", tostring(FileSize / 1048576), " MB) by ", InitiatingProcessFileName))
+| order by Timestamp desc

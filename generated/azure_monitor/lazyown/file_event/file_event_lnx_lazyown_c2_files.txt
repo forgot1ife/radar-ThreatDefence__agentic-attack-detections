@@ -1,0 +1,4 @@
+# LazyOwn C2 Key, Launcher, Credential or Capture Files Written
+# Sigma id e0aa8b5f-2647-5490-9d6a-f2eed600add1, pipeline azure_monitor
+SecurityEvent
+| where (ObjectName endswith "/sessions/key.aes" or ObjectName endswith "/sessions/c2_launch.env" or ObjectName endswith "/sessions/c2_launch.sh" or ObjectName endswith "/sessions/rbac_initial_admin.txt" or ObjectName endswith "/sessions/users_initial_admin.txt" or ObjectName endswith "/sessions/sessionLazyOwn.json" or ObjectName endswith "/sessions/LazyOwn_session_report.csv") or (ObjectName contains "/sessions/captured_images/" and (ObjectName endswith ".png" or ObjectName endswith ".webm"))

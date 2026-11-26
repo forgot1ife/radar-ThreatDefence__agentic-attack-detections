@@ -1,0 +1,3 @@
+# Virga C2 Server, Operator CLI or MCP Server Started
+# Sigma id 6459511c-803c-5dc8-94ca-08e1ee7dae81, pipeline ecs
+(process.executable:(*\/virga\-server OR *\/virga\-cli OR *\/virga\-mcp\-stdio OR *\\virga\-server.exe OR *\\virga\-cli.exe OR *\\virga\-server\-windows\-amd64.exe OR *\\virga\-cli\-windows\-amd64.exe OR *\/virga\-server\-linux\-amd64 OR *\/virga\-cli\-linux\-amd64 OR *\/virga\-server\-darwin\-amd64 OR *\/virga\-server\-darwin\-arm64 OR *\/virga\-cli\-darwin\-amd64 OR *\/virga\-cli\-darwin\-arm64)) OR (process.command_line:(*bin\/virga\-server\ \-\-config* OR *bin\/virga\-cli\ \-\-host* OR *bin\/virga\-mcp\-stdio* OR *\-\-server\ virga\-stdio* OR *\-\-server\ virga\-sse* OR *\-\-server\ virga\-streamable*))

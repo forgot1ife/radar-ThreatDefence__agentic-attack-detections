@@ -1,0 +1,3 @@
+# LazyOwn C2 Server, MCP Server or Launcher Started
+# Sigma id 452f7d09-5501-559c-814d-555ec58d6773, pipeline ecs
+from * metadata _id, _index, _version | where process.command_line like "*lazyc2.py*" or process.command_line like "*lazyown_mcp.py*" or process.command_line like "*lazyown_mcp_opencode.py*" or process.command_line like "*fast_run_as_r00t.sh*" or process.command_line like "*sessions/c2_launch.sh*" or process.command_line like "*python3*" and process.command_line like "*lazyown.py*" or process.command_line like "*tmux*" and process.command_line like "*lazyown_sessions*" or process.command_line like "*raw.githubusercontent.com/grisuno/LazyOwn/*" or process.command_line like "*ghcr.io/grisuno/lazyown*"

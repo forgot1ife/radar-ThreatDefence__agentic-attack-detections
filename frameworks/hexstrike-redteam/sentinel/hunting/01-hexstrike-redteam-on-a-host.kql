@@ -1,0 +1,34 @@
+// Hexstrike-redteam and its BOAZ payload builds on a host you monitor
+// Agentic attack detections by ThreatDefence (Hexstrike-redteam). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1587.001 (Develop Capabilities: Malware), T1027.002 (Software Packing), T1059.004 (Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Hexstrike-redteam (Yenn503/Hexstrike-redteam) is HexStrike AI with the BOAZ evasion framework added: an AI assistant
+// asks the server, over its unauthenticated API on 0.0.0.0:8888, to wrap a Windows payload with BOAZ. This hunt looks for:
+//  - hexstrike_server.py starting python3 <dir>/BOAZ_beta/Boaz.py -f <input> -o <output> [-l -c -t ...] (cwd BOAZ_beta).
+//  - Windows executables, DLLs and .cpl files written under BOAZ_beta/output/.
+//  - Its install: configure_mcp.sh overwriting ~/.config/Claude/claude_desktop_config.json and
+//    ~/.config/claude-cli/config.json, and the venv hexstrike-env.
+// Run the HexStrike hunts too: the server, MCP client, which burst and /tmp/hexstrike_files are unchanged in this fork.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "/BOAZ_beta/Boaz.py"
+            or (InitiatingProcessCommandLine has "hexstrike_server.py" and ProcessCommandLine has "Boaz.py")
+        | summarize Builds=count(), Commands=make_set(substring(ProcessCommandLine, 0, 250), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, Signal="BOAZ payload build (Boaz.py), from Hexstrike-redteam or by hand", Detail=strcat(AccountName, " x", Builds, " ", tostring(Commands))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/BOAZ_beta/output/"
+        | where FileName endswith ".exe" or FileName endswith ".dll" or FileName endswith ".cpl" or FileName endswith ".bin"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Payload written to BOAZ_beta/output", Detail=tostring(Files)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any ("configure_mcp.sh", "setup_hexstrike_venv.sh", "install_system_deps.sh")
+            or (ProcessCommandLine has "hexstrike-env/bin/python3" and ProcessCommandLine has "hexstrike_mcp.py")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Hexstrike-redteam install scripts or MCP client from its venv", Detail=tostring(Commands))
+| order by Timestamp desc

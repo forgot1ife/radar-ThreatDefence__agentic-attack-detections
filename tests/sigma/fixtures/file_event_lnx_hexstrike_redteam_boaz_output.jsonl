@@ -1,0 +1,5 @@
+{"name": "an evasive executable in the output folder", "expected": true, "event": {"TargetFilename": "/opt/hexstrike-ai/BOAZ_beta/output/evasive.exe", "Image": "/usr/bin/x86_64-w64-mingw32-g++"}}
+{"name": "a DLL in the output folder", "expected": true, "event": {"TargetFilename": "/home/op/hexstrike-ai/BOAZ_beta/output/loader.dll", "Image": "/usr/bin/python3.12"}}
+{"name": "a control panel item in the output folder", "expected": true, "event": {"TargetFilename": "/home/op/hexstrike-ai/BOAZ_beta/output/update.cpl", "Image": "/usr/bin/python3.12"}}
+{"name": "a log file in the output folder", "expected": false, "event": {"TargetFilename": "/opt/hexstrike-ai/BOAZ_beta/output/build.log", "Image": "/usr/bin/python3.12"}}
+{"name": "an executable in another output folder", "expected": false, "event": {"TargetFilename": "/home/op/project/output/app.exe", "Image": "/usr/bin/x86_64-w64-mingw32-g++"}}

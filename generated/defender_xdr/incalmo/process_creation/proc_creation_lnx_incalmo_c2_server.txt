@@ -1,0 +1,4 @@
+# Incalmo C2 Server or Its Celery Worker
+# Sigma id 57e6a544-ed95-5bb2-9897-71920401d10e, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "incalmo/c2server/c2server.py" or ProcessCommandLine contains "incalmo.c2server.celery.celery_worker") or (ProcessCommandLine contains "msfrpcd" and ProcessCommandLine contains "-P password")

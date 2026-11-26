@@ -1,0 +1,8 @@
+{"name": "findings log in a target work folder", "expected": true, "event": {"TargetFilename": "/home/op/CHYing-agent/agent-work/ctf/Web/manual_10.0.0.1_8080/findings.log"}}
+{"name": "command log in the container path", "expected": true, "event": {"TargetFilename": "/root/agent-work/ctf/Web/manual_10.0.0.1_8080/dumps/commands.log"}}
+{"name": "saved proof of concept script", "expected": true, "event": {"TargetFilename": "/home/op/CHYing-agent/agent-work/ctf/Web/manual_10.0.0.1_8080/poc_scripts/poc_20261126_101500.py"}}
+{"name": "sqlite database", "expected": true, "event": {"TargetFilename": "/home/op/CHYing-agent/data/chying.db"}}
+{"name": "run log", "expected": true, "event": {"TargetFilename": "/home/op/CHYing-agent/logs/chying_agent_20261126_101500.log"}}
+{"name": "null zone contest data", "expected": true, "event": {"TargetFilename": "/home/op/.taie/null-zone/flags/submitted.json"}}
+{"name": "near miss: a findings log elsewhere", "expected": false, "event": {"TargetFilename": "/home/op/projects/audit/findings.log"}}
+{"name": "near miss: a progress file in the work folder", "expected": false, "event": {"TargetFilename": "/home/op/CHYing-agent/agent-work/ctf/Web/manual_10.0.0.1_8080/progress.md"}}

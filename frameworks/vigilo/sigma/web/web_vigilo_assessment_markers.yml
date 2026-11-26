@@ -1,0 +1,39 @@
+title: Vigilo Assessment Markers in Web Logs
+id: 6a4e502c-ff5f-5909-bff7-251c78718093
+status: experimental
+description: |
+    Detects a Vigilo assessment reaching a web server: the user agent Vigilo-Greybox/1 (authorised security test) on
+    every grey-box request, the user agent Vigilo-Preflight/1.0 on the reachability check at the start of a white-box
+    run, the probe host vigilo-probe-<hex>.invalid in redirect parameters, the callback check tokens
+    vigilo-callback-<hex> and vigilo-control-<hex>, and the soft-404 baseline path /vgl-<hex>. All strings are in the
+    Vigilo code (certeu/vigilo) at 82c2d353. Vigilo is a CERT-EU tool for assessing your own applications.
+references:
+    - https://github.com/certeu/vigilo
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.reconnaissance
+    - attack.t1595.002
+    - attack.initial-access
+    - attack.t1190
+logsource:
+    category: webserver
+detection:
+    selection_ua:
+        cs-user-agent|startswith:
+            - 'Vigilo-Greybox/'
+            - 'Vigilo-Preflight/'
+    selection_query:
+        cs-uri-query|contains:
+            - 'vigilo-probe-'
+            - 'vigilo-callback-'
+            - 'vigilo-control-'
+    selection_path:
+        cs-uri-stem|contains:
+            - 'vigilo-callback-'
+            - 'vigilo-control-'
+    condition: 1 of selection_*
+falsepositives:
+    - Agreed Vigilo assessments of your applications
+level: medium

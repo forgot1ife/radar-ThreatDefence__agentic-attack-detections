@@ -1,0 +1,4 @@
+# Incalmo Implant, Script or Run File Written
+# Sigma id 03be2d7d-0290-534d-951c-573623343505, pipeline microsoft_xdr
+DeviceFileEvents
+| where ((FolderPath endswith "/sandcat_tmp.go" or FolderPath endswith "/tmp/sc.log" or FolderPath endswith "/tmp/state_store.db" or FolderPath endswith "/_litellm_key_status.json" or FolderPath endswith "/plugins/deception/payloads/exploit.py") or (FolderPath contains "/dynamic_payload_" and FolderPath endswith ".sh") or (FolderPath contains "/output/" and FolderPath endswith "/llm_agent.log") or FolderPath endswith "/splunkd") and (not(FolderPath contains "/bin/splunkd"))

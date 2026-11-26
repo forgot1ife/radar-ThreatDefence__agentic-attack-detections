@@ -1,0 +1,4 @@
+# CHYing-agent AI Pentest Agent Launch, Tools Container or Ghidra Services
+# Sigma id e45638e9-dd2c-5d19-90e0-861c607579d0, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "main.py" and CommandLine contains "--dashboard" and CommandLine contains "--skip-preflight") or (CommandLine contains "run_tencent_ctf.py" or CommandLine contains "run_htb_ctf.py") or CommandLine contains "chying-agent-docker" or (CommandLine contains "GhidraMCPHeadlessServer" and CommandLine contains "--port 8089" and CommandLine contains "--bind 0.0.0.0") or (CommandLine contains "bridge_mcp_ghidra.py" and CommandLine contains "--transport sse" and CommandLine contains "--mcp-host 0.0.0.0" and CommandLine contains "--mcp-port 8766")

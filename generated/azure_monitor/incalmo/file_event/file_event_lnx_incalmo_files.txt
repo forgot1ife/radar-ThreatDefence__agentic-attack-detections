@@ -1,0 +1,4 @@
+# Incalmo Implant, Script or Run File Written
+# Sigma id 03be2d7d-0290-534d-951c-573623343505, pipeline azure_monitor
+SecurityEvent
+| where ((ObjectName endswith "/sandcat_tmp.go" or ObjectName endswith "/tmp/sc.log" or ObjectName endswith "/tmp/state_store.db" or ObjectName endswith "/_litellm_key_status.json" or ObjectName endswith "/plugins/deception/payloads/exploit.py") or (ObjectName contains "/dynamic_payload_" and ObjectName endswith ".sh") or (ObjectName contains "/output/" and ObjectName endswith "/llm_agent.log") or ObjectName endswith "/splunkd") and (not(ObjectName contains "/bin/splunkd"))

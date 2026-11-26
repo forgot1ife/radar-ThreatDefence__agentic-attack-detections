@@ -1,0 +1,47 @@
+title: cyber-harness Files Written
+id: 6c7540af-c762-5fd0-84e7-5cf2d052b713
+status: experimental
+description: |
+    Detects files cyber-harness writes: the agent pid file cyber-agent.pid in the temp folder, the MITM CA of its traffic
+    hub under .cyber/mitm/, JEV decisions under .cyber/jev/, the inbox store .cyber/active/active.sqlite, tools it
+    installs under .cyber/arsenal/bin/, the per-command output logs under .cyber/output/, the Web Hub database
+    cyber-harness.db, and the .aiscan data folder of builds before September 2026.
+references:
+    - https://github.com/chainreactors/cyber-harness
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_name:
+        TargetFilename|endswith:
+            - '/cyber-agent.pid'
+            - '\cyber-agent.pid'
+            - '/cyber-harness.db'
+            - '\cyber-harness.db'
+            - '/.cyber/mitm/mitmproxy-ca-cert.pem'
+            - '\.cyber\mitm\mitmproxy-ca-cert.pem'
+            - '/.cyber/active/active.sqlite'
+            - '\.cyber\active\active.sqlite'
+            - '/.cyber/jev/decisions.jsonl'
+            - '\.cyber\jev\decisions.jsonl'
+    selection_dir:
+        TargetFilename|contains:
+            - '/.cyber/arsenal/bin/'
+            - '\.cyber\arsenal\bin\'
+            - '/.aiscan/'
+            - '\.aiscan\'
+    selection_output:
+        TargetFilename|contains:
+            - '/.cyber/output/'
+            - '\.cyber\output\'
+        TargetFilename|endswith: '.log'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams running cyber-harness for authorized tests
+    - Another tool that keeps its data in a .cyber folder
+level: medium

@@ -1,0 +1,3 @@
+# Incalmo Implant, Script or Run File Written
+# Sigma id 03be2d7d-0290-534d-951c-573623343505, pipeline ecs
+((TargetFilename:(*\/sandcat_tmp.go OR *\/tmp\/sc.log OR *\/tmp\/state_store.db OR *\/_litellm_key_status.json OR *\/plugins\/deception\/payloads\/exploit.py)) OR (TargetFilename:*\/dynamic_payload_* AND TargetFilename:*.sh) OR (TargetFilename:*\/output\/* AND TargetFilename:*\/llm_agent.log) OR TargetFilename:*\/splunkd) AND (NOT TargetFilename:*\/bin\/splunkd*)

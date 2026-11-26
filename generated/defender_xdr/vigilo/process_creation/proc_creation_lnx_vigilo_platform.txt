@@ -1,0 +1,4 @@
+# Vigilo Platform or White-Box Agent on a Host
+# Sigma id 1baadfc6-4123-5648-b8c8-891d07ba1ce8, pipeline microsoft_xdr
+DeviceProcessEvents
+| where (ProcessCommandLine contains "src.temporal.worker --serve --task-queue vigilo-" or ProcessCommandLine contains "-m src.greybox_web.worker" or ProcessCommandLine contains "-m src.webapi.main" or ProcessCommandLine contains "/usr/local/bin/vigilo-record" or ProcessCommandLine contains "vigilo-record show " or ProcessCommandLine contains "vigilo-record verdict " or ProcessCommandLine contains "vigilo-record lead ") or (ProcessCommandLine contains "authorised security assessment run by Vigilo" and (ProcessCommandLine contains "--dangerously-skip-permissions" or ProcessCommandLine contains "--dangerously-bypass-approvals-and-sandbox"))

@@ -1,0 +1,32 @@
+title: Incalmo C2 Operator API Requested Through a Proxy
+id: aa9813e9-76ee-570e-a10e-d02ad01698ef
+status: experimental
+description: |
+    Detects requests to the operator and strategy API of an Incalmo C2 server: the LLM agent action queue, the environment state
+    report, manual command tasking and the initial environment call, and POST /agent/download.
+references:
+    - https://github.com/cylabcyberautonomy/Incalmo/tree/8cd02e0e94889461bd04924c1db5b79cf7dc256c/incalmo/c2server/routes
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection_api:
+        c-uri|contains:
+            - '/get_llm_agent_action'
+            - '/start_llm_agent_action'
+            - '/stream_llm_agent_logs'
+            - '/update_environment_state'
+            - '/send_manual_command'
+            - '/get_initial_environment'
+    selection_agent_download:
+        cs-method: 'POST'
+        c-uri|contains: '/agent/download'
+    condition: 1 of selection_*
+falsepositives:
+    - Research use of Incalmo in a lab
+level: medium

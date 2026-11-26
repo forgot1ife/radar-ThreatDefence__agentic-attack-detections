@@ -1,0 +1,4 @@
+# LazyOwn C2 Key, Launcher, Credential or Capture Files Written
+# Sigma id e0aa8b5f-2647-5490-9d6a-f2eed600add1, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath endswith "/sessions/key.aes" or FolderPath endswith "/sessions/c2_launch.env" or FolderPath endswith "/sessions/c2_launch.sh" or FolderPath endswith "/sessions/rbac_initial_admin.txt" or FolderPath endswith "/sessions/users_initial_admin.txt" or FolderPath endswith "/sessions/sessionLazyOwn.json" or FolderPath endswith "/sessions/LazyOwn_session_report.csv") or (FolderPath contains "/sessions/captured_images/" and (FolderPath endswith ".png" or FolderPath endswith ".webm"))

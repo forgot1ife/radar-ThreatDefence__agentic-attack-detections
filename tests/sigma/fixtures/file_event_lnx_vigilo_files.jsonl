@@ -1,0 +1,5 @@
+{"name": "the assessment report in a run folder", "expected": true, "event": {"TargetFilename": "/repos/target/.vigilo/scan-001/deliverables/comprehensive_security_assessment_report.md", "Image": "/usr/bin/node"}}
+{"name": "the remote url file", "expected": true, "event": {"TargetFilename": "/repos/target/.vigilo-remote-url", "Image": "/app/venv/bin/python3"}}
+{"name": "the delivery state", "expected": true, "event": {"TargetFilename": "/data/jobs/7f1e/repo/.git/vigilo-delivery.json", "Image": "/app/venv/bin/python3"}}
+{"name": "near miss: the same report name from another tool", "expected": false, "event": {"TargetFilename": "/home/user/app/.shannon/deliverables/comprehensive_security_assessment_report.md", "Image": "/usr/bin/node"}}
+{"name": "near miss: a vigilo folder without run parts", "expected": false, "event": {"TargetFilename": "/home/user/.vigilo/config.json", "Image": "/usr/bin/vim"}}

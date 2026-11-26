@@ -1,0 +1,3 @@
+# Hexstrike-redteam BOAZ API in Web Server Logs
+# Sigma id 3914c63a-0a6b-50b4-ad2b-7cc6348b4375, pipeline ecs
+url.path:(\/api\/boaz\/generate\-payload* OR \/api\/boaz\/list\-loaders* OR \/api\/boaz\/list\-encoders* OR \/api\/boaz\/analyze\-binary* OR \/api\/boaz\/validate\-options*)

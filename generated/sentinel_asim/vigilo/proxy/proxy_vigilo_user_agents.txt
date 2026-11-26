@@ -1,0 +1,4 @@
+# Vigilo User Agents in Proxy Logs
+# Sigma id de5bb28a-8885-5832-9aed-2f1f6d8aa6a5, pipeline sentinel_asim
+imWebSession
+| where HttpUserAgent startswith "Vigilo-Greybox/" or HttpUserAgent startswith "Vigilo-Preflight/"

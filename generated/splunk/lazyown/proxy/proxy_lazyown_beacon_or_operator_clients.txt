@@ -1,0 +1,3 @@
+# LazyOwn Beacon Route, Beacon User Agents or Operator Clients in Proxy Logs
+# Sigma id 96a44ca9-833e-5697-83de-8b1367e40e3d, pipeline splunk_windows
+("c-uri"="*/gmail/v1/users/*" NOT ("cs-host" IN ("*.googleapis.com", "*.google.com") OR "cs-host" IN ("googleapis.com", "google.com"))) OR "c-useragent" IN ("*LAzyOwnRedTeam*", "*Chrome/120.0.0.0 Firefox/120.0*") OR "c-useragent" IN ("LazyOwn/1.0", "lazyown-depconfuse/*") OR ("cs-host"="*.trycloudflare.com" "c-uri" IN ("*/gmail/v1/users/*", "*/command/*", "*/api/poll/*", "*/stage/beacon*", "*/stage/config*"))

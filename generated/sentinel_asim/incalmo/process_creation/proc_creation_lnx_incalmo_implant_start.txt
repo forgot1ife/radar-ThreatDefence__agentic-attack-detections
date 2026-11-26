@@ -1,0 +1,4 @@
+# Incalmo Spreading a Caldera Sandcat Implant
+# Sigma id 17a55df2-2560-53b4-bd8d-218c0b66925b, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "sandcat_tmp.go" or TargetProcessCommandLine contains "C2:%{http_code}" or TargetProcessCommandLine contains "file:sandcat.go") or (TargetProcessCommandLine contains " -server http" and TargetProcessCommandLine contains " -group red") or (TargetProcessName endswith "/splunkd" and TargetProcessCommandLine contains " -server http")

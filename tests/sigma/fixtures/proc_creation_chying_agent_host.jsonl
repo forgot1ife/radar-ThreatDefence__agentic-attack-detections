@@ -1,0 +1,9 @@
+{"name": "dashboard started by start-web.sh", "expected": true, "event": {"Image": "/home/op/.local/bin/uv", "CommandLine": "uv run main.py --dashboard --skip-preflight"}}
+{"name": "tencent contest runner", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 run_tencent_ctf.py --server 10.0.0.44:8000 --token abc123"}}
+{"name": "preflight check of the tools container", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker inspect -f {{.State.Running}} chying-agent-docker"}}
+{"name": "compose builds the tools image", "expected": true, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker compose -f docker/docker-compose.yml up -d chying-agent-docker"}}
+{"name": "ghidramcp headless server from the entrypoint", "expected": true, "event": {"Image": "/usr/lib/jvm/java-21/bin/java", "CommandLine": "java -Xmx4g -XX:+UseG1GC -Dghidra.home=/opt/tools/ghidra -Dapplication.name=GhidraMCP -classpath /opt/tools/ghidra-mcp/GhidraMCP.jar com.xebyte.headless.GhidraMCPHeadlessServer --port 8089 --bind 0.0.0.0"}}
+{"name": "ghidra mcp bridge on all interfaces", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 bridge_mcp_ghidra.py --transport sse --mcp-host 0.0.0.0 --mcp-port 8766 --ghidra-server http://127.0.0.1:8089"}}
+{"name": "near miss: another project's dashboard flag", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 main.py --dashboard --port 8080"}}
+{"name": "near miss: ghidra mcp bridge on loopback stdio", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 bridge_mcp_ghidra.py --transport stdio --ghidra-server http://127.0.0.1:8089"}}
+{"name": "near miss: an ordinary kali container", "expected": false, "event": {"Image": "/usr/bin/docker", "CommandLine": "docker exec -it kali-tools bash"}}

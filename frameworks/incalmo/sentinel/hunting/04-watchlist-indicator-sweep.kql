@@ -1,0 +1,25 @@
+// Indicator sweep with the agentic watchlist
+// Agentic attack detections by ThreatDefence (Incalmo). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1105 (Ingress Tool Transfer)
+// Upload feeds/sentinel-watchlist.csv as a Microsoft Sentinel watchlist with the alias AGENTIC_IOCs and the search key
+// "value". A match needs investigation. Incalmo has no published addresses or domains and sends no telemetry; its rows are
+// the C2 server's answers and routes, the implant file names and the strings its commands and prompts carry.
+
+let IOC = _GetWatchlist('AGENTIC_IOCs') | where framework has "incalmo" | project value=tostring(SearchKey), type, confidence, actor, source;
+let UriStrings = toscalar(IOC | where type == "uri_string" and confidence in ("high", "medium") | summarize make_list(value));
+let HostStrings = toscalar(IOC | where type in ("file_name", "file_path", "string") and confidence in ("high", "medium") | summarize make_list(value));
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(90d)
+        | where csUriStem has_any (UriStrings)
+        | project TimeGenerated, Source="W3CIISLog", Indicator=csUriStem, Detail=strcat(cIP, " ", csHost)),
+    (CommonSecurityLog | where TimeGenerated > ago(90d)
+        | where RequestURL has_any (UriStrings)
+        | project TimeGenerated, Source="CommonSecurityLog", Indicator=RequestURL, Detail=strcat(SourceIP, " -> ", DestinationIP)),
+    (DeviceProcessEvents | where Timestamp > ago(30d)
+        | where ProcessCommandLine has_any (HostStrings)
+        | project TimeGenerated=Timestamp, Source="DeviceProcessEvents", Indicator=substring(ProcessCommandLine, 0, 200), Detail=DeviceName),
+    (DeviceFileEvents | where Timestamp > ago(30d)
+        | where FolderPath has_any (HostStrings)
+        | project TimeGenerated=Timestamp, Source="DeviceFileEvents", Indicator=FolderPath, Detail=strcat(DeviceName, " ", InitiatingProcessFileName))
+| summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Details=make_set(Detail, 10) by Source, Indicator
+| order by LastSeen desc

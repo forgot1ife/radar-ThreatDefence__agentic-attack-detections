@@ -1,0 +1,6 @@
+{"name": "a grey-box crawl request", "expected": true, "event": {"cs-method": "GET", "cs-uri-stem": "/products", "cs-uri-query": "", "cs-user-agent": "Vigilo-Greybox/1 (authorised security test)"}}
+{"name": "the white-box preflight", "expected": true, "event": {"cs-method": "HEAD", "cs-uri-stem": "/", "cs-uri-query": "", "cs-user-agent": "Vigilo-Preflight/1.0"}}
+{"name": "an open redirect probe logged without the user agent", "expected": true, "event": {"cs-method": "GET", "cs-uri-stem": "/login", "cs-uri-query": "next=https%3A%2F%2Fvigilo-probe-1a2b3c4d.invalid%2F", "cs-user-agent": "-"}}
+{"name": "a callback check observation poll", "expected": true, "event": {"cs-method": "GET", "cs-uri-stem": "/observe/vigilo-control-5e6f7a8b", "cs-uri-query": "", "cs-user-agent": "-"}}
+{"name": "near miss: a mobile app called Vigilo", "expected": false, "event": {"cs-method": "GET", "cs-uri-stem": "/api/feed", "cs-uri-query": "", "cs-user-agent": "Vigilo/2.4 (iPhone; iOS 18.1)"}}
+{"name": "near miss: a page about a vigilo community", "expected": false, "event": {"cs-method": "GET", "cs-uri-stem": "/vigilo-community/events", "cs-uri-query": "page=2", "cs-user-agent": "Mozilla/5.0 (X11; Linux x86_64)"}}

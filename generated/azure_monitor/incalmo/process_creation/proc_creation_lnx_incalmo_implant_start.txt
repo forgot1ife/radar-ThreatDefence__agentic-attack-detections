@@ -1,0 +1,4 @@
+# Incalmo Spreading a Caldera Sandcat Implant
+# Sigma id 17a55df2-2560-53b4-bd8d-218c0b66925b, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "sandcat_tmp.go" or CommandLine contains "C2:%{http_code}" or CommandLine contains "file:sandcat.go") or (CommandLine contains " -server http" and CommandLine contains " -group red") or (NewProcessName endswith "/splunkd" and CommandLine contains " -server http")

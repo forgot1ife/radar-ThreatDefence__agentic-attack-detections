@@ -1,0 +1,4 @@
+# CHYing-agent Work Folder, Database or Log Files Written
+# Sigma id 56e2db42-5bb1-5724-bd1e-c939642cb0fe, pipeline microsoft_xdr
+DeviceFileEvents
+| where (FolderPath contains "/agent-work/ctf/" and (FolderPath endswith "/findings.log" or FolderPath endswith "/attack_timeline.md" or FolderPath endswith "/dumps/commands.log" or FolderPath endswith "/dumps/execution_summary.md" or FolderPath endswith "/dumps/reflection_history.md")) or ((FolderPath contains "/agent-work/ctf/" and FolderPath contains "/poc_scripts/poc_") and FolderPath endswith ".py") or FolderPath endswith "/data/chying.db" or (FolderPath contains "/logs/chying_agent_" and FolderPath endswith ".log") or FolderPath contains "/.taie/null-zone/"

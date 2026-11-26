@@ -1,0 +1,6 @@
+{"name": "the server started by make run-server", "expected": true, "event": {"Image": "/home/op/virga/bin/virga-server", "CommandLine": "bin/virga-server --config configs/server.yaml"}}
+{"name": "the operator CLI", "expected": true, "event": {"Image": "/home/op/.local/bin/virga-cli", "CommandLine": "virga-cli --host 127.0.0.1 --port 8443 --log-level info"}}
+{"name": "the MCP stdio server", "expected": true, "event": {"Image": "/home/op/virga/bin/virga-mcp-stdio", "CommandLine": "bin/virga-mcp-stdio"}}
+{"name": "MCP Inspector pointed at the Virga streamable server", "expected": true, "event": {"Image": "/usr/local/bin/bun", "CommandLine": "bunx @modelcontextprotocol/inspector --config ./config/mcp-inspector-config.json --server virga-streamable"}}
+{"name": "near miss: an unrelated binary whose name starts with virga", "expected": false, "event": {"Image": "/usr/local/bin/virgaweather", "CommandLine": "virgaweather --city Oslo"}}
+{"name": "near miss: MCP Inspector for another server", "expected": false, "event": {"Image": "/usr/local/bin/bun", "CommandLine": "bunx @modelcontextprotocol/inspector --config ./mcp.json --server files"}}

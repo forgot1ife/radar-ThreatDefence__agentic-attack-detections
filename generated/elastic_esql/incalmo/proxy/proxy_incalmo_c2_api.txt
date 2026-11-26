@@ -1,0 +1,3 @@
+# Incalmo C2 Operator API Requested Through a Proxy
+# Sigma id aa9813e9-76ee-570e-a10e-d02ad01698ef, pipeline ecs
+from * metadata _id, _index, _version | where url.original like "*/get_llm_agent_action*" or url.original like "*/start_llm_agent_action*" or url.original like "*/stream_llm_agent_logs*" or url.original like "*/update_environment_state*" or url.original like "*/send_manual_command*" or url.original like "*/get_initial_environment*" or `cs-method`=="POST" and url.original like "*/agent/download*"

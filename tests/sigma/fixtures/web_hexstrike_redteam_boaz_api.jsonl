@@ -1,0 +1,5 @@
+{"name": "a payload generation request", "expected": true, "event": {"cs-uri-stem": "/api/boaz/generate-payload", "cs-method": "POST", "c-ip": "203.0.113.20"}}
+{"name": "an encoder list request", "expected": true, "event": {"cs-uri-stem": "/api/boaz/list-encoders", "cs-method": "GET", "c-ip": "203.0.113.20"}}
+{"name": "an option validation request", "expected": true, "event": {"cs-uri-stem": "/api/boaz/validate-options", "cs-method": "POST", "c-ip": "203.0.113.20"}}
+{"name": "the HexStrike health check", "expected": false, "event": {"cs-uri-stem": "/health", "cs-method": "GET", "c-ip": "203.0.113.20"}}
+{"name": "the route name under another prefix", "expected": false, "event": {"cs-uri-stem": "/docs/api/boaz/list-loaders", "cs-method": "GET", "c-ip": "203.0.113.20"}}

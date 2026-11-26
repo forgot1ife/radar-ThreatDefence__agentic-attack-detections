@@ -1,0 +1,5 @@
+{"name": "the C2 server started by uv in the attacker container", "expected": true, "event": {"Image": "/incalmo/.venv/bin/python3", "CommandLine": "/incalmo/.venv/bin/python3 ./incalmo/c2server/c2server.py", "ParentImage": "/usr/local/bin/uv"}}
+{"name": "the Celery worker for the C2", "expected": true, "event": {"Image": "/incalmo/.venv/bin/python3", "CommandLine": "/incalmo/.venv/bin/python3 /incalmo/.venv/bin/celery -A incalmo.c2server.celery.celery_worker worker --concurrency=1 --statedb /tmp/celery_state/celery.db"}}
+{"name": "msfrpcd with the fixed password", "expected": true, "event": {"Image": "/opt/metasploit-framework/bin/msfrpcd", "CommandLine": "msfrpcd -P password"}}
+{"name": "near miss: another Celery app", "expected": false, "event": {"Image": "/usr/bin/python3", "CommandLine": "celery -A shop.tasks worker --concurrency=4"}}
+{"name": "near miss: msfrpcd with another password", "expected": false, "event": {"Image": "/opt/metasploit-framework/bin/msfrpcd", "CommandLine": "msfrpcd -P s3cr3t-rpc -a 127.0.0.1"}}

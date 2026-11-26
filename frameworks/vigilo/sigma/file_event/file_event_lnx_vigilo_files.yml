@@ -1,0 +1,37 @@
+title: Vigilo Run Folder, Deliverables or Delivery State Written
+id: 77417edd-2f06-5546-b96c-adbf63c7e5cf
+status: experimental
+description: |
+    Detects the files Vigilo (certeu/vigilo at 82c2d353) writes in a repository it assesses: the run folder
+    .vigilo/<session>/ with its agents/, prompts/ and deliverables/ folders, the .vigilo-remote-url file, and the Git
+    delivery state .git/vigilo-delivery.json and .git/vigilo-rebuild.json used when it pushes fix branches.
+references:
+    - https://github.com/certeu/vigilo
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    product: linux
+    category: file_event
+detection:
+    selection_run:
+        TargetFilename|contains:
+            - '/.vigilo/'
+    selection_run_parts:
+        TargetFilename|contains:
+            - '/deliverables/'
+            - '/agents/'
+            - '/prompts/'
+    selection_files:
+        TargetFilename|endswith:
+            - '/.vigilo-remote-url'
+            - '/.git/vigilo-delivery.json'
+            - '/.git/vigilo-rebuild.json'
+            - '/.git/vigilo-delivery.lock'
+    condition: (selection_run and selection_run_parts) or selection_files
+falsepositives:
+    - Security teams running Vigilo
+level: low

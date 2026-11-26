@@ -1,0 +1,3 @@
+# LazyOwn C2 Server, MCP Server or Launcher Started
+# Sigma id 452f7d09-5501-559c-814d-555ec58d6773, pipeline splunk_windows
+CommandLine IN ("*lazyc2.py*", "*lazyown_mcp.py*", "*lazyown_mcp_opencode.py*", "*fast_run_as_r00t.sh*", "*sessions/c2_launch.sh*") OR (CommandLine="*python3*" CommandLine="*lazyown.py*") OR (CommandLine="*tmux*" CommandLine="*lazyown_sessions*") OR CommandLine IN ("*raw.githubusercontent.com/grisuno/LazyOwn/*", "*ghcr.io/grisuno/lazyown*")

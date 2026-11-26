@@ -1,0 +1,7 @@
+# Where to start
+
+1. **Look for the DNS C2 zone.** Any lookup of a name under `c2.lazyown.org` (Suricata 3818125, Sigma `dns_query_lazyown_dns_c2`, hunt 03) means a LazyOwn DNS client ran. The client sends the query straight to the C2's address on UDP 53, so check firewall and NDR logs for that, not only your resolvers.
+2. **Look for beacons.** In proxy logs with TLS inspection, `GET` and `POST /gmail/v1/users/<id>` to a host that is not Google, `/command/<id>` or `/api/poll/<id>` every 6 seconds or so, and the user agents `LAzyOwnRedTeam 66_6` and `Chrome/120.0.0.0 Firefox/120.0` (hunt 03, Sigma `proxy_lazyown_beacon_or_operator_clients`). Paths through `*.trycloudflare.com` are the repository's redirector.
+3. **Check your own hosts** with hunt 01: `lazyc2.py`, `skills/lazyown_mcp.py` under an AI agent, the tmux session `lazyown_sessions`, files under `sessions/`, and on targets the one-liners that write `/tmp/.dbus` or `$env:TEMP\svchost.exe`. Scan disks with the YARA rules.
+4. **Look for exposed C2 servers.** Port 4444 by default; `GET /` answers 401 with `Basic realm="Login Required"` and `Invalid credentials. Please provide valid username and password.`; icon hash `538162949`; a 404 or `/login` from outside the operator's addresses returns the decoy page titled `Live View Page -  564 plot listing Template`. A user of yours who opened that page may have had camera frames sent to it (Suricata 3818108, 3818109).
+5. **Run the behaviors hunts** for model traffic from servers and for Cloudflare quick tunnels, which catch LazyOwn whatever its settings.

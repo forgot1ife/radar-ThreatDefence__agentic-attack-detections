@@ -1,0 +1,43 @@
+title: CHYing-agent Work Folder, Database or Log Files Written
+id: 56e2db42-5bb1-5724-bd1e-c939642cb0fe
+status: experimental
+description: |
+    Detects files CHYing-agent writes on the operator's host or in its tools container: the per-target work folder
+    agent-work/ctf/<Category>/<challenge>/ with findings.log, attack_timeline.md, progress.md, dumps/commands.log and
+    poc_scripts/poc_<time>.py, its SQLite database data/chying.db, its run logs logs/chying_agent_<time>.log, and the
+    data folder ~/.taie/null-zone/ of its Null Zone contest skills.
+references:
+    - https://github.com/yhy0/CHYing-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: file_event
+detection:
+    selection_workdir:
+        TargetFilename|contains: '/agent-work/ctf/'
+        TargetFilename|endswith:
+            - '/findings.log'
+            - '/attack_timeline.md'
+            - '/dumps/commands.log'
+            - '/dumps/execution_summary.md'
+            - '/dumps/reflection_history.md'
+    selection_poc:
+        TargetFilename|contains|all:
+            - '/agent-work/ctf/'
+            - '/poc_scripts/poc_'
+        TargetFilename|endswith: '.py'
+    selection_db:
+        TargetFilename|endswith: '/data/chying.db'
+    selection_log:
+        TargetFilename|contains: '/logs/chying_agent_'
+        TargetFilename|endswith: '.log'
+    selection_nullzone:
+        TargetFilename|contains: '/.taie/null-zone/'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams and contest players running CHYing-agent
+level: low

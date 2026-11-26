@@ -1,0 +1,4 @@
+# Virga Beacon Check-in or Stage 2 Request in Proxy Logs
+# Sigma id 8fa02fb4-4ba9-5df5-88da-0ae2d5af1a52, pipeline sentinel_asim
+imWebSession
+| where (HttpRequestMethod =~ "POST" and Url endswith "/api/updates" and (HttpUserAgent in~ ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"))) or Url endswith "/api/updates/stage2"

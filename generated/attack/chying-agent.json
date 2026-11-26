@@ -1,0 +1,72 @@
+{
+ "description": "18 rules from https://github.com/ThreatDefence/agentic-attack-detections, checked against ATT&CK 20.1. Score: the number of rules that name the technique.",
+ "domain": "enterprise-attack",
+ "gradient": {
+  "colors": [
+   "#ffe9e9",
+   "#dc2626"
+  ],
+  "maxValue": 7,
+  "minValue": 0
+ },
+ "hideDisabled": false,
+ "legendItems": [],
+ "links": [
+  {
+   "label": "Rules",
+   "url": "https://github.com/ThreatDefence/agentic-attack-detections"
+  }
+ ],
+ "name": "chying-agent",
+ "selectTechniquesAcrossTactics": true,
+ "showTacticsRow": true,
+ "techniques": [
+  {
+   "comment": "KQL hunt: CHYing-agent dashboard use and web terminal markers in proxy, firewall and target logs; KQL hunt: Indicator sweep with the agentic watchlist; Sentinel analytics: CHYing-agent AI pentest agent running on a host; Suricata: 3817701 TD CHYing-agent web terminal probe marker in terminal output; Suricata: 3817702 TD CHYing-agent web terminal exit-code marker in terminal output; Suricata: 3817703 TD CHYing-agent web terminal command delimiter in terminal output; YARA: CHYingAgent_Web_Terminal_Command_Trace",
+   "enabled": true,
+   "score": 7,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.004"
+  },
+  {
+   "comment": "KQL hunt: CHYing-agent running on a host you monitor; Sentinel analytics: CHYing-agent AI pentest agent running on a host; Sigma: CHYing-agent Python Tool Call in Its Kali Container",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1059.006"
+  },
+  {
+   "comment": "KQL hunt: CHYing-agent dashboard use and web terminal markers in proxy, firewall and target logs; Suricata: 3817704 TD CHYing-agent dashboard page or Swagger page title; Suricata: 3817705 TD CHYing-agent dashboard OpenAPI document; Suricata: 3817706 TD CHYing-agent dashboard statistics API answer; Suricata: 3817707 TD CHYing-agent orchestrator system prompt in a model request; Suricata: 3817708 TD CHYing-agent tool names in a model request",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1071.001"
+  },
+  {
+   "comment": "KQL hunt: CHYing-agent dashboard use and web terminal markers in proxy, firewall and target logs; Suricata: 3817701 TD CHYing-agent web terminal probe marker in terminal output; YARA: CHYingAgent_Web_Terminal_Command_Trace",
+   "enabled": true,
+   "score": 3,
+   "showSubtechniques": true,
+   "techniqueID": "T1133"
+  },
+  {
+   "comment": "KQL hunt: CHYing-agent running on a host you monitor; KQL hunt: Indicator sweep with the agentic watchlist; Sigma: CHYing-agent AI Pentest Agent Launch, Tools Container or Ghidra Services; Sigma: CHYing-agent Work Folder, Database or Log Files Written; YARA: CHYingAgent_Source; YARA: CHYingAgent_Work_Files",
+   "enabled": true,
+   "score": 6,
+   "showSubtechniques": true,
+   "techniqueID": "T1588.002"
+  },
+  {
+   "comment": "KQL hunt: CHYing-agent running on a host you monitor; Sigma: CHYing-agent AI Pentest Agent Launch, Tools Container or Ghidra Services",
+   "enabled": true,
+   "score": 2,
+   "showSubtechniques": true,
+   "techniqueID": "T1610"
+  }
+ ],
+ "versions": {
+  "attack": "20",
+  "layer": "4.5",
+  "navigator": "5.1.0"
+ }
+}

@@ -1,0 +1,4 @@
+# Vigilo Platform or White-Box Agent on a Host
+# Sigma id 1baadfc6-4123-5648-b8c8-891d07ba1ce8, pipeline sentinel_asim
+imProcessCreate
+| where (TargetProcessCommandLine contains "src.temporal.worker --serve --task-queue vigilo-" or TargetProcessCommandLine contains "-m src.greybox_web.worker" or TargetProcessCommandLine contains "-m src.webapi.main" or TargetProcessCommandLine contains "/usr/local/bin/vigilo-record" or TargetProcessCommandLine contains "vigilo-record show " or TargetProcessCommandLine contains "vigilo-record verdict " or TargetProcessCommandLine contains "vigilo-record lead ") or (TargetProcessCommandLine contains "authorised security assessment run by Vigilo" and (TargetProcessCommandLine contains "--dangerously-skip-permissions" or TargetProcessCommandLine contains "--dangerously-bypass-approvals-and-sandbox"))

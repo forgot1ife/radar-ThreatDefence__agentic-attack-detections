@@ -1,0 +1,3 @@
+# Vigilo Run Folder, Deliverables or Delivery State Written
+# Sigma id 77417edd-2f06-5546-b96c-adbf63c7e5cf, pipeline splunk_windows
+(TargetFilename="*/.vigilo/*" TargetFilename IN ("*/deliverables/*", "*/agents/*", "*/prompts/*")) OR TargetFilename IN ("*/.vigilo-remote-url", "*/.git/vigilo-delivery.json", "*/.git/vigilo-rebuild.json", "*/.git/vigilo-delivery.lock")

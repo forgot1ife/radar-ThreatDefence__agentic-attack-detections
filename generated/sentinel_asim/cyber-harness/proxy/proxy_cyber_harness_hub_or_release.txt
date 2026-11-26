@@ -1,0 +1,4 @@
+# cyber-harness Web Hub Traffic or Release Download Through a Proxy
+# Sigma id a871d699-8c24-54a5-a72f-c894ff5b3065, pipeline sentinel_asim
+imWebSession
+| where (Url contains "/api/aop/node/ws" or Url contains "/api/aop/application/ws" or Url contains "/cyber.rpc.aop.AOPService/" or Url contains "/cyber.rpc.chat.SessionService/" or Url contains "/cyber.rpc.scan.ScanService/" or Url contains "/cyber.rpc.config.ConfigService/" or Url contains "/cyber.rpc.agent.AgentService/" or Url contains "/cyber.rpc.system.SystemService/" or Url contains "/cyber.rpc.artifact.ArtifactService/") or (Url contains "github.com/chainreactors/cyber-harness/releases/download/" or Url contains "github.com/chainreactors/cyber-harness/releases/latest/download/" or Url contains "github.com/chainreactors/aiscan/releases/download/")

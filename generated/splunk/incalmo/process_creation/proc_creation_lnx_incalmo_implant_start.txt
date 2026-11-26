@@ -1,0 +1,3 @@
+# Incalmo Spreading a Caldera Sandcat Implant
+# Sigma id 17a55df2-2560-53b4-bd8d-218c0b66925b, pipeline splunk_windows
+CommandLine IN ("*sandcat_tmp.go*", "*C2:%{http_code}*", "*file:sandcat.go*") OR (CommandLine="* -server http*" CommandLine="* -group red*") OR (Image="*/splunkd" CommandLine="* -server http*")

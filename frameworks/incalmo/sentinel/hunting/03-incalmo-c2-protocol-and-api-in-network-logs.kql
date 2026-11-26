@@ -1,0 +1,24 @@
+// Incalmo C2 protocol and operator API in web, proxy and firewall logs
+// Agentic attack detections by ThreatDefence (Incalmo). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1105 (Ingress Tool Transfer)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Incalmo source code (cylabcyberautonomy/Incalmo, reviewed at 8cd02e0e). The C2 is plain HTTP, 8888 by default:
+//  - Implants: POST /beacon every 3 seconds, POST /file/download (payloads, and the implant itself), POST /agent/download.
+//  - Strategy and operator: /send_command, /send_manual_command, /command_status/<id> once a second, /update_environment_state,
+//    /startup, /get_llm_agent_action, /stream_llm_agent_logs, /get_api_usage.
+// /beacon and /file/download are Caldera's contact routes too; the other paths are Incalmo's own.
+
+let IncalmoPaths = dynamic(["/get_llm_agent_action", "/start_llm_agent_action", "/stream_llm_agent_logs", "/update_environment_state",
+    "/send_manual_command", "/get_initial_environment", "/available_strategies", "/running_strategies", "/get_api_usage"]);
+let SharedPaths = dynamic(["/beacon", "/file/download", "/agent/download"]);
+union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(30d)
+        | where csUriStem in (IncalmoPaths) or (csMethod == "POST" and csUriStem in (SharedPaths))
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Dst=sIP, Port=tostring(sPort), Detail=strcat(csMethod, " ", csUriStem)),
+    (CommonSecurityLog | where TimeGenerated > ago(30d)
+        | extend Path=tostring(parse_url(RequestURL).Path)
+        | where Path in (IncalmoPaths) or (RequestMethod == "POST" and Path in (SharedPaths))
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Dst=DestinationIP, Port=tostring(DestinationPort), Detail=strcat(RequestMethod, " ", RequestURL))
+| summarize Requests=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), Paths=make_set(Detail, 15) by Source, Src, Dst, Port
+| extend IncalmoOnly=Paths has_any (IncalmoPaths)
+| order by IncalmoOnly desc, Requests desc

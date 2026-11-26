@@ -1,0 +1,43 @@
+// Vigilo assessments reaching you: its user agents and probe markers in web and proxy logs
+// Agentic attack detections by ThreatDefence (Vigilo). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1595.002 (Active Scanning: Vulnerability Scanning), T1190 (Exploit Public-Facing Application)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Vigilo source code (certeu/vigilo, reviewed at 82c2d353, v1.0.0):
+//  - Every grey-box request carries User-Agent: Vigilo-Greybox/1 (authorised security test);
+//    every white-box run with a target starts with HEAD / and User-Agent: Vigilo-Preflight/1.0.
+//  - Grey-box probes: redirect parameters set to https://vigilo-probe-<8 hex>.invalid/, the reflection canary
+//    vgl<8 hex>"'<>b (vgl<8 hex>%22%27%3C%3Eb in logs), the soft-404 path /vgl-<8 hex>, callback check tokens
+//    vigilo-callback-<8 hex> and vigilo-control-<8 hex>.
+//  - After the preflight, white-box agents use curl, headless Chromium, WhatWeb and schemathesis with their own user
+//    agents: the second part of this hunt lists what the same source sent after a Vigilo marker.
+// Vigilo is a CERT-EU tool for assessing your own applications. Confirm the assessment was agreed.
+
+let Window = 30d;
+let UAPrefixes = dynamic(["Vigilo-Greybox/", "Vigilo-Preflight/"]);
+let QueryMarkers = dynamic(["vigilo-probe-", "vigilo-callback-", "vigilo-control-", "%22%27%3C%3Eb"]);
+let Web = union isfuzzy=true
+    (W3CIISLog | where TimeGenerated > ago(Window)
+        | extend UA=replace_string(csUserAgent, "+", " ")
+        | project TimeGenerated, Source="W3CIISLog", Src=cIP, Target=csHost, Path=csUriStem, Query=csUriQuery, UA),
+    (CommonSecurityLog | where TimeGenerated > ago(Window)
+        | where isnotempty(RequestURL)
+        | project TimeGenerated, Source="CommonSecurityLog", Src=SourceIP, Target=DestinationHostName, Path=RequestURL,
+            Query="", UA=RequestClientApplication);
+let Marked = Web
+    | where UA startswith "Vigilo-Greybox/" or UA startswith "Vigilo-Preflight/"
+        or Query has_any (QueryMarkers) or Path has_any (QueryMarkers)
+        or Path matches regex @"(^|/)vgl-[0-9a-f]{8}$";
+let VgSources = Marked | summarize MarkerFirst=min(TimeGenerated) by Src, Target;
+union
+    (Marked
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated),
+            Samples=make_set(strcat(Path, iff(isempty(Query), "", strcat("?", Query))), 10), UAs=make_set(UA, 5) by Source, Src, Target
+        | extend Signal="Vigilo user agent or probe marker"),
+    (Web
+        | join kind=inner (VgSources) on Src, Target
+        | where TimeGenerated between (MarkerFirst .. (MarkerFirst + 1d))
+        | where not(UA startswith "Vigilo-Greybox/" or UA startswith "Vigilo-Preflight/")
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated),
+            Samples=make_set(Path, 10), UAs=make_set(UA, 5) by Source, Src, Target
+        | extend Signal="Other requests from the same source within a day of a Vigilo marker")
+| order by Src asc, FirstSeen asc

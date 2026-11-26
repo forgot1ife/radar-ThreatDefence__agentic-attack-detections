@@ -1,0 +1,4 @@
+# CHYing-agent Work Folder, Database or Log Files Written
+# Sigma id 56e2db42-5bb1-5724-bd1e-c939642cb0fe, pipeline sentinel_asim
+imFileEvent
+| where (TargetFileName contains "/agent-work/ctf/" and (TargetFileName endswith "/findings.log" or TargetFileName endswith "/attack_timeline.md" or TargetFileName endswith "/dumps/commands.log" or TargetFileName endswith "/dumps/execution_summary.md" or TargetFileName endswith "/dumps/reflection_history.md")) or ((TargetFileName contains "/agent-work/ctf/" and TargetFileName contains "/poc_scripts/poc_") and TargetFileName endswith ".py") or TargetFileName endswith "/data/chying.db" or (TargetFileName contains "/logs/chying_agent_" and TargetFileName endswith ".log") or TargetFileName contains "/.taie/null-zone/"

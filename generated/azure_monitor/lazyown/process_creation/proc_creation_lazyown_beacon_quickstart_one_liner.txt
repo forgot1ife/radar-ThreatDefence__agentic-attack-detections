@@ -1,0 +1,4 @@
+# LazyOwn Beacon Quick-Start Download One-Liner
+# Sigma id f310f6a9-32a6-5a4e-83a0-fc21333b4d7c, pipeline azure_monitor
+SecurityEvent
+| where (CommandLine contains "curl -sk" and CommandLine contains "-o /tmp/.dbus") or (CommandLine contains "chmod +x /tmp/.dbus" and CommandLine contains "/tmp/.dbus") or (CommandLine contains "iwr -Uri" and CommandLine contains "win.exe" and CommandLine contains "\\svchost.exe")

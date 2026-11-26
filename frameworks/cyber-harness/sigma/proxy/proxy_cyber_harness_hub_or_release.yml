@@ -1,0 +1,41 @@
+title: cyber-harness Web Hub Traffic or Release Download Through a Proxy
+id: a871d699-8c24-54a5-a72f-c894ff5b3065
+status: experimental
+description: |
+    Detects traffic to a cyber-harness Web Hub, the console that cyber-scan and cyber-audit agent nodes connect to: the
+    node WebSocket /api/aop/node/ws, the browser WebSocket /api/aop/application/ws and its ConnectRPC services
+    /cyber.rpc.<pkg>.<Service>/. Also detects a download of a cyber-harness or AIScan release from GitHub, directly or
+    through the ghfast.top mirror that the Hub's Quick Connect offers, which is how a new node is installed.
+references:
+    - https://github.com/chainreactors/cyber-harness
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.command-and-control
+    - attack.t1071.001
+    - attack.resource-development
+    - attack.t1588.002
+logsource:
+    category: proxy
+detection:
+    selection_hub:
+        c-uri|contains:
+            - '/api/aop/node/ws'
+            - '/api/aop/application/ws'
+            - '/cyber.rpc.aop.AOPService/'
+            - '/cyber.rpc.chat.SessionService/'
+            - '/cyber.rpc.scan.ScanService/'
+            - '/cyber.rpc.config.ConfigService/'
+            - '/cyber.rpc.agent.AgentService/'
+            - '/cyber.rpc.system.SystemService/'
+            - '/cyber.rpc.artifact.ArtifactService/'
+    selection_release:
+        c-uri|contains:
+            - 'github.com/chainreactors/cyber-harness/releases/download/'
+            - 'github.com/chainreactors/cyber-harness/releases/latest/download/'
+            - 'github.com/chainreactors/aiscan/releases/download/'
+    condition: 1 of selection_*
+falsepositives:
+    - Security teams running or installing cyber-harness for authorized tests
+level: medium

@@ -1,0 +1,3 @@
+# cyber-harness Agent, Node or Web Hub Started
+# Sigma id ebb09efa-4f08-5fdf-8988-d6fd6ae3fa13, pipeline splunk_windows
+Image IN ("*/cyber-scan", "*\\cyber-scan.exe", "*/cyber-harness", "*\\cyber-harness.exe", "*/cyber-audit", "*\\cyber-audit.exe", "*/aiscan", "*\\aiscan.exe", "*/aiscan-full", "*\\aiscan-full.exe") OR (CommandLine="*--server-url http*" CommandLine="*--node-name*") OR CommandLine IN ("*chainreactors/cyber-harness/releases/*", "*chainreactors/aiscan/releases/*") OR (CommandLine="*cyber-node-*" CommandLine="*node.zip*")

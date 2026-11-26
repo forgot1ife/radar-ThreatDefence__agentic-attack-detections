@@ -1,0 +1,3 @@
+# Virga Server, Generator or Model Files Written
+# Sigma id 5c3fd692-b5ca-567d-977b-370a9cbc623c, pipeline ecs
+from * metadata _id, _index, _version | where starts_with(TargetFilename, "/tmp/virga/extensions/") or ends_with(TargetFilename, "/data/virga.db") or ends_with(TargetFilename, "/.virga_history") or ends_with(TargetFilename, "/internal/implant/llama/models/model.gguf") or ends_with(TargetFilename, "\\internal\\implant\\llama\\models\\model.gguf") or TargetFilename like "*/virga-generator-*" or TargetFilename like "*\\virga-generator-*" or TargetFilename like "*/logs/virga-*" and ends_with(TargetFilename, ".jsonl")

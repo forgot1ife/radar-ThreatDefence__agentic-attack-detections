@@ -1,0 +1,9 @@
+{"name": "per-command script run by the implant", "expected": true, "event": {"Image": "/bin/sh", "CommandLine": "sh -c ./dynamic_payload_8888_abcd1234.sh"}}
+{"name": "host discovery sweep", "expected": true, "event": {"Image": "/usr/bin/nmap", "CommandLine": "nmap --max-rtt-timeout 100ms -sn  -oX - 10.2.1.0/24"}}
+{"name": "service scan", "expected": true, "event": {"Image": "/usr/bin/nmap", "CommandLine": "nmap -sV --version-light -oX - 10.2.1.20"}}
+{"name": "nikto with the fixed tuning and time limits", "expected": true, "event": {"Image": "/usr/bin/nikto", "CommandLine": "nikto -h 10.2.1.20 -p 8080 -Tuning 8 -maxtime 60s -timeout 3"}}
+{"name": "nuclei critical-only json run", "expected": true, "event": {"Image": "/root/go/bin/nuclei", "CommandLine": "nuclei -u 10.2.1.20:8080 -timeout 5 -severity critical -j -silent"}}
+{"name": "ncat lateral move", "expected": true, "event": {"Image": "/usr/bin/ncat", "CommandLine": "ncat --no-shutdown -i 5s 10.2.1.20 4444"}}
+{"name": "Metasploit RPC helper", "expected": true, "event": {"Image": "/usr/bin/python3", "CommandLine": "python3 msf_rpc_client.py search eyJjdmUiOiAiQ1ZFLTIwMTctNTYzOCJ9"}}
+{"name": "near miss: an ordinary nmap service scan", "expected": false, "event": {"Image": "/usr/bin/nmap", "CommandLine": "nmap -sV -p 22,80 10.2.1.20"}}
+{"name": "near miss: nikto with default options", "expected": false, "event": {"Image": "/usr/bin/nikto", "CommandLine": "nikto -h 10.2.1.20 -p 8080"}}

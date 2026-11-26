@@ -1,0 +1,30 @@
+title: Hexstrike-redteam BOAZ API Requested Through a Proxy
+id: 55302221-b6f4-5066-86c1-767a70854a15
+status: experimental
+description: |
+    Detects an MCP client driving a remote Hexstrike-redteam server's BOAZ routes: /api/boaz/generate-payload,
+    /api/boaz/list-loaders, /api/boaz/list-encoders, /api/boaz/analyze-binary or /api/boaz/validate-options.
+references:
+    - https://github.com/Yenn503/Hexstrike-redteam
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1587.001
+    - attack.command-and-control
+    - attack.t1071.001
+logsource:
+    category: proxy
+detection:
+    selection:
+        c-uri|contains:
+            - '/api/boaz/generate-payload'
+            - '/api/boaz/list-loaders'
+            - '/api/boaz/list-encoders'
+            - '/api/boaz/analyze-binary'
+            - '/api/boaz/validate-options'
+    condition: selection
+falsepositives:
+    - Authorized tests with Hexstrike-redteam
+level: high

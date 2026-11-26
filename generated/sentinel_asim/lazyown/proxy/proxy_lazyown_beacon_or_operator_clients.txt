@@ -1,0 +1,4 @@
+# LazyOwn Beacon Route, Beacon User Agents or Operator Clients in Proxy Logs
+# Sigma id 96a44ca9-833e-5697-83de-8b1367e40e3d, pipeline sentinel_asim
+imWebSession
+| where (Url contains "/gmail/v1/users/" and (not(((HttpHost endswith ".googleapis.com" or HttpHost endswith ".google.com") or (HttpHost in~ ("googleapis.com", "google.com")))))) or ((HttpUserAgent contains "LAzyOwnRedTeam" or HttpUserAgent contains "Chrome/120.0.0.0 Firefox/120.0") or (HttpUserAgent in~ ("LazyOwn/1.0") or HttpUserAgent startswith "lazyown-depconfuse/")) or (HttpHost endswith ".trycloudflare.com" and (Url contains "/gmail/v1/users/" or Url contains "/command/" or Url contains "/api/poll/" or Url contains "/stage/beacon" or Url contains "/stage/config"))

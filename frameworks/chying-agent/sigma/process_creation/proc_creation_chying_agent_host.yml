@@ -1,0 +1,49 @@
+title: CHYing-agent AI Pentest Agent Launch, Tools Container or Ghidra Services
+id: e45638e9-dd2c-5d19-90e0-861c607579d0
+status: experimental
+description: |
+    Detects the CHYing-agent contest agent on the operator's host: its dashboard launch from start-web.sh
+    (main.py --dashboard --skip-preflight), its Tencent and HTB contest runners, its preflight check and any docker
+    command on its tools container chying-agent-docker or image chying-agent-docker-tools, and the container entrypoint
+    starting the GhidraMCP headless server and MCP bridge on all interfaces (ports 8089 and 8766, no authentication).
+references:
+    - https://github.com/yhy0/CHYing-agent
+    - https://github.com/ThreatDefence/agentic-attack-detections
+author: ThreatDefence
+date: 2026-11-26
+tags:
+    - attack.resource-development
+    - attack.t1588.002
+    - attack.execution
+    - attack.t1610
+logsource:
+    category: process_creation
+detection:
+    selection_dashboard:
+        CommandLine|contains|all:
+            - 'main.py'
+            - '--dashboard'
+            - '--skip-preflight'
+    selection_runners:
+        CommandLine|contains:
+            - 'run_tencent_ctf.py'
+            - 'run_htb_ctf.py'
+    selection_container:
+        CommandLine|contains:
+            - 'chying-agent-docker'
+    selection_ghidra_server:
+        CommandLine|contains|all:
+            - 'GhidraMCPHeadlessServer'
+            - '--port 8089'
+            - '--bind 0.0.0.0'
+    selection_ghidra_bridge:
+        CommandLine|contains|all:
+            - 'bridge_mcp_ghidra.py'
+            - '--transport sse'
+            - '--mcp-host 0.0.0.0'
+            - '--mcp-port 8766'
+    condition: 1 of selection_*
+falsepositives:
+    - Authorized tests or contest work with CHYing-agent
+    - Other GhidraMCP deployments started with the same port and bind arguments (the two ghidra selections alone are weaker)
+level: medium

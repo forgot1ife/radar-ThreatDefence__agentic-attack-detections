@@ -1,0 +1,3 @@
+# LazyOwn C2 Server, MCP Server or Launcher Started
+# Sigma id 452f7d09-5501-559c-814d-555ec58d6773, pipeline ecs
+(process.command_line:(*lazyc2.py* OR *lazyown_mcp.py* OR *lazyown_mcp_opencode.py* OR *fast_run_as_r00t.sh* OR *sessions\/c2_launch.sh*)) OR (process.command_line:*python3* AND process.command_line:*lazyown.py*) OR (process.command_line:*tmux* AND process.command_line:*lazyown_sessions*) OR (process.command_line:(*raw.githubusercontent.com\/grisuno\/LazyOwn\/* OR *ghcr.io\/grisuno\/lazyown*))

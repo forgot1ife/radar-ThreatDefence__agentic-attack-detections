@@ -1,0 +1,35 @@
+// Virga beacon check-ins, stage 2 requests and console calls in proxy and web logs
+// Agentic attack detections by ThreatDefence (Virga). Source: https://github.com/ThreatDefence/agentic-attack-detections
+// ATT&CK: T1071.001 (Application Layer Protocol: Web Protocols), T1105 (Ingress Tool Transfer)
+// Example hunt for Microsoft Sentinel. Test and baseline before alerting.
+// From the Virga listener and admin API (r74tech/virga, reviewed at 43773ffe):
+//  - A beacon POSTs a Base64 body to /api/updates (the default uri_path) every few seconds (10 s with jitter 20 % in
+//    the shipped beacon.yaml, 1 s in interactive mode). Its user agent is the Chrome 96 string the generator uses
+//    without a config, or the truncated "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" from
+//    beacon.yaml (also used by CyberStrikeAI, AutoPT and GH05TCREW PentestAgent). Both are settings.
+//  - GET /api/updates/stage2 fetches the stage 2 payload.
+//  - Requests from your network to /api/forest, /api/sessions/<id>/killswitch, /mcp/events or /mcp on another host
+//    are someone driving a Virga server.
+// Beacons on a fixed interval show as many events per hour from one source to one URL.
+
+let UAs = dynamic(["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"]);
+let Console = @"/api/forest$|/api/sessions/[^/]+/(killswitch|beacon-config|chat|extensions)|/mcp/events$|/mcp/message\?";
+union isfuzzy=true
+    (CommonSecurityLog
+        | where TimeGenerated > ago(30d)
+        | extend Path = tostring(split(tostring(split(RequestURL, "?")[0]), "#")[0])
+        | where (RequestMethod =~ "POST" and Path endswith "/api/updates" and RequestClientApplication in (UAs))
+            or Path endswith "/api/updates/stage2"
+            or RequestURL matches regex Console
+        | extend Signal = case(Path endswith "/api/updates/stage2", "stage 2 request", Path endswith "/api/updates", "beacon check-in", "Virga console or MCP call")
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), URLs=make_set(RequestURL, 5),
+            UAs=make_set(RequestClientApplication, 3) by Source="CommonSecurityLog", Src=SourceIP, Dst=DestinationHostName, Signal),
+    (W3CIISLog
+        | where TimeGenerated > ago(30d)
+        | extend UA = replace_string(csUserAgent, "+", " ")
+        | where (csMethod =~ "POST" and csUriStem endswith "/api/updates" and UA in (UAs)) or csUriStem endswith "/api/updates/stage2"
+        | summarize Events=count(), FirstSeen=min(TimeGenerated), LastSeen=max(TimeGenerated), URLs=make_set(csUriStem, 5),
+            UAs=make_set(UA, 3) by Source="W3CIISLog", Src=cIP, Dst=sSiteName, Signal="beacon traffic through an IIS redirector")
+| extend PerHour = round(todouble(Events) / max_of(1.0, (LastSeen - FirstSeen) / 1h), 1)
+| order by Events desc
